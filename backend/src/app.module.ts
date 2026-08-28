@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigAppModule } from './core/config/config.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { SharedGuardsModule } from './auth/shared-guards.module';
+import { TemploModule } from './templo/templo.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { SharedGuardsModule } from './auth/shared-guards.module';
     AuthModule,
     UsuariosModule,
     SharedGuardsModule,
+    TemploModule,
   ],
   controllers: [AppController],
 })
