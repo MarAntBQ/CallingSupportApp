@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+
+:root {
+  --brown-700: #8a6a54;
+  --brown-500: #a8836b;
+  --sage-600: #7a9269;
+  --sage-400: #a8c0a0;
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --border: #e8e2d8;
+  --text: #3a332c;
+  --text-muted: #7d7268;
+  --danger: #dc2626;
+  --success: #6b8f5a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+/*
+  La insignia de reCAPTCHA v3 se oculta — Google lo permite siempre que el
+  aviso legal (Política de Privacidad + Términos de Servicio) quede visible
+  junto al formulario. Ver ese texto en InscripcionPage.tsx.
+*/
+.grecaptcha-badge {
+  visibility: hidden;
+}
