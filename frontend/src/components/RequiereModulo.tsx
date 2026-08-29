@@ -6,7 +6,7 @@ import { getUsuario } from '../lib/auth';
 // pantalla de administración que de todos modos le devolvería 403.
 export const RequiereModulo = ({ clave, children }: { clave: string; children: ReactNode }) => {
   const usuario = getUsuario();
-  const permitido = usuario?.modulosPermitidos.includes(clave) ?? false;
+  const permitido = (usuario?.modulosPermitidos ?? []).includes(clave);
 
   if (!permitido) {
     return (

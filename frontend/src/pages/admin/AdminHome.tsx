@@ -9,7 +9,7 @@ const RUTA_POR_MODULO: Record<string, string> = {
 
 export const AdminHome = () => {
   const usuario = getUsuario();
-  const primerModulo = usuario?.modulosPermitidos.find((clave) => RUTA_POR_MODULO[clave]);
+  const primerModulo = (usuario?.modulosPermitidos ?? []).find((clave) => RUTA_POR_MODULO[clave]);
 
   if (primerModulo) {
     return <Navigate to={RUTA_POR_MODULO[primerModulo]} replace />;
