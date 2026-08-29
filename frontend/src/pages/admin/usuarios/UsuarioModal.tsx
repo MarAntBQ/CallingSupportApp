@@ -134,21 +134,6 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
           )}
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">
-              Llamamiento <span className="text-[var(--text-muted)]">(opcional)</span>
-            </label>
-            <input
-              value={llamamiento}
-              onChange={(e) => setLlamamiento(e.target.value)}
-              placeholder="Ej. Presidenta, 1er consejero, Secretario…"
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25"
-            />
-            <p className="mt-1 text-xs text-[var(--text-muted)]">
-              Solo para mostrar quién es quién — el rol de abajo decide el nivel de acceso.
-            </p>
-          </div>
-
-          <div>
             <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">Rol</label>
             <select
               value={roleId}
@@ -162,6 +147,24 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">
+              Llamamiento <span className="text-[var(--text-muted)]">(opcional)</span>
+            </label>
+            <input
+              value={llamamiento}
+              onChange={(e) => setLlamamiento(e.target.value)}
+              disabled={!roleId}
+              placeholder="Ej. Presidenta, 1er consejero, Secretario…"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <p className="mt-1 text-xs text-[var(--text-muted)]">
+              {roleId
+                ? 'Solo para mostrar quién es quién — el rol de arriba decide el nivel de acceso.'
+                : 'Selecciona primero un rol.'}
+            </p>
           </div>
 
           {esEdicion && (

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { listarUsuarios } from '../../../lib/admin';
 import { ModuleBreadcrumb } from '../../../components/ui/ModuleBreadcrumb';
@@ -24,6 +25,20 @@ export const UsuariosPage = () => {
   const [editando, setEditando] = useState<UsuarioAdmin | null>(null);
   const [creando, setCreando] = useState(false);
   const [tab, setTab] = useState<Tab>('lideres');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Llegar desde Consejo de barrio con ?editar=<id> abre directo el modal de
+  // edición de ese usuario, en vez de obligar a buscarlo en la tabla.
+  useEffect(() => {
+    const editarId = searchParams.get('editar');
+    if (!editarId || !usuarios) return;
+    const usuario = usuarios.find((u) => u.id === Number(editarId));
+    if (usuario) setEditando(usuario);
+    setSearchParams((prev) => {
+      prev.delete('editar');
+      return prev;
+    });
+  }, [searchParams, usuarios, setSearchParams]);
 
   const usuariosFiltrados = (usuarios ?? []).filter((u) =>
     tab === 'lideres' ? ES_ROL_LIDERAZGO(u.role.nombre) : true,
