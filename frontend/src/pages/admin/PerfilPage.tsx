@@ -12,6 +12,7 @@ interface MiPerfil {
   apellidos: string;
   email: string;
   telefono: string | null;
+  llamamiento: string | null;
   role: string;
   organizaciones: string[];
   modulosPermitidos: string[];
@@ -114,7 +115,7 @@ export const PerfilPage = () => {
           <Card>
             <h3 className="mb-1 text-sm font-semibold text-[var(--text)]">Mis datos</h3>
             <p className="mb-4 text-xs text-[var(--text-muted)]">
-              {perfil.email} · {perfil.role}
+              {perfil.email} · {perfil.llamamiento || perfil.role}
               {perfil.organizaciones.length > 0 ? ` · ${perfil.organizaciones.join(', ')}` : ''}
             </p>
 

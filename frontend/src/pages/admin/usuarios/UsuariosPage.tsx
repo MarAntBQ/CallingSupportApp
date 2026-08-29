@@ -12,10 +12,22 @@ const ESTADO_ESTILO: Record<string, string> = {
   suspendido: 'bg-red-50 text-[var(--danger)]',
 };
 
+type Tab = 'lideres' | 'todos';
+
+// "Líder" en el sentido amplio de la pestaña: cualquiera con un rol
+// administrativo — Miembro/Amigo de la Iglesia son las únicas cuentas sin
+// ningún cargo, así que quedan solo en la pestaña "Todos".
+const ES_ROL_LIDERAZGO = (rol: string) => rol !== 'Miembro' && rol !== 'Amigo de la Iglesia';
+
 export const UsuariosPage = () => {
   const { data: usuarios, isLoading, isError } = useQuery({ queryKey: ['usuarios'], queryFn: listarUsuarios });
   const [editando, setEditando] = useState<UsuarioAdmin | null>(null);
   const [creando, setCreando] = useState(false);
+  const [tab, setTab] = useState<Tab>('lideres');
+
+  const usuariosFiltrados = (usuarios ?? []).filter((u) =>
+    tab === 'lideres' ? ES_ROL_LIDERAZGO(u.role.nombre) : true,
+  );
 
   return (
     <div className="space-y-4">
@@ -33,6 +45,31 @@ export const UsuariosPage = () => {
         </button>
       </div>
 
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setTab('lideres')}
+          className={`rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium transition-colors ${
+            tab === 'lideres'
+              ? 'bg-[var(--brown-700)] text-white'
+              : 'bg-[var(--surface)] text-[var(--text-muted)] hover:bg-[var(--bg)]'
+          }`}
+        >
+          Líderes
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab('todos')}
+          className={`rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium transition-colors ${
+            tab === 'todos'
+              ? 'bg-[var(--brown-700)] text-white'
+              : 'bg-[var(--surface)] text-[var(--text-muted)] hover:bg-[var(--bg)]'
+          }`}
+        >
+          Todos
+        </button>
+      </div>
+
       {isLoading && <LoadingState />}
       {isError && <ErrorState message="No se pudo cargar la lista de usuarios." />}
 
@@ -42,6 +79,7 @@ export const UsuariosPage = () => {
             <thead>
               <tr className="border-b border-[var(--border)] text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
                 <th className="px-4 py-3">Nombre</th>
+                <th className="px-4 py-3">Llamamiento</th>
                 <th className="px-4 py-3">Correo</th>
                 <th className="px-4 py-3">Rol</th>
                 <th className="px-4 py-3">Organizaciones</th>
@@ -50,11 +88,12 @@ export const UsuariosPage = () => {
               </tr>
             </thead>
             <tbody>
-              {usuarios.map((u) => (
+              {usuariosFiltrados.map((u) => (
                 <tr key={u.id} className="border-b border-[var(--border)] last:border-0">
                   <td className="px-4 py-3 font-medium text-[var(--text)]">
                     {u.nombres} {u.apellidos}
                   </td>
+                  <td className="px-4 py-3 text-[var(--text-muted)]">{u.llamamiento || '—'}</td>
                   <td className="px-4 py-3 text-[var(--text-muted)]">{u.email}</td>
                   <td className="px-4 py-3 text-[var(--text)]">{u.role.nombre}</td>
                   <td className="px-4 py-3 text-[var(--text-muted)]">
@@ -76,6 +115,13 @@ export const UsuariosPage = () => {
                   </td>
                 </tr>
               ))}
+              {usuariosFiltrados.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-4 py-6 text-center text-[var(--text-muted)]">
+                    No hay usuarios en esta vista.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

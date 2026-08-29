@@ -263,6 +263,7 @@ export interface UsuarioAdmin {
   apellidos: string;
   email: string;
   telefono: string | null;
+  llamamiento: string | null;
   roleId: number;
   role: Role;
   estado: EstadoUsuario;
@@ -277,12 +278,14 @@ export interface CreateUsuarioPayload {
   telefono?: string;
   roleId: number;
   organizacionIds?: number[];
+  llamamiento?: string;
 }
 
 export interface UpdateUsuarioPayload {
   roleId?: number;
   estado?: EstadoUsuario;
   organizacionIds?: number[];
+  llamamiento?: string;
 }
 
 export interface ConsejoBarrioItem {

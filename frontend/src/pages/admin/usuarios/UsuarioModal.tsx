@@ -26,6 +26,7 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
   const [telefono, setTelefono] = useState(usuario?.telefono ?? '');
   const [roleId, setRoleId] = useState<number | ''>(usuario?.roleId ?? '');
   const [estado, setEstado] = useState(usuario?.estado ?? 'activo');
+  const [llamamiento, setLlamamiento] = useState(usuario?.llamamiento ?? '');
   const [organizacionIds, setOrganizacionIds] = useState<number[]>(usuario?.organizaciones.map((o) => o.id) ?? []);
   const [error, setError] = useState('');
 
@@ -36,7 +37,12 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
   const mutation = useMutation({
     mutationFn: async () => {
       if (esEdicion) {
-        return actualizarUsuario(usuario.id, { roleId: roleId || undefined, estado, organizacionIds });
+        return actualizarUsuario(usuario.id, {
+          roleId: roleId || undefined,
+          estado,
+          organizacionIds,
+          llamamiento: llamamiento || undefined,
+        });
       }
       return crearUsuario({
         nombres,
@@ -45,6 +51,7 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
         telefono: telefono || undefined,
         roleId: roleId as number,
         organizacionIds,
+        llamamiento: llamamiento || undefined,
       });
     },
     onSuccess: () => {
@@ -125,6 +132,21 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
               {usuario.nombres} {usuario.apellidos} · {usuario.email}
             </div>
           )}
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">
+              Llamamiento <span className="text-[var(--text-muted)]">(opcional)</span>
+            </label>
+            <input
+              value={llamamiento}
+              onChange={(e) => setLlamamiento(e.target.value)}
+              placeholder="Ej. Presidenta, 1er consejero, Secretario…"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25"
+            />
+            <p className="mt-1 text-xs text-[var(--text-muted)]">
+              Solo para mostrar quién es quién — el rol de abajo decide el nivel de acceso.
+            </p>
+          </div>
 
           <div>
             <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">Rol</label>

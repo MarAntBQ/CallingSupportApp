@@ -31,6 +31,9 @@ export const ConsejoBarrioPage = () => {
                     <li key={l.id} className="text-sm">
                       <p className="font-medium text-[var(--text)]">
                         {l.nombres} {l.apellidos}
+                        {l.llamamiento && (
+                          <span className="ml-1.5 font-normal text-[var(--text-muted)]">· {l.llamamiento}</span>
+                        )}
                       </p>
                       <p className="text-xs text-[var(--text-muted)]">{l.email}</p>
                     </li>
