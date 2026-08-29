@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { JwtSessionsService } from './jwt-sessions.service';
 import { Usuario } from '../usuarios/models/usuario.entity';
-import { Role, NIVEL_ADMIN_TOTAL } from '../usuarios/models/role.entity';
+import { Role, NIVEL_ADMIN_TOTAL, NIVEL_LIDER } from '../usuarios/models/role.entity';
 import { UsuarioOrganizacion } from '../usuarios/models/usuario-organizacion.entity';
 import { ModuloOrganizacion } from '../usuarios/models/modulo-organizacion.entity';
 import { HashPasswordsService } from '../core/hash-passwords/hash-passwords.service';
@@ -285,8 +285,12 @@ export class AuthService {
   // organizaciones; el resto de roles, ninguno.
   private async calcularModulosPermitidos(nivel: number, orgIds: number[]): Promise<string[]> {
     if (nivel >= NIVEL_ADMIN_TOTAL) return [...MODULOS_DISPONIBLES];
+    // Mismo piso que ModuloAccessGuard: un llamamiento de maestro/
+    // especialista (rol Miembro) no hereda permisos de su organización.
+    if (nivel < NIVEL_LIDER) return [];
     if (orgIds.length === 0) return [];
     const habilitados = await this.moduloOrgRepo.find({ where: { organizacionId: In(orgIds) } });
-    return [...new Set(habilitados.map((h) => h.moduloClave))];
+    const conAlgunPermiso = habilitados.filter((h) => h.puedeLeer || h.puedeCrear || h.puedeEditar || h.puedeEliminar);
+    return [...new Set(conAlgunPermiso.map((h) => h.moduloClave))];
   }
 }

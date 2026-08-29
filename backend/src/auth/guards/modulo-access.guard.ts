@@ -4,7 +4,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, In } from 'typeorm';
 import type { Request } from 'express';
 import { ModuloOrganizacion } from '../../usuarios/models/modulo-organizacion.entity';
-import { NIVEL_ADMIN_TOTAL } from '../../usuarios/models/role.entity';
+import { NIVEL_ADMIN_TOTAL, NIVEL_LIDER } from '../../usuarios/models/role.entity';
 import { AccionModulo, MODULO_ACCION_KEY, MODULO_CLAVE_KEY } from '../decorators/requiere-modulo.decorator';
 import { JwtPayload } from '../jwt-payload.interface';
 
@@ -46,6 +46,14 @@ export class ModuloAccessGuard implements CanActivate {
     if (!user) throw new ForbiddenException('No autenticado.');
 
     if (user.nivel >= NIVEL_ADMIN_TOTAL) return true;
+
+    // Un llamamiento de maestro/especialista/consultor (rol Miembro) no debe
+    // heredar el permiso de su organización solo por pertenecer a ella — ese
+    // permiso es para la presidencia/secretaría (rol Líder), no para todo el
+    // que tenga cualquier llamamiento ahí.
+    if (user.nivel < NIVEL_LIDER) {
+      throw new ForbiddenException('Tu llamamiento no incluye permisos de administración.');
+    }
 
     if (user.orgIds.length === 0) {
       throw new ForbiddenException('No tienes una organización asignada para administrar este módulo.');

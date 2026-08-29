@@ -13,6 +13,13 @@ export const ROLES_SEED = [
 ] as const;
 
 export const NIVEL_ADMIN_TOTAL = 80; // Obispado o superior: acceso a todo módulo
+export const NIVEL_LIDER = 50; // Piso para poder heredar permisos vía organización
+
+// Dentro de una misma organización no todos pesan igual para efectos de
+// acceso: la presidencia/secretaría (rol Líder) puede llegar a administrar
+// un módulo si esa organización tiene el permiso; alguien con un llamamiento
+// de maestro/especialista/consultor (rol Miembro) NUNCA hereda ese permiso,
+// aunque pertenezca a la misma organización — ver ModuloAccessGuard.
 
 @Entity('roles')
 export class Role {
