@@ -2,10 +2,22 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { listarSesiones, revocarOtrasSesiones, revocarSesion } from '../../lib/admin';
 import { ModuleBreadcrumb } from '../../components/ui/ModuleBreadcrumb';
 import { LoadingState, ErrorState, EmptyState } from '../../components/ui/StatusViews';
+import { useTableControls } from '../../lib/use-table-controls';
+import { TableToolbar, SortHeader, TablePagination } from '../../components/TableControls';
 
 export const SesionesPage = () => {
   const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery({ queryKey: ['sesiones'], queryFn: listarSesiones });
+
+  const table = useTableControls(data ?? [], {
+    search: (s) => `${s.nombre ?? ''} ${s.email ?? ''}`,
+    defaultSortKey: 'expira',
+    sortAccessors: {
+      usuario: (s) => s.nombre ?? '',
+      correo: (s) => s.email ?? '',
+      expira: (s) => s.expiration,
+    },
+  });
 
   const revocar = useMutation({
     mutationFn: (id: number) => revocarSesion(id),
@@ -40,17 +52,18 @@ export const SesionesPage = () => {
 
       {data && data.length > 0 && (
         <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+          <TableToolbar table={table} placeholder="Buscar por usuario, correo…" />
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-[var(--border)] text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                <th className="px-4 py-3">Usuario</th>
-                <th className="px-4 py-3">Correo</th>
-                <th className="px-4 py-3">Expira</th>
+                <SortHeader table={table} colKey="usuario" label="Usuario" />
+                <SortHeader table={table} colKey="correo" label="Correo" />
+                <SortHeader table={table} colKey="expira" label="Expira" />
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {data.map((s) => (
+              {table.view.map((s) => (
                 <tr key={s.id} className="border-b border-[var(--border)] last:border-0">
                   <td className="px-4 py-3 font-medium text-[var(--text)]">{s.nombre ?? '—'}</td>
                   <td className="px-4 py-3 text-[var(--text-muted)]">{s.email ?? '—'}</td>
@@ -69,6 +82,7 @@ export const SesionesPage = () => {
               ))}
             </tbody>
           </table>
+          <TablePagination table={table} />
         </div>
       )}
     </div>

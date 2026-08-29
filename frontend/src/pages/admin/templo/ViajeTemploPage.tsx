@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getInscripcionesTemplo, aprobarParticipanteTemplo } from '../../../lib/templo';
 import { formatFecha } from '../../../lib/format';
 import { useConfig } from '../../../lib/useConfig';
+import { useTableControls } from '../../../lib/use-table-controls';
+import { TableToolbar, SortHeader, TablePagination } from '../../../components/TableControls';
 import { Card } from '../../../components/ui/Card';
 import { LoadingState, ErrorState, EmptyState } from '../../../components/ui/StatusViews';
 import { ModuleBreadcrumb } from '../../../components/ui/ModuleBreadcrumb';
@@ -255,6 +257,19 @@ export const ViajeTemploPage = () => {
     return true;
   });
 
+  const table = useTableControls(participantesFiltrados, {
+    search: (p) => `${p.nombreCompleto} ${p.cedulaOPasaporte} ${p.telefono} ${p.email}`,
+    defaultSortKey: 'participante',
+    sortAccessors: {
+      participante: (p) => p.nombreCompleto,
+      costo: (p) => parseFloat(p.costoTotal),
+      estado: (p) => (p.aprobado ? 1 : 0),
+    },
+  });
+
+  // "Seleccionar todos" opera sobre TODO lo filtrado, no solo la página
+  // visible — si alguien busca/pagina, "todos" debe seguir significando
+  // todos los que calzan el filtro.
   const todosSeleccionados =
     participantesFiltrados.length > 0 && participantesFiltrados.every((p) => seleccionados.has(p.id));
   const algunosSeleccionados = participantesFiltrados.some((p) => seleccionados.has(p.id));
@@ -441,6 +456,7 @@ export const ViajeTemploPage = () => {
                     />
                   ) : (
                     <div className="overflow-x-auto">
+                      <TableToolbar table={table} placeholder="Buscar por nombre, cédula, correo…" />
                       <table className="w-full text-left">
                         <thead>
                           <tr className="border-b border-[var(--border)] text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
@@ -453,17 +469,17 @@ export const ViajeTemploPage = () => {
                                 className="h-4 w-4 rounded border-[var(--border)] accent-[var(--sage-600)]"
                               />
                             </th>
-                            <th className="py-2 pr-4">Participante</th>
+                            <SortHeader table={table} colKey="participante" label="Participante" className="py-2 pr-4" />
                             <th className="py-2 pr-4">Contacto</th>
                             <th className="py-2 pr-4">Ordenanzas</th>
                             <th className="py-2 pr-4">Servicios</th>
-                            <th className="py-2 pr-4">Costo</th>
-                            <th className="py-2 pr-4">Estado</th>
+                            <SortHeader table={table} colKey="costo" label="Costo" className="py-2 pr-4" />
+                            <SortHeader table={table} colKey="estado" label="Estado" className="py-2 pr-4" />
                             <th className="py-2" />
                           </tr>
                         </thead>
                         <tbody>
-                          {participantesFiltrados.map((p) => (
+                          {table.view.map((p) => (
                             <ParticipanteRow
                               key={p.id}
                               p={p}
@@ -476,6 +492,7 @@ export const ViajeTemploPage = () => {
                           ))}
                         </tbody>
                       </table>
+                      <TablePagination table={table} />
                     </div>
                   )}
                 </Card>

@@ -14,6 +14,80 @@ import { Card } from '../../../components/ui/Card';
 import { ModuleBreadcrumb } from '../../../components/ui/ModuleBreadcrumb';
 import { LoadingState, ErrorState } from '../../../components/ui/StatusViews';
 import { getUsuario } from '../../../lib/auth';
+import { useTableControls } from '../../../lib/use-table-controls';
+import { TableToolbar, SortHeader, TablePagination } from '../../../components/TableControls';
+import type { Llamamiento, PermisoLlamamiento } from '../../../types';
+
+type Accion = 'puedeLeer' | 'puedeCrear' | 'puedeEditar' | 'puedeEliminar' | 'puedeNotificar';
+
+// Cada acordeón necesita su propio useTableControls — no se puede llamar el
+// hook dentro del .map() del padre, así que cada módulo vive en su propio
+// componente.
+function PermisosModuloTabla({
+  llamamientos,
+  permisos,
+  onToggle,
+  disabled,
+}: {
+  llamamientos: Llamamiento[];
+  permisos: PermisoLlamamiento[];
+  onToggle: (llamamientoId: number, accion: Accion) => void;
+  disabled: boolean;
+}) {
+  const table = useTableControls(llamamientos, {
+    search: (l) => `${l.organizacion.nombre} ${l.nombre}`,
+    defaultSortKey: 'organizacion',
+    sortAccessors: {
+      organizacion: (l) => l.organizacion.nombre,
+      llamamiento: (l) => l.nombre,
+    },
+    pageSize: 25,
+  });
+
+  return (
+    <div className="overflow-x-auto rounded-lg border border-[var(--border)]">
+      <TableToolbar table={table} placeholder="Buscar organización o llamamiento…" />
+      <table className="w-full text-left text-sm">
+        <thead>
+          <tr className="border-b border-[var(--border)] bg-[var(--bg)] text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+            <SortHeader table={table} colKey="organizacion" label="Organización" />
+            <SortHeader table={table} colKey="llamamiento" label="Llamamiento" />
+            <th className="px-3 py-2 text-center">Leer</th>
+            <th className="px-3 py-2 text-center">Crear</th>
+            <th className="px-3 py-2 text-center">Editar</th>
+            <th className="px-3 py-2 text-center">Eliminar</th>
+            <th className="px-3 py-2 text-center">Notificar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {table.view.map((l) => {
+            const p = permisos.find((x) => x.llamamientoId === l.id);
+            return (
+              <tr key={l.id} className="border-b border-[var(--border)] last:border-0">
+                <td className="px-3 py-2 text-[var(--text-muted)]">{l.organizacion.nombre}</td>
+                <td className="px-3 py-2 text-[var(--text)]">{l.nombre}</td>
+                {(['puedeLeer', 'puedeCrear', 'puedeEditar', 'puedeEliminar', 'puedeNotificar'] as const).map(
+                  (accion) => (
+                    <td key={accion} className="px-3 py-2 text-center">
+                      <input
+                        type="checkbox"
+                        checked={p?.[accion] ?? false}
+                        onChange={() => onToggle(l.id, accion)}
+                        disabled={disabled}
+                        className="h-4 w-4 rounded border-[var(--border)] accent-[var(--sage-600)]"
+                      />
+                    </td>
+                  ),
+                )}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <TablePagination table={table} />
+    </div>
+  );
+}
 
 // Módulos que existen en el sistema — a medida que se agreguen más, se
 // suman acá (mismo espíritu que RUTA_POR_MODULO en AdminHome). Administrar
@@ -73,8 +147,6 @@ export const OrganizacionesPage = () => {
       fijarModuloLlamamientos(moduloClave, permisos),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['modulo-llamamientos'] }),
   });
-
-  type Accion = 'puedeLeer' | 'puedeCrear' | 'puedeEditar' | 'puedeEliminar' | 'puedeNotificar';
 
   // El backend reemplaza el set completo de permisos de un módulo, así que
   // cada click reconstruye el arreglo entero a partir de lo que ya está
@@ -243,47 +315,12 @@ export const OrganizacionesPage = () => {
                       Primero crea llamamientos arriba para poder asignarles permisos.
                     </p>
                   ) : (
-                    <div className="overflow-x-auto rounded-lg border border-[var(--border)]">
-                      <table className="w-full text-left text-sm">
-                        <thead>
-                          <tr className="border-b border-[var(--border)] bg-[var(--bg)] text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                            <th className="px-3 py-2">Organización</th>
-                            <th className="px-3 py-2">Llamamiento</th>
-                            <th className="px-3 py-2 text-center">Leer</th>
-                            <th className="px-3 py-2 text-center">Crear</th>
-                            <th className="px-3 py-2 text-center">Editar</th>
-                            <th className="px-3 py-2 text-center">Eliminar</th>
-                            <th className="px-3 py-2 text-center">Notificar</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(llamamientos ?? [])
-                            .filter((l) => l.activo)
-                            .map((l) => {
-                              const p = permisos.find((x) => x.llamamientoId === l.id);
-                              return (
-                                <tr key={l.id} className="border-b border-[var(--border)] last:border-0">
-                                  <td className="px-3 py-2 text-[var(--text-muted)]">{l.organizacion.nombre}</td>
-                                  <td className="px-3 py-2 text-[var(--text)]">{l.nombre}</td>
-                                  {(['puedeLeer', 'puedeCrear', 'puedeEditar', 'puedeEliminar', 'puedeNotificar'] as const).map(
-                                    (accion) => (
-                                      <td key={accion} className="px-3 py-2 text-center">
-                                        <input
-                                          type="checkbox"
-                                          checked={p?.[accion] ?? false}
-                                          onChange={() => togglePermiso(mod.clave, l.id, accion)}
-                                          disabled={fijarPermiso.isPending}
-                                          className="h-4 w-4 rounded border-[var(--border)] accent-[var(--sage-600)]"
-                                        />
-                                      </td>
-                                    ),
-                                  )}
-                                </tr>
-                              );
-                            })}
-                        </tbody>
-                      </table>
-                    </div>
+                    <PermisosModuloTabla
+                      llamamientos={(llamamientos ?? []).filter((l) => l.activo)}
+                      permisos={permisos}
+                      disabled={fijarPermiso.isPending}
+                      onToggle={(llamamientoId, accion) => togglePermiso(mod.clave, llamamientoId, accion)}
+                    />
                   )}
                   </div>
                 </details>

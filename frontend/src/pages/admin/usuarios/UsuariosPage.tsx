@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { listarUsuarios } from '../../../lib/admin';
 import { ModuleBreadcrumb } from '../../../components/ui/ModuleBreadcrumb';
 import { LoadingState, ErrorState } from '../../../components/ui/StatusViews';
+import { useTableControls } from '../../../lib/use-table-controls';
+import { TableToolbar, SortHeader, TablePagination } from '../../../components/TableControls';
 import { UsuarioModal } from './UsuarioModal';
 import type { UsuarioAdmin } from '../../../types';
 
@@ -43,6 +45,21 @@ export const UsuariosPage = () => {
   const usuariosFiltrados = (usuarios ?? []).filter((u) =>
     tab === 'lideres' ? ES_ROL_LIDERAZGO(u.role.nombre) : true,
   );
+
+  const table = useTableControls(usuariosFiltrados, {
+    search: (u) =>
+      `${u.nombres} ${u.apellidos} ${u.email} ${u.llamamiento ?? ''} ${u.role.nombre} ${u.organizaciones.map((o) => o.nombre).join(' ')}`,
+    defaultSortKey: 'nombre',
+    sortAccessors: {
+      nombre: (u) => `${u.apellidos} ${u.nombres}`,
+      llamamiento: (u) => u.llamamiento ?? '',
+      correo: (u) => u.email,
+      rol: (u) => u.role.nombre,
+      organizaciones: (u) => u.organizaciones.map((o) => o.nombre).join(', '),
+      estado: (u) => u.estado,
+      telegram: (u) => (u.telegramVinculado ? 1 : 0),
+    },
+  });
 
   return (
     <div className="space-y-4">
@@ -90,21 +107,22 @@ export const UsuariosPage = () => {
 
       {usuarios && (
         <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+          <TableToolbar table={table} placeholder="Buscar por nombre, correo, llamamiento…" />
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-[var(--border)] text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-                <th className="px-4 py-3">Nombre</th>
-                <th className="px-4 py-3">Llamamiento</th>
-                <th className="px-4 py-3">Correo</th>
-                <th className="px-4 py-3">Rol</th>
-                <th className="px-4 py-3">Organizaciones</th>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3">Telegram</th>
+                <SortHeader table={table} colKey="nombre" label="Nombre" />
+                <SortHeader table={table} colKey="llamamiento" label="Llamamiento" />
+                <SortHeader table={table} colKey="correo" label="Correo" />
+                <SortHeader table={table} colKey="rol" label="Rol" />
+                <SortHeader table={table} colKey="organizaciones" label="Organizaciones" />
+                <SortHeader table={table} colKey="estado" label="Estado" />
+                <SortHeader table={table} colKey="telegram" label="Telegram" />
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {usuariosFiltrados.map((u) => (
+              {table.view.map((u) => (
                 <tr key={u.id} className="border-b border-[var(--border)] last:border-0">
                   <td className="px-4 py-3 font-medium text-[var(--text)]">
                     {u.nombres} {u.apellidos}
@@ -138,7 +156,7 @@ export const UsuariosPage = () => {
                   </td>
                 </tr>
               ))}
-              {usuariosFiltrados.length === 0 && (
+              {table.view.length === 0 && (
                 <tr>
                   <td colSpan={8} className="px-4 py-6 text-center text-[var(--text-muted)]">
                     No hay usuarios en esta vista.
@@ -147,6 +165,7 @@ export const UsuariosPage = () => {
               )}
             </tbody>
           </table>
+          <TablePagination table={table} />
         </div>
       )}
 
