@@ -247,9 +247,6 @@ export const ViajeTemploPage = () => {
     },
   });
 
-  if (isLoading) return <LoadingState label="Cargando viajes al templo…" />;
-  if (isError || !data) return <ErrorState message="No se pudo cargar el listado de inscripciones." />;
-
   const grupoActual = grupos.find((g) => g.viaje.id === viajeId) ?? null;
   const participantesFiltrados = (grupoActual?.participantes ?? []).filter((p) => {
     if (tab === 'pendientes') return !p.aprobado;
@@ -257,6 +254,9 @@ export const ViajeTemploPage = () => {
     return true;
   });
 
+  // Los hooks van SIEMPRE antes de cualquier return condicional (isLoading/
+  // isError más abajo) — nunca después, o React pierde la cuenta de hooks
+  // entre renders y la pantalla queda en blanco.
   const table = useTableControls(participantesFiltrados, {
     search: (p) => `${p.nombreCompleto} ${p.cedulaOPasaporte} ${p.telefono} ${p.email}`,
     defaultSortKey: 'participante',
@@ -266,6 +266,9 @@ export const ViajeTemploPage = () => {
       estado: (p) => (p.aprobado ? 1 : 0),
     },
   });
+
+  if (isLoading) return <LoadingState label="Cargando viajes al templo…" />;
+  if (isError || !data) return <ErrorState message="No se pudo cargar el listado de inscripciones." />;
 
   // "Seleccionar todos" opera sobre TODO lo filtrado, no solo la página
   // visible — si alguien busca/pagina, "todos" debe seguir significando
