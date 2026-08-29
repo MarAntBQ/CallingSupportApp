@@ -62,7 +62,7 @@ function App() {
           <Route
             path="/admin/organizaciones"
             element={
-              <RequiereModulo clave="usuarios">
+              <RequiereModulo clave={['llamamientos', 'permisos']}>
                 <OrganizacionesPage />
               </RequiereModulo>
             }

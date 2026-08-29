@@ -13,15 +13,19 @@ import {
 import { Card } from '../../../components/ui/Card';
 import { ModuleBreadcrumb } from '../../../components/ui/ModuleBreadcrumb';
 import { LoadingState, ErrorState } from '../../../components/ui/StatusViews';
+import { getUsuario } from '../../../lib/auth';
 
 // Módulos que existen en el sistema — a medida que se agreguen más, se
-// suman acá (mismo espíritu que RUTA_POR_MODULO en AdminHome). "usuarios"
-// cubre administrar usuarios/organizaciones/llamamientos y esta misma
-// matriz de permisos — todo pasa por acá, el único bypass incondicional es
-// SuperAdmin (ver NIVEL_SUPERADMIN).
+// suman acá (mismo espíritu que RUTA_POR_MODULO en AdminHome). Administrar
+// usuarios, administrar el catálogo de organizaciones/llamamientos, y
+// asignar los permisos de esta misma matriz son tres cosas independientes
+// — un llamamiento puede tener una sin las otras. El único bypass
+// incondicional de las tres es SuperAdmin (ver NIVEL_SUPERADMIN).
 const MODULOS = [
   { clave: 'viaje_templo', nombre: 'Viaje al Templo' },
   { clave: 'usuarios', nombre: 'Administración de Usuarios' },
+  { clave: 'llamamientos', nombre: 'Catálogo de Organizaciones y Llamamientos' },
+  { clave: 'permisos', nombre: 'Matriz de Permisos' },
 ];
 
 export const OrganizacionesPage = () => {
@@ -98,6 +102,10 @@ export const OrganizacionesPage = () => {
     fijarPermiso.mutate({ moduloClave, permisos });
   };
 
+  const modulosPermitidos = getUsuario()?.modulosPermitidos ?? [];
+  const puedeLlamamientos = modulosPermitidos.includes('llamamientos');
+  const puedePermisos = modulosPermitidos.includes('permisos');
+
   return (
     <div className="space-y-6">
       <div>
@@ -108,7 +116,7 @@ export const OrganizacionesPage = () => {
       {isLoading && <LoadingState />}
       {isError && <ErrorState message="No se pudo cargar el catálogo de organizaciones." />}
 
-      {organizaciones && (
+      {organizaciones && puedeLlamamientos && (
         <Card>
           <h3 className="mb-3 text-sm font-semibold text-[var(--text)]">Catálogo de organizaciones</h3>
           <div className="mb-4 space-y-2">
@@ -150,7 +158,7 @@ export const OrganizacionesPage = () => {
         </Card>
       )}
 
-      {organizaciones && (
+      {organizaciones && puedeLlamamientos && (
         <Card>
           <h3 className="mb-1 text-sm font-semibold text-[var(--text)]">Llamamientos</h3>
           <p className="mb-4 text-xs text-[var(--text-muted)]">
@@ -204,7 +212,7 @@ export const OrganizacionesPage = () => {
         </Card>
       )}
 
-      {organizaciones && (
+      {organizaciones && puedePermisos && (
         <Card>
           <h3 className="mb-1 text-sm font-semibold text-[var(--text)]">Permisos de módulos</h3>
           <p className="mb-4 text-xs text-[var(--text-muted)]">

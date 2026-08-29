@@ -29,13 +29,13 @@ export class UsuariosController {
   }
 
   @Post('organizaciones')
-  @RequiereModulo('usuarios', 'crear')
+  @RequiereModulo('llamamientos', 'crear')
   crearOrganizacion(@Body() dto: CreateOrganizacionDto) {
     return this.usuariosService.crearOrganizacion(dto);
   }
 
   @Patch('organizaciones/:id')
-  @RequiereModulo('usuarios', 'editar')
+  @RequiereModulo('llamamientos', 'editar')
   actualizarOrganizacion(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateOrganizacionDto) {
     return this.usuariosService.actualizarOrganizacion(id, dto);
   }
@@ -47,13 +47,13 @@ export class UsuariosController {
   }
 
   @Post('llamamientos')
-  @RequiereModulo('usuarios', 'crear')
+  @RequiereModulo('llamamientos', 'crear')
   crearLlamamiento(@Body() dto: CreateLlamamientoDto) {
     return this.usuariosService.crearLlamamiento(dto);
   }
 
   @Patch('llamamientos/:id')
-  @RequiereModulo('usuarios', 'editar')
+  @RequiereModulo('llamamientos', 'editar')
   actualizarLlamamiento(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateLlamamientoDto) {
     return this.usuariosService.actualizarLlamamiento(id, dto);
   }
@@ -92,13 +92,13 @@ export class UsuariosController {
   }
 
   @Get('modulo-llamamientos')
-  @RequiereModulo('usuarios', 'leer')
+  @RequiereModulo('permisos', 'leer')
   listarModuloLlamamientos() {
     return this.usuariosService.listarModuloLlamamientos();
   }
 
   @Post('modulo-llamamientos')
-  @RequiereModulo('usuarios', 'editar')
+  @RequiereModulo('permisos', 'editar')
   fijarModuloLlamamientos(@Body() dto: SetModuloLlamamientosDto) {
     return this.usuariosService.fijarModuloLlamamientos(dto);
   }

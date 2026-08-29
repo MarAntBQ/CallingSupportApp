@@ -30,7 +30,7 @@ const ROL_POR_DEFECTO = 'Miembro';
 // en ModuloLlamamiento), así que la lista vive acá y no en una tabla.
 // El frontend usa modulosPermitidos (calculado en me()) para decidir qué
 // ítems de administración mostrar en la navegación.
-const MODULOS_DISPONIBLES = ['viaje_templo', 'usuarios'];
+const MODULOS_DISPONIBLES = ['viaje_templo', 'usuarios', 'llamamientos', 'permisos'];
 
 @Injectable()
 export class AuthService {

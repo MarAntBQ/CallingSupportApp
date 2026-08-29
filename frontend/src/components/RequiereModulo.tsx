@@ -3,10 +3,15 @@ import { getUsuario } from '../lib/auth';
 
 // Espejo del guard del backend (@RequiereModulo) — la seguridad real la
 // hace la API; esto solo evita mostrarle a un Miembro sin acceso una
-// pantalla de administración que de todos modos le devolvería 403.
-export const RequiereModulo = ({ clave, children }: { clave: string; children: ReactNode }) => {
+// pantalla de administración que de todos modos le devolvería 403. Acepta
+// varias claves cuando la pantalla mezcla secciones de distintos módulos
+// (ej. Organizaciones: catálogo de llamamientos + matriz de permisos) —
+// basta con tener alguna para entrar; cada sección adentro decide con más
+// detalle qué mostrar.
+export const RequiereModulo = ({ clave, children }: { clave: string | string[]; children: ReactNode }) => {
   const usuario = getUsuario();
-  const permitido = (usuario?.modulosPermitidos ?? []).includes(clave);
+  const claves = Array.isArray(clave) ? clave : [clave];
+  const permitido = claves.some((c) => (usuario?.modulosPermitidos ?? []).includes(c));
 
   if (!permitido) {
     return (

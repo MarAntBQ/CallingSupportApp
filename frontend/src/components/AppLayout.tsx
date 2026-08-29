@@ -2,10 +2,10 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { clearSession, esAdminGlobal, getUsuario } from '../lib/auth';
 import api from '../lib/axios';
 
-const NAV_MODULOS = [
+const NAV_MODULOS: { to: string; label: string; moduloClave: string | string[] }[] = [
   { to: '/admin/templo', label: 'Viaje al Templo', moduloClave: 'viaje_templo' },
   { to: '/admin/usuarios', label: 'Usuarios', moduloClave: 'usuarios' },
-  { to: '/admin/organizaciones', label: 'Organizaciones', moduloClave: 'usuarios' },
+  { to: '/admin/organizaciones', label: 'Organizaciones', moduloClave: ['llamamientos', 'permisos'] },
   { to: '/admin/consejo-barrio', label: 'Consejo de barrio', moduloClave: 'usuarios' },
 ];
 
@@ -20,7 +20,11 @@ export const AppLayout = () => {
   const usuario = getUsuario();
   const modulosPermitidos = usuario?.modulosPermitidos ?? [];
   const esAdmin = esAdminGlobal(usuario);
-  const navModulos = NAV_MODULOS.filter((item) => modulosPermitidos.includes(item.moduloClave));
+  const navModulos = NAV_MODULOS.filter((item) =>
+    Array.isArray(item.moduloClave)
+      ? item.moduloClave.some((c) => modulosPermitidos.includes(c))
+      : modulosPermitidos.includes(item.moduloClave),
+  );
 
   const cerrarSesion = async () => {
     try {
