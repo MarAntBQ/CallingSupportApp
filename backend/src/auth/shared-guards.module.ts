@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ModuloAccessGuard } from './guards/modulo-access.guard';
 import { AdminGlobalGuard } from './guards/admin-global.guard';
+import { JwtSessionsService } from './jwt-sessions.service';
 
 // @Global() a propósito: los guards se aplican vía @UseGuards(ClaseX) por
 // referencia de clase en decoradores como @RequiereModulo/@RequiereAdminGlobal
@@ -26,7 +27,7 @@ import { AdminGlobalGuard } from './guards/admin-global.guard';
       }),
     }),
   ],
-  providers: [JwtAuthGuard, ModuloAccessGuard, AdminGlobalGuard],
-  exports: [JwtAuthGuard, ModuloAccessGuard, AdminGlobalGuard, JwtModule],
+  providers: [JwtAuthGuard, ModuloAccessGuard, AdminGlobalGuard, JwtSessionsService],
+  exports: [JwtAuthGuard, ModuloAccessGuard, AdminGlobalGuard, JwtModule, JwtSessionsService],
 })
 export class SharedGuardsModule {}

@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
+import { JwtSessionsService } from './jwt-sessions.service';
 import { Usuario } from '../usuarios/models/usuario.entity';
 import { Role } from '../usuarios/models/role.entity';
 import { UsuarioOrganizacion } from '../usuarios/models/usuario-organizacion.entity';
@@ -35,7 +35,7 @@ export class AuthService {
     private readonly otpCodeService: OtpCodeService,
     private readonly mailService: MailService,
     private readonly configAppService: ConfigAppService,
-    private readonly jwtService: JwtService,
+    private readonly jwtSessionsService: JwtSessionsService,
   ) {}
 
   async register(dto: RegisterDto): Promise<{ message: string }> {
@@ -113,7 +113,7 @@ export class AuthService {
     return { message: 'Cuenta activada correctamente.' };
   }
 
-  private async signFor(usuario: Usuario): Promise<string> {
+  private async signFor(usuario: Usuario, rememberMe: boolean): Promise<string> {
     const role = usuario.role ?? (await this.roleRepo.findOne({ where: { id: usuario.roleId } }));
     const organizaciones = await this.usuarioOrgRepo.find({ where: { usuarioId: usuario.id } });
     const payload: JwtPayload = {
@@ -122,7 +122,12 @@ export class AuthService {
       nivel: role?.nivel ?? 0,
       orgIds: organizaciones.map((o) => o.organizacionId),
     };
-    return this.jwtService.signAsync(payload);
+    return this.jwtSessionsService.signAndPersist(payload, rememberMe ? '30d' : '1h');
+  }
+
+  async logout(token: string): Promise<{ message: string }> {
+    await this.jwtSessionsService.revoke(token);
+    return { message: 'Sesión cerrada correctamente.' };
   }
 
   async login(dto: LoginDto): Promise<{ token: string; usuario: Record<string, unknown> }> {
@@ -139,7 +144,7 @@ export class AuthService {
       throw new ForbiddenException('Tu cuenta está suspendida. Contacta al Obispado.');
     }
 
-    const token = await this.signFor(usuario);
+    const token = await this.signFor(usuario, dto.rememberMe ?? false);
     return {
       token,
       usuario: {
