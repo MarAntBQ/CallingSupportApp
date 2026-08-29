@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RequiereAdminGlobal } from '../auth/decorators/requiere-admin-global.decorator';
 import { RequiereModulo } from '../auth/decorators/requiere-modulo.decorator';
 import { CreateOrganizacionDto } from './dto/create-organizacion.dto';
 import { UpdateOrganizacionDto } from './dto/update-organizacion.dto';
@@ -48,13 +47,13 @@ export class UsuariosController {
   }
 
   @Post('llamamientos')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'crear')
   crearLlamamiento(@Body() dto: CreateLlamamientoDto) {
     return this.usuariosService.crearLlamamiento(dto);
   }
 
   @Patch('llamamientos/:id')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'editar')
   actualizarLlamamiento(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateLlamamientoDto) {
     return this.usuariosService.actualizarLlamamiento(id, dto);
   }
@@ -93,13 +92,13 @@ export class UsuariosController {
   }
 
   @Get('modulo-llamamientos')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'leer')
   listarModuloLlamamientos() {
     return this.usuariosService.listarModuloLlamamientos();
   }
 
   @Post('modulo-llamamientos')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'editar')
   fijarModuloLlamamientos(@Body() dto: SetModuloLlamamientosDto) {
     return this.usuariosService.fijarModuloLlamamientos(dto);
   }

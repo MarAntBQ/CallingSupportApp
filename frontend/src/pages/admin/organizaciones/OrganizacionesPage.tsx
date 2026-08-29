@@ -13,14 +13,12 @@ import {
 import { Card } from '../../../components/ui/Card';
 import { ModuleBreadcrumb } from '../../../components/ui/ModuleBreadcrumb';
 import { LoadingState, ErrorState } from '../../../components/ui/StatusViews';
-import { esAdminGlobal, getUsuario } from '../../../lib/auth';
 
 // Módulos que existen en el sistema — a medida que se agreguen más, se
 // suman acá (mismo espíritu que RUTA_POR_MODULO en AdminHome). "usuarios"
-// cubre administrar usuarios/organizaciones — el catálogo de llamamientos y
-// esta misma matriz de permisos quedan aparte, exclusivas de Obispado (ver
-// comentario en ModuloAccessGuard/usuarios.controller): delegar eso abriría
-// una vía para que alguien se otorgue permisos a sí mismo.
+// cubre administrar usuarios/organizaciones/llamamientos y esta misma
+// matriz de permisos — todo pasa por acá, el único bypass incondicional es
+// SuperAdmin (ver NIVEL_SUPERADMIN).
 const MODULOS = [
   { clave: 'viaje_templo', nombre: 'Viaje al Templo' },
   { clave: 'usuarios', nombre: 'Administración de Usuarios' },
@@ -97,8 +95,6 @@ export const OrganizacionesPage = () => {
     fijarPermiso.mutate({ moduloClave, permisos });
   };
 
-  const esAdmin = esAdminGlobal(getUsuario());
-
   return (
     <div className="space-y-6">
       <div>
@@ -151,7 +147,7 @@ export const OrganizacionesPage = () => {
         </Card>
       )}
 
-      {organizaciones && esAdmin && (
+      {organizaciones && (
         <Card>
           <h3 className="mb-1 text-sm font-semibold text-[var(--text)]">Llamamientos</h3>
           <p className="mb-4 text-xs text-[var(--text-muted)]">
@@ -205,7 +201,7 @@ export const OrganizacionesPage = () => {
         </Card>
       )}
 
-      {organizaciones && esAdmin && (
+      {organizaciones && (
         <Card>
           <h3 className="mb-1 text-sm font-semibold text-[var(--text)]">Permisos de módulos</h3>
           <p className="mb-4 text-xs text-[var(--text-muted)]">
