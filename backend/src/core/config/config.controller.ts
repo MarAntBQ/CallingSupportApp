@@ -5,6 +5,7 @@ import { UpdateConfigDto } from './dto/update-config.dto';
 import { SetTelegramBotDto } from './dto/set-telegram-bot.dto';
 import { SetSmtpDto } from './dto/set-smtp.dto';
 import { SetLogoDto } from './dto/set-logo.dto';
+import { TestSmtpDto } from './dto/test-smtp.dto';
 
 @Controller('config')
 export class ConfigAppController {
@@ -60,5 +61,18 @@ export class ConfigAppController {
   async setSmtp(@Body() dto: SetSmtpDto) {
     await this.configAppService.setSmtp(dto);
     return { message: 'Servidor de correo configurado.' };
+  }
+
+  @Post('smtp/test')
+  @RequiereAdminGlobal()
+  async testSmtp(@Body() dto: TestSmtpDto) {
+    await this.configAppService.sendTestEmail(dto.to);
+    return { message: `Correo de prueba enviado a ${dto.to}.` };
+  }
+
+  @Post('telegram-bot/test')
+  @RequiereAdminGlobal()
+  async testTelegramBot() {
+    return this.configAppService.testTelegramBot();
   }
 }

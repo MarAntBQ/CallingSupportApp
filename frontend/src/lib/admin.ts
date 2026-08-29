@@ -122,3 +122,9 @@ export const configurarSmtp = async (payload: {
 }): Promise<void> => {
   await api.post('/config/smtp', payload);
 };
+
+export const probarSmtp = async (to: string): Promise<{ message: string }> =>
+  (await api.post<{ message: string }>('/config/smtp/test', { to })).data;
+
+export const probarTelegramBot = async (): Promise<{ botUsername: string }> =>
+  (await api.post<{ botUsername: string }>('/config/telegram-bot/test', {})).data;

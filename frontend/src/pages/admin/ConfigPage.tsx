@@ -7,8 +7,11 @@ import {
   configurarTelegramBot,
   obtenerConfigSmtp,
   obtenerConfigTelegramBot,
+  probarSmtp,
+  probarTelegramBot,
 } from '../../lib/admin';
 import { useConfig } from '../../lib/useConfig';
+import { getUsuario } from '../../lib/auth';
 import { Card } from '../../components/ui/Card';
 import { ModuleBreadcrumb } from '../../components/ui/ModuleBreadcrumb';
 
@@ -122,6 +125,32 @@ export const ConfigPage = () => {
     onError: (err: unknown) => {
       setSmtpOk('');
       setSmtpError(extraerError(err, 'No se pudo guardar el servidor de correo.'));
+    },
+  });
+
+  // ---------- Botones de prueba ----------
+  const [correoPrueba, setCorreoPrueba] = useState(getUsuario()?.email ?? '');
+  const probarSmtpMut = useMutation({
+    mutationFn: () => probarSmtp(correoPrueba),
+    onSuccess: (data) => {
+      setSmtpError('');
+      setSmtpOk(data.message);
+    },
+    onError: (err: unknown) => {
+      setSmtpOk('');
+      setSmtpError(extraerError(err, 'No se pudo enviar el correo de prueba.'));
+    },
+  });
+
+  const probarTelegramMut = useMutation({
+    mutationFn: probarTelegramBot,
+    onSuccess: (data) => {
+      setTelegramError('');
+      setTelegramOk(`Conexión OK — el bot es @${data.botUsername}.`);
+    },
+    onError: (err: unknown) => {
+      setTelegramOk('');
+      setTelegramError(extraerError(err, 'No se pudo conectar con el bot.'));
     },
   });
 
@@ -251,13 +280,23 @@ export const ConfigPage = () => {
               />
             </div>
           </div>
-          <button
-            type="submit"
-            disabled={guardarTelegram.isPending || !botToken || !botUsername}
-            className="rounded-lg bg-[var(--brown-700)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--brown-500)] disabled:opacity-60"
-          >
-            {guardarTelegram.isPending ? 'Guardando…' : 'Guardar'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={guardarTelegram.isPending || !botToken || !botUsername}
+              className="rounded-lg bg-[var(--brown-700)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--brown-500)] disabled:opacity-60"
+            >
+              {guardarTelegram.isPending ? 'Guardando…' : 'Guardar'}
+            </button>
+            <button
+              type="button"
+              onClick={() => probarTelegramMut.mutate()}
+              disabled={probarTelegramMut.isPending || !telegramCfg?.hasToken}
+              className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--bg)] disabled:opacity-60"
+            >
+              {probarTelegramMut.isPending ? 'Probando…' : 'Probar conexión'}
+            </button>
+          </div>
         </form>
       </Card>
 
@@ -324,13 +363,29 @@ export const ConfigPage = () => {
               />
             </div>
           </div>
-          <button
-            type="submit"
-            disabled={guardarSmtp.isPending || !smtpHost || !smtpUser}
-            className="rounded-lg bg-[var(--brown-700)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--brown-500)] disabled:opacity-60"
-          >
-            {guardarSmtp.isPending ? 'Guardando…' : 'Guardar'}
-          </button>
+          <div className="flex flex-wrap items-end gap-2">
+            <button
+              type="submit"
+              disabled={guardarSmtp.isPending || !smtpHost || !smtpUser}
+              className="rounded-lg bg-[var(--brown-700)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--brown-500)] disabled:opacity-60"
+            >
+              {guardarSmtp.isPending ? 'Guardando…' : 'Guardar'}
+            </button>
+            <input
+              value={correoPrueba}
+              onChange={(e) => setCorreoPrueba(e.target.value)}
+              placeholder="correo@ejemplo.com"
+              className="rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25"
+            />
+            <button
+              type="button"
+              onClick={() => probarSmtpMut.mutate()}
+              disabled={probarSmtpMut.isPending || !correoPrueba}
+              className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--bg)] disabled:opacity-60"
+            >
+              {probarSmtpMut.isPending ? 'Enviando…' : 'Enviar correo de prueba'}
+            </button>
+          </div>
         </form>
       </Card>
     </div>

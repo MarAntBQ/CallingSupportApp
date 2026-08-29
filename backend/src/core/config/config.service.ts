@@ -1,6 +1,7 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as nodemailer from 'nodemailer';
 import { AppConfig } from './config.entity';
 import { encryptToBase64, decryptFromBase64 } from '../crypto/aes.util';
 
@@ -106,5 +107,51 @@ export class ConfigAppService implements OnModuleInit {
       user: process.env.NODEMAILER_USER ?? '',
       password: process.env.NODEMAILER_PASSWORD ?? '',
     };
+  }
+
+  // Envía de verdad con la config vigente (BD o .env) — para que el admin
+  // pueda confirmar que lo que guardó funciona, sin tener que disparar un
+  // flujo real (registro, inscripción, etc.) para probarlo.
+  async sendTestEmail(to: string): Promise<void> {
+    const cfg = await this.load();
+    const smtp = await this.getSmtpEffective();
+    if (!smtp.host || !smtp.user) throw new BadRequestException('No hay servidor de correo configurado.');
+    const unitName = cfg.nombreUnidad || 'CallingSupportApp';
+    const transporter = nodemailer.createTransport({
+      host: smtp.host,
+      port: smtp.port,
+      secure: smtp.secure,
+      auth: { user: smtp.user, pass: smtp.password },
+      connectionTimeout: 15_000,
+      greetingTimeout: 15_000,
+    });
+    try {
+      await transporter.sendMail({
+        from: `"${unitName}" <${smtp.user}>`,
+        to,
+        subject: 'Correo de prueba',
+        html: '<p>Si ves este correo, la configuración del servidor de correo funciona correctamente.</p>',
+      });
+    } catch (err) {
+      throw new BadRequestException(`No se pudo enviar: ${(err as Error).message}`);
+    }
+  }
+
+  // Igual criterio — confirma que el token es válido y el bot existe, sin
+  // depender de que alguien ya haya vinculado su Telegram para probarlo.
+  async testTelegramBot(): Promise<{ botUsername: string }> {
+    const token = await this.getTelegramBotToken();
+    if (!token) throw new BadRequestException('No hay token de Telegram configurado.');
+    let data: { ok: boolean; result?: { username: string }; description?: string };
+    try {
+      const resp = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+      data = await resp.json();
+    } catch (err) {
+      throw new BadRequestException(`No se pudo contactar a Telegram: ${(err as Error).message}`);
+    }
+    if (!data.ok || !data.result) {
+      throw new BadRequestException(data.description || 'El token no es válido.');
+    }
+    return { botUsername: data.result.username };
   }
 }
