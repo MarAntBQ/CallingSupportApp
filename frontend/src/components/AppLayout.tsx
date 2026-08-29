@@ -46,6 +46,19 @@ export const AppLayout = () => {
           <p className="text-xs text-[var(--text-muted)]">by MarAntBQ.dev</p>
         </div>
         <nav className="flex-1 space-y-1 px-3 py-4">
+          <NavLink
+            to="/admin/perfil"
+            className={({ isActive }) =>
+              `block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-[var(--brown-700)] text-white'
+                  : 'text-[var(--text-muted)] hover:bg-[var(--bg)] hover:text-[var(--text)]'
+              }`
+            }
+          >
+            Mi perfil
+          </NavLink>
+          <div className="my-2 border-t border-[var(--border)]" />
           {esAdmin &&
             NAV_ADMIN.map((item) => (
               <NavLink
