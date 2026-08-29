@@ -47,6 +47,10 @@ export const actualizarUsuario = async (id: number, payload: UpdateUsuarioPayloa
 export const restablecerPassword = async (id: number): Promise<{ password: string }> =>
   (await api.post<{ password: string }>(`/usuarios/${id}/restablecer-password`)).data;
 
+export const desvincularTelegramDeUsuario = async (id: number): Promise<void> => {
+  await api.post(`/usuarios/${id}/desvincular-telegram`);
+};
+
 export const listarConsejoBarrio = async (): Promise<ConsejoBarrioItem[]> =>
   (await api.get<ConsejoBarrioItem[]>('/consejo-barrio')).data;
 

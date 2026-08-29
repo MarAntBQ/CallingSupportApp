@@ -279,6 +279,7 @@ export interface UsuarioAdmin {
   role: Role;
   estado: EstadoUsuario;
   createdAt: string;
+  telegramVinculado: boolean;
   llamamientos: Llamamiento[];
   organizaciones: Organizacion[];
 }

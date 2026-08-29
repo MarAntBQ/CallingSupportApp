@@ -28,14 +28,33 @@ function passwordTemporal(length = 14): string {
 }
 
 // El admin panel lista/edita usuarios — nunca debe viajar el hash de la
-// contraseña ni los códigos OTP en la respuesta JSON.
+// contraseña ni los códigos OTP en la respuesta JSON. El chatId de
+// Telegram tampoco — el panel solo necesita saber si está vinculado o no
+// (ver telegramVinculado en listarUsuarios), no el id en sí.
 function sanitizarUsuario<T extends Usuario>(
   u: T,
 ): Omit<
   T,
-  'passwordHash' | 'otpCode' | 'otpTries' | 'resetOtpCode' | 'resetOtpTries' | 'resetOtpVerified' | 'telegramLinkCode'
+  | 'passwordHash'
+  | 'otpCode'
+  | 'otpTries'
+  | 'resetOtpCode'
+  | 'resetOtpTries'
+  | 'resetOtpVerified'
+  | 'telegramLinkCode'
+  | 'telegramChatId'
 > {
-  const { passwordHash, otpCode, otpTries, resetOtpCode, resetOtpTries, resetOtpVerified, telegramLinkCode, ...resto } = u;
+  const {
+    passwordHash,
+    otpCode,
+    otpTries,
+    resetOtpCode,
+    resetOtpTries,
+    resetOtpVerified,
+    telegramLinkCode,
+    telegramChatId,
+    ...resto
+  } = u;
   return resto;
 }
 
@@ -145,6 +164,7 @@ export class UsuariosService {
       const propios = filas.filter((f) => f.usuarioId === u.id).map((f) => f.llamamiento);
       return {
         ...sanitizarUsuario(u),
+        telegramVinculado: !!u.telegramChatId,
         llamamientos: propios,
         organizaciones: [...new Map(propios.map((l) => [l.organizacion.id, l.organizacion])).values()],
       };
@@ -183,6 +203,19 @@ export class UsuariosService {
     usuario.passwordHash = await this.hashPasswordsService.hashPassword(password);
     await this.usuarioRepo.save(usuario);
     return { password };
+  }
+
+  // El admin puede desvincular el Telegram de CUALQUIER usuario (no solo
+  // el propio, ver AuthService.desvincularTelegram) — ej. si alguien
+  // cambió de número y su chat viejo ya no sirve, o si ya no debe recibir
+  // avisos ahí.
+  async desvincularTelegramDeUsuario(id: number): Promise<{ message: string }> {
+    const usuario = await this.usuarioRepo.findOne({ where: { id } });
+    if (!usuario) throw new NotFoundException('Usuario no encontrado.');
+    usuario.telegramChatId = null;
+    usuario.telegramLinkCode = null;
+    await this.usuarioRepo.save(usuario);
+    return { message: 'Telegram desvinculado.' };
   }
 
   // Consejo de barrio: quién lidera cada organización — para que Obispado/

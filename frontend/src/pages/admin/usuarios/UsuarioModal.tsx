@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   actualizarUsuario,
   crearUsuario,
+  desvincularTelegramDeUsuario,
   listarLlamamientos,
   listarOrganizaciones,
   listarRoles,
@@ -73,6 +74,15 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
   const resetPasswordMut = useMutation({
     mutationFn: () => restablecerPassword(usuario!.id),
     onSuccess: ({ password }) => setPasswordNueva(password),
+  });
+
+  const [telegramDesvinculado, setTelegramDesvinculado] = useState(false);
+  const desvincularTelegramMut = useMutation({
+    mutationFn: () => desvincularTelegramDeUsuario(usuario!.id),
+    onSuccess: () => {
+      setTelegramDesvinculado(true);
+      queryClient.invalidateQueries({ queryKey: ['usuarios'] });
+    },
   });
 
   return (
@@ -250,6 +260,29 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
                 >
                   {resetPasswordMut.isPending ? 'Generando…' : 'Restablecer contraseña'}
                 </button>
+              )}
+            </div>
+          )}
+
+          {esEdicion && (
+            <div className="rounded-lg border border-[var(--border)] p-3">
+              <p className="mb-1.5 text-sm font-medium text-[var(--text)]">Telegram</p>
+              {telegramDesvinculado ? (
+                <p className="text-sm text-[var(--text-muted)]">Telegram desvinculado.</p>
+              ) : usuario.telegramVinculado ? (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-[var(--sage-600)]">Vinculado</span>
+                  <button
+                    type="button"
+                    onClick={() => desvincularTelegramMut.mutate()}
+                    disabled={desvincularTelegramMut.isPending}
+                    className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-sm font-medium text-[var(--danger)] hover:bg-[var(--bg)] disabled:opacity-60"
+                  >
+                    {desvincularTelegramMut.isPending ? 'Desvinculando…' : 'Desvincular'}
+                  </button>
+                </div>
+              ) : (
+                <p className="text-sm text-[var(--text-muted)]">No vinculado.</p>
               )}
             </div>
           )}

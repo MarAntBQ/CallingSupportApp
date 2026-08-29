@@ -99,6 +99,7 @@ export const UsuariosPage = () => {
                 <th className="px-4 py-3">Rol</th>
                 <th className="px-4 py-3">Organizaciones</th>
                 <th className="px-4 py-3">Estado</th>
+                <th className="px-4 py-3">Telegram</th>
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
             </thead>
@@ -119,6 +120,13 @@ export const UsuariosPage = () => {
                       {u.estado}
                     </span>
                   </td>
+                  <td className="px-4 py-3">
+                    {u.telegramVinculado ? (
+                      <span className="text-[var(--sage-600)]">Vinculado</span>
+                    ) : (
+                      <span className="text-[var(--text-muted)]">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-right">
                     <button
                       type="button"
@@ -132,7 +140,7 @@ export const UsuariosPage = () => {
               ))}
               {usuariosFiltrados.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-6 text-center text-[var(--text-muted)]">
+                  <td colSpan={8} className="px-4 py-6 text-center text-[var(--text-muted)]">
                     No hay usuarios en esta vista.
                   </td>
                 </tr>

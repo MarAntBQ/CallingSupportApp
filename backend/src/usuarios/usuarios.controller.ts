@@ -85,6 +85,12 @@ export class UsuariosController {
     return this.usuariosService.restablecerPassword(id);
   }
 
+  @Post('usuarios/:id/desvincular-telegram')
+  @RequiereModulo('usuarios', 'editar')
+  desvincularTelegram(@Param('id', ParseIntPipe) id: number) {
+    return this.usuariosService.desvincularTelegramDeUsuario(id);
+  }
+
   @Get('consejo-barrio')
   @RequiereModulo('usuarios', 'leer')
   listarConsejoBarrio() {
