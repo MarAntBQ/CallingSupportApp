@@ -9,24 +9,27 @@ import { ConfigAppService } from '../config/config.service';
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private transporter: nodemailer.Transporter;
 
   constructor(
     @InjectRepository(EmailLog)
     private readonly emailLogRepository: Repository<EmailLog>,
     private readonly configAppService: ConfigAppService,
-  ) {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.NODEMAILER_HOST,
-      port: process.env.NODEMAILER_PORT ? parseInt(process.env.NODEMAILER_PORT) : 587,
-      secure: process.env.NODEMAILER_SECURE === 'true',
-      auth: {
-        user: process.env.NODEMAILER_USER,
-        pass: process.env.NODEMAILER_PASSWORD,
-      },
+  ) {}
+
+  // Se reconstruye en cada envío a partir de la config vigente (BD, con
+  // fallback a .env) — así un cambio desde el panel aplica de inmediato,
+  // sin reiniciar el proceso (mismo criterio que TelegramBotService).
+  private async getTransporter(): Promise<{ transporter: nodemailer.Transporter; user: string }> {
+    const smtp = await this.configAppService.getSmtpEffective();
+    const transporter = nodemailer.createTransport({
+      host: smtp.host,
+      port: smtp.port,
+      secure: smtp.secure,
+      auth: { user: smtp.user, pass: smtp.password },
       connectionTimeout: 30_000,
       greetingTimeout: 30_000,
     });
+    return { transporter, user: smtp.user };
   }
 
   async send(
@@ -50,8 +53,9 @@ export class MailService {
     this.logger.log(`Enviando correo — source=${source} to=${to}${cc ? ` cc=${cc}` : ''} subject="${subject}"`);
 
     try {
-      const info = await this.transporter.sendMail({
-        from: `"${unitName}" <${process.env.NODEMAILER_USER}>`,
+      const { transporter, user } = await this.getTransporter();
+      const info = await transporter.sendMail({
+        from: `"${unitName}" <${user}>`,
         to,
         cc,
         replyTo,

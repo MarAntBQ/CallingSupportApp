@@ -18,6 +18,7 @@ import {
 } from '../types';
 import { POLICY_VERSION } from '../lib/responsable';
 import { Footer } from '../components/Footer';
+import { useConfig } from '../lib/useConfig';
 import logoMark from '../assets/los-laureles-logo.png';
 
 const participanteSchema = z.object({
@@ -115,6 +116,7 @@ function calcularEdad(fechaNacimiento: string, fechaReferencia: string): number 
 const EDAD_MINIMA_ORDENANZAS = 11;
 
 export const InscripcionPage = () => {
+  const { data: config } = useConfig();
   const [enviado, setEnviado] = useState(false);
   const [error, setError] = useState('');
 
@@ -237,7 +239,11 @@ export const InscripcionPage = () => {
     <div className="min-h-screen bg-[var(--bg)] px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 flex flex-col items-center text-center">
-          <img src={logoMark} alt="Los Laureles" className="mb-3 h-32 w-32 object-contain" />
+          <img
+            src={config?.logoDataUrl || logoMark}
+            alt={config?.nombreUnidad || 'Logo'}
+            className="mb-3 h-32 w-32 object-contain"
+          />
           <h1 className="text-2xl font-semibold text-[var(--text)]">Inscripción — Viaje para Adorar en el Templo</h1>
           <p className="mt-2 max-w-lg text-sm leading-relaxed text-[var(--text-muted)]">
             "Todo ser humano que viene a la tierra es el producto de generaciones de padres... nuestros anhelos

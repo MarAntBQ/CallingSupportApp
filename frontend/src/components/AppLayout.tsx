@@ -13,6 +13,7 @@ const NAV_ADMIN = [
   { to: '/admin/dashboard', label: 'Dashboard' },
   { to: '/admin/correos', label: 'Correos enviados' },
   { to: '/admin/sesiones', label: 'Sesiones activas' },
+  { to: '/admin/configuracion', label: 'Configuración' },
 ];
 
 export const AppLayout = () => {

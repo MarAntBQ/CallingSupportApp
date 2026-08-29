@@ -79,3 +79,46 @@ export const revocarSesion = async (id: number): Promise<void> => {
 
 export const revocarOtrasSesiones = async (): Promise<{ revocadas: number }> =>
   (await api.post<{ revocadas: number }>('/sessions/revoke-all-others')).data;
+
+export const actualizarConfigGeneral = async (payload: {
+  permitirRegistro?: boolean;
+  nombreUnidad?: string;
+}): Promise<void> => {
+  await api.patch('/config', payload);
+};
+
+export const configurarLogo = async (logoDataUrl: string | null): Promise<void> => {
+  await api.post('/config/logo', { logoDataUrl });
+};
+
+export interface TelegramBotConfig {
+  botUsername: string | null;
+  hasToken: boolean;
+}
+
+export const obtenerConfigTelegramBot = async (): Promise<TelegramBotConfig> =>
+  (await api.get<TelegramBotConfig>('/config/telegram-bot')).data;
+
+export const configurarTelegramBot = async (botToken: string, botUsername: string): Promise<void> => {
+  await api.post('/config/telegram-bot', { botToken, botUsername });
+};
+
+export interface SmtpConfig {
+  host: string | null;
+  port: number | null;
+  secure: boolean;
+  user: string | null;
+  hasPassword: boolean;
+}
+
+export const obtenerConfigSmtp = async (): Promise<SmtpConfig> => (await api.get<SmtpConfig>('/config/smtp')).data;
+
+export const configurarSmtp = async (payload: {
+  host: string;
+  port: number;
+  secure: boolean;
+  user: string;
+  password?: string;
+}): Promise<void> => {
+  await api.post('/config/smtp', payload);
+};

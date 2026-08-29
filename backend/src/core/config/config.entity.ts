@@ -20,4 +20,29 @@ export class AppConfig {
 
   @Column({ type: 'varchar', nullable: true })
   telegramBotUsername: string | null;
+
+  // Logo del barrio — se guarda como data URL completa (data:image/png;
+  // base64,...) para poder mostrarlo directo en un <img src>, sin archivo
+  // en disco. No es secreto, va también en la respuesta pública de /config.
+  @Column({ type: 'mediumtext', nullable: true })
+  logoDataUrl: string | null;
+
+  // Servidor de correo (SMTP) — la contraseña nunca en texto plano ni en
+  // .env, solo cifrada (igual que el token de Telegram). Si no se
+  // configura acá, MailService cae de vuelta a las variables NODEMAILER_*
+  // de .env (compatibilidad con despliegues existentes).
+  @Column({ type: 'varchar', nullable: true })
+  smtpHost: string | null;
+
+  @Column({ type: 'int', nullable: true })
+  smtpPort: number | null;
+
+  @Column({ default: false })
+  smtpSecure: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
+  smtpUser: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  smtpPasswordEnc: string | null;
 }

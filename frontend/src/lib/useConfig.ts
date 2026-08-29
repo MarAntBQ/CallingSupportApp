@@ -4,6 +4,7 @@ import api from './axios';
 export interface ConfigPublica {
   permitirRegistro: boolean;
   nombreUnidad: string;
+  logoDataUrl: string | null;
 }
 
 export const useConfig = () =>

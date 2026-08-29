@@ -49,4 +49,62 @@ export class ConfigAppService implements OnModuleInit {
     const cfg = await this.load();
     return cfg.telegramBotUsername;
   }
+
+  async getTelegramBotSummary(): Promise<{ botUsername: string | null; hasToken: boolean }> {
+    const cfg = await this.load();
+    return { botUsername: cfg.telegramBotUsername, hasToken: !!cfg.telegramBotTokenEnc };
+  }
+
+  async setLogo(logoDataUrl: string | null): Promise<void> {
+    const cfg = await this.load();
+    cfg.logoDataUrl = logoDataUrl;
+    await this.configRepo.save(cfg);
+  }
+
+  // La contraseña es opcional al actualizar — si no viene, se conserva la
+  // que ya estaba cifrada (así se puede corregir el host/usuario sin tener
+  // que volver a escribir la contraseña cada vez).
+  async setSmtp(opts: { host: string; port: number; secure: boolean; user: string; password?: string }): Promise<void> {
+    const cfg = await this.load();
+    cfg.smtpHost = opts.host;
+    cfg.smtpPort = opts.port;
+    cfg.smtpSecure = opts.secure;
+    cfg.smtpUser = opts.user;
+    if (opts.password) cfg.smtpPasswordEnc = encryptToBase64(opts.password);
+    await this.configRepo.save(cfg);
+  }
+
+  async getSmtpSummary(): Promise<{
+    host: string | null;
+    port: number | null;
+    secure: boolean;
+    user: string | null;
+    hasPassword: boolean;
+  }> {
+    const cfg = await this.load();
+    return { host: cfg.smtpHost, port: cfg.smtpPort, secure: cfg.smtpSecure, user: cfg.smtpUser, hasPassword: !!cfg.smtpPasswordEnc };
+  }
+
+  // Config efectiva para enviar correo — si no hay nada guardado en BD,
+  // cae de vuelta a las variables NODEMAILER_* de .env (despliegues que
+  // todavía no migraron a configurarlo desde el panel).
+  async getSmtpEffective(): Promise<{ host: string; port: number; secure: boolean; user: string; password: string }> {
+    const cfg = await this.load();
+    if (cfg.smtpHost && cfg.smtpPasswordEnc) {
+      return {
+        host: cfg.smtpHost,
+        port: cfg.smtpPort ?? 587,
+        secure: cfg.smtpSecure,
+        user: cfg.smtpUser ?? '',
+        password: decryptFromBase64(cfg.smtpPasswordEnc),
+      };
+    }
+    return {
+      host: process.env.NODEMAILER_HOST ?? '',
+      port: process.env.NODEMAILER_PORT ? parseInt(process.env.NODEMAILER_PORT, 10) : 587,
+      secure: process.env.NODEMAILER_SECURE === 'true',
+      user: process.env.NODEMAILER_USER ?? '',
+      password: process.env.NODEMAILER_PASSWORD ?? '',
+    };
+  }
 }

@@ -18,6 +18,7 @@ import { OrganizacionesPage } from './pages/admin/organizaciones/OrganizacionesP
 import { ConsejoBarrioPage } from './pages/admin/ConsejoBarrioPage';
 import { CorreosPage } from './pages/admin/CorreosPage';
 import { SesionesPage } from './pages/admin/SesionesPage';
+import { ConfigPage } from './pages/admin/ConfigPage';
 import { ViajeTemploPage } from './pages/admin/templo/ViajeTemploPage';
 
 function App() {
@@ -88,6 +89,14 @@ function App() {
             element={
               <RequiereAdminGlobal>
                 <SesionesPage />
+              </RequiereAdminGlobal>
+            }
+          />
+          <Route
+            path="/admin/configuracion"
+            element={
+              <RequiereAdminGlobal>
+                <ConfigPage />
               </RequiereAdminGlobal>
             }
           />
