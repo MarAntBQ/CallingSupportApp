@@ -10,7 +10,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { AppLayout } from './components/AppLayout';
 import { RequiereModulo } from './components/RequiereModulo';
 import { AdminHome } from './pages/admin/AdminHome';
-import { TemploAdminPage } from './pages/admin/TemploAdminPage';
+import { ViajeTemploPage } from './pages/admin/templo/ViajeTemploPage';
 
 function App() {
   return (
@@ -30,7 +30,7 @@ function App() {
             path="/admin/templo"
             element={
               <RequiereModulo clave="viaje_templo">
-                <TemploAdminPage />
+                <ViajeTemploPage />
               </RequiereModulo>
             }
           />
