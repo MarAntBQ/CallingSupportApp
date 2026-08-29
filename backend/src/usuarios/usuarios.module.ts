@@ -12,6 +12,7 @@ import { UsuariosController } from './usuarios.controller';
 import { SharedGuardsModule } from '../auth/shared-guards.module';
 import { CoreMailModule } from '../core/mail/mail.module';
 import { CoreHashPasswordsModule } from '../core/hash-passwords/hash-passwords.module';
+import { TelegramBotModule } from '../telegram-bot/telegram-bot.module';
 
 @Module({
   imports: [
@@ -19,8 +20,10 @@ import { CoreHashPasswordsModule } from '../core/hash-passwords/hash-passwords.m
     SharedGuardsModule,
     CoreMailModule,
     CoreHashPasswordsModule,
+    TelegramBotModule,
   ],
   providers: [UsuariosSeedService, UsuariosService],
   controllers: [UsuariosController],
+  exports: [UsuariosService],
 })
 export class UsuariosModule {}

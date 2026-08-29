@@ -12,4 +12,12 @@ export class AppConfig {
 
   @Column({ default: '' })
   nombreUnidad: string;
+
+  // El token del bot NUNCA se guarda en texto plano ni en .env — solo
+  // cifrado (ver core/crypto/aes.util) con la llave maestra ENC_KEY.
+  @Column({ type: 'text', nullable: true })
+  telegramBotTokenEnc: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  telegramBotUsername: string | null;
 }

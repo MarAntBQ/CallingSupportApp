@@ -1,6 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { randomBytes } from 'crypto';
 import { JwtSessionsService } from './jwt-sessions.service';
 import { Usuario } from '../usuarios/models/usuario.entity';
 import { Role, NIVEL_SUPERADMIN } from '../usuarios/models/role.entity';
@@ -252,6 +253,7 @@ export class AuthService {
       email: usuario.email,
       telefono: usuario.telefono,
       llamamiento: usuario.llamamiento,
+      telegramVinculado: !!usuario.telegramChatId,
       role: usuario.role.nombre,
       organizaciones: [...new Set(llamamientos.map((l) => l.llamamiento.organizacion.nombre))],
       modulosPermitidos,
@@ -281,6 +283,33 @@ export class AuthService {
     await this.usuarioRepo.save(usuario);
 
     return { message: 'Contraseña actualizada correctamente.' };
+  }
+
+  // Genera un enlace de un solo uso a nuestro bot (t.me/<bot>?start=<código>)
+  // — al abrirlo, TelegramBotService captura el chat y vincula la cuenta.
+  async vincularTelegram(userId: number): Promise<{ enlace: string }> {
+    const usuario = await this.usuarioRepo.findOne({ where: { id: userId } });
+    if (!usuario) throw new NotFoundException('Usuario no encontrado.');
+
+    const botUsername = await this.configAppService.getTelegramBotUsername();
+    if (!botUsername) throw new BadRequestException('El bot de Telegram no está configurado en este despliegue.');
+
+    const codigo = randomBytes(8).toString('hex');
+    usuario.telegramLinkCode = codigo;
+    await this.usuarioRepo.save(usuario);
+
+    return { enlace: `https://t.me/${botUsername}?start=${codigo}` };
+  }
+
+  async desvincularTelegram(userId: number): Promise<{ message: string }> {
+    const usuario = await this.usuarioRepo.findOne({ where: { id: userId } });
+    if (!usuario) throw new NotFoundException('Usuario no encontrado.');
+
+    usuario.telegramChatId = null;
+    usuario.telegramLinkCode = null;
+    await this.usuarioRepo.save(usuario);
+
+    return { message: 'Cuenta de Telegram desvinculada.' };
   }
 
   // Mismo criterio que ModuloAccessGuard: solo SuperAdmin ve todos los

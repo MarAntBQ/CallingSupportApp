@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { ConfigAppService } from './config.service';
 import { RequiereAdminGlobal } from '../../auth/decorators/requiere-admin-global.decorator';
 import { UpdateConfigDto } from './dto/update-config.dto';
+import { SetTelegramBotDto } from './dto/set-telegram-bot.dto';
 
 @Controller('config')
 export class ConfigAppController {
@@ -19,5 +20,15 @@ export class ConfigAppController {
   @RequiereAdminGlobal()
   async update(@Body() dto: UpdateConfigDto) {
     return this.configAppService.update(dto);
+  }
+
+  // El token se cifra al vuelo (ver ConfigAppService.setTelegramBot) — no
+  // se puede leer de vuelta, solo reemplazar. El bot lo toma solo, sin
+  // reiniciar el proceso (relee la config en cada vuelta del polling).
+  @Post('telegram-bot')
+  @RequiereAdminGlobal()
+  async setTelegramBot(@Body() dto: SetTelegramBotDto) {
+    await this.configAppService.setTelegramBot(dto.botToken, dto.botUsername);
+    return { message: 'Bot de Telegram configurado.' };
   }
 }

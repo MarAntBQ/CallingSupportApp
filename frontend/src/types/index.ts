@@ -312,6 +312,7 @@ export interface PermisoLlamamiento {
   puedeCrear: boolean;
   puedeEditar: boolean;
   puedeEliminar: boolean;
+  puedeNotificar: boolean;
 }
 
 export interface EmailLogItem {

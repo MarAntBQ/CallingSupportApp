@@ -58,6 +58,16 @@ export class Usuario {
   @Column({ default: false })
   resetOtpVerified: boolean;
 
+  // Vinculación con Telegram para notificaciones (ver ModuloLlamamiento.
+  // puedeNotificar) — telegramLinkCode es temporal mientras la persona no
+  // ha abierto el enlace del bot; una vez que lo hace, queda telegramChatId
+  // y el código se limpia.
+  @Column({ type: 'varchar', nullable: true })
+  telegramChatId: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  telegramLinkCode: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 }

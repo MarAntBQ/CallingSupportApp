@@ -13,6 +13,7 @@ interface MiPerfil {
   email: string;
   telefono: string | null;
   llamamiento: string | null;
+  telegramVinculado: boolean;
   role: string;
   organizaciones: string[];
   modulosPermitidos: string[];
@@ -82,6 +83,27 @@ export const PerfilPage = () => {
     onError: (err: unknown) => {
       setPasswordOk('');
       setPasswordError(extraerError(err, 'No se pudo cambiar la contraseña.'));
+    },
+  });
+
+  const [enlaceTelegram, setEnlaceTelegram] = useState('');
+  const [telegramError, setTelegramError] = useState('');
+
+  const vincularTelegram = useMutation({
+    mutationFn: async () => (await api.post<{ enlace: string }>('/auth/telegram/vincular')).data,
+    onSuccess: (data) => {
+      setTelegramError('');
+      setEnlaceTelegram(data.enlace);
+      window.open(data.enlace, '_blank');
+    },
+    onError: (err: unknown) => setTelegramError(extraerError(err, 'No se pudo generar el enlace.')),
+  });
+
+  const desvincularTelegram = useMutation({
+    mutationFn: async () => api.post('/auth/telegram/desvincular'),
+    onSuccess: () => {
+      setEnlaceTelegram('');
+      queryClient.invalidateQueries({ queryKey: ['mi-perfil'] });
     },
   });
 
@@ -226,6 +248,59 @@ export const PerfilPage = () => {
                 {cambiarPassword.isPending ? 'Guardando…' : 'Cambiar contraseña'}
               </button>
             </form>
+          </Card>
+
+          <Card>
+            <h3 className="mb-1 text-sm font-semibold text-[var(--text)]">Notificaciones por Telegram</h3>
+            <p className="mb-4 text-xs text-[var(--text-muted)]">
+              Si tu llamamiento tiene habilitado "Notificar" en algún módulo, aquí te va a llegar el aviso además del
+              correo.
+            </p>
+
+            {telegramError && (
+              <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-[var(--danger)]">
+                {telegramError}
+              </div>
+            )}
+
+            {perfil.telegramVinculado ? (
+              <div className="flex items-center justify-between rounded-lg bg-[var(--bg)] px-3.5 py-2.5 text-sm">
+                <span className="text-[var(--sage-600)]">Cuenta de Telegram vinculada.</span>
+                <button
+                  type="button"
+                  onClick={() => desvincularTelegram.mutate()}
+                  disabled={desvincularTelegram.isPending}
+                  className="text-xs font-medium text-[var(--danger)] hover:underline disabled:opacity-60"
+                >
+                  Desvincular
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => vincularTelegram.mutate()}
+                  disabled={vincularTelegram.isPending}
+                  className="rounded-lg bg-[var(--brown-700)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--brown-500)] disabled:opacity-60"
+                >
+                  {vincularTelegram.isPending ? 'Generando…' : 'Vincular mi Telegram'}
+                </button>
+                {enlaceTelegram && (
+                  <p className="text-xs text-[var(--text-muted)]">
+                    Se abrió una pestaña nueva con el bot — si no,{' '}
+                    <a
+                      href={enlaceTelegram}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[var(--brown-700)] underline"
+                    >
+                      abre el enlace aquí
+                    </a>{' '}
+                    y presiona "Iniciar".
+                  </p>
+                )}
+              </div>
+            )}
           </Card>
         </>
       )}

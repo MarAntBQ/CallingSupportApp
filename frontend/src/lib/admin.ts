@@ -59,6 +59,7 @@ export interface PermisoLlamamientoPayload {
   puedeCrear: boolean;
   puedeEditar: boolean;
   puedeEliminar: boolean;
+  puedeNotificar: boolean;
 }
 
 export const fijarModuloLlamamientos = async (

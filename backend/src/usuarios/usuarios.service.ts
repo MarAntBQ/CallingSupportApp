@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { randomBytes } from 'crypto';
 import { Role } from './models/role.entity';
 import { Organizacion } from './models/organizacion.entity';
@@ -17,6 +17,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { SetModuloLlamamientosDto } from './dto/set-modulo-llamamientos.dto';
 import { HashPasswordsService } from '../core/hash-passwords/hash-passwords.service';
 import { MailService } from '../core/mail/mail.service';
+import { TelegramBotService } from '../telegram-bot/telegram-bot.service';
 
 function passwordTemporal(length = 14): string {
   const alfabeto = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
@@ -30,8 +31,11 @@ function passwordTemporal(length = 14): string {
 // contraseña ni los códigos OTP en la respuesta JSON.
 function sanitizarUsuario<T extends Usuario>(
   u: T,
-): Omit<T, 'passwordHash' | 'otpCode' | 'otpTries' | 'resetOtpCode' | 'resetOtpTries' | 'resetOtpVerified'> {
-  const { passwordHash, otpCode, otpTries, resetOtpCode, resetOtpTries, resetOtpVerified, ...resto } = u;
+): Omit<
+  T,
+  'passwordHash' | 'otpCode' | 'otpTries' | 'resetOtpCode' | 'resetOtpTries' | 'resetOtpVerified' | 'telegramLinkCode'
+> {
+  const { passwordHash, otpCode, otpTries, resetOtpCode, resetOtpTries, resetOtpVerified, telegramLinkCode, ...resto } = u;
   return resto;
 }
 
@@ -52,6 +56,7 @@ export class UsuariosService {
     private readonly moduloLlamamientoRepo: Repository<ModuloLlamamiento>,
     private readonly hashPasswordsService: HashPasswordsService,
     private readonly mailService: MailService,
+    private readonly telegramBotService: TelegramBotService,
   ) {}
 
   async crearUsuario(dto: CreateUsuarioDto) {
@@ -215,6 +220,42 @@ export class UsuariosService {
     await this.moduloLlamamientoRepo.delete({ moduloClave: dto.moduloClave });
     for (const permiso of dto.permisos) {
       await this.moduloLlamamientoRepo.save(this.moduloLlamamientoRepo.create({ moduloClave: dto.moduloClave, ...permiso }));
+    }
+  }
+
+  // A quién avisar cuando pasa algo relevante en un módulo (ej. alguien se
+  // inscribe al Viaje al Templo) — cualquier llamamiento con puedeNotificar
+  // en true para esa clave, sin importar si tiene otros permisos del módulo
+  // o no (leer/notificar son independientes).
+  private async listarUsuariosParaNotificar(moduloClave: string): Promise<Usuario[]> {
+    const permisos = await this.moduloLlamamientoRepo.find({ where: { moduloClave, puedeNotificar: true } });
+    if (permisos.length === 0) return [];
+    const llamamientoIds = permisos.map((p) => p.llamamientoId);
+    const vinculos = await this.usuarioLlamamientoRepo.find({
+      where: { llamamientoId: In(llamamientoIds) },
+      relations: ['usuario'],
+    });
+    const activos = vinculos.map((v) => v.usuario).filter((u) => u.estado === 'activo');
+    return [...new Map(activos.map((u) => [u.id, u])).values()];
+  }
+
+  // Punto único que usan otros módulos (ej. TemploService) para avisar un
+  // evento — por correo a todos los que tengan puedeNotificar, y además por
+  // Telegram a quien ya haya vinculado su cuenta (ver AuthService.
+  // vincularTelegram / TelegramBotService).
+  async notificarEvento(moduloClave: string, asunto: string, html: string, textoTelegram: string): Promise<void> {
+    const usuarios = await this.listarUsuariosParaNotificar(moduloClave);
+    if (usuarios.length === 0) return;
+
+    await this.mailService.send(moduloClave, {
+      to: usuarios.map((u) => u.email).join(', '),
+      subject: asunto,
+      message: asunto,
+      html,
+    });
+
+    for (const usuario of usuarios) {
+      if (usuario.telegramChatId) await this.telegramBotService.sendMessage(usuario.telegramChatId, textoTelegram);
     }
   }
 }

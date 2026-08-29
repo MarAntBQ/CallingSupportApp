@@ -34,4 +34,12 @@ export class ModuloLlamamiento {
 
   @Column({ default: false })
   puedeEliminar: boolean;
+
+  // No es un permiso de acceso a una ruta — es un aviso: si está en true,
+  // a esta persona se le notifica (ej. por correo) cuando ocurre un evento
+  // relevante del módulo (ej. alguien se inscribe al Viaje al Templo). Cada
+  // módulo decide qué eventos disparan el aviso; el guard de rutas
+  // (ModuloAccessGuard) lo ignora por completo.
+  @Column({ default: false })
+  puedeNotificar: boolean;
 }

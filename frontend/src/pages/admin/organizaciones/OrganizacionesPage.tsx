@@ -70,11 +70,13 @@ export const OrganizacionesPage = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['modulo-llamamientos'] }),
   });
 
-  type Accion = 'puedeLeer' | 'puedeCrear' | 'puedeEditar' | 'puedeEliminar';
+  type Accion = 'puedeLeer' | 'puedeCrear' | 'puedeEditar' | 'puedeEliminar' | 'puedeNotificar';
 
   // El backend reemplaza el set completo de permisos de un módulo, así que
   // cada click reconstruye el arreglo entero a partir de lo que ya está
   // guardado + el cambio puntual — uno por LLAMAMIENTO, no por organización.
+  // "Notificar" no gatea rutas, solo decide a quién avisar cuando pasa algo
+  // relevante en el módulo (ej. una nueva inscripción al Viaje al Templo).
   const togglePermiso = (moduloClave: string, llamamientoId: number, accion: Accion) => {
     const actuales = moduloLlamamientos?.[moduloClave] ?? [];
     const permisos: PermisoLlamamientoPayload[] = (llamamientos ?? [])
@@ -87,11 +89,12 @@ export const OrganizacionesPage = () => {
           puedeCrear: existente?.puedeCrear ?? false,
           puedeEditar: existente?.puedeEditar ?? false,
           puedeEliminar: existente?.puedeEliminar ?? false,
+          puedeNotificar: existente?.puedeNotificar ?? false,
         };
         if (l.id === llamamientoId) base[accion] = !base[accion];
         return base;
       })
-      .filter((p) => p.puedeLeer || p.puedeCrear || p.puedeEditar || p.puedeEliminar);
+      .filter((p) => p.puedeLeer || p.puedeCrear || p.puedeEditar || p.puedeEliminar || p.puedeNotificar);
     fijarPermiso.mutate({ moduloClave, permisos });
   };
 
@@ -230,6 +233,7 @@ export const OrganizacionesPage = () => {
                             <th className="px-3 py-2 text-center">Crear</th>
                             <th className="px-3 py-2 text-center">Editar</th>
                             <th className="px-3 py-2 text-center">Eliminar</th>
+                            <th className="px-3 py-2 text-center">Notificar</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -241,7 +245,7 @@ export const OrganizacionesPage = () => {
                                 <tr key={l.id} className="border-b border-[var(--border)] last:border-0">
                                   <td className="px-3 py-2 text-[var(--text-muted)]">{l.organizacion.nombre}</td>
                                   <td className="px-3 py-2 text-[var(--text)]">{l.nombre}</td>
-                                  {(['puedeLeer', 'puedeCrear', 'puedeEditar', 'puedeEliminar'] as const).map(
+                                  {(['puedeLeer', 'puedeCrear', 'puedeEditar', 'puedeEliminar', 'puedeNotificar'] as const).map(
                                     (accion) => (
                                       <td key={accion} className="px-3 py-2 text-center">
                                         <input

@@ -17,9 +17,9 @@ import { CreateAbonoDto, UpdateAbonoDto } from './dto/abono.dto';
 import { CreateHabitacionDto, AsignarHabitacionDto } from './dto/habitacion.dto';
 import { ActualizarDatosTemploDto } from './dto/datos-templo.dto';
 import * as ExcelJS from 'exceljs';
-import { TemploMailService } from './templo-mail.service';
 import { buildInscripcionEmailHtml } from './templo-email-template';
 import { ConfigAppService } from '../core/config/config.service';
+import { UsuariosService } from '../usuarios/usuarios.service';
 import {
   ORDENANZAS,
   GENEROS,
@@ -46,8 +46,8 @@ export class TemploService {
     private readonly abonoRepo: Repository<TemploAbono>,
     @InjectRepository(TemploHabitacion)
     private readonly habitacionRepo: Repository<TemploHabitacion>,
-    private readonly temploMailService: TemploMailService,
     private readonly configAppService: ConfigAppService,
+    private readonly usuariosService: UsuariosService,
   ) {}
 
   // ---------- Viajes ----------
@@ -507,22 +507,24 @@ export class TemploService {
     return this.participanteRepo.save(participante);
   }
 
+  // A quién avisar cuando alguien se inscribe — no es un correo fijo, es
+  // cualquier llamamiento con "Notificar" habilitado para viaje_templo en
+  // la matriz de permisos (ver ModuloLlamamiento.puedeNotificar); llega por
+  // correo a todos y además por Telegram a quien ya vinculó su cuenta.
   private async notificarNuevaInscripcion(
     participantesDto: ParticipanteDto[],
     viaje: TemploViaje,
     origen: 'público' | 'admin',
   ): Promise<void> {
-    const notifyEmail = process.env.TEMPLO_NOTIFY_EMAIL;
-    if (!notifyEmail) return; // sin correo de aviso configurado — no hay a quién notificar
-
     const nombres = participantesDto.map((p) => p.nombreCompleto).join(', ');
     const origenEtiqueta = origen === 'admin' ? ' — registrada desde el panel' : '';
     const cfg = await this.configAppService.load();
 
-    await this.temploMailService.send(
-      notifyEmail,
+    await this.usuariosService.notificarEvento(
+      'viaje_templo',
       `Nueva inscripción${origenEtiqueta} — Viaje para Adorar en el Templo (${nombres})`,
       buildInscripcionEmailHtml(participantesDto, cfg.nombreUnidad),
+      `Nueva inscripción al Viaje al Templo${origenEtiqueta}: ${nombres}`,
     );
   }
 

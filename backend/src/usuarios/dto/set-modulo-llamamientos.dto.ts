@@ -16,6 +16,9 @@ export class PermisoLlamamientoDto {
 
   @IsBoolean()
   puedeEliminar: boolean;
+
+  @IsBoolean()
+  puedeNotificar: boolean;
 }
 
 export class SetModuloLlamamientosDto {

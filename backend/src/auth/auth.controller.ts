@@ -70,4 +70,16 @@ export class AuthController {
   async changePassword(@CurrentUser() user: JwtPayload, @Body() dto: ChangePasswordDto) {
     return this.authService.changePassword(user.userId, dto);
   }
+
+  @Post('telegram/vincular')
+  @UseGuards(JwtAuthGuard)
+  async vincularTelegram(@CurrentUser() user: JwtPayload) {
+    return this.authService.vincularTelegram(user.userId);
+  }
+
+  @Post('telegram/desvincular')
+  @UseGuards(JwtAuthGuard)
+  async desvincularTelegram(@CurrentUser() user: JwtPayload) {
+    return this.authService.desvincularTelegram(user.userId);
+  }
 }

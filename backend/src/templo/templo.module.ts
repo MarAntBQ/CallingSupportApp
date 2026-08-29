@@ -11,6 +11,7 @@ import { TemploMailService } from './templo-mail.service';
 import { TemploController } from './templo.controller';
 import { CoreMailModule } from '../core/mail/mail.module';
 import { ConfigAppModule } from '../core/config/config.module';
+import { UsuariosModule } from '../usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ConfigAppModule } from '../core/config/config.module';
     ]),
     CoreMailModule,
     ConfigAppModule,
+    UsuariosModule,
   ],
   providers: [TemploService, TemploMailService],
   controllers: [TemploController],
