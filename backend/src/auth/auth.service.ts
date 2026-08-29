@@ -16,6 +16,8 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { VerifyResetOtpDto } from './dto/verify-reset-otp.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtPayload } from './jwt-payload.interface';
 
 const MAX_OTP_TRIES = 3;
@@ -245,10 +247,36 @@ export class AuthService {
       nombres: usuario.nombres,
       apellidos: usuario.apellidos,
       email: usuario.email,
+      telefono: usuario.telefono,
       role: usuario.role.nombre,
       organizaciones: organizaciones.map((o) => o.organizacion.nombre),
       modulosPermitidos,
     };
+  }
+
+  async updateProfile(userId: number, dto: UpdateProfileDto): Promise<Record<string, unknown>> {
+    const usuario = await this.usuarioRepo.findOne({ where: { id: userId } });
+    if (!usuario) throw new NotFoundException('Usuario no encontrado.');
+
+    if (dto.nombres !== undefined) usuario.nombres = dto.nombres;
+    if (dto.apellidos !== undefined) usuario.apellidos = dto.apellidos;
+    if (dto.telefono !== undefined) usuario.telefono = dto.telefono;
+    await this.usuarioRepo.save(usuario);
+
+    return this.me(userId);
+  }
+
+  async changePassword(userId: number, dto: ChangePasswordDto): Promise<{ message: string }> {
+    const usuario = await this.usuarioRepo.findOne({ where: { id: userId } });
+    if (!usuario) throw new NotFoundException('Usuario no encontrado.');
+
+    const valida = await this.hashPasswordsService.verifyPassword(usuario.passwordHash, dto.currentPassword);
+    if (!valida) throw new BadRequestException('La contraseña actual es incorrecta.');
+
+    usuario.passwordHash = await this.hashPasswordsService.hashPassword(dto.newPassword);
+    await this.usuarioRepo.save(usuario);
+
+    return { message: 'Contraseña actualizada correctamente.' };
   }
 
   // Mismo criterio que ModuloAccessGuard: Obispado/SuperAdmin ven todos los
