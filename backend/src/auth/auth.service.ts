@@ -248,6 +248,7 @@ export class AuthService {
       apellidos: usuario.apellidos,
       email: usuario.email,
       telefono: usuario.telefono,
+      llamamiento: usuario.llamamiento,
       role: usuario.role.nombre,
       organizaciones: organizaciones.map((o) => o.organizacion.nombre),
       modulosPermitidos,

@@ -30,6 +30,14 @@ export class Usuario {
   @Column()
   roleId: number;
 
+  // Cargo específico dentro del rol/organización (ej. "Obispo", "1er
+  // consejero", "Presidenta", "Secretario auxiliar — Finanzas") — el rol
+  // (SuperAdmin/Obispado/Líder/...) decide el NIVEL de acceso, esto es solo
+  // para mostrar quién es quién; texto libre porque cada barrio nombra sus
+  // llamamientos distinto.
+  @Column({ type: 'varchar', nullable: true })
+  llamamiento: string | null;
+
   @Column({ type: 'varchar', default: 'pendiente' })
   estado: EstadoUsuario;
 

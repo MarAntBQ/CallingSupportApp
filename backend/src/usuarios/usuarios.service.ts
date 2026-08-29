@@ -65,6 +65,7 @@ export class UsuariosService {
         passwordHash,
         roleId: dto.roleId,
         estado: 'activo',
+        llamamiento: dto.llamamiento ?? null,
       }),
     );
 
@@ -121,6 +122,7 @@ export class UsuariosService {
 
     if (dto.roleId !== undefined) usuario.roleId = dto.roleId;
     if (dto.estado !== undefined) usuario.estado = dto.estado;
+    if (dto.llamamiento !== undefined) usuario.llamamiento = dto.llamamiento;
     await this.usuarioRepo.save(usuario);
 
     if (dto.organizacionIds !== undefined) {
@@ -135,7 +137,9 @@ export class UsuariosService {
   }
 
   // Consejo de barrio: quién lidera cada organización — para que Obispado/
-  // SuperAdmin vean de un vistazo la estructura, no solo la lista plana de usuarios.
+  // SuperAdmin vean de un vistazo la estructura, no solo la lista plana de
+  // usuarios. Incluye Obispado además de Líder porque en algunos barrios el
+  // obispado mismo preside una organización (ej. Hombres Jóvenes).
   async listarConsejoBarrio() {
     const organizaciones = await this.organizacionRepo.find({ order: { nombre: 'ASC' } });
     const filas = await this.usuarioOrgRepo.find({ relations: ['usuario', 'usuario.role'] });
@@ -143,7 +147,11 @@ export class UsuariosService {
     return organizaciones.map((organizacion) => ({
       organizacion,
       lideres: filas
-        .filter((f) => f.organizacionId === organizacion.id && f.usuario.role.nombre === 'Líder')
+        .filter(
+          (f) =>
+            f.organizacionId === organizacion.id &&
+            (f.usuario.role.nombre === 'Líder' || f.usuario.role.nombre === 'Obispado'),
+        )
         .map((f) => sanitizarUsuario(f.usuario)),
     }));
   }

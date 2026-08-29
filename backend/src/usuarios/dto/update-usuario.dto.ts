@@ -1,4 +1,4 @@
-import { IsIn, IsInt, IsOptional } from 'class-validator';
+import { IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUsuarioDto {
   @IsOptional()
@@ -13,4 +13,8 @@ export class UpdateUsuarioDto {
   // manejar desde una pantalla con checkboxes, en vez de add/remove uno por uno).
   @IsOptional()
   organizacionIds?: number[];
+
+  @IsOptional()
+  @IsString()
+  llamamiento?: string;
 }

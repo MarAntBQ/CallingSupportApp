@@ -25,4 +25,8 @@ export class CreateUsuarioDto {
   @IsOptional()
   @IsArray()
   organizacionIds?: number[];
+
+  @IsOptional()
+  @IsString()
+  llamamiento?: string;
 }
