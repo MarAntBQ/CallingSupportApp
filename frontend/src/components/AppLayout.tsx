@@ -94,7 +94,7 @@ export const AppLayout = () => {
         </nav>
       </aside>
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)] px-6 py-3">
           <NavLink
             to="/admin/perfil"
@@ -110,7 +110,7 @@ export const AppLayout = () => {
             Cerrar sesión
           </button>
         </header>
-        <main className="flex-1 p-6">
+        <main className="min-w-0 flex-1 overflow-x-hidden p-6">
           <Outlet />
         </main>
       </div>
