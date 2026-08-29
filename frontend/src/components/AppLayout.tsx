@@ -1,14 +1,24 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { clearSession, getUsuario } from '../lib/auth';
+import { clearSession, esAdminGlobal, getUsuario } from '../lib/auth';
 import api from '../lib/axios';
 
-const NAV_ITEMS = [{ to: '/admin/templo', label: 'Viaje al Templo', moduloClave: 'viaje_templo' }];
+const NAV_MODULOS = [{ to: '/admin/templo', label: 'Viaje al Templo', moduloClave: 'viaje_templo' }];
+
+const NAV_ADMIN = [
+  { to: '/admin/dashboard', label: 'Dashboard' },
+  { to: '/admin/usuarios', label: 'Usuarios' },
+  { to: '/admin/organizaciones', label: 'Organizaciones' },
+  { to: '/admin/consejo-barrio', label: 'Consejo de barrio' },
+  { to: '/admin/correos', label: 'Correos enviados' },
+  { to: '/admin/sesiones', label: 'Sesiones activas' },
+];
 
 export const AppLayout = () => {
   const navigate = useNavigate();
   const usuario = getUsuario();
   const modulosPermitidos = usuario?.modulosPermitidos ?? [];
-  const navItems = NAV_ITEMS.filter((item) => modulosPermitidos.includes(item.moduloClave));
+  const esAdmin = esAdminGlobal(usuario);
+  const navModulos = NAV_MODULOS.filter((item) => modulosPermitidos.includes(item.moduloClave));
 
   const cerrarSesion = async () => {
     try {
@@ -29,7 +39,24 @@ export const AppLayout = () => {
           <p className="text-xs text-[var(--text-muted)]">by MarAntBQ.dev</p>
         </div>
         <nav className="flex-1 space-y-1 px-3 py-4">
-          {navItems.map((item) => (
+          {esAdmin &&
+            NAV_ADMIN.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-[var(--brown-700)] text-white'
+                      : 'text-[var(--text-muted)] hover:bg-[var(--bg)] hover:text-[var(--text)]'
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          {esAdmin && navModulos.length > 0 && <div className="my-2 border-t border-[var(--border)]" />}
+          {navModulos.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -49,9 +76,12 @@ export const AppLayout = () => {
 
       <div className="flex flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)] px-6 py-3">
-          <span className="text-sm text-[var(--text-muted)]">
+          <NavLink
+            to="/admin/perfil"
+            className="text-sm text-[var(--text-muted)] hover:text-[var(--text)] hover:underline"
+          >
             {usuario ? `${usuario.nombres} ${usuario.apellidos} · ${usuario.role}` : ''}
-          </span>
+          </NavLink>
           <button
             type="button"
             onClick={cerrarSesion}

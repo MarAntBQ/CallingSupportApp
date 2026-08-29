@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { getUsuario } from '../../lib/auth';
+import { esAdminGlobal, getUsuario } from '../../lib/auth';
 
 // Mapea moduloClave -> ruta de administración. A medida que se agreguen
 // módulos nuevos, se agregan acá — mismo espíritu que NAV_ITEMS en AppLayout.
@@ -9,6 +9,11 @@ const RUTA_POR_MODULO: Record<string, string> = {
 
 export const AdminHome = () => {
   const usuario = getUsuario();
+
+  if (esAdminGlobal(usuario)) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
   const primerModulo = (usuario?.modulosPermitidos ?? []).find((clave) => RUTA_POR_MODULO[clave]);
 
   if (primerModulo) {
