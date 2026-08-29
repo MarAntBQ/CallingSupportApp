@@ -13,6 +13,11 @@ interface Props {
   onClose: () => void;
 }
 
+// Miembro/Amigo de la Iglesia son las únicas cuentas sin ningún cargo — no
+// tiene sentido dejarles poner un llamamiento (mismo criterio que la
+// pestaña "Líderes" de UsuariosPage).
+const ES_ROL_LIDERAZGO = (nombre: string) => nombre !== 'Miembro' && nombre !== 'Amigo de la Iglesia';
+
 export const UsuarioModal = ({ usuario, onClose }: Props) => {
   const queryClient = useQueryClient();
   const esEdicion = !!usuario;
@@ -32,6 +37,15 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
 
   const toggleOrg = (id: number) => {
     setOrganizacionIds((prev) => (prev.includes(id) ? prev.filter((o) => o !== id) : [...prev, id]));
+  };
+
+  const rolSeleccionado = roles?.find((r) => r.id === roleId);
+  const permiteLlamamiento = !!rolSeleccionado && ES_ROL_LIDERAZGO(rolSeleccionado.nombre);
+
+  const cambiarRol = (nuevoRoleId: number) => {
+    setRoleId(nuevoRoleId);
+    const nuevoRol = roles?.find((r) => r.id === nuevoRoleId);
+    if (!nuevoRol || !ES_ROL_LIDERAZGO(nuevoRol.nombre)) setLlamamiento('');
   };
 
   const mutation = useMutation({
@@ -137,7 +151,7 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
             <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">Rol</label>
             <select
               value={roleId}
-              onChange={(e) => setRoleId(Number(e.target.value))}
+              onChange={(e) => cambiarRol(Number(e.target.value))}
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25"
             >
               <option value="">Selecciona…</option>
@@ -156,14 +170,16 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
             <input
               value={llamamiento}
               onChange={(e) => setLlamamiento(e.target.value)}
-              disabled={!roleId}
+              disabled={!permiteLlamamiento}
               placeholder="Ej. Presidenta, 1er consejero, Secretario…"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25 disabled:cursor-not-allowed disabled:opacity-50"
             />
             <p className="mt-1 text-xs text-[var(--text-muted)]">
-              {roleId
-                ? 'Solo para mostrar quién es quién — el rol de arriba decide el nivel de acceso.'
-                : 'Selecciona primero un rol.'}
+              {!roleId
+                ? 'Selecciona primero un rol.'
+                : permiteLlamamiento
+                  ? 'Solo para mostrar quién es quién — el rol de arriba decide el nivel de acceso.'
+                  : 'No aplica para Miembro / Amigo de la Iglesia.'}
             </p>
           </div>
 
