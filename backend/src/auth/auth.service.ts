@@ -1,10 +1,11 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { JwtSessionsService } from './jwt-sessions.service';
 import { Usuario } from '../usuarios/models/usuario.entity';
-import { Role } from '../usuarios/models/role.entity';
+import { Role, NIVEL_ADMIN_TOTAL } from '../usuarios/models/role.entity';
 import { UsuarioOrganizacion } from '../usuarios/models/usuario-organizacion.entity';
+import { ModuloOrganizacion } from '../usuarios/models/modulo-organizacion.entity';
 import { HashPasswordsService } from '../core/hash-passwords/hash-passwords.service';
 import { OtpCodeService } from '../core/otp-code/otp-code.service';
 import { MailService } from '../core/mail/mail.service';
@@ -22,6 +23,12 @@ const MAX_OTP_TRIES = 3;
 // promueve manualmente a Líder después si corresponde.
 const ROL_POR_DEFECTO = 'Miembro';
 
+// Módulos que existen en el sistema — son código, no datos (ver comentario
+// en ModuloOrganizacion), así que la lista vive acá y no en una tabla.
+// El frontend usa modulosPermitidos (calculado en me()) para decidir qué
+// ítems de administración mostrar en la navegación.
+const MODULOS_DISPONIBLES = ['viaje_templo'];
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -31,6 +38,8 @@ export class AuthService {
     private readonly roleRepo: Repository<Role>,
     @InjectRepository(UsuarioOrganizacion)
     private readonly usuarioOrgRepo: Repository<UsuarioOrganizacion>,
+    @InjectRepository(ModuloOrganizacion)
+    private readonly moduloOrgRepo: Repository<ModuloOrganizacion>,
     private readonly hashPasswordsService: HashPasswordsService,
     private readonly otpCodeService: OtpCodeService,
     private readonly mailService: MailService,
@@ -145,6 +154,11 @@ export class AuthService {
     }
 
     const token = await this.signFor(usuario, dto.rememberMe ?? false);
+    const organizaciones = await this.usuarioOrgRepo.find({ where: { usuarioId: usuario.id } });
+    const modulosPermitidos = await this.calcularModulosPermitidos(
+      usuario.role.nivel,
+      organizaciones.map((o) => o.organizacionId),
+    );
     return {
       token,
       usuario: {
@@ -153,6 +167,7 @@ export class AuthService {
         apellidos: usuario.apellidos,
         email: usuario.email,
         role: usuario.role.nombre,
+        modulosPermitidos,
       },
     };
   }
@@ -221,6 +236,10 @@ export class AuthService {
     const usuario = await this.usuarioRepo.findOne({ where: { id: userId }, relations: ['role'] });
     if (!usuario) throw new NotFoundException('Usuario no encontrado.');
     const organizaciones = await this.usuarioOrgRepo.find({ where: { usuarioId: usuario.id }, relations: ['organizacion'] });
+    const modulosPermitidos = await this.calcularModulosPermitidos(
+      usuario.role.nivel,
+      organizaciones.map((o) => o.organizacionId),
+    );
     return {
       id: usuario.id,
       nombres: usuario.nombres,
@@ -228,6 +247,17 @@ export class AuthService {
       email: usuario.email,
       role: usuario.role.nombre,
       organizaciones: organizaciones.map((o) => o.organizacion.nombre),
+      modulosPermitidos,
     };
+  }
+
+  // Mismo criterio que ModuloAccessGuard: Obispado/SuperAdmin ven todos los
+  // módulos que existen; un Líder solo los que administra alguna de sus
+  // organizaciones; el resto de roles, ninguno.
+  private async calcularModulosPermitidos(nivel: number, orgIds: number[]): Promise<string[]> {
+    if (nivel >= NIVEL_ADMIN_TOTAL) return [...MODULOS_DISPONIBLES];
+    if (orgIds.length === 0) return [];
+    const habilitados = await this.moduloOrgRepo.find({ where: { organizacionId: In(orgIds) } });
+    return [...new Set(habilitados.map((h) => h.moduloClave))];
   }
 }
