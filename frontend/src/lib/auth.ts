@@ -24,11 +24,12 @@ export const getUsuario = (): UsuarioSesion | null => {
 
 export const isAuthenticated = (): boolean => !!getToken();
 
-// Los únicos roles con nivel >= NIVEL_ADMIN_TOTAL en el seed fijo — evita
-// pedirle nivel numérico al backend solo para decidir qué mostrar en el nav
-// (la seguridad real la sigue haciendo @RequiereAdminGlobal en la API).
-export const esAdminGlobal = (usuario: UsuarioSesion | null): boolean =>
-  usuario?.role === 'SuperAdmin' || usuario?.role === 'Obispado';
+// Único rol con nivel >= NIVEL_ADMIN_TOTAL — evita pedirle nivel numérico
+// al backend solo para decidir qué mostrar en el nav (la seguridad real la
+// sigue haciendo @RequiereAdminGlobal en la API). Obispado ya no es un rol
+// especial — el Obispo y sus consejeros administran el barrio vía sus
+// llamamientos en la matriz de permisos, no por este atajo.
+export const esAdminGlobal = (usuario: UsuarioSesion | null): boolean => usuario?.role === 'SuperAdmin';
 
 export const setSession = (token: string, usuario: UsuarioSesion): void => {
   localStorage.setItem(TOKEN_KEY, token);

@@ -1,22 +1,28 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-// Jerarquía por nivel numérico. SuperAdmin (el administrador real del
-// sistema) es el único bypass incondicional de los módulos de negocio (ver
-// ModuloAccessGuard) — ni siquiera Obispado pasa gratis: el acceso de cada
-// persona a cada módulo se decide por su LLAMAMIENTO específico (ver
-// ModuloLlamamiento), no por el rol. Obispado sigue siendo el nivel que
-// administra el SISTEMA (usuarios, organizaciones, llamamientos, config —
-// ver AdminGlobalGuard/NIVEL_ADMIN_TOTAL), que es un permiso distinto al de
-// ver/editar datos de un módulo de negocio como Viaje al Templo.
+// Jerarquía por nivel numérico. "Obispado" NO es un rol — es una
+// organización más (ver Organizacion/Llamamiento): el Obispo y sus
+// consejeros son rol Líder con llamamientos dentro de la organización
+// "Obispado", igual que cualquier otra presidencia. Su acceso a cada
+// módulo de negocio (Viaje al Templo, administrar usuarios, etc.) se
+// decide por esos llamamientos específicos en la matriz de permisos (ver
+// ModuloLlamamiento), no por un rol especial.
+//
+// SuperAdmin es el único bypass incondicional de los módulos de negocio
+// (ver ModuloAccessGuard/NIVEL_SUPERADMIN). NIVEL_ADMIN_TOTAL protege por
+// separado la administración del SISTEMA en sí (correos enviados,
+// sesiones activas, dashboard, configuración de SMTP/Telegram) — al no
+// haber ningún rol con nivel 80, esas pantallas quedan exclusivas de
+// SuperAdmin (decisión explícita: son cosas del administrador técnico del
+// despliegue, no de la administración del barrio).
 export const ROLES_SEED = [
   { nombre: 'SuperAdmin', nivel: 100 },
-  { nombre: 'Obispado', nivel: 80 },
   { nombre: 'Líder', nivel: 50 },
   { nombre: 'Miembro', nivel: 10 },
   { nombre: 'Amigo de la Iglesia', nivel: 5 },
 ] as const;
 
-export const NIVEL_ADMIN_TOTAL = 80; // Obispado o superior: administra el sistema (usuarios/organizaciones/llamamientos/config)
+export const NIVEL_ADMIN_TOTAL = 80; // Administración del sistema (correos/sesiones/dashboard/config) — hoy solo SuperAdmin lo alcanza
 export const NIVEL_SUPERADMIN = 100; // Único bypass incondicional de los módulos de negocio
 
 @Entity('roles')

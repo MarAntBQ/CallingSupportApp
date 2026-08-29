@@ -220,12 +220,24 @@ export const OrganizacionesPage = () => {
             organización (ej. el Obispo puede tener acceso completo y el Secretario Financiero del mismo Obispado
             ninguno, salvo que se le otorgue).
           </p>
-          <div className="space-y-6">
+          <div className="space-y-3">
             {MODULOS.map((mod) => {
               const permisos = moduloLlamamientos?.[mod.clave] ?? [];
+              const conAlgunPermiso = permisos.filter(
+                (p) => p.puedeLeer || p.puedeCrear || p.puedeEditar || p.puedeEliminar || p.puedeNotificar,
+              ).length;
               return (
-                <div key={mod.clave}>
-                  <p className="mb-2 text-sm font-medium text-[var(--text)]">{mod.nombre}</p>
+                <details key={mod.clave} name="permisos-modulo" className="group rounded-lg border border-[var(--border)]">
+                  <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2.5 text-sm font-medium text-[var(--text)] marker:content-none">
+                    <span className="flex items-center gap-2">
+                      <span className="text-[var(--text-muted)] transition-transform group-open:rotate-90">›</span>
+                      {mod.nombre}
+                    </span>
+                    <span className="text-xs text-[var(--text-muted)]">
+                      {conAlgunPermiso} de {(llamamientos ?? []).filter((l) => l.activo).length} llamamientos
+                    </span>
+                  </summary>
+                  <div className="border-t border-[var(--border)] p-3">
                   {(llamamientos ?? []).filter((l) => l.activo).length === 0 ? (
                     <p className="text-xs text-[var(--text-muted)]">
                       Primero crea llamamientos arriba para poder asignarles permisos.
@@ -273,7 +285,8 @@ export const OrganizacionesPage = () => {
                       </table>
                     </div>
                   )}
-                </div>
+                  </div>
+                </details>
               );
             })}
           </div>
