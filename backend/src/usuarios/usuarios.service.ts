@@ -162,22 +162,23 @@ export class UsuariosService {
   }
 
   // Todos los módulos con al menos una organización mapeada — agrupado por
-  // moduloClave, para la pantalla "Permisos de módulos".
-  async listarModuloOrganizaciones(): Promise<Record<string, Organizacion[]>> {
+  // moduloClave, para la pantalla "Permisos de módulos". Cada fila incluye
+  // los 4 permisos (leer/crear/editar/eliminar), no solo si administra o no.
+  async listarModuloOrganizaciones(): Promise<Record<string, ModuloOrganizacion[]>> {
     const filas = await this.moduloOrgRepo.find({ relations: ['organizacion'] });
-    const agrupado: Record<string, Organizacion[]> = {};
+    const agrupado: Record<string, ModuloOrganizacion[]> = {};
     for (const fila of filas) {
       agrupado[fila.moduloClave] ??= [];
-      agrupado[fila.moduloClave].push(fila.organizacion);
+      agrupado[fila.moduloClave].push(fila);
     }
     return agrupado;
   }
 
-  // Reemplaza el set completo de organizaciones habilitadas para un módulo.
+  // Reemplaza el set completo de permisos del módulo.
   async fijarModuloOrganizaciones(dto: SetModuloOrganizacionesDto): Promise<void> {
     await this.moduloOrgRepo.delete({ moduloClave: dto.moduloClave });
-    for (const organizacionId of dto.organizacionIds) {
-      await this.moduloOrgRepo.save(this.moduloOrgRepo.create({ moduloClave: dto.moduloClave, organizacionId }));
+    for (const permiso of dto.permisos) {
+      await this.moduloOrgRepo.save(this.moduloOrgRepo.create({ moduloClave: dto.moduloClave, ...permiso }));
     }
   }
 }

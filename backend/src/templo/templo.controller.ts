@@ -28,31 +28,31 @@ export class TemploController {
   }
 
   @Get('inscripciones')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'leer')
   async listar() {
     return this.temploService.listarInscripciones();
   }
 
   @Post('inscripciones/admin')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'crear')
   async crearAdmin(@Body() dto: CreateInscripcionAdminDto) {
     return this.temploService.crearInscripcionAdmin(dto);
   }
 
   @Patch('participantes/:id/aprobar')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'editar')
   async aprobarParticipante(@Param('id', ParseIntPipe) id: number, @Body() dto: AprobarParticipanteDto) {
     return this.temploService.aprobarParticipante(id, dto.aprobado);
   }
 
   @Patch('participantes/:id')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'editar')
   async actualizarParticipante(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateParticipanteDto) {
     return this.temploService.actualizarParticipante(id, dto);
   }
 
   @Patch('participantes/:id/logistica')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'editar')
   async actualizarLogistica(@Param('id', ParseIntPipe) id: number, @Body() dto: ActualizarLogisticaDto) {
     return this.temploService.actualizarLogistica(id, dto);
   }
@@ -68,99 +68,99 @@ export class TemploController {
   }
 
   @Post('viajes')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'crear')
   async crearViaje(@Body() dto: CreateViajeDto) {
     return this.temploService.crearViaje(dto);
   }
 
   @Get('viajes')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'leer')
   async listarViajes() {
     return this.temploService.listarViajes();
   }
 
   @Patch('viajes/:id')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'editar')
   async actualizarViaje(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateViajeDto) {
     return this.temploService.actualizarViaje(id, dto);
   }
 
   @Get('viajes/:id/cupos')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'leer')
   async cuposViaje(@Param('id', ParseIntPipe) id: number) {
     return this.temploService.cuposRestantes(id);
   }
 
   @Get('cobradores')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'leer')
   async listarCobradores() {
     return this.temploService.listarCobradores();
   }
 
   @Post('cobradores')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'crear')
   async crearCobrador(@Body() dto: CreateCobradorDto) {
     return this.temploService.crearCobrador(dto);
   }
 
   @Patch('cobradores/:id')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'editar')
   async actualizarCobrador(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCobradorDto) {
     return this.temploService.actualizarCobrador(id, dto);
   }
 
   @Post('participantes/:id/abonos')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'crear')
   async crearAbono(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateAbonoDto) {
     return this.temploService.crearAbono(id, dto);
   }
 
   @Patch('abonos/:id')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'editar')
   async actualizarAbono(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateAbonoDto) {
     return this.temploService.actualizarAbono(id, dto);
   }
 
   @Delete('abonos/:id')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'eliminar')
   async eliminarAbono(@Param('id', ParseIntPipe) id: number) {
     await this.temploService.eliminarAbono(id);
     return { success: true };
   }
 
   @Get('viajes/:id/habitaciones')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'leer')
   async listarHabitaciones(@Param('id', ParseIntPipe) id: number) {
     return this.temploService.listarHabitaciones(id);
   }
 
   @Post('viajes/:id/habitaciones')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'crear')
   async crearHabitacion(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateHabitacionDto) {
     return this.temploService.crearHabitacion(id, dto);
   }
 
   @Delete('habitaciones/:id')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'eliminar')
   async eliminarHabitacion(@Param('id', ParseIntPipe) id: number) {
     await this.temploService.eliminarHabitacion(id);
     return { success: true };
   }
 
   @Patch('participantes/:id/habitacion')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'editar')
   async asignarHabitacion(@Param('id', ParseIntPipe) id: number, @Body() dto: AsignarHabitacionDto) {
     return this.temploService.asignarHabitacion(id, dto);
   }
 
   @Patch('participantes/:id/datos-templo')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'editar')
   async actualizarDatosTemplo(@Param('id', ParseIntPipe) id: number, @Body() dto: ActualizarDatosTemploDto) {
     return this.temploService.actualizarDatosTemplo(id, dto);
   }
 
   @Get('viajes/:id/habitaciones/excel')
-  @RequiereModulo(MODULO)
+  @RequiereModulo(MODULO, 'leer')
   async generarExcelHabitaciones(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
     const buffer = await this.temploService.generarExcelHabitaciones(id);
     res.set({

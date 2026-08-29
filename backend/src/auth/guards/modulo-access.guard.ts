@@ -1,18 +1,27 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import type { Request } from 'express';
 import { ModuloOrganizacion } from '../../usuarios/models/modulo-organizacion.entity';
 import { NIVEL_ADMIN_TOTAL } from '../../usuarios/models/role.entity';
-import { MODULO_CLAVE_KEY } from '../decorators/requiere-modulo.decorator';
+import { AccionModulo, MODULO_ACCION_KEY, MODULO_CLAVE_KEY } from '../decorators/requiere-modulo.decorator';
 import { JwtPayload } from '../jwt-payload.interface';
 
+const CAMPO_POR_ACCION: Record<AccionModulo, keyof ModuloOrganizacion> = {
+  leer: 'puedeLeer',
+  crear: 'puedeCrear',
+  editar: 'puedeEditar',
+  eliminar: 'puedeEliminar',
+};
+
 // Se ejecuta DESPUÉS de JwtAuthGuard (que ya dejó `req.user` con el payload
-// decodificado) — @RequiereModulo('viaje_templo') declara qué módulo protege
-// esta ruta, y este guard decide: Obispado/SuperAdmin pasan siempre; un
-// Líder pasa solo si alguna de sus organizaciones está habilitada para ese
-// módulo; cualquier otro rol queda afuera.
+// decodificado) — @RequiereModulo('viaje_templo', 'editar') declara qué
+// módulo y qué acción protege esta ruta, y este guard decide: Obispado/
+// SuperAdmin pasan siempre; un Líder pasa solo si alguna de sus
+// organizaciones tiene ESE permiso específico habilitado para ese módulo
+// (una organización puede tener solo lectura, por ejemplo); cualquier otro
+// rol queda afuera.
 //
 // Usa DataSource directo (no @InjectRepository) a propósito: este guard se
 // referencia por clase vía @UseGuards() desde decoradores usados en MUCHOS
@@ -30,6 +39,7 @@ export class ModuloAccessGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const moduloClave = this.reflector.get<string>(MODULO_CLAVE_KEY, context.getHandler());
     if (!moduloClave) return true; // el decorador no se aplicó — no hay módulo que chequear
+    const accion = this.reflector.get<AccionModulo>(MODULO_ACCION_KEY, context.getHandler()) ?? 'leer';
 
     const req = context.switchToHttp().getRequest<Request & { user?: JwtPayload }>();
     const user = req.user;
@@ -41,12 +51,14 @@ export class ModuloAccessGuard implements CanActivate {
       throw new ForbiddenException('No tienes una organización asignada para administrar este módulo.');
     }
 
-    const habilitadas = await this.dataSource.getRepository(ModuloOrganizacion).find({ where: { moduloClave } });
-    const orgIdsHabilitados = new Set(habilitadas.map((h) => h.organizacionId));
-    const tieneAcceso = user.orgIds.some((id) => orgIdsHabilitados.has(id));
+    const campo = CAMPO_POR_ACCION[accion];
+    const filas = await this.dataSource
+      .getRepository(ModuloOrganizacion)
+      .find({ where: { moduloClave, organizacionId: In(user.orgIds) } });
+    const tieneAcceso = filas.some((f) => f[campo] === true);
 
     if (!tieneAcceso) {
-      throw new ForbiddenException('Tu organización no administra este módulo.');
+      throw new ForbiddenException('Tu organización no tiene ese permiso en este módulo.');
     }
     return true;
   }
