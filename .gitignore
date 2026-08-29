@@ -4,3 +4,7 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Datos personales reales de miembros del barrio — este repo es público,
+# jamás deben subirse (LOPDP + privacidad de terceros).
+*.pdf
