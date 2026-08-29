@@ -5,6 +5,7 @@ import { RequiereAdminGlobal } from '../auth/decorators/requiere-admin-global.de
 import { CreateOrganizacionDto } from './dto/create-organizacion.dto';
 import { UpdateOrganizacionDto } from './dto/update-organizacion.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { SetModuloOrganizacionesDto } from './dto/set-modulo-organizaciones.dto';
 
 @Controller()
@@ -43,10 +44,22 @@ export class UsuariosController {
     return this.usuariosService.listarUsuarios();
   }
 
+  @Post('usuarios')
+  @RequiereAdminGlobal()
+  crearUsuario(@Body() dto: CreateUsuarioDto) {
+    return this.usuariosService.crearUsuario(dto);
+  }
+
   @Patch('usuarios/:id')
   @RequiereAdminGlobal()
   actualizarUsuario(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUsuarioDto) {
     return this.usuariosService.actualizarUsuario(id, dto);
+  }
+
+  @Get('consejo-barrio')
+  @RequiereAdminGlobal()
+  listarConsejoBarrio() {
+    return this.usuariosService.listarConsejoBarrio();
   }
 
   @Get('modulo-organizaciones')

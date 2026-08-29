@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { randomBytes } from 'crypto';
 import { Role } from './models/role.entity';
 import { Organizacion } from './models/organizacion.entity';
 import { Usuario } from './models/usuario.entity';
@@ -9,7 +10,27 @@ import { ModuloOrganizacion } from './models/modulo-organizacion.entity';
 import { CreateOrganizacionDto } from './dto/create-organizacion.dto';
 import { UpdateOrganizacionDto } from './dto/update-organizacion.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { SetModuloOrganizacionesDto } from './dto/set-modulo-organizaciones.dto';
+import { HashPasswordsService } from '../core/hash-passwords/hash-passwords.service';
+import { MailService } from '../core/mail/mail.service';
+
+function passwordTemporal(length = 14): string {
+  const alfabeto = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+  const bytes = randomBytes(length);
+  let out = '';
+  for (let i = 0; i < length; i++) out += alfabeto[bytes[i] % alfabeto.length];
+  return out;
+}
+
+// El admin panel lista/edita usuarios — nunca debe viajar el hash de la
+// contraseña ni los códigos OTP en la respuesta JSON.
+function sanitizarUsuario<T extends Usuario>(
+  u: T,
+): Omit<T, 'passwordHash' | 'otpCode' | 'otpTries' | 'resetOtpCode' | 'resetOtpTries' | 'resetOtpVerified'> {
+  const { passwordHash, otpCode, otpTries, resetOtpCode, resetOtpTries, resetOtpVerified, ...resto } = u;
+  return resto;
+}
 
 @Injectable()
 export class UsuariosService {
@@ -24,7 +45,45 @@ export class UsuariosService {
     private readonly usuarioOrgRepo: Repository<UsuarioOrganizacion>,
     @InjectRepository(ModuloOrganizacion)
     private readonly moduloOrgRepo: Repository<ModuloOrganizacion>,
+    private readonly hashPasswordsService: HashPasswordsService,
+    private readonly mailService: MailService,
   ) {}
+
+  async crearUsuario(dto: CreateUsuarioDto) {
+    const existente = await this.usuarioRepo.findOne({ where: { email: dto.email } });
+    if (existente) throw new BadRequestException('Ya existe una cuenta con ese correo.');
+
+    const password = passwordTemporal();
+    const passwordHash = await this.hashPasswordsService.hashPassword(password);
+
+    const usuario = await this.usuarioRepo.save(
+      this.usuarioRepo.create({
+        nombres: dto.nombres,
+        apellidos: dto.apellidos,
+        email: dto.email,
+        telefono: dto.telefono ?? null,
+        passwordHash,
+        roleId: dto.roleId,
+        estado: 'activo',
+      }),
+    );
+
+    if (dto.organizacionIds?.length) {
+      for (const organizacionId of dto.organizacionIds) {
+        await this.usuarioOrgRepo.save(this.usuarioOrgRepo.create({ usuarioId: usuario.id, organizacionId }));
+      }
+    }
+
+    await this.mailService.send('auth-admin-crea-usuario', {
+      to: dto.email,
+      subject: 'Se creó una cuenta para ti',
+      message: `Se creó una cuenta a tu nombre. Correo: ${dto.email}. Contraseña temporal: ${password}. Te recomendamos cambiarla apenas inicies sesión.`,
+      html: `<h2>Se creó una cuenta para ti</h2><p>Correo: <strong>${dto.email}</strong></p><p>Contraseña temporal: <strong>${password}</strong></p><p>Te recomendamos cambiarla apenas inicies sesión.</p>`,
+    });
+
+    const conRole = (await this.usuarioRepo.findOne({ where: { id: usuario.id }, relations: ['role'] })) as Usuario;
+    return sanitizarUsuario(conRole);
+  }
 
   listarRoles(): Promise<Role[]> {
     return this.roleRepo.find({ order: { nivel: 'DESC' } });
@@ -47,11 +106,16 @@ export class UsuariosService {
     return this.organizacionRepo.save(organizacion);
   }
 
-  async listarUsuarios(): Promise<Usuario[]> {
-    return this.usuarioRepo.find({ relations: ['role'], order: { apellidos: 'ASC' } });
+  async listarUsuarios() {
+    const usuarios = await this.usuarioRepo.find({ relations: ['role'], order: { apellidos: 'ASC' } });
+    const filas = await this.usuarioOrgRepo.find({ relations: ['organizacion'] });
+    return usuarios.map((u) => ({
+      ...sanitizarUsuario(u),
+      organizaciones: filas.filter((f) => f.usuarioId === u.id).map((f) => f.organizacion),
+    }));
   }
 
-  async actualizarUsuario(id: number, dto: UpdateUsuarioDto): Promise<Usuario> {
+  async actualizarUsuario(id: number, dto: UpdateUsuarioDto) {
     const usuario = await this.usuarioRepo.findOne({ where: { id } });
     if (!usuario) throw new NotFoundException('Usuario no encontrado.');
 
@@ -66,7 +130,22 @@ export class UsuariosService {
       }
     }
 
-    return this.usuarioRepo.findOne({ where: { id }, relations: ['role'] }) as Promise<Usuario>;
+    const actualizado = (await this.usuarioRepo.findOne({ where: { id }, relations: ['role'] })) as Usuario;
+    return sanitizarUsuario(actualizado);
+  }
+
+  // Consejo de barrio: quién lidera cada organización — para que Obispado/
+  // SuperAdmin vean de un vistazo la estructura, no solo la lista plana de usuarios.
+  async listarConsejoBarrio() {
+    const organizaciones = await this.organizacionRepo.find({ order: { nombre: 'ASC' } });
+    const filas = await this.usuarioOrgRepo.find({ relations: ['usuario', 'usuario.role'] });
+
+    return organizaciones.map((organizacion) => ({
+      organizacion,
+      lideres: filas
+        .filter((f) => f.organizacionId === organizacion.id && f.usuario.role.nombre === 'Líder')
+        .map((f) => sanitizarUsuario(f.usuario)),
+    }));
   }
 
   async organizacionesDeUsuario(id: number): Promise<Organizacion[]> {
