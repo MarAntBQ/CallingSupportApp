@@ -240,3 +240,76 @@ export interface UpdateParticipantePayload {
   quiereAlmuerzo?: boolean;
   ordenanzas?: string[];
 }
+
+// ---------- Administración: usuarios, roles, organizaciones ----------
+
+export interface Role {
+  id: number;
+  nombre: string;
+  nivel: number;
+}
+
+export interface Organizacion {
+  id: number;
+  nombre: string;
+  activo: boolean;
+}
+
+export type EstadoUsuario = 'pendiente' | 'activo' | 'suspendido';
+
+export interface UsuarioAdmin {
+  id: number;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  telefono: string | null;
+  roleId: number;
+  role: Role;
+  estado: EstadoUsuario;
+  createdAt: string;
+  organizaciones: Organizacion[];
+}
+
+export interface CreateUsuarioPayload {
+  nombres: string;
+  apellidos: string;
+  email: string;
+  telefono?: string;
+  roleId: number;
+  organizacionIds?: number[];
+}
+
+export interface UpdateUsuarioPayload {
+  roleId?: number;
+  estado?: EstadoUsuario;
+  organizacionIds?: number[];
+}
+
+export interface ConsejoBarrioItem {
+  organizacion: Organizacion;
+  lideres: UsuarioAdmin[];
+}
+
+export interface EmailLogItem {
+  id: number;
+  source: string;
+  emailTo: string;
+  emailSubject: string;
+  success: boolean;
+  errorMessage: string | null;
+  createdAt: string;
+}
+
+export interface SessionItem {
+  id: number;
+  userId: number | null;
+  nombre: string | null;
+  email: string | null;
+  expiration: string;
+}
+
+export interface UpdateProfilePayload {
+  nombres?: string;
+  apellidos?: string;
+  telefono?: string;
+}
