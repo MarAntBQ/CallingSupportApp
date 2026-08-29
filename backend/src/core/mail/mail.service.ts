@@ -40,7 +40,7 @@ export class MailService {
       preheader?: string;
       replyTo?: string;
     },
-  ): Promise<{ messageId: string }> {
+  ): Promise<{ sent: boolean; messageId?: string }> {
     const { to, subject, message, html, cc, preheader, replyTo } = opts;
     const cfg = await this.configAppService.load();
     const unitName = cfg.nombreUnidad || process.env.APP_NAME || 'CallingSupportApp';
@@ -63,14 +63,16 @@ export class MailService {
         this.emailLogRepository.create({ source, emailTo: to, emailSubject: subject, success: true }),
       );
       this.logger.log(`Correo enviado OK — source=${source} to=${to} messageId=${info.messageId}`);
-      return { messageId: info.messageId };
+      return { sent: true, messageId: info.messageId };
     } catch (error) {
+      // No relanzar: un correo transaccional caído no debe tumbar el flujo que lo dispara
+      // (registro, reset de contraseña, etc.) — igual que MailService.sendEmail en MarbustSystem.
       const errorMessage = error instanceof Error ? error.message : String(error);
       await this.emailLogRepository.save(
         this.emailLogRepository.create({ source, emailTo: to, emailSubject: subject, success: false, errorMessage }),
       );
       this.logger.error(`Fallo al enviar correo — source=${source} to=${to}: ${errorMessage}`);
-      throw error;
+      return { sent: false };
     }
   }
 }
