@@ -3,8 +3,9 @@ import type {
   ConsejoBarrioItem,
   CreateUsuarioPayload,
   EmailLogItem,
+  Llamamiento,
   Organizacion,
-  PermisoModulo,
+  PermisoLlamamiento,
   Role,
   SessionItem,
   UpdateUsuarioPayload,
@@ -24,6 +25,17 @@ export const actualizarOrganizacion = async (
   payload: { nombre?: string; activo?: boolean },
 ): Promise<Organizacion> => (await api.patch<Organizacion>(`/organizaciones/${id}`, payload)).data;
 
+export const listarLlamamientos = async (): Promise<Llamamiento[]> =>
+  (await api.get<Llamamiento[]>('/llamamientos')).data;
+
+export const crearLlamamiento = async (organizacionId: number, nombre: string): Promise<Llamamiento> =>
+  (await api.post<Llamamiento>('/llamamientos', { organizacionId, nombre })).data;
+
+export const actualizarLlamamiento = async (
+  id: number,
+  payload: { nombre?: string; activo?: boolean },
+): Promise<Llamamiento> => (await api.patch<Llamamiento>(`/llamamientos/${id}`, payload)).data;
+
 export const listarUsuarios = async (): Promise<UsuarioAdmin[]> => (await api.get<UsuarioAdmin[]>('/usuarios')).data;
 
 export const crearUsuario = async (payload: CreateUsuarioPayload): Promise<UsuarioAdmin> =>
@@ -32,25 +44,28 @@ export const crearUsuario = async (payload: CreateUsuarioPayload): Promise<Usuar
 export const actualizarUsuario = async (id: number, payload: UpdateUsuarioPayload): Promise<UsuarioAdmin> =>
   (await api.patch<UsuarioAdmin>(`/usuarios/${id}`, payload)).data;
 
+export const restablecerPassword = async (id: number): Promise<{ password: string }> =>
+  (await api.post<{ password: string }>(`/usuarios/${id}/restablecer-password`)).data;
+
 export const listarConsejoBarrio = async (): Promise<ConsejoBarrioItem[]> =>
   (await api.get<ConsejoBarrioItem[]>('/consejo-barrio')).data;
 
-export const listarModuloOrganizaciones = async (): Promise<Record<string, PermisoModulo[]>> =>
-  (await api.get<Record<string, PermisoModulo[]>>('/modulo-organizaciones')).data;
+export const listarModuloLlamamientos = async (): Promise<Record<string, PermisoLlamamiento[]>> =>
+  (await api.get<Record<string, PermisoLlamamiento[]>>('/modulo-llamamientos')).data;
 
-export interface PermisoOrganizacionPayload {
-  organizacionId: number;
+export interface PermisoLlamamientoPayload {
+  llamamientoId: number;
   puedeLeer: boolean;
   puedeCrear: boolean;
   puedeEditar: boolean;
   puedeEliminar: boolean;
 }
 
-export const fijarModuloOrganizaciones = async (
+export const fijarModuloLlamamientos = async (
   moduloClave: string,
-  permisos: PermisoOrganizacionPayload[],
+  permisos: PermisoLlamamientoPayload[],
 ): Promise<void> => {
-  await api.post('/modulo-organizaciones', { moduloClave, permisos });
+  await api.post('/modulo-llamamientos', { moduloClave, permisos });
 };
 
 export const listarEmailLogs = async (): Promise<EmailLogItem[]> => (await api.get<EmailLogItem[]>('/mail/logs')).data;

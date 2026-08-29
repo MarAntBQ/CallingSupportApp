@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { JwtSessionsService } from './jwt-sessions.service';
 import { Usuario } from '../usuarios/models/usuario.entity';
-import { Role, NIVEL_ADMIN_TOTAL, NIVEL_LIDER } from '../usuarios/models/role.entity';
-import { UsuarioOrganizacion } from '../usuarios/models/usuario-organizacion.entity';
-import { ModuloOrganizacion } from '../usuarios/models/modulo-organizacion.entity';
+import { Role, NIVEL_SUPERADMIN } from '../usuarios/models/role.entity';
+import { UsuarioLlamamiento } from '../usuarios/models/usuario-llamamiento.entity';
+import { ModuloLlamamiento } from '../usuarios/models/modulo-llamamiento.entity';
 import { HashPasswordsService } from '../core/hash-passwords/hash-passwords.service';
 import { OtpCodeService } from '../core/otp-code/otp-code.service';
 import { MailService } from '../core/mail/mail.service';
@@ -26,10 +26,10 @@ const MAX_OTP_TRIES = 3;
 const ROL_POR_DEFECTO = 'Miembro';
 
 // Módulos que existen en el sistema — son código, no datos (ver comentario
-// en ModuloOrganizacion), así que la lista vive acá y no en una tabla.
+// en ModuloLlamamiento), así que la lista vive acá y no en una tabla.
 // El frontend usa modulosPermitidos (calculado en me()) para decidir qué
 // ítems de administración mostrar en la navegación.
-const MODULOS_DISPONIBLES = ['viaje_templo'];
+const MODULOS_DISPONIBLES = ['viaje_templo', 'usuarios'];
 
 @Injectable()
 export class AuthService {
@@ -38,10 +38,10 @@ export class AuthService {
     private readonly usuarioRepo: Repository<Usuario>,
     @InjectRepository(Role)
     private readonly roleRepo: Repository<Role>,
-    @InjectRepository(UsuarioOrganizacion)
-    private readonly usuarioOrgRepo: Repository<UsuarioOrganizacion>,
-    @InjectRepository(ModuloOrganizacion)
-    private readonly moduloOrgRepo: Repository<ModuloOrganizacion>,
+    @InjectRepository(UsuarioLlamamiento)
+    private readonly usuarioLlamamientoRepo: Repository<UsuarioLlamamiento>,
+    @InjectRepository(ModuloLlamamiento)
+    private readonly moduloLlamamientoRepo: Repository<ModuloLlamamiento>,
     private readonly hashPasswordsService: HashPasswordsService,
     private readonly otpCodeService: OtpCodeService,
     private readonly mailService: MailService,
@@ -126,12 +126,12 @@ export class AuthService {
 
   private async signFor(usuario: Usuario, rememberMe: boolean): Promise<string> {
     const role = usuario.role ?? (await this.roleRepo.findOne({ where: { id: usuario.roleId } }));
-    const organizaciones = await this.usuarioOrgRepo.find({ where: { usuarioId: usuario.id } });
+    const llamamientos = await this.usuarioLlamamientoRepo.find({ where: { usuarioId: usuario.id } });
     const payload: JwtPayload = {
       userId: usuario.id,
       roleId: usuario.roleId,
       nivel: role?.nivel ?? 0,
-      orgIds: organizaciones.map((o) => o.organizacionId),
+      llamamientoIds: llamamientos.map((l) => l.llamamientoId),
     };
     return this.jwtSessionsService.signAndPersist(payload, rememberMe ? '30d' : '1h');
   }
@@ -156,10 +156,10 @@ export class AuthService {
     }
 
     const token = await this.signFor(usuario, dto.rememberMe ?? false);
-    const organizaciones = await this.usuarioOrgRepo.find({ where: { usuarioId: usuario.id } });
+    const llamamientos = await this.usuarioLlamamientoRepo.find({ where: { usuarioId: usuario.id } });
     const modulosPermitidos = await this.calcularModulosPermitidos(
       usuario.role.nivel,
-      organizaciones.map((o) => o.organizacionId),
+      llamamientos.map((l) => l.llamamientoId),
     );
     return {
       token,
@@ -237,10 +237,13 @@ export class AuthService {
   async me(userId: number): Promise<Record<string, unknown>> {
     const usuario = await this.usuarioRepo.findOne({ where: { id: userId }, relations: ['role'] });
     if (!usuario) throw new NotFoundException('Usuario no encontrado.');
-    const organizaciones = await this.usuarioOrgRepo.find({ where: { usuarioId: usuario.id }, relations: ['organizacion'] });
+    const llamamientos = await this.usuarioLlamamientoRepo.find({
+      where: { usuarioId: usuario.id },
+      relations: ['llamamiento', 'llamamiento.organizacion'],
+    });
     const modulosPermitidos = await this.calcularModulosPermitidos(
       usuario.role.nivel,
-      organizaciones.map((o) => o.organizacionId),
+      llamamientos.map((l) => l.llamamientoId),
     );
     return {
       id: usuario.id,
@@ -250,7 +253,7 @@ export class AuthService {
       telefono: usuario.telefono,
       llamamiento: usuario.llamamiento,
       role: usuario.role.nombre,
-      organizaciones: organizaciones.map((o) => o.organizacion.nombre),
+      organizaciones: [...new Set(llamamientos.map((l) => l.llamamiento.organizacion.nombre))],
       modulosPermitidos,
     };
   }
@@ -280,16 +283,13 @@ export class AuthService {
     return { message: 'Contraseña actualizada correctamente.' };
   }
 
-  // Mismo criterio que ModuloAccessGuard: Obispado/SuperAdmin ven todos los
-  // módulos que existen; un Líder solo los que administra alguna de sus
-  // organizaciones; el resto de roles, ninguno.
-  private async calcularModulosPermitidos(nivel: number, orgIds: number[]): Promise<string[]> {
-    if (nivel >= NIVEL_ADMIN_TOTAL) return [...MODULOS_DISPONIBLES];
-    // Mismo piso que ModuloAccessGuard: un llamamiento de maestro/
-    // especialista (rol Miembro) no hereda permisos de su organización.
-    if (nivel < NIVEL_LIDER) return [];
-    if (orgIds.length === 0) return [];
-    const habilitados = await this.moduloOrgRepo.find({ where: { organizacionId: In(orgIds) } });
+  // Mismo criterio que ModuloAccessGuard: solo SuperAdmin ve todos los
+  // módulos sin más; el resto depende de si alguno de sus llamamientos
+  // específicos tiene algún permiso otorgado en ese módulo.
+  private async calcularModulosPermitidos(nivel: number, llamamientoIds: number[]): Promise<string[]> {
+    if (nivel >= NIVEL_SUPERADMIN) return [...MODULOS_DISPONIBLES];
+    if (llamamientoIds.length === 0) return [];
+    const habilitados = await this.moduloLlamamientoRepo.find({ where: { llamamientoId: In(llamamientoIds) } });
     const conAlgunPermiso = habilitados.filter((h) => h.puedeLeer || h.puedeCrear || h.puedeEditar || h.puedeEliminar);
     return [...new Set(conAlgunPermiso.map((h) => h.moduloClave))];
   }

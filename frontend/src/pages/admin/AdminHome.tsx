@@ -5,6 +5,7 @@ import { esAdminGlobal, getUsuario } from '../../lib/auth';
 // módulos nuevos, se agregan acá — mismo espíritu que NAV_ITEMS en AppLayout.
 const RUTA_POR_MODULO: Record<string, string> = {
   viaje_templo: '/admin/templo',
+  usuarios: '/admin/usuarios',
 };
 
 export const AdminHome = () => {

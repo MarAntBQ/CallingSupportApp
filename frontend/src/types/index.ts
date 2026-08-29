@@ -255,6 +255,17 @@ export interface Organizacion {
   activo: boolean;
 }
 
+// Cargo específico dentro de una organización (ej. Obispado → "Secretario
+// Financiero"). Los permisos de cada módulo se otorgan sobre un llamamiento
+// puntual, no sobre la organización completa.
+export interface Llamamiento {
+  id: number;
+  organizacionId: number;
+  organizacion: Organizacion;
+  nombre: string;
+  activo: boolean;
+}
+
 export type EstadoUsuario = 'pendiente' | 'activo' | 'suspendido';
 
 export interface UsuarioAdmin {
@@ -268,6 +279,7 @@ export interface UsuarioAdmin {
   role: Role;
   estado: EstadoUsuario;
   createdAt: string;
+  llamamientos: Llamamiento[];
   organizaciones: Organizacion[];
 }
 
@@ -277,25 +289,25 @@ export interface CreateUsuarioPayload {
   email: string;
   telefono?: string;
   roleId: number;
-  organizacionIds?: number[];
+  llamamientoIds?: number[];
   llamamiento?: string;
 }
 
 export interface UpdateUsuarioPayload {
   roleId?: number;
   estado?: EstadoUsuario;
-  organizacionIds?: number[];
+  llamamientoIds?: number[];
   llamamiento?: string;
 }
 
 export interface ConsejoBarrioItem {
   organizacion: Organizacion;
-  lideres: UsuarioAdmin[];
+  lideres: (UsuarioAdmin & { llamamiento: string })[];
 }
 
-export interface PermisoModulo {
-  organizacionId: number;
-  organizacion: Organizacion;
+export interface PermisoLlamamiento {
+  llamamientoId: number;
+  llamamiento: Llamamiento;
   puedeLeer: boolean;
   puedeCrear: boolean;
   puedeEditar: boolean;

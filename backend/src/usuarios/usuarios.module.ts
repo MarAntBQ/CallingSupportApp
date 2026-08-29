@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from './models/role.entity';
 import { Organizacion } from './models/organizacion.entity';
+import { Llamamiento } from './models/llamamiento.entity';
 import { Usuario } from './models/usuario.entity';
-import { UsuarioOrganizacion } from './models/usuario-organizacion.entity';
-import { ModuloOrganizacion } from './models/modulo-organizacion.entity';
+import { UsuarioLlamamiento } from './models/usuario-llamamiento.entity';
+import { ModuloLlamamiento } from './models/modulo-llamamiento.entity';
 import { UsuariosSeedService } from './usuarios-seed.service';
 import { UsuariosService } from './usuarios.service';
 import { UsuariosController } from './usuarios.controller';
@@ -14,7 +15,7 @@ import { CoreHashPasswordsModule } from '../core/hash-passwords/hash-passwords.m
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Role, Organizacion, Usuario, UsuarioOrganizacion, ModuloOrganizacion]),
+    TypeOrmModule.forFeature([Role, Organizacion, Llamamiento, Usuario, UsuarioLlamamiento, ModuloLlamamiento]),
     SharedGuardsModule,
     CoreMailModule,
     CoreHashPasswordsModule,

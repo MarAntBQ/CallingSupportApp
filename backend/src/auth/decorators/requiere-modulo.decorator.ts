@@ -8,10 +8,10 @@ export const MODULO_ACCION_KEY = 'moduloAccion';
 export type AccionModulo = 'leer' | 'crear' | 'editar' | 'eliminar';
 
 // Uso: @RequiereModulo('viaje_templo', 'editar') sobre una ruta de
-// controlador — exige JWT válido y, si el rol no es Obispado/SuperAdmin, que
-// el usuario pertenezca a una organización con ese permiso específico
-// habilitado para esa clave de módulo (no solo "puede administrar sí/no" —
-// una organización puede tener acceso de solo lectura, por ejemplo).
+// controlador — exige JWT válido y, salvo SuperAdmin, que alguno de los
+// llamamientos del usuario tenga ese permiso específico habilitado para esa
+// clave de módulo (no solo "puede administrar sí/no" — un llamamiento puede
+// tener acceso de solo lectura, por ejemplo).
 export function RequiereModulo(moduloClave: string, accion: AccionModulo = 'leer') {
   return applyDecorators(
     SetMetadata(MODULO_CLAVE_KEY, moduloClave),

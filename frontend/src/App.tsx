@@ -54,25 +54,25 @@ function App() {
           <Route
             path="/admin/usuarios"
             element={
-              <RequiereAdminGlobal>
+              <RequiereModulo clave="usuarios">
                 <UsuariosPage />
-              </RequiereAdminGlobal>
+              </RequiereModulo>
             }
           />
           <Route
             path="/admin/organizaciones"
             element={
-              <RequiereAdminGlobal>
+              <RequiereModulo clave="usuarios">
                 <OrganizacionesPage />
-              </RequiereAdminGlobal>
+              </RequiereModulo>
             }
           />
           <Route
             path="/admin/consejo-barrio"
             element={
-              <RequiereAdminGlobal>
+              <RequiereModulo clave="usuarios">
                 <ConsejoBarrioPage />
-              </RequiereAdminGlobal>
+              </RequiereModulo>
             }
           />
           <Route

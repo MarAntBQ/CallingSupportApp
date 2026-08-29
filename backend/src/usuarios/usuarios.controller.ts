@@ -2,18 +2,21 @@ import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards } fr
 import { UsuariosService } from './usuarios.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RequiereAdminGlobal } from '../auth/decorators/requiere-admin-global.decorator';
+import { RequiereModulo } from '../auth/decorators/requiere-modulo.decorator';
 import { CreateOrganizacionDto } from './dto/create-organizacion.dto';
 import { UpdateOrganizacionDto } from './dto/update-organizacion.dto';
+import { CreateLlamamientoDto } from './dto/create-llamamiento.dto';
+import { UpdateLlamamientoDto } from './dto/update-llamamiento.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { SetModuloOrganizacionesDto } from './dto/set-modulo-organizaciones.dto';
+import { SetModuloLlamamientosDto } from './dto/set-modulo-llamamientos.dto';
 
 @Controller()
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   // Lectura abierta a cualquier usuario logueado — hacen falta para llenar
-  // selects (asignar rol/organización) en las pantallas de administración.
+  // selects (asignar rol/llamamiento) en las pantallas de administración.
   @Get('roles')
   @UseGuards(JwtAuthGuard)
   listarRoles() {
@@ -27,50 +30,77 @@ export class UsuariosController {
   }
 
   @Post('organizaciones')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'crear')
   crearOrganizacion(@Body() dto: CreateOrganizacionDto) {
     return this.usuariosService.crearOrganizacion(dto);
   }
 
   @Patch('organizaciones/:id')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'editar')
   actualizarOrganizacion(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateOrganizacionDto) {
     return this.usuariosService.actualizarOrganizacion(id, dto);
   }
 
-  @Get('usuarios')
+  @Get('llamamientos')
+  @UseGuards(JwtAuthGuard)
+  listarLlamamientos() {
+    return this.usuariosService.listarLlamamientos();
+  }
+
+  @Post('llamamientos')
   @RequiereAdminGlobal()
+  crearLlamamiento(@Body() dto: CreateLlamamientoDto) {
+    return this.usuariosService.crearLlamamiento(dto);
+  }
+
+  @Patch('llamamientos/:id')
+  @RequiereAdminGlobal()
+  actualizarLlamamiento(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateLlamamientoDto) {
+    return this.usuariosService.actualizarLlamamiento(id, dto);
+  }
+
+  @Get('usuarios')
+  @RequiereModulo('usuarios', 'leer')
   listarUsuarios() {
     return this.usuariosService.listarUsuarios();
   }
 
   @Post('usuarios')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'crear')
   crearUsuario(@Body() dto: CreateUsuarioDto) {
     return this.usuariosService.crearUsuario(dto);
   }
 
   @Patch('usuarios/:id')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'editar')
   actualizarUsuario(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUsuarioDto) {
     return this.usuariosService.actualizarUsuario(id, dto);
   }
 
+  // Genera y devuelve una contraseña temporal nueva UNA sola vez — el admin
+  // debe copiarla y entregarla en persona (prohibido reenviarla por correo a
+  // cuentas reales de barrio).
+  @Post('usuarios/:id/restablecer-password')
+  @RequiereModulo('usuarios', 'editar')
+  restablecerPassword(@Param('id', ParseIntPipe) id: number) {
+    return this.usuariosService.restablecerPassword(id);
+  }
+
   @Get('consejo-barrio')
-  @RequiereAdminGlobal()
+  @RequiereModulo('usuarios', 'leer')
   listarConsejoBarrio() {
     return this.usuariosService.listarConsejoBarrio();
   }
 
-  @Get('modulo-organizaciones')
+  @Get('modulo-llamamientos')
   @RequiereAdminGlobal()
-  listarModuloOrganizaciones() {
-    return this.usuariosService.listarModuloOrganizaciones();
+  listarModuloLlamamientos() {
+    return this.usuariosService.listarModuloLlamamientos();
   }
 
-  @Post('modulo-organizaciones')
+  @Post('modulo-llamamientos')
   @RequiereAdminGlobal()
-  fijarModuloOrganizaciones(@Body() dto: SetModuloOrganizacionesDto) {
-    return this.usuariosService.fijarModuloOrganizaciones(dto);
+  fijarModuloLlamamientos(@Body() dto: SetModuloLlamamientosDto) {
+    return this.usuariosService.fijarModuloLlamamientos(dto);
   }
 }

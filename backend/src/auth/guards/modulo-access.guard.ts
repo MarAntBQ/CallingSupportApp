@@ -3,12 +3,12 @@ import { Reflector } from '@nestjs/core';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, In } from 'typeorm';
 import type { Request } from 'express';
-import { ModuloOrganizacion } from '../../usuarios/models/modulo-organizacion.entity';
-import { NIVEL_ADMIN_TOTAL, NIVEL_LIDER } from '../../usuarios/models/role.entity';
+import { ModuloLlamamiento } from '../../usuarios/models/modulo-llamamiento.entity';
+import { NIVEL_SUPERADMIN } from '../../usuarios/models/role.entity';
 import { AccionModulo, MODULO_ACCION_KEY, MODULO_CLAVE_KEY } from '../decorators/requiere-modulo.decorator';
 import { JwtPayload } from '../jwt-payload.interface';
 
-const CAMPO_POR_ACCION: Record<AccionModulo, keyof ModuloOrganizacion> = {
+const CAMPO_POR_ACCION: Record<AccionModulo, keyof ModuloLlamamiento> = {
   leer: 'puedeLeer',
   crear: 'puedeCrear',
   editar: 'puedeEditar',
@@ -17,11 +17,13 @@ const CAMPO_POR_ACCION: Record<AccionModulo, keyof ModuloOrganizacion> = {
 
 // Se ejecuta DESPUÉS de JwtAuthGuard (que ya dejó `req.user` con el payload
 // decodificado) — @RequiereModulo('viaje_templo', 'editar') declara qué
-// módulo y qué acción protege esta ruta, y este guard decide: Obispado/
-// SuperAdmin pasan siempre; un Líder pasa solo si alguna de sus
-// organizaciones tiene ESE permiso específico habilitado para ese módulo
-// (una organización puede tener solo lectura, por ejemplo); cualquier otro
-// rol queda afuera.
+// módulo y qué acción protege esta ruta, y este guard decide: solo
+// SuperAdmin pasa sin más (ver NIVEL_SUPERADMIN) — ni Obispado tiene bypass
+// acá, porque dentro de una misma organización no todos los llamamientos
+// deben ver lo mismo (ej. el Obispo sí administra Viaje al Templo, el
+// Secretario Financiero del mismo Obispado no, salvo que se le otorgue). El
+// permiso se busca por LLAMAMIENTO específico (ver ModuloLlamamiento), no
+// por organización ni por rol.
 //
 // Usa DataSource directo (no @InjectRepository) a propósito: este guard se
 // referencia por clase vía @UseGuards() desde decoradores usados en MUCHOS
@@ -45,28 +47,20 @@ export class ModuloAccessGuard implements CanActivate {
     const user = req.user;
     if (!user) throw new ForbiddenException('No autenticado.');
 
-    if (user.nivel >= NIVEL_ADMIN_TOTAL) return true;
+    if (user.nivel >= NIVEL_SUPERADMIN) return true;
 
-    // Un llamamiento de maestro/especialista/consultor (rol Miembro) no debe
-    // heredar el permiso de su organización solo por pertenecer a ella — ese
-    // permiso es para la presidencia/secretaría (rol Líder), no para todo el
-    // que tenga cualquier llamamiento ahí.
-    if (user.nivel < NIVEL_LIDER) {
-      throw new ForbiddenException('Tu llamamiento no incluye permisos de administración.');
-    }
-
-    if (user.orgIds.length === 0) {
-      throw new ForbiddenException('No tienes una organización asignada para administrar este módulo.');
+    if (user.llamamientoIds.length === 0) {
+      throw new ForbiddenException('Tu llamamiento no tiene acceso a este módulo.');
     }
 
     const campo = CAMPO_POR_ACCION[accion];
     const filas = await this.dataSource
-      .getRepository(ModuloOrganizacion)
-      .find({ where: { moduloClave, organizacionId: In(user.orgIds) } });
+      .getRepository(ModuloLlamamiento)
+      .find({ where: { moduloClave, llamamientoId: In(user.llamamientoIds) } });
     const tieneAcceso = filas.some((f) => f[campo] === true);
 
     if (!tieneAcceso) {
-      throw new ForbiddenException('Tu organización no tiene ese permiso en este módulo.');
+      throw new ForbiddenException('Tu llamamiento no tiene ese permiso en este módulo.');
     }
     return true;
   }

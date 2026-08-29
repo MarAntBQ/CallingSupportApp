@@ -3,8 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   actualizarUsuario,
   crearUsuario,
+  listarLlamamientos,
   listarOrganizaciones,
   listarRoles,
+  restablecerPassword,
 } from '../../../lib/admin';
 import type { UsuarioAdmin } from '../../../types';
 
@@ -13,17 +15,13 @@ interface Props {
   onClose: () => void;
 }
 
-// Miembro/Amigo de la Iglesia son las únicas cuentas sin ningún cargo — no
-// tiene sentido dejarles poner un llamamiento (mismo criterio que la
-// pestaña "Líderes" de UsuariosPage).
-const ES_ROL_LIDERAZGO = (nombre: string) => nombre !== 'Miembro' && nombre !== 'Amigo de la Iglesia';
-
 export const UsuarioModal = ({ usuario, onClose }: Props) => {
   const queryClient = useQueryClient();
   const esEdicion = !!usuario;
 
   const { data: roles } = useQuery({ queryKey: ['roles'], queryFn: listarRoles });
   const { data: organizaciones } = useQuery({ queryKey: ['organizaciones'], queryFn: listarOrganizaciones });
+  const { data: llamamientos } = useQuery({ queryKey: ['llamamientos'], queryFn: listarLlamamientos });
 
   const [nombres, setNombres] = useState(usuario?.nombres ?? '');
   const [apellidos, setApellidos] = useState(usuario?.apellidos ?? '');
@@ -32,20 +30,12 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
   const [roleId, setRoleId] = useState<number | ''>(usuario?.roleId ?? '');
   const [estado, setEstado] = useState(usuario?.estado ?? 'activo');
   const [llamamiento, setLlamamiento] = useState(usuario?.llamamiento ?? '');
-  const [organizacionIds, setOrganizacionIds] = useState<number[]>(usuario?.organizaciones.map((o) => o.id) ?? []);
+  const [llamamientoIds, setLlamamientoIds] = useState<number[]>(usuario?.llamamientos.map((l) => l.id) ?? []);
   const [error, setError] = useState('');
+  const [passwordNueva, setPasswordNueva] = useState<string | null>(null);
 
-  const toggleOrg = (id: number) => {
-    setOrganizacionIds((prev) => (prev.includes(id) ? prev.filter((o) => o !== id) : [...prev, id]));
-  };
-
-  const rolSeleccionado = roles?.find((r) => r.id === roleId);
-  const permiteLlamamiento = !!rolSeleccionado && ES_ROL_LIDERAZGO(rolSeleccionado.nombre);
-
-  const cambiarRol = (nuevoRoleId: number) => {
-    setRoleId(nuevoRoleId);
-    const nuevoRol = roles?.find((r) => r.id === nuevoRoleId);
-    if (!nuevoRol || !ES_ROL_LIDERAZGO(nuevoRol.nombre)) setLlamamiento('');
+  const toggleLlamamiento = (id: number) => {
+    setLlamamientoIds((prev) => (prev.includes(id) ? prev.filter((l) => l !== id) : [...prev, id]));
   };
 
   const mutation = useMutation({
@@ -54,7 +44,7 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
         return actualizarUsuario(usuario.id, {
           roleId: roleId || undefined,
           estado,
-          organizacionIds,
+          llamamientoIds,
           llamamiento: llamamiento || undefined,
         });
       }
@@ -64,7 +54,7 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
         email,
         telefono: telefono || undefined,
         roleId: roleId as number,
-        organizacionIds,
+        llamamientoIds,
         llamamiento: llamamiento || undefined,
       });
     },
@@ -78,6 +68,11 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
       const msg = axiosErr.response?.data?.message;
       setError(Array.isArray(msg) ? msg.join(' ') : (msg ?? 'No se pudo guardar el usuario.'));
     },
+  });
+
+  const resetPasswordMut = useMutation({
+    mutationFn: () => restablecerPassword(usuario!.id),
+    onSuccess: ({ password }) => setPasswordNueva(password),
   });
 
   return (
@@ -151,7 +146,7 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
             <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">Rol</label>
             <select
               value={roleId}
-              onChange={(e) => cambiarRol(Number(e.target.value))}
+              onChange={(e) => setRoleId(Number(e.target.value))}
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25"
             >
               <option value="">Selecciona…</option>
@@ -165,21 +160,16 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
 
           <div>
             <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">
-              Llamamiento <span className="text-[var(--text-muted)]">(opcional)</span>
+              Descripción del cargo <span className="text-[var(--text-muted)]">(opcional, para mostrar)</span>
             </label>
             <input
               value={llamamiento}
               onChange={(e) => setLlamamiento(e.target.value)}
-              disabled={!permiteLlamamiento}
-              placeholder="Ej. Presidenta, 1er consejero, Secretario…"
-              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25 disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder="Ej. Presidenta, 1er consejero, Secretario auxiliar — Finanzas…"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg)] px-3.5 py-2.5 text-sm outline-none focus:border-[var(--sage-600)] focus:ring-2 focus:ring-[var(--sage-600)]/25"
             />
             <p className="mt-1 text-xs text-[var(--text-muted)]">
-              {!roleId
-                ? 'Selecciona primero un rol.'
-                : permiteLlamamiento
-                  ? 'Solo para mostrar quién es quién — el rol de arriba decide el nivel de acceso.'
-                  : 'No aplica para Miembro / Amigo de la Iglesia.'}
+              Solo texto libre para mostrar quién es quién — los permisos reales se deciden abajo, por llamamiento.
             </p>
           </div>
 
@@ -199,24 +189,70 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
           )}
 
           <div>
-            <p className="mb-1.5 text-sm font-medium text-[var(--text)]">Organizaciones</p>
-            <div className="grid grid-cols-2 gap-2">
-              {(organizaciones ?? []).map((org) => (
-                <label
-                  key={org.id}
-                  className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text)]"
-                >
-                  <input
-                    type="checkbox"
-                    checked={organizacionIds.includes(org.id)}
-                    onChange={() => toggleOrg(org.id)}
-                    className="h-4 w-4 rounded border-[var(--border)] accent-[var(--sage-600)]"
-                  />
-                  {org.nombre}
-                </label>
-              ))}
+            <p className="mb-1.5 text-sm font-medium text-[var(--text)]">Llamamientos</p>
+            <p className="mb-2 text-xs text-[var(--text-muted)]">
+              De esto dependen los permisos reales — puede tener más de uno.
+            </p>
+            <div className="space-y-3">
+              {(organizaciones ?? [])
+                .filter((org) => (llamamientos ?? []).some((l) => l.organizacionId === org.id && l.activo))
+                .map((org) => (
+                  <div key={org.id}>
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                      {org.nombre}
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {(llamamientos ?? [])
+                        .filter((l) => l.organizacionId === org.id && l.activo)
+                        .map((l) => (
+                          <label
+                            key={l.id}
+                            className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text)]"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={llamamientoIds.includes(l.id)}
+                              onChange={() => toggleLlamamiento(l.id)}
+                              className="h-4 w-4 rounded border-[var(--border)] accent-[var(--sage-600)]"
+                            />
+                            {l.nombre}
+                          </label>
+                        ))}
+                    </div>
+                  </div>
+                ))}
+              {(llamamientos ?? []).length === 0 && (
+                <p className="text-xs text-[var(--text-muted)]">
+                  Todavía no hay llamamientos creados — agrégalos primero en Organizaciones.
+                </p>
+              )}
             </div>
           </div>
+
+          {esEdicion && (
+            <div className="rounded-lg border border-[var(--border)] p-3">
+              <p className="mb-1.5 text-sm font-medium text-[var(--text)]">Contraseña</p>
+              {passwordNueva ? (
+                <div className="rounded-lg bg-[var(--bg)] px-3 py-2 text-sm">
+                  <p className="text-[var(--text-muted)]">
+                    Nueva contraseña temporal — cópiala y entrégasela en persona (no se puede volver a ver):
+                  </p>
+                  <p className="mt-1 select-all break-all font-mono text-sm font-semibold text-[var(--text)]">
+                    {passwordNueva}
+                  </p>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => resetPasswordMut.mutate()}
+                  disabled={resetPasswordMut.isPending}
+                  className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-sm font-medium text-[var(--brown-700)] hover:bg-[var(--bg)] disabled:opacity-60"
+                >
+                  {resetPasswordMut.isPending ? 'Generando…' : 'Restablecer contraseña'}
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex shrink-0 justify-end gap-2 border-t border-[var(--border)] px-6 py-4">
@@ -225,7 +261,7 @@ export const UsuarioModal = ({ usuario, onClose }: Props) => {
             onClick={onClose}
             className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:bg-[var(--bg)]"
           >
-            Cancelar
+            Cerrar
           </button>
           <button
             type="button"

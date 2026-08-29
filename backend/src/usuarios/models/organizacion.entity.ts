@@ -5,6 +5,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 // renombrar o desactivar según su propia unidad (ej. separar Quorum de
 // Élderes y de Diáconos en vez de uno solo).
 export const ORGANIZACIONES_SEED = [
+  'Obispado',
   'Quorum',
   'Sociedad de Socorro',
   'Primaria',

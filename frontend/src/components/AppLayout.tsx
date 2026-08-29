@@ -2,13 +2,15 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { clearSession, esAdminGlobal, getUsuario } from '../lib/auth';
 import api from '../lib/axios';
 
-const NAV_MODULOS = [{ to: '/admin/templo', label: 'Viaje al Templo', moduloClave: 'viaje_templo' }];
+const NAV_MODULOS = [
+  { to: '/admin/templo', label: 'Viaje al Templo', moduloClave: 'viaje_templo' },
+  { to: '/admin/usuarios', label: 'Usuarios', moduloClave: 'usuarios' },
+  { to: '/admin/organizaciones', label: 'Organizaciones', moduloClave: 'usuarios' },
+  { to: '/admin/consejo-barrio', label: 'Consejo de barrio', moduloClave: 'usuarios' },
+];
 
 const NAV_ADMIN = [
   { to: '/admin/dashboard', label: 'Dashboard' },
-  { to: '/admin/usuarios', label: 'Usuarios' },
-  { to: '/admin/organizaciones', label: 'Organizaciones' },
-  { to: '/admin/consejo-barrio', label: 'Consejo de barrio' },
   { to: '/admin/correos', label: 'Correos enviados' },
   { to: '/admin/sesiones', label: 'Sesiones activas' },
 ];
