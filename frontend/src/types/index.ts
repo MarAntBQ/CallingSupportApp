@@ -293,6 +293,15 @@ export interface ConsejoBarrioItem {
   lideres: UsuarioAdmin[];
 }
 
+export interface PermisoModulo {
+  organizacionId: number;
+  organizacion: Organizacion;
+  puedeLeer: boolean;
+  puedeCrear: boolean;
+  puedeEditar: boolean;
+  puedeEliminar: boolean;
+}
+
 export interface EmailLogItem {
   id: number;
   source: string;

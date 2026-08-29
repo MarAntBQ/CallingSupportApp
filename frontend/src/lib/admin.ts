@@ -4,6 +4,7 @@ import type {
   CreateUsuarioPayload,
   EmailLogItem,
   Organizacion,
+  PermisoModulo,
   Role,
   SessionItem,
   UpdateUsuarioPayload,
@@ -34,11 +35,22 @@ export const actualizarUsuario = async (id: number, payload: UpdateUsuarioPayloa
 export const listarConsejoBarrio = async (): Promise<ConsejoBarrioItem[]> =>
   (await api.get<ConsejoBarrioItem[]>('/consejo-barrio')).data;
 
-export const listarModuloOrganizaciones = async (): Promise<Record<string, Organizacion[]>> =>
-  (await api.get<Record<string, Organizacion[]>>('/modulo-organizaciones')).data;
+export const listarModuloOrganizaciones = async (): Promise<Record<string, PermisoModulo[]>> =>
+  (await api.get<Record<string, PermisoModulo[]>>('/modulo-organizaciones')).data;
 
-export const fijarModuloOrganizaciones = async (moduloClave: string, organizacionIds: number[]): Promise<void> => {
-  await api.post('/modulo-organizaciones', { moduloClave, organizacionIds });
+export interface PermisoOrganizacionPayload {
+  organizacionId: number;
+  puedeLeer: boolean;
+  puedeCrear: boolean;
+  puedeEditar: boolean;
+  puedeEliminar: boolean;
+}
+
+export const fijarModuloOrganizaciones = async (
+  moduloClave: string,
+  permisos: PermisoOrganizacionPayload[],
+): Promise<void> => {
+  await api.post('/modulo-organizaciones', { moduloClave, permisos });
 };
 
 export const listarEmailLogs = async (): Promise<EmailLogItem[]> => (await api.get<EmailLogItem[]>('/mail/logs')).data;

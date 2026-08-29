@@ -6,6 +6,7 @@ import {
   fijarModuloOrganizaciones,
   listarModuloOrganizaciones,
   listarOrganizaciones,
+  type PermisoOrganizacionPayload,
 } from '../../../lib/admin';
 import { Card } from '../../../components/ui/Card';
 import { ModuleBreadcrumb } from '../../../components/ui/ModuleBreadcrumb';
@@ -42,17 +43,34 @@ export const OrganizacionesPage = () => {
   });
 
   const fijarPermiso = useMutation({
-    mutationFn: ({ moduloClave, organizacionIds }: { moduloClave: string; organizacionIds: number[] }) =>
-      fijarModuloOrganizaciones(moduloClave, organizacionIds),
+    mutationFn: ({ moduloClave, permisos }: { moduloClave: string; permisos: PermisoOrganizacionPayload[] }) =>
+      fijarModuloOrganizaciones(moduloClave, permisos),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['modulo-organizaciones'] }),
   });
 
-  const toggleModuloOrg = (moduloClave: string, organizacionId: number) => {
-    const actuales = (moduloOrg?.[moduloClave] ?? []).map((o) => o.id);
-    const nuevos = actuales.includes(organizacionId)
-      ? actuales.filter((id) => id !== organizacionId)
-      : [...actuales, organizacionId];
-    fijarPermiso.mutate({ moduloClave, organizacionIds: nuevos });
+  type Accion = 'puedeLeer' | 'puedeCrear' | 'puedeEditar' | 'puedeEliminar';
+
+  // El backend reemplaza el set completo de permisos de un módulo, así que
+  // cada click reconstruye el arreglo entero a partir de lo que ya está
+  // guardado + el cambio puntual.
+  const togglePermiso = (moduloClave: string, organizacionId: number, accion: Accion) => {
+    const actuales = moduloOrg?.[moduloClave] ?? [];
+    const permisos: PermisoOrganizacionPayload[] = (organizaciones ?? [])
+      .filter((o) => o.activo)
+      .map((org) => {
+        const existente = actuales.find((p) => p.organizacionId === org.id);
+        const base: PermisoOrganizacionPayload = {
+          organizacionId: org.id,
+          puedeLeer: existente?.puedeLeer ?? false,
+          puedeCrear: existente?.puedeCrear ?? false,
+          puedeEditar: existente?.puedeEditar ?? false,
+          puedeEliminar: existente?.puedeEliminar ?? false,
+        };
+        if (org.id === organizacionId) base[accion] = !base[accion];
+        return base;
+      })
+      .filter((p) => p.puedeLeer || p.puedeCrear || p.puedeEditar || p.puedeEliminar);
+    fijarPermiso.mutate({ moduloClave, permisos });
   };
 
   return (
@@ -111,33 +129,52 @@ export const OrganizacionesPage = () => {
         <Card>
           <h3 className="mb-1 text-sm font-semibold text-[var(--text)]">Permisos de módulos</h3>
           <p className="mb-4 text-xs text-[var(--text-muted)]">
-            Qué organizaciones pueden administrar cada módulo — un Líder solo ve lo que su organización tiene
-            marcado aquí.
+            Qué puede hacer cada organización en cada módulo — no es solo "administra sí/no", una organización
+            puede tener, por ejemplo, solo lectura.
           </p>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {MODULOS.map((mod) => {
-              const habilitadas = (moduloOrg?.[mod.clave] ?? []).map((o) => o.id);
+              const permisos = moduloOrg?.[mod.clave] ?? [];
               return (
                 <div key={mod.clave}>
                   <p className="mb-2 text-sm font-medium text-[var(--text)]">{mod.nombre}</p>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                    {organizaciones
-                      .filter((o) => o.activo)
-                      .map((org) => (
-                        <label
-                          key={org.id}
-                          className="flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text)]"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={habilitadas.includes(org.id)}
-                            onChange={() => toggleModuloOrg(mod.clave, org.id)}
-                            disabled={fijarPermiso.isPending}
-                            className="h-4 w-4 rounded border-[var(--border)] accent-[var(--sage-600)]"
-                          />
-                          {org.nombre}
-                        </label>
-                      ))}
+                  <div className="overflow-x-auto rounded-lg border border-[var(--border)]">
+                    <table className="w-full text-left text-sm">
+                      <thead>
+                        <tr className="border-b border-[var(--border)] bg-[var(--bg)] text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                          <th className="px-3 py-2">Organización</th>
+                          <th className="px-3 py-2 text-center">Leer</th>
+                          <th className="px-3 py-2 text-center">Crear</th>
+                          <th className="px-3 py-2 text-center">Editar</th>
+                          <th className="px-3 py-2 text-center">Eliminar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {organizaciones
+                          .filter((o) => o.activo)
+                          .map((org) => {
+                            const p = permisos.find((x) => x.organizacionId === org.id);
+                            return (
+                              <tr key={org.id} className="border-b border-[var(--border)] last:border-0">
+                                <td className="px-3 py-2 text-[var(--text)]">{org.nombre}</td>
+                                {(['puedeLeer', 'puedeCrear', 'puedeEditar', 'puedeEliminar'] as const).map(
+                                  (accion) => (
+                                    <td key={accion} className="px-3 py-2 text-center">
+                                      <input
+                                        type="checkbox"
+                                        checked={p?.[accion] ?? false}
+                                        onChange={() => togglePermiso(mod.clave, org.id, accion)}
+                                        disabled={fijarPermiso.isPending}
+                                        className="h-4 w-4 rounded border-[var(--border)] accent-[var(--sage-600)]"
+                                      />
+                                    </td>
+                                  ),
+                                )}
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               );
