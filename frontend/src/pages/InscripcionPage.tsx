@@ -121,6 +121,9 @@ export const InscripcionPage = () => {
   const [error, setError] = useState('');
 
   useEffect(() => preloadRecaptcha(), []);
+  useEffect(() => {
+    document.title = 'Viaje para Adorar en el Templo — Inscripción';
+  }, []);
 
   const {
     data: viaje,

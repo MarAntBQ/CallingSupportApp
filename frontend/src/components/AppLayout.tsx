@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { clearSession, esAdminGlobal, getUsuario } from '../lib/auth';
+import { useConfig } from '../lib/useConfig';
 import api from '../lib/axios';
 
 const NAV_MODULOS: { to: string; label: string; moduloClave: string | string[] }[] = [
@@ -18,6 +19,7 @@ const NAV_ADMIN = [
 
 export const AppLayout = () => {
   const navigate = useNavigate();
+  const { data: config } = useConfig();
   const usuario = getUsuario();
   const modulosPermitidos = usuario?.modulosPermitidos ?? [];
   const esAdmin = esAdminGlobal(usuario);
@@ -41,9 +43,19 @@ export const AppLayout = () => {
   return (
     <div className="flex min-h-screen bg-[var(--bg)]">
       <aside className="flex w-60 shrink-0 flex-col border-r border-[var(--border)] bg-[var(--surface)]">
-        <div className="border-b border-[var(--border)] px-5 py-4">
-          <p className="text-sm font-semibold text-[var(--text)]">CSApp</p>
-          <p className="text-xs text-[var(--text-muted)]">by MarAntBQ.dev</p>
+        <div className="flex items-center gap-3 border-b border-[var(--border)] px-5 py-4">
+          {config?.logoDataUrl && (
+            <img src={config.logoDataUrl} alt={config.nombreUnidad || 'Logo'} className="h-9 w-9 object-contain" />
+          )}
+          <div>
+            {config?.nombreUnidad && (
+              <p className="text-sm font-semibold text-[var(--text)]">{config.nombreUnidad}</p>
+            )}
+            <p className={config?.nombreUnidad ? 'text-xs text-[var(--text-muted)]' : 'text-sm font-semibold text-[var(--text)]'}>
+              CSApp
+            </p>
+            <p className="text-xs text-[var(--text-muted)]">by MarAntBQ.dev</p>
+          </div>
         </div>
         <nav className="flex-1 space-y-1 px-3 py-4">
           <NavLink
