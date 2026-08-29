@@ -75,4 +75,8 @@ export class MailService {
       return { sent: false };
     }
   }
+
+  async listLogs(limit = 200): Promise<EmailLog[]> {
+    return this.emailLogRepository.find({ order: { id: 'DESC' }, take: limit });
+  }
 }
