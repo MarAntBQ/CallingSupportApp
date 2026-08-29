@@ -3,10 +3,11 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import api from '../lib/axios';
 import { setSession } from '../lib/auth';
 import { AuthLogo } from '../components/AuthLogo';
+import { useConfig } from '../lib/useConfig';
 
 const schema = z.object({
   email: z.string().email('Correo inválido'),
@@ -44,10 +45,7 @@ export const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const successMessage = (location.state as { message?: string } | null)?.message;
 
-  const configQuery = useQuery({
-    queryKey: ['config', 'public'],
-    queryFn: async () => (await api.get<{ permitirRegistro: boolean; nombreUnidad: string }>('/config')).data,
-  });
+  const configQuery = useConfig();
 
   const {
     register,
