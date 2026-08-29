@@ -62,3 +62,181 @@ export function campoCupoOrdenanza(ordenanza: Ordenanza, genero: Genero): string
 export function normalizarCedula(valor: string): string {
   return valor.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 }
+
+export const EDAD_MINIMA_ORDENANZAS = 11;
+
+export function calcularEdad(fechaNacimiento: string, fechaReferencia: string): number {
+  const nacimiento = new Date(fechaNacimiento + 'T00:00:00');
+  const referencia = new Date(fechaReferencia + 'T00:00:00');
+  let edad = referencia.getFullYear() - nacimiento.getFullYear();
+  const cumpleAnios = new Date(referencia.getFullYear(), nacimiento.getMonth(), nacimiento.getDate());
+  if (referencia < cumpleAnios) edad--;
+  return edad;
+}
+
+// Debe coincidir EXACTO con calcularCostoTotal del backend (templo.service.ts) —
+// se usa para mostrar el costo en vivo mientras se edita, antes de guardar.
+export function calcularCostoParticipante(
+  viaje: {
+    incluyeDesayuno: boolean;
+    incluyeAlmuerzo: boolean;
+    costoTransporte: string;
+    costoDesayuno: string;
+    costoAlmuerzo: string;
+  },
+  p: { vaEnTransporte: boolean; quiereDesayuno: boolean; quiereAlmuerzo: boolean },
+): number {
+  let total = 0;
+  if (viaje.incluyeDesayuno && p.quiereDesayuno) total += parseFloat(viaje.costoDesayuno);
+  if (viaje.incluyeAlmuerzo && p.quiereAlmuerzo) total += parseFloat(viaje.costoAlmuerzo);
+  if (p.vaEnTransporte) total += parseFloat(viaje.costoTransporte);
+  return total;
+}
+
+// Solo un punto de partida — el formulario público guarda el nombre en un
+// solo campo, así que esto es una adivinanza (convención EC: apellidos
+// primero) para prellenar, siempre revisable/editable antes de guardar.
+export function separarNombreCompleto(nombreCompleto: string): { apellidos: string; nombres: string } {
+  const palabras = nombreCompleto.trim().split(/\s+/).filter(Boolean);
+  if (palabras.length <= 1) return { apellidos: palabras[0] ?? '', nombres: '' };
+  const mitad = Math.ceil(palabras.length / 2);
+  return {
+    apellidos: palabras.slice(0, mitad).join(' '),
+    nombres: palabras.slice(mitad).join(' '),
+  };
+}
+
+// ---------- Tipos del panel de administración ----------
+
+export type TipoAbono = 'donativo_iglesia' | 'pagado_persona';
+
+export interface TemploCobrador {
+  id: number;
+  nombre: string;
+  activo: boolean;
+  createdAt: string;
+}
+
+export interface TemploAbono {
+  id: number;
+  fecha: string;
+  valor: string;
+  tipo: TipoAbono;
+  cobrador: TemploCobrador | null;
+  createdAt: string;
+}
+
+export type RolHabitacion = 'lider' | 'huesped';
+
+export interface TemploHabitacion {
+  id: number;
+  numero: string;
+  createdAt: string;
+}
+
+export interface TemploParticipante {
+  id: number;
+  cedulaOPasaporte: string;
+  fechaNacimiento: string;
+  nombreCompleto: string;
+  telefono: string;
+  email: string;
+  genero: string;
+  vaEnTransporte: boolean;
+  necesitaHospedaje: boolean;
+  quiereDesayuno: boolean;
+  quiereAlmuerzo: boolean;
+  ordenanzas: string;
+  aprobado: boolean;
+  costoTotal: string;
+  subioIda: boolean;
+  subioRegreso: boolean;
+  desayunoEntregado: boolean;
+  almuerzoEntregado: boolean;
+  abonos: TemploAbono[];
+  habitacion: TemploHabitacion | null;
+  rolHabitacion: RolHabitacion | null;
+  apellidos: string | null;
+  nombres: string | null;
+  nacionalidad: string | null;
+}
+
+export interface TemploViaje {
+  id: number;
+  fecha: string;
+  fechaLimiteInscripcion: string;
+  fechaConfirmada: boolean;
+  incluyeTransporte: boolean;
+  incluyeHospedaje: boolean;
+  incluyeDesayuno: boolean;
+  incluyeAlmuerzo: boolean;
+  cuposTransporte: number;
+  cuposHospedaje: number;
+  costoTransporte: string;
+  costoDesayuno: string;
+  costoAlmuerzo: string;
+  cuposBaptisterioHombres: number;
+  cuposBaptisterioMujeres: number;
+  cuposIniciatoriasHombres: number;
+  cuposIniciatoriasMujeres: number;
+  cuposInvestiduraHombres: number;
+  cuposInvestiduraMujeres: number;
+  cuposSellamientoHombres: number;
+  cuposSellamientoMujeres: number;
+  activo: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TemploInscripcion {
+  id: number;
+  ip: string | null;
+  consentimiento: boolean;
+  policyVersion: string;
+  createdAt: string;
+  viaje: TemploViaje;
+  participantes: TemploParticipante[];
+}
+
+export interface UpdateViajePayload {
+  fecha?: string;
+  fechaLimiteInscripcion?: string;
+  fechaConfirmada?: boolean;
+  incluyeTransporte?: boolean;
+  incluyeHospedaje?: boolean;
+  incluyeDesayuno?: boolean;
+  incluyeAlmuerzo?: boolean;
+  costoTransporte?: number;
+  costoDesayuno?: number;
+  costoAlmuerzo?: number;
+  cuposTransporte?: number;
+  cuposHospedaje?: number;
+  cuposBaptisterioHombres?: number;
+  cuposBaptisterioMujeres?: number;
+  cuposIniciatoriasHombres?: number;
+  cuposIniciatoriasMujeres?: number;
+  cuposInvestiduraHombres?: number;
+  cuposInvestiduraMujeres?: number;
+  cuposSellamientoHombres?: number;
+  cuposSellamientoMujeres?: number;
+  activo?: boolean;
+}
+
+export type CreateViajePayload = Omit<UpdateViajePayload, 'fecha' | 'fechaLimiteInscripcion'> & {
+  fecha: string;
+  fechaLimiteInscripcion: string;
+};
+
+export interface UpdateParticipantePayload {
+  cedulaOPasaporte?: string;
+  fechaNacimiento?: string;
+  nombreCompleto?: string;
+  telefono?: string;
+  email?: string;
+  genero?: string;
+  vaEnTransporte?: boolean;
+  necesitaHospedaje?: boolean;
+  quiereDesayuno?: boolean;
+  quiereAlmuerzo?: boolean;
+  ordenanzas?: string[];
+}
