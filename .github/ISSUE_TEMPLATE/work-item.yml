@@ -1,0 +1,59 @@
+name: Tarea
+description: Propone un resultado revisable de forma independiente (producto, ingeniería o documentación).
+title: ""
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Un issue = **un resultado**. Si algo puede aceptarse y desplegarse por separado, va en otro issue.
+  - type: input
+    id: tarjeta
+    attributes:
+      label: Tarjeta de Trello
+      description: Enlace a la tarjeta del tablero. Toda tarea nace ahí antes de existir aquí.
+      placeholder: https://trello.com/c/...
+    validations:
+      required: true
+  - type: textarea
+    id: resultado
+    attributes:
+      label: Resultado
+      description: Qué problema resuelve, para quién, y qué cambia cuando esté terminado.
+    validations:
+      required: true
+  - type: textarea
+    id: alcance
+    attributes:
+      label: Alcance
+      description: Qué comportamiento o artefactos entran en este issue.
+    validations:
+      required: true
+  - type: textarea
+    id: exclusiones
+    attributes:
+      label: Exclusiones importantes
+      description: Trabajo cercano que este issue deliberadamente NO incluye. Evita que el alcance se expanda solo.
+  - type: textarea
+    id: aceptacion
+    attributes:
+      label: Criterios de aceptación
+      description: Observables. Si no se puede comprobar mirando algo, no es un criterio.
+      placeholder: |
+        - [ ] Resultado observable uno
+        - [ ] Resultado observable dos
+    validations:
+      required: true
+  - type: textarea
+    id: verificacion
+    attributes:
+      label: Verificación
+      description: Qué evidencia hace falta para cerrar esto — pruebas automáticas, navegador, flujo real, revisión en producción.
+    validations:
+      required: true
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto y referencias
+      description: Enlaces a código, documentos, incidentes previos. No incluir credenciales ni datos personales.
