@@ -721,6 +721,126 @@ html[data-lang='en'] [data-l='es'] {
   }
 }
 
+/* ---------- Formulario de contacto */
+.contact-form {
+  display: grid;
+  gap: 16px;
+  max-width: 560px;
+  margin: 24px 0 32px;
+  padding: 24px;
+  background: var(--color-white);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+}
+
+.contact-form[hidden] {
+  display: none;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-button);
+  background: var(--color-white);
+  color: var(--color-ink);
+  font: inherit;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 1px;
+}
+
+.field__hint,
+.contact-form__notice,
+.contact-form__recaptcha {
+  margin: 0;
+  color: var(--color-stone);
+  font-size: 14px;
+}
+
+.contact-form__warning {
+  margin: 0;
+  font-weight: 600;
+}
+
+.field--trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.check input {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  flex: none;
+}
+
+.contact-form .button {
+  justify-self: start;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: var(--color-link);
+  color: var(--color-white);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.contact-form .button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.contact-form__status {
+  margin: 0;
+  min-height: 1.5em;
+}
+
+.contact-form__status[data-kind='error'] {
+  color: #b42318;
+}
+
+.contact-form__status[data-kind='ok'] {
+  color: #067647;
+}
+
+/* El sello de reCAPTCHA va oculto a propósito: Google lo permite si el aviso legal
+   (.contact-form__recaptcha) se muestra junto al formulario. No volver a mostrarlo. */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
+
 /* ---------- Botón flotante de GitHub */
 .fab-github {
   position: fixed;

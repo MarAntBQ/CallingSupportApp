@@ -52,7 +52,8 @@ Não existe um servidor central com dados de várias alas. Cada unidade instala 
 
 ## Este site
 
-- Não tem formulários, contas, cookies nem análises.
+- **Formulário de contato** (página Contato): coleta seu nome, seu e-mail e sua mensagem, apenas para responder a você. A equipe do projeto os recebe em devteam@callingsupportapp.org e eles ficam guardados no banco de dados do servidor do projeto por **90 dias**; depois são apagados automaticamente, todos os dias. Seu IP não é guardado: apenas uma impressão irreversível, para limitar o spam. Para protegê-lo, usamos o **Google reCAPTCHA v3**, que é carregado **apenas nessa página**: seu navegador se conecta ao Google e envia dados técnicos (incluindo seu IP), conforme a [política de privacidade](https://policies.google.com/privacy) dele. Nosso servidor não envia seu IP ao Google. Também guardamos que você aceitou, com qual versão desta política e em qual idioma.
+- Não tem contas, cookies próprios nem análises.
 - Os recursos são fornecidos pelo mesmo domínio.
 - O navegador consulta a **API pública do GitHub** (`api.github.com`) para mostrar o progresso e os colaboradores, e carrega seus avatares do GitHub.
 - A hospedagem mantém registros técnicos do servidor (como o IP) por segurança, de acordo com sua própria política.

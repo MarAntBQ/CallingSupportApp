@@ -13,6 +13,7 @@ if (!/^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(SITE_URL)) {
   process.exit(1);
 }
 const REPO = 'https://github.com/MarAntBQ/CallingSupportApp';
+const RECAPTCHA_SITE_KEY = '6LdKguItAAAAAAVLfpo2INl4o6C3D8oia3h-hr6q';
 const LOCALES = ['es', 'pt', 'en'];
 const DEFAULT_LOCALE = 'es';
 const PAGES = ['index', 'privacy', 'rules', 'manuals', 'updates', 'team', 'contact', 'conduct', 'terms', 'security', 'status'];
@@ -50,7 +51,7 @@ function slugify(text) {
     .replace(/\s+/g, '-');
 }
 
-const MARKERS = ['<!-- roadmap -->', '<!-- contributors -->', '<!-- team-profiles -->', '<!-- updates -->', '<!-- manuals -->', '<!-- docs-index -->'];
+const MARKERS = ['<!-- roadmap -->', '<!-- contributors -->', '<!-- team-profiles -->', '<!-- updates -->', '<!-- manuals -->', '<!-- docs-index -->', '<!-- contact-form -->'];
 
 function safeHref(href) {
   const h = String(href).trim();
@@ -265,6 +266,26 @@ function docsIndexBlock(l, rel) {
   );
 }
 
+function contactFormBlock(l) {
+  const c = ui[l].contactForm;
+  const id = (k) => `cf-${l}-${k}`;
+  const msgs = Object.entries(c.errors)
+    .map(([k, v]) => `data-msg-${k}="${escapeHtml(v)}"`)
+    .join(' ');
+  return `<form class="contact-form" data-contact data-lang="${l}" data-sitekey="${RECAPTCHA_SITE_KEY}" data-policy="${escapeHtml(content[l].privacy.data.updated)}" action="/api/contact.php" method="post" novalidate hidden data-msg-ok="${escapeHtml(c.ok)}" data-msg-sending="${escapeHtml(c.sending)}" ${msgs}>
+  <div class="field"><label for="${id('name')}">${escapeHtml(c.name)}</label><input id="${id('name')}" name="name" type="text" required minlength="2" maxlength="100" autocomplete="name"></div>
+  <div class="field"><label for="${id('email')}">${escapeHtml(c.email)}</label><input id="${id('email')}" name="email" type="email" required maxlength="254" autocomplete="email"></div>
+  <div class="field"><label for="${id('message')}">${escapeHtml(c.message)}</label><textarea id="${id('message')}" name="message" rows="6" required minlength="10" maxlength="2000"></textarea><p class="field__hint" data-counter data-template="${escapeHtml(c.counter)}"></p></div>
+  <p class="contact-form__warning">${escapeHtml(c.memberData)}</p>
+  <div class="field field--trap" aria-hidden="true"><label for="${id('website')}">${escapeHtml(c.trap)}</label><input id="${id('website')}" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+  <p class="contact-form__notice">${escapeHtml(c.notice)} <a href="../privacy/">${escapeHtml(c.policy)}</a></p>
+  <label class="check"><input name="consent" type="checkbox" required><span>${escapeHtml(c.consent)}</span></label>
+  <button type="submit" class="button">${escapeHtml(c.send)}</button>
+  <p class="contact-form__status" data-status role="status" aria-live="polite"></p>
+  <p class="contact-form__recaptcha">${escapeHtml(c.recaptcha.before)} <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">${escapeHtml(c.recaptcha.privacy)}</a> ${escapeHtml(c.recaptcha.and)} <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">${escapeHtml(c.recaptcha.terms)}</a> ${escapeHtml(c.recaptcha.after)}</p>
+</form>`;
+}
+
 function renderBody(l, rel, body, prefix = '') {
   renderLang = l;
   let html = prefix + md.parse(body);
@@ -275,6 +296,7 @@ function renderBody(l, rel, body, prefix = '') {
     '<!-- updates -->': () => updatesBlock(l),
     '<!-- manuals -->': () => manualsBlock(l, rel),
     '<!-- docs-index -->': () => docsIndexBlock(l, rel),
+    '<!-- contact-form -->': () => contactFormBlock(l),
   };
   for (const [mark, fn] of Object.entries(blocks)) if (html.includes(mark)) html = html.replace(mark, () => fn());
   renderLang = DEFAULT_LOCALE;
@@ -377,6 +399,7 @@ function writePage({ page, rel, docs, root = rootFor(rel) }) {
     'a.menu': labelIn((l) => ui[l].menu),
     'a.language': labelIn((l) => ui[l].language),
     'a.githubFab': labelIn((l) => ui[l].githubFab),
+    pageScripts: page === 'contact' ? `<script src="${root}assets/contact.js" defer></script>` : '',
     learnMore: LOCALES.map((l) => {
       const m = ui[l].learnMore;
       return `<p class="footer__learn" data-l="${l}" lang="${l}">${escapeHtml(m.text)} <a href="${escapeHtml(m.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(m.link)}<span class="ext" aria-hidden="true">↗</span></a></p>`;

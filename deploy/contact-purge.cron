@@ -1,0 +1,2 @@
+# /etc/cron.d/callingsupportapp-contact-purge — lo instala quien administra el servidor
+15 4 * * * callingsupportapp /usr/local/php83/bin/php /home/callingsupportapp/CallingSupportApp/deploy/contact-purge.php >> /home/callingsupportapp/.mbtmp/contact-purge.log 2>&1
