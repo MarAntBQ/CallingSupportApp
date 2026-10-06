@@ -124,7 +124,7 @@ Sitio generado en _site/: 15 páginas, cada una con es, pt, en; 1 perfil(es), 2 
 Sin problemas: títulos ≤ 60, descripciones 150–160, etiquetas únicas y JSON-LD válido.
 ```
 
-Y `npx serve` te da una dirección (normalmente `http://localhost:3000`): ábrela en el navegador. Cada vez que cambies un texto, vuelve a correr `node site/build.mjs` y recarga.
+Y `npx serve _site` te da una dirección (normalmente `http://localhost:3000`): ábrela en el navegador. Cada vez que cambies un texto, vuelve a correr `node site/build.mjs` y recarga.
 
 Las pruebas del bot y de los perfiles:
 
@@ -181,7 +181,7 @@ Es el único aporte que **no necesita issue ni `/tomar`**, y te hace recorrer el
    git push -u origin docs/perfil-<tu-usuario>
    ```
 
-5. Abre el PR **en borrador con la plantilla completa**. GitHub la carga sola si lo abres desde el botón *Compare & pull request* de tu fork. Complétala: qué cambiaste, cómo probarlo y lo que verificaste (pega la línea del build).
+5. Abre el PR **en borrador con la plantilla completa**. GitHub la carga sola si lo abres desde el botón *Compare & pull request* de tu fork. Si eres colaborador oficial, ábrelo en el repositorio original comparando tu rama con `main`. Complétala: qué cambiaste, cómo probarlo y lo que verificaste (pega la línea del build).
 
 6. Cuando esté listo, pásalo a *Ready for review*. Responde las observaciones de la revisión con commits nuevos en la misma rama. Entra a `main` por **squash**.
 
@@ -189,8 +189,8 @@ Es el único aporte que **no necesita issue ni `/tomar`**, y te hace recorrer el
 
    ```sh
    git switch main
-   git pull upstream main
-   git push origin main
+   git pull upstream main          # colaboradores oficiales: git pull origin main
+   git push origin main            # solo desde un fork: actualiza tu copia
    git branch -d docs/perfil-<tu-usuario>
    ```
 
@@ -201,7 +201,7 @@ Es el único aporte que **no necesita issue ni `/tomar`**, y te hace recorrer el
 1. **Elige** un issue sin asignar, sin `en-progreso`, sin `bloqueado` ni `necesita-diseño`. Si es tu primera vez, busca `good first issue`. [Ver issues libres](https://github.com/MarAntBQ/CallingSupportApp/issues?q=is%3Aopen+is%3Aissue+no%3Aassignee+-label%3Abloqueado).
 2. **Léelo completo.** Si algo no se entiende, pregúntalo **en el issue** antes de programar.
 3. **Tómalo** comentando `/tomar` en el issue. El bot te lo asigna y le pone `en-progreso`. Funciona también desde un fork. **Un issue a la vez.**
-4. **Rama:** `feat/<número>-titulo-corto` (o `fix`, `docs`, `chore`…), creada desde `main` actualizado.
+4. **Rama:** `feat/<número>-titulo-corto` (o `fix`, `docs`, `chore`…), creada desde `main` actualizado (`git switch main` y `git pull upstream main`; los colaboradores oficiales, `git pull origin main`).
 5. **PR en borrador dentro de las 48 horas**, con la plantilla completa y `Refs #<número>`.
 6. **Verifica ejecutando:** el build, las pruebas y un recorrido real. En el PR se pega la salida, no un resumen.
 7. **Revisa tu propio código** con la skill `revisar-codigo`, y si toca datos de personas, con `datos-de-miembros`.

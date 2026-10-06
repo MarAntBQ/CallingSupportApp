@@ -69,8 +69,8 @@ Choose *GitHub.com → HTTPS → Login with a web browser* and follow the instru
 ## 4. Configure Git
 
 ```sh
-git config --global user.name "Tu nombre"
-git config --global user.email "123456+tu-usuario@users.noreply.github.com"
+git config --global user.name "Your name"
+git config --global user.email "123456+your-username@users.noreply.github.com"
 ```
 
 Line endings (important so the scripts work on the server):
@@ -95,8 +95,8 @@ git remote -v
 **You should see** two remotes: `origin` is your copy and `upstream` is the original:
 
 ```
-origin    https://github.com/<tu-usuario>/CallingSupportApp.git (fetch)
-origin    https://github.com/<tu-usuario>/CallingSupportApp.git (push)
+origin    https://github.com/<your-username>/CallingSupportApp.git (fetch)
+origin    https://github.com/<your-username>/CallingSupportApp.git (push)
 upstream  https://github.com/MarAntBQ/CallingSupportApp.git (fetch)
 upstream  https://github.com/MarAntBQ/CallingSupportApp.git (push)
 ```
@@ -126,7 +126,7 @@ Sitio generado en _site/: 15 páginas, cada una con es, pt, en; 1 perfil(es), 2 
 Sin problemas: títulos ≤ 60, descripciones 150–160, etiquetas únicas y JSON-LD válido.
 ```
 
-And `npx serve` gives you an address (usually `http://localhost:3000`): open it in your browser. Every time you change text, run `node site/build.mjs` again and reload.
+And `npx serve _site` gives you an address (usually `http://localhost:3000`): open it in your browser. Every time you change text, run `node site/build.mjs` again and reload.
 
 The bot and profile tests:
 
@@ -154,11 +154,11 @@ This is the only contribution that **does not need an issue or `/tomar`**, and i
 
    ```sh
    git switch main
-   git pull upstream main          # colaboradores oficiales: git pull origin main
-   git switch -c docs/perfil-<tu-usuario>
+   git pull upstream main          # official contributors: git pull origin main
+   git switch -c docs/perfil-<your-username>
    ```
 
-2. Create `team/<tu-usuario>.md` by copying the template from [team/README.md](https://github.com/MarAntBQ/CallingSupportApp/blob/main/team/README.md). Write two to four lines about yourself, **without hierarchy titles** ("líder", "fundador", "creador"…) and without sensitive data (phone, address, email).
+2. Create `team/<your-username>.md` by copying the template from [team/README.md](https://github.com/MarAntBQ/CallingSupportApp/blob/main/team/README.md). Write two to four lines about yourself, **without hierarchy titles** ("líder", "fundador", "creador"…) and without sensitive data (phone, address, email).
 
 3. Validate it:
 
@@ -174,18 +174,18 @@ This is the only contribution that **does not need an issue or `/tomar`**, and i
 
    ```
    El sitio no se generó:
-     team/tu-usuario.md: no se usan títulos de jerarquía ("líder"): en CSATeam todos somos colaboradores
+     team/your-username.md: no se usan títulos de jerarquía ("líder"): en CSATeam todos somos colaboradores
    ```
 
 4. Commit and push:
 
    ```sh
-   git add team/<tu-usuario>.md
-   git commit -m "docs: perfil de <tu-usuario> en el equipo"
-   git push -u origin docs/perfil-<tu-usuario>
+   git add team/<your-username>.md
+   git commit -m "docs: perfil de <your-username> en el equipo"
+   git push -u origin docs/perfil-<your-username>
    ```
 
-5. Open the PR **as a draft with the complete template**. GitHub loads it automatically if you open it from the *Compare & pull request* button on your fork. Fill it out: what you changed, how to test it, and what you verified (paste the build line).
+5. Open the PR **as a draft with the complete template**. GitHub loads it automatically if you open it from the *Compare & pull request* button on your fork. If you are an official contributor, open it in the original repository by comparing your branch with `main`. Fill it out: what you changed, how to test it, and what you verified (paste the build line).
 
 6. When it is ready, move it to *Ready for review*. Respond to review comments with new commits on the same branch. Merge into `main` by **squash**.
 
@@ -193,9 +193,9 @@ This is the only contribution that **does not need an issue or `/tomar`**, and i
 
    ```sh
    git switch main
-   git pull upstream main
-   git push origin main
-   git branch -d docs/perfil-<tu-usuario>
+   git pull upstream main          # official contributors: git pull origin main
+   git push origin main            # fork only: updates your copy
+   git branch -d docs/perfil-<your-username>
    ```
 
 - [ ] My profile appears on the [Team](../team/) page.
@@ -205,7 +205,7 @@ This is the only contribution that **does not need an issue or `/tomar`**, and i
 1. **Choose** an unassigned issue, without `en-progreso`, `bloqueado`, or `necesita-diseño`. If this is your first time, look for `good first issue`. [View available issues](https://github.com/MarAntBQ/CallingSupportApp/issues?q=is%3Aopen+is%3Aissue+no%3Aassignee+-label%3Abloqueado).
 2. **Read it completely.** If anything is unclear, ask **in the issue** before coding.
 3. **Claim it** by commenting `/tomar` on the issue. The bot assigns it to you and adds `en-progreso`. It also works from a fork. **One issue at a time.**
-4. **Branch:** `feat/<número>-titulo-corto` (or `fix`, `docs`, `chore`…), created from the updated `main`.
+4. **Branch:** `feat/<número>-titulo-corto` (or `fix`, `docs`, `chore`…), created from the updated `main` (`git switch main` and `git pull upstream main`; official contributors use `git pull origin main`).
 5. **Draft PR within 48 hours**, with the complete template and `Refs #<número>`.
 6. **Verify by running:** the build, the tests, and a real walkthrough. Paste the output in the PR, not a summary.
 7. **Review your own code** with the `revisar-codigo` skill and, if it involves people's data, with `datos-de-miembros`.

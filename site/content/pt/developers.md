@@ -69,8 +69,8 @@ Escolha *GitHub.com → HTTPS → Login with a web browser* e siga as instruçõ
 ## 4. Configurar o Git
 
 ```sh
-git config --global user.name "Tu nombre"
-git config --global user.email "123456+tu-usuario@users.noreply.github.com"
+git config --global user.name "Seu nome"
+git config --global user.email "123456+seu-usuario@users.noreply.github.com"
 ```
 
 Quebras de linha (importante para os scripts funcionarem no servidor):
@@ -95,8 +95,8 @@ git remote -v
 **Você deve ver** dois remotos: `origin` é sua cópia e `upstream` é o original:
 
 ```
-origin    https://github.com/<tu-usuario>/CallingSupportApp.git (fetch)
-origin    https://github.com/<tu-usuario>/CallingSupportApp.git (push)
+origin    https://github.com/<seu-usuario>/CallingSupportApp.git (fetch)
+origin    https://github.com/<seu-usuario>/CallingSupportApp.git (push)
 upstream  https://github.com/MarAntBQ/CallingSupportApp.git (fetch)
 upstream  https://github.com/MarAntBQ/CallingSupportApp.git (push)
 ```
@@ -126,7 +126,7 @@ Sitio generado en _site/: 15 páginas, cada una con es, pt, en; 1 perfil(es), 2 
 Sin problemas: títulos ≤ 60, descripciones 150–160, etiquetas únicas y JSON-LD válido.
 ```
 
-E `npx serve` fornece um endereço (normalmente `http://localhost:3000`): abra-o no navegador. Cada vez que mudar um texto, execute novamente `node site/build.mjs` e recarregue.
+E `npx serve _site` fornece um endereço (normalmente `http://localhost:3000`): abra-o no navegador. Cada vez que mudar um texto, execute novamente `node site/build.mjs` e recarregue.
 
 Os testes do bot e dos perfis:
 
@@ -154,11 +154,11 @@ node --test .github/scripts/claim-logic.test.cjs .github/scripts/team-profiles.t
 
    ```sh
    git switch main
-   git pull upstream main          # colaboradores oficiales: git pull origin main
-   git switch -c docs/perfil-<tu-usuario>
+   git pull upstream main          # colaboradores oficiais: git pull origin main
+   git switch -c docs/perfil-<seu-usuario>
    ```
 
-2. Crie `team/<tu-usuario>.md` copiando o modelo de [team/README.md](https://github.com/MarAntBQ/CallingSupportApp/blob/main/team/README.md). Escreva de duas a quatro linhas sobre você, **sem títulos hierárquicos** ("líder", "fundador", "criador"…) e sem dados sensíveis (telefone, endereço, e-mail).
+2. Crie `team/<seu-usuario>.md` copiando o modelo de [team/README.md](https://github.com/MarAntBQ/CallingSupportApp/blob/main/team/README.md). Escreva de duas a quatro linhas sobre você, **sem títulos hierárquicos** ("líder", "fundador", "criador"…) e sem dados sensíveis (telefone, endereço, e-mail).
 
 3. Valide-o:
 
@@ -174,18 +174,18 @@ node --test .github/scripts/claim-logic.test.cjs .github/scripts/team-profiles.t
 
    ```
    El sitio no se generó:
-     team/tu-usuario.md: no se usan títulos de jerarquía ("líder"): en CSATeam todos somos colaboradores
+     team/seu-usuario.md: no se usan títulos de jerarquía ("líder"): en CSATeam todos somos colaboradores
    ```
 
 4. Commit e push:
 
    ```sh
-   git add team/<tu-usuario>.md
-   git commit -m "docs: perfil de <tu-usuario> en el equipo"
-   git push -u origin docs/perfil-<tu-usuario>
+   git add team/<seu-usuario>.md
+   git commit -m "docs: perfil de <seu-usuario> en el equipo"
+   git push -u origin docs/perfil-<seu-usuario>
    ```
 
-5. Abra o PR **como rascunho, com o modelo completo**. O GitHub o carrega automaticamente se você o abrir pelo botão *Compare & pull request* do seu fork. Preencha-o: o que mudou, como testar e o que você verificou (cole a linha do build).
+5. Abra o PR **como rascunho, com o modelo completo**. O GitHub o carrega automaticamente se você o abrir pelo botão *Compare & pull request* do seu fork. Se você for colaborador oficial, abra-o no repositório original comparando sua branch com a `main`. Preencha-o: o que mudou, como testar e o que você verificou (cole a linha do build).
 
 6. Quando estiver pronto, passe-o para *Ready for review*. Responda às observações da revisão com novos commits na mesma branch. Entre na `main` por **squash**.
 
@@ -193,9 +193,9 @@ node --test .github/scripts/claim-logic.test.cjs .github/scripts/team-profiles.t
 
    ```sh
    git switch main
-   git pull upstream main
-   git push origin main
-   git branch -d docs/perfil-<tu-usuario>
+   git pull upstream main          # colaboradores oficiais: git pull origin main
+   git push origin main            # só a partir de um fork: atualiza sua cópia
+   git branch -d docs/perfil-<seu-usuario>
    ```
 
 - [ ] Meu perfil aparece na página [Equipe](../team/).
@@ -205,7 +205,7 @@ node --test .github/scripts/claim-logic.test.cjs .github/scripts/team-profiles.t
 1. **Escolha** um issue sem responsável, sem `en-progreso`, sem `bloqueado` nem `necesita-diseño`. Se for sua primeira vez, procure `good first issue`. [Ver issues livres](https://github.com/MarAntBQ/CallingSupportApp/issues?q=is%3Aopen+is%3Aissue+no%3Aassignee+-label%3Abloqueado).
 2. **Leia-o por completo.** Se algo não estiver claro, pergunte **no issue** antes de programar.
 3. **Pegue-o** comentando `/tomar` no issue. O bot atribui o issue a você e adiciona `en-progreso`. Também funciona a partir de um fork. **Um issue por vez.**
-4. **Branch:** `feat/<número>-titulo-corto` (ou `fix`, `docs`, `chore`…), criada a partir da `main` atualizada.
+4. **Branch:** `feat/<número>-titulo-corto` (ou `fix`, `docs`, `chore`…), criada a partir da `main` atualizada (`git switch main` e `git pull upstream main`; colaboradores oficiais, `git pull origin main`).
 5. **PR em rascunho dentro de 48 horas**, com o modelo completo e `Refs #<número>`.
 6. **Verifique executando:** o build, os testes e um percurso real. No PR, cole a saída, não um resumo.
 7. **Revise seu próprio código** com a skill `revisar-codigo` e, se envolver dados de pessoas, com `datos-de-miembros`.
