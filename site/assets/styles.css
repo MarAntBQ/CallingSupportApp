@@ -716,8 +716,8 @@ html[data-lang='en'] [data-l='es'] {
 /* ---------- Botón flotante de GitHub */
 .fab-github {
   position: fixed;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   z-index: 4;
   display: inline-flex;
   align-items: center;
@@ -774,5 +774,9 @@ html[data-lang='en'] [data-l='es'] {
 
   * {
     transition: none !important;
+  }
+
+  .fab-github:hover {
+    transform: none;
   }
 }
