@@ -156,7 +156,7 @@ npm run dev
 ```
 
 **Você deve ver:**
-- `npm run db:migrate` termina com `migrations applied successfully!`;
+- `npm run db:migrate` termina sem erros (com a versão atual do drizzle-kit, diz `migrations applied successfully!`);
 - `npm run dev` mostra `Ready` e o endereço `http://localhost:3000`;
 - `http://localhost:3000/api/health` responde `{"ok":true,"db":true}`, e a página inicial diz "Em construção".
 
