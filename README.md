@@ -37,6 +37,12 @@ el proyecto sigue una regla simple:
 una actividad concreta.** Por ejemplo, quien se inscribe al viaje al templo o al campamento
 acepta que lo anoten en esa lista, y esa lista es justo lo que el organizador necesita.
 
+Esa regla viene del **Manual General de la Iglesia, 33.8 "Carácter confidencial de los registros"**
+([fuente](https://www.churchofjesuschrist.org/study/manual/general-handbook/33-records-and-reports?lang=spa)):
+la información de los miembros se limita a lo necesario, se usa solo para el propósito aprobado,
+se entrega solo a quien está autorizado, nunca se usa para fines personales, políticos ni
+comerciales, y nunca se entrega para estudios de investigación o encuestas. Rige todo el proyecto.
+
 En la práctica:
 
 - **Nunca** se importan listados de los sistemas oficiales de la Iglesia (cédulas de

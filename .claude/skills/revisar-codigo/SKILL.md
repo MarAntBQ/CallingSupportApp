@@ -64,8 +64,10 @@ Recorre el diff completo con esta lista. Cada punto es un error que ya pasó en 
    (aprobar y descontar cupo) van en una transacción.
 10. **Nada fijo de un barrio.** Nombres, logos, correos o textos de una unidad concreta
     salen de la configuración, no del código.
-11. **Datos de personas.** Si el diff recoge, guarda, muestra o exporta datos de personas,
-    corre también la skill `datos-de-miembros`. Revisa que no queden en logs, mensajes de
+11. **Datos de personas: rige el Manual General 33.8.** ¿El diff recoge algo que la actividad
+    no necesita? ¿Usa un dato fuera del módulo donde se entregó? ¿Lo muestra o lo exporta a
+    alguien sin el permiso del módulo? ¿Puede servir a fines personales, políticos, comerciales o
+    a un estudio? Cualquier "sí" es un `[bug]` que bloquea. Corre también la skill `datos-de-miembros`. Revisa que no queden en logs, mensajes de
     error ni respuestas de la API que no los necesitan.
 12. **Secretos.** Ningún token, contraseña o `.env` en el diff. Las variables nuevas están en
     `.env.example` sin valores reales.

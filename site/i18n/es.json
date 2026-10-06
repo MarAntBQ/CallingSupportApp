@@ -48,6 +48,7 @@
   "data": {
     "title": "Cuidado de los datos de los miembros",
     "lead": "Los datos de los miembros de la Iglesia son de sumo cuidado y no se pueden filtrar. Por eso el proyecto sigue reglas simples:",
+    "p0": "Seguimos el Manual General de la Iglesia (33.8): los datos se limitan a lo necesario, se usan solo para el propósito aprobado, solo los ve quien está autorizado, y nunca para fines personales, políticos ni comerciales.",
     "p1": "Solo se manejan datos que cada persona entrega por sí misma, con su consentimiento, para una actividad concreta.",
     "p2": "Nunca se importan listados de los sistemas oficiales de la Iglesia.",
     "p3": "Las ordenanzas y los datos de salud se tratan como datos sensibles.",
