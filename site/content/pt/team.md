@@ -20,6 +20,17 @@ Todas as pessoas que contribuíram para o repositório:
 
 ## Junte-se a nós
 
+**Qualquer pessoa, membro ou amiga da Igreja, pode participar sem pedir permissão.** Você faz um fork do repositório, abre um PR e, se ele for aprovado, seu trabalho entra no projeto:
+
 1. Leia [como colaborar](https://github.com/MarAntBQ/CallingSupportApp/blob/main/CONTRIBUTING.md).
 2. Adicione seu perfil em [`team/`](https://github.com/MarAntBQ/CallingSupportApp/tree/main/team): essa é sua primeira contribuição.
 3. Escolha um issue disponível e comente `/tomar`.
+
+## Colaboradores oficiais
+
+Ser colaborador oficial dá acesso de escrita ao repositório. **Não é uma hierarquia:** ninguém fica acima de ninguém e as regras são as mesmas. Há dois caminhos:
+
+1. **Por convite:** alguém da equipe propõe.
+2. **Colaborando abertamente:** depois de vários PRs integrados, alguém da equipe propõe convidar você.
+
+O convite é proposto em um issue público e, se em uma semana ninguém apresentar uma objeção fundamentada, ele é enviado.

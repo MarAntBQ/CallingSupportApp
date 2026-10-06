@@ -115,7 +115,10 @@ es más que otro. En el repositorio, el sitio, los issues y los PRs **no se escr
 (cuando se habla de los líderes de una unidad de la Iglesia, sí). "Mantenedor" es solo la
 función técnica de mergear ([`.github/maintainers.json`](.github/maintainers.json)). Ninguna
 regla tiene excepciones por persona. Cada colaborador escribe su propio perfil en
-[`team/`](team/README.md).
+[`team/`](team/README.md). **Cualquier miembro o amigo de la Iglesia puede participar** con un
+fork y un PR, sin pedir permiso. Se llega a **colaborador oficial** (acceso de escritura, no un
+rango) cuando alguien del equipo propone invitarte, o después de varios PRs mergeados; el
+procedimiento está en [CONTRIBUTING.md](CONTRIBUTING.md#cómo-llegar-a-ser-colaborador-oficial).
 
 ## La regla que manda: los datos de los miembros
 
