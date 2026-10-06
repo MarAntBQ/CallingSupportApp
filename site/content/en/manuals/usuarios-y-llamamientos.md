@@ -1,6 +1,6 @@
 ---
-title: Users, callings, and permissions
-description: Who enters the application and what each calling can do.
+title: Users, callings and permissions
+description: Who can sign in to CallingSupportApp and what each calling can do: accounts, permissions by organization, and how access is revoked when a calling ends.
 updated: 2026-10-06
 order: 2
 ---

@@ -1,6 +1,6 @@
 ---
 title: Usuarios, llamamientos y permisos
-description: Quién entra a la aplicación y qué puede hacer cada llamamiento.
+description: Quién entra a CallingSupportApp y qué puede hacer cada llamamiento: cuentas, permisos por organización y cómo se revoca el acceso al terminar un llamamiento.
 updated: 2026-10-06
 order: 2
 ---

@@ -1,6 +1,6 @@
 ---
-title: CallingSupportApp
-description: Herramientas abiertas y gratuitas para organizar las actividades de un barrio o rama de La Iglesia de Jesucristo de los Santos de los Últimos Días.
+title: CallingSupportApp: herramientas gratuitas para tu barrio
+description: Software libre y gratuito para organizar viajes al templo, campamentos y clases de tu barrio o rama, cuidando los datos de los miembros según el Manual General.
 updated: 2026-10-06
 ---
 

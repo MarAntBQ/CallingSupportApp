@@ -1,6 +1,6 @@
 ---
-title: CallingSupportApp
-description: Ferramentas abertas e gratuitas para organizar as atividades de uma ala ou ramo de A Igreja de Jesus Cristo dos Santos dos Últimos Dias.
+title: CallingSupportApp: ferramentas gratuitas para sua ala
+description: Software livre e gratuito para organizar a viagem ao templo, acampamentos e aulas da sua ala ou ramo, protegendo os dados dos membros conforme o Manual Geral.
 updated: 2026-10-06
 ---
 

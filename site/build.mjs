@@ -159,6 +159,29 @@ const profiles = existsSync(teamDir)
       .sort((a, b) => String(a.data.name).localeCompare(String(b.data.name), 'es'))
   : [];
 
+// ---------- SEO: rangos de título y descripción (Google corta lo que se pasa)
+const TITLE_MAX = 60;
+const DESC_MIN = 150;
+const DESC_MAX = 160;
+const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
+const titleFor = (l, page, data) => {
+  const full = `${norm(data.title)} · ${ui[l].titleSuffix}`;
+  return page === 'index' || full.length > TITLE_MAX ? norm(data.title) : full;
+};
+for (const l of LOCALES) {
+  const docs = [
+    ...PAGES.map((p) => [p, `content/${l}/${p}.md`, content[l][p]]),
+    ...content[l].manualsList.map((m) => ['manuals', `content/${l}/manuals/${m.slug}.md`, m]),
+  ];
+  for (const [page, label, doc] of docs) {
+    if (!doc?.data?.title) continue;
+    const t = titleFor(l, page, doc.data);
+    const d = norm(doc.data.description);
+    if (t.length > TITLE_MAX) fail(`${label}: el título mide ${t.length} caracteres (máximo ${TITLE_MAX})`);
+    if (d.length < DESC_MIN || d.length > DESC_MAX) fail(`${label}: la descripción mide ${d.length} caracteres (debe medir entre ${DESC_MIN} y ${DESC_MAX})`);
+  }
+}
+
 if (problems.length) {
   console.error(`El sitio no se generó:\n  ${problems.join('\n  ')}`);
   process.exit(1);
@@ -265,7 +288,44 @@ const written = [];
 const textIn = (get) => LOCALES.map((l) => `<span data-l="${l}" lang="${l}">${escapeHtml(get(l))}</span>`).join('');
 const labelIn = (get) =>
   `aria-label="${escapeHtml(get(DEFAULT_LOCALE))}" ${LOCALES.map((l) => `data-aria-${l}="${escapeHtml(get(l))}"`).join(' ')}`;
-const titleFor = (l, page, data) => (page === 'index' ? data.title : `${data.title} · ${ui[l].titleSuffix}`);
+const ldJson = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
+const CSATEAM = { '@type': 'Organization', name: 'CSATeam OpenSource (Calling Support App Team)', url: `${SITE_URL}/team/` };
+
+function structuredData(page, rel, es) {
+  const blocks = [
+    { '@context': 'https://schema.org', '@type': 'WebSite', name: 'CallingSupportApp', url: `${SITE_URL}/`, inLanguage: LOCALES },
+    {
+      '@context': 'https://schema.org',
+      ...CSATEAM,
+      logo: `${SITE_URL}/assets/icon-512.png`,
+      email: 'devteam@callingsupportapp.org',
+      sameAs: [REPO],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareSourceCode',
+      name: 'CallingSupportApp',
+      description: norm(content[DEFAULT_LOCALE].index.data.description),
+      codeRepository: REPO,
+      license: 'https://opensource.org/licenses/MIT',
+      programmingLanguage: 'TypeScript',
+      author: CSATEAM,
+    },
+  ];
+  if (page === 'manuals' && rel !== pathFor('manuals')) {
+    blocks.push({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: ui[DEFAULT_LOCALE].nav.index, item: `${SITE_URL}/` },
+        { '@type': 'ListItem', position: 2, name: ui[DEFAULT_LOCALE].nav.manuals, item: `${SITE_URL}/${pathFor('manuals')}` },
+        { '@type': 'ListItem', position: 3, name: norm(es.title), item: `${SITE_URL}/${rel}` },
+      ],
+    });
+  }
+  return blocks.map(ldJson).join('\n  ');
+}
+
 
 function assertNoLocalePaths(rel, html) {
   for (const [, href] of html.matchAll(/href="([^"]*)"/g)) {
@@ -299,8 +359,14 @@ function writePage({ page, rel, docs, root = rootFor(rel) }) {
     'site.url': SITE_URL,
     'url.self': `${SITE_URL}/${rel}`,
     'page.fullTitle': escapeHtml(titleFor(DEFAULT_LOCALE, page, es)),
-    'page.description': escapeHtml(es.description),
+    'page.description': escapeHtml(norm(es.description)),
     ogLocale: escapeHtml(ui[DEFAULT_LOCALE].ogLocale),
+    ogLocaleAlternates: LOCALES.filter((l) => l !== DEFAULT_LOCALE)
+      .map((l) => `<meta property="og:locale:alternate" content="${escapeHtml(ui[l].ogLocale)}">`)
+      .join('\n  '),
+    ogImageAlt: escapeHtml(ui[DEFAULT_LOCALE].ogImageAlt),
+    ogType: page === 'manuals' && rel !== pathFor('manuals') ? 'article' : 'website',
+    jsonld: structuredData(page, rel, es),
     i18nAttrs: LOCALES.map(
       (l) => `data-title-${l}="${escapeHtml(titleFor(l, page, docs[l].data))}" data-desc-${l}="${escapeHtml(docs[l].data.description)}"`,
     ).join(' '),

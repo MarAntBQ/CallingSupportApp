@@ -1,6 +1,6 @@
 ---
-title: Viaje al Templo
-description: Para quien organiza el viaje y para quien se inscribe.
+title: Manual del viaje al templo
+description: Cómo organizar el viaje al templo de tu barrio con CallingSupportApp: inscripciones, cupos, costo estimado y aprobación, para quien organiza y para quien viaja.
 updated: 2026-10-06
 order: 3
 ---

@@ -1,6 +1,6 @@
 ---
-title: Equipo: CSATeam
-description: Quiénes hacen CallingSupportApp: un equipo de colaboradores iguales.
+title: Equipo CSATeam y colaboradores
+description: Conoce a CSATeam, el equipo de voluntarios que hace CallingSupportApp: colaboradores iguales, sin líderes ni dueños, que trabajan en abierto en GitHub.
 updated: 2026-10-06
 ---
 

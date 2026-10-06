@@ -1,6 +1,6 @@
 ---
-title: Getting started
-description: Install CallingSupportApp in your ward and get it ready to use.
+title: Getting started: install it in your ward
+description: How to install CallingSupportApp in your ward or branch and get it ready: requirements, first setup, and first users. This manual grows as the project does.
 updated: 2026-10-06
 order: 1
 ---

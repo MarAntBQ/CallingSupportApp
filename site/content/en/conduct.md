@@ -1,6 +1,6 @@
 ---
 title: Code of conduct
-description: How we work together as CSATeam contributors.
+description: The CSATeam code of conduct: how we collaborate with respect, without seeking credit, and with care for people in the CallingSupportApp open source project.
 updated: 2026-10-06
 ---
 

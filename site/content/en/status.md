@@ -1,6 +1,6 @@
 ---
-title: Project status
-description: Where CallingSupportApp stands and what is coming next.
+title: Project status and roadmap
+description: Where CallingSupportApp stands and what comes next: live progress of each milestone from GitHub, modules in development, and how you can help finish them.
 updated: 2026-10-06
 ---
 

@@ -1,6 +1,6 @@
 ---
-title: Primeiros passos
-description: Instalar o CallingSupportApp na sua ala e deixá-lo pronto para usar.
+title: Primeiros passos: instalar na sua ala
+description: Como instalar o CallingSupportApp na sua ala ou ramo e deixá-lo pronto para usar: requisitos, configuração inicial e primeiros usuários. Manual em preparação.
 updated: 2026-10-06
 order: 1
 ---

@@ -1,6 +1,6 @@
 ---
-title: Termos e isenção de responsabilidade
-description: As condições de uso do software e deste site.
+title: Termos de uso e isenção
+description: As condições para usar o software CallingSupportApp e este site: licença MIT, sem garantias, sem vínculo oficial com a Igreja e responsabilidade de cada ala.
 updated: 2026-10-06
 ---
 

@@ -1,6 +1,6 @@
 ---
-title: Manuais de uso
-description: Como usar o CallingSupportApp passo a passo, de acordo com seu chamado.
+title: Manuais de uso passo a passo
+description: Guias passo a passo para usar o CallingSupportApp de acordo com seu chamado: primeiros passos, usuários e permissões e como organizar a viagem ao templo.
 updated: 2026-10-06
 ---
 

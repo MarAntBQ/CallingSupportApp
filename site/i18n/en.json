@@ -52,5 +52,6 @@
     "title": "Page not found",
     "description": "The page you are looking for does not exist or has moved.",
     "home": "Back to home"
-  }
+  },
+  "ogImageAlt": "CallingSupportApp logo, open and free tools for wards and branches"
 }

@@ -1,6 +1,6 @@
 ---
-title: Normas de uso
-description: As regras seguidas por quem usa o CallingSupportApp, baseadas no Manual Geral da Igreja.
+title: Normas de uso segundo o Manual Geral
+description: As normas para usar o CallingSupportApp na sua ala: o Manual Geral prevalece, os dados dos membros são protegidos e o aplicativo nunca lida com dinheiro.
 updated: 2026-10-06
 ---
 

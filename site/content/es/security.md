@@ -1,6 +1,6 @@
 ---
-title: Seguridad
-description: Cómo reportar una vulnerabilidad de forma privada y responsable.
+title: Seguridad: reporta una vulnerabilidad
+description: Cómo reportar una falla de seguridad en CallingSupportApp de forma privada y responsable: por GitHub o por correo, sin exponer datos de los miembros del barrio.
 updated: 2026-10-06
 ---
 

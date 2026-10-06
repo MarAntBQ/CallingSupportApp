@@ -1,6 +1,6 @@
 ---
-title: Normas de uso
-description: Las reglas que siguen quienes usan CallingSupportApp, basadas en el Manual General de la Iglesia.
+title: Normas de uso según el Manual General
+description: Las normas para usar CallingSupportApp en tu barrio: el Manual General manda, los datos de los miembros se cuidan y la app nunca maneja dinero ni donativos.
 updated: 2026-10-06
 ---
 

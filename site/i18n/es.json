@@ -1,5 +1,5 @@
 {
-  "ogLocale": "es_LA",
+  "ogLocale": "es_EC",
   "skip": "Saltar al contenido",
   "home": "Inicio",
   "menu": "Menú",
@@ -52,5 +52,6 @@
     "title": "Página no encontrada",
     "description": "La página que buscas no existe o cambió de lugar.",
     "home": "Volver al inicio"
-  }
+  },
+  "ogImageAlt": "Logotipo de CallingSupportApp, herramientas abiertas y gratuitas para barrios y ramas"
 }

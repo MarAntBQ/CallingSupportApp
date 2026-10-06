@@ -1,6 +1,6 @@
 ---
 title: Terms and disclaimer
-description: The conditions for using the software and this site.
+description: Conditions for using the CallingSupportApp software and this site: MIT license, no warranty, no official tie to the Church, and each ward's own responsibility.
 updated: 2026-10-06
 ---
 

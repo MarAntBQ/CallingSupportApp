@@ -1,6 +1,6 @@
 ---
-title: CallingSupportApp
-description: Open and free tools for organizing activities in a ward or branch of The Church of Jesus Christ of Latter-day Saints.
+title: CallingSupportApp: free tools for your ward or branch
+description: Free, open source software to organize temple trips, camps and classes in your ward or branch, protecting member data just as the General Handbook directs.
 updated: 2026-10-06
 ---
 

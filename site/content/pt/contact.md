@@ -1,6 +1,6 @@
 ---
-title: Contato
-description: Como entrar em contato com o projeto.
+title: Contato e suporte
+description: Fale com a equipe do CallingSupportApp: dúvidas, sugestões ou problemas com o aplicativo. Respondemos por e-mail e os temas técnicos são tratados no GitHub.
 updated: 2026-10-06
 ---
 

@@ -1,6 +1,6 @@
 ---
-title: Primeros pasos
-description: Instalar CallingSupportApp en tu barrio y dejarlo listo para usar.
+title: Primeros pasos: instalar en tu barrio
+description: Cómo instalar CallingSupportApp en tu barrio o rama y dejarlo listo para usar: requisitos, configuración inicial y primeros usuarios. Manual en preparación.
 updated: 2026-10-06
 order: 1
 ---
