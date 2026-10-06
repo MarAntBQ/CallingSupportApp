@@ -70,8 +70,9 @@ Glosario para nombrar las cosas igual en el código y en las traducciones:
 | Participante | Participante | participant |
 | Ordenanza (bautismo, iniciatoria, investidura, sellamiento) | Ordenança (batismo, iniciatória, investidura, selamento) | ordinance (baptism, initiatory, endowment, sealing) |
 | Cupo | Vaga | quota / slot |
-| Abono | Pagamento | payment |
-| Cobrador | Recebedor | collector |
+| Costo estimado (referencial) | Custo estimado | estimated cost |
+| Aporte sugerido | Contribuição sugerida | suggested contribution |
+| Categoría de donativo | Categoria de doação | donation category |
 | Habitación | Quarto | room |
 | Campamento | Acampamento | camp |
 | Grupo de EnglishConnect / maestro / estudiante | Grupo do EnglishConnect / professor / aluno | EnglishConnect group / teacher / student |
@@ -89,11 +90,19 @@ Días").
 - **Al citar el Manual:** texto literal, número de sección y enlace. Nunca se le atribuye algo
   que no dice.
 - Cada módulo deja escrito, en su issue, qué secciones del Manual lo rigen y cómo las cumple.
-- **La app no maneja dinero de los miembros** ([capítulo 34](https://www.churchofjesuschrist.org/study/manual/general-handbook/34-finances-and-audits?lang=spa)): «Solo el obispo y sus
-  consejeros pueden recibir los diezmos y las otras ofrendas» (34.5.2), y los montos donados son
-  confidenciales (34.4). No hay abonos, pagos, cobradores, saldos ni donativos registrados; solo
-  costos estimados y las instrucciones para donar en la categoría que el obispado tenga
-  autorizada, en línea o con el formulario. Participar no depende de pagar (34.6.2.2).
+- **La app no maneja dinero de los miembros** ([capítulo 34 "Finanzas y auditorías"](https://www.churchofjesuschrist.org/study/manual/general-handbook/34-finances-and-audits?lang=spa)):
+  - 34.5.2: «Solo el obispo y sus consejeros pueden recibir los diezmos y las otras ofrendas.»
+  - 34.4: «El monto que un donante pague de diezmo y de otras ofrendas es confidencial.»
+  - 34.3: «Se alienta a los miembros a que, donde sea posible, hagan sus contribuciones en línea»
+    (o con el formulario de Diezmo y otras ofrendas entregado al obispo o a uno de sus consejeros).
+  - 34.3.4: «Las estacas y los barrios no deben establecer categorías […] para proyectos que no
+    estén aprobados por la Presidencia de Área».
+  - 34.6.2.2: «Por lo general, los miembros no deben tener que pagar para participar en las
+    actividades».
+
+  Por eso no hay abonos, pagos, cobradores, saldos ni donativos registrados: solo costos
+  estimados y las instrucciones para donar en la categoría que el obispado ya tenga autorizada
+  (la app no crea categorías), en línea o con el formulario. Participar no depende de pagar.
 
 Orden de las reglas: **1)** el Manual General en todo; **2)** dentro de él, para los datos de
 los miembros, el 33.8 (sección siguiente); **3)** las reglas técnicas de este archivo.

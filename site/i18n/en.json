@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "CallingSupportApp — open tools for Church units",
-    "description": "Open source app to organize the activities of a ward or branch: sign-ups, quotas, payments and lists for temple trips, camps and EnglishConnect. In English, Spanish and Portuguese.",
+    "description": "Open source app to organize the activities of a ward or branch: sign-ups, quotas, estimated costs and lists for temple trips, camps and EnglishConnect. In English, Spanish and Portuguese.",
     "ogLocale": "en_US"
   },
   "nav": {
@@ -12,7 +12,7 @@
     "eyebrow": "Open source · Español · Português · English",
     "titleHighlight": "Organize",
     "titleRest": " your unit's activities in one place",
-    "lead": "CallingSupportApp helps the leaders of a ward or branch organize the temple trip, camps and EnglishConnect classes: sign-ups, quotas, payments and lists, with the care that members' data deserves.",
+    "lead": "CallingSupportApp helps the leaders of a ward or branch organize the temple trip, camps and EnglishConnect classes: sign-ups, quotas, estimated costs and lists, with the care that members' data deserves.",
     "github": "View on GitHub",
     "contribute": "How to contribute"
   },
@@ -30,11 +30,11 @@
     },
     "temple": {
       "title": "Temple trip",
-      "body": "Public sign-up, quotas per ordinance and gender, transportation and lodging, payments, rooms and printable lists for the day of the trip."
+      "body": "Public sign-up, quotas per ordinance and gender, transportation and lodging, estimated cost and how to contribute, rooms and printable lists for the day of the trip."
     },
     "camp": {
       "title": "Camp",
-      "body": "Youth and leaders, each youth's fee, a packing list everyone checks off from their phone, and who brings the ward's shared equipment."
+      "body": "Youth and leaders, the official permission form, a packing list everyone checks off from their phone, and who brings the ward's shared equipment."
     },
     "ec": {
       "title": "EnglishConnect",
