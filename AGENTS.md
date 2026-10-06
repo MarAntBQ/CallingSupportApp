@@ -88,8 +88,9 @@ Los líderes se aseguran de que la información que se recabe de los miembros:
 > - «Se entregue únicamente a las personas que estén autorizadas a utilizarla.»
 
 Y de que esos datos **«no se empleen para objetivos personales, políticos ni comerciales»**.
-Tampoco se da información **a ninguna persona ni agencia que haga estudios de investigación o
-encuestas**.
+Además: «No se debe dar información de los registros de la Iglesia, incluida la información
+histórica, a ninguna persona ni agencia que lleve a cabo estudios de investigación o
+encuestas».
 
 En este código eso significa:
 
@@ -105,7 +106,8 @@ En este código eso significa:
 La sección **33.9** agrega el cómo: proteger contra acceso, cambios, destrucción o divulgación
 no autorizados; cada persona con su propia cuenta y sin compartir contraseñas; verificación en
 dos pasos; nada de datos en computadoras compartidas; conservar solo lo necesario; y destruir
-de forma irrecuperable (borrado físico). Detalle y lista para el PR: skill
+de forma irrecuperable. **Decisión del proyecto** para cumplir esto último: la purga hace
+borrado físico (`DELETE`), sin borrado lógico ni papelera. Detalle y lista para el PR: skill
 [`datos-de-miembros`](.claude/skills/datos-de-miembros/SKILL.md).
 
 ## Reglas duras

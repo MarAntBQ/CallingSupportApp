@@ -20,8 +20,9 @@ información que se recabe de los miembros:
 > - «Se entregue únicamente a las personas que estén autorizadas a utilizarla.»
 
 Y de que esos datos **«no se empleen para objetivos personales, políticos ni comerciales»**.
-No se da información **a ninguna persona ni agencia que lleve a cabo estudios de
-investigación o encuestas**.
+Además: «No se debe dar información de los registros de la Iglesia, incluida la información
+histórica, a ninguna persona ni agencia que lleve a cabo estudios de investigación o
+encuestas».
 
 | 33.8 | En el código |
 |---|---|
@@ -44,8 +45,9 @@ o alguien la pida.
   imprimir una lista se muestra: «Este archivo tiene datos de miembros. No lo guardes en una
   computadora compartida y bórralo cuando ya no lo necesites.»
 - **Retención:** solo el tiempo necesario para la actividad.
-- **Destrucción irrecuperable:** la purga hace **borrado físico** (`DELETE`), nunca un borrado
-  lógico ni una papelera.
+- **Destrucción irrecuperable:** el Manual pide destruir lo que ya no se necesita «de tal modo
+  que no sea posible recuperar ni reconstruir ninguna información». **Decisión del proyecto**
+  para cumplirlo: la purga hace borrado físico (`DELETE`), nunca un borrado lógico ni una papelera.
 - **Uso indebido:** ingresar a propósito información falsa o usar datos para fines ajenos a la
   Iglesia es grave, según el Manual. La aplicación no lo facilita: sin exportaciones masivas,
   sin copias entre módulos.
@@ -128,7 +130,7 @@ una persona solo puede consentir lo que entiende. Se guarda en qué idioma se ac
 ## Lista para el PR
 
 - [ ] **33.8:** solo lo necesario, solo para el propósito de esta actividad, solo para quien tiene el permiso, y nada que sirva a fines personales, políticos, comerciales o a estudios.
-- [ ] **33.9:** sin cuentas compartidas, sin datos en computadoras compartidas (aviso al exportar o imprimir) y purga con borrado físico.
+- [ ] **33.9:** sin cuentas compartidas, sin datos en computadoras compartidas (aviso al exportar o imprimir) y destrucción irrecuperable (en este proyecto, borrado físico).
 - [ ] Ningún dato viene de un sistema oficial de la Iglesia.
 - [ ] El formulario tiene aviso corto y casilla sin premarcar; el servidor exige el consentimiento.
 - [ ] Se guarda `consent` + `policyVersion`.

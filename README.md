@@ -40,8 +40,8 @@ acepta que lo anoten en esa lista, y esa lista es justo lo que el organizador ne
 Esa regla viene del **Manual General de la Iglesia, 33.8 "Carácter confidencial de los registros"**
 ([fuente](https://www.churchofjesuschrist.org/study/manual/general-handbook/33-records-and-reports?lang=spa)):
 la información de los miembros se limita a lo necesario, se usa solo para el propósito aprobado,
-se entrega solo a quien está autorizado y nunca se usa para fines personales, políticos ni
-comerciales. Rige todo el proyecto.
+se entrega solo a quien está autorizado, nunca se usa para fines personales, políticos ni
+comerciales, y nunca se entrega para estudios de investigación o encuestas. Rige todo el proyecto.
 
 En la práctica:
 
