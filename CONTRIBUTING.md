@@ -3,6 +3,9 @@
 Gracias por querer ayudar. Esta guía es todo lo que necesitas para tomar un issue y
 entregarlo, aunque nunca hayas hablado con nadie del equipo.
 
+**¿Primera vez?** Sigue el [Manual del desarrollador](https://callingsupportapp.org/developers/) paso a paso: te lleva desde una
+computadora sin nada instalado hasta tu primer PR mergeado.
+
 **La regla que manda:** el [Manual General de la Iglesia](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa)
 rige toda idea del proyecto. Si algo lo contradice, no se construye. Detalle en
 [AGENTS.md](AGENTS.md#el-manual-general-manda).

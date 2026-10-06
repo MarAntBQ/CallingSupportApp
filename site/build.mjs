@@ -16,9 +16,9 @@ const REPO = 'https://github.com/MarAntBQ/CallingSupportApp';
 const RECAPTCHA_SITE_KEY = '6LdKguItAAAAAAVLfpo2INl4o6C3D8oia3h-hr6q';
 const LOCALES = ['es', 'pt', 'en'];
 const DEFAULT_LOCALE = 'es';
-const PAGES = ['index', 'privacy', 'rules', 'manuals', 'updates', 'team', 'contact', 'conduct', 'terms', 'security', 'status'];
+const PAGES = ['index', 'privacy', 'rules', 'manuals', 'updates', 'team', 'contact', 'developers', 'conduct', 'terms', 'security', 'status'];
 const MAIN_NAV = ['privacy', 'rules', 'manuals', 'updates', 'team', 'contact'];
-const FOOTER_NAV = ['conduct', 'terms', 'security', 'status'];
+const FOOTER_NAV = ['developers', 'conduct', 'terms', 'security', 'status'];
 const INTL = { es: 'es', pt: 'pt-BR', en: 'en-US' };
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -70,6 +70,9 @@ md.use({
       return depth >= 2 && depth <= 3
         ? `<h${depth} id="${id}">${text}<a class="anchor" href="#${id}" aria-label="#">#</a></h${depth}>\n`
         : `<h${depth}>${text}</h${depth}>\n`;
+    },
+    checkbox({ checked }) {
+      return `<input type="checkbox" disabled aria-hidden="true"${checked ? " checked" : ""}> `;
     },
     html({ text }) {
       return MARKERS.includes(text.trim()) ? `${text.trim()}\n` : escapeHtml(text);

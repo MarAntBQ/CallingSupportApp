@@ -384,6 +384,10 @@ html[data-lang='en'] [data-l='es'] {
   color: inherit;
 }
 
+.prose :not(pre) > code {
+  overflow-wrap: anywhere;
+}
+
 .prose table {
   display: block;
   overflow-x: auto;
