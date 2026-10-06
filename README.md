@@ -103,6 +103,7 @@ comenta **`/tomar`** y un bot lo asigna y le pone la etiqueta `en-progreso`, as�
 que está en curso. Un issue a la vez por persona, PR en borrador en 48 horas y `/soltar` si no
 se puede seguir; con 14 días sin actividad se libera solo.
 
+- **¿Primera vez?** El [Manual del desarrollador](https://callingsupportapp.org/developers/): de cero a tu primer PR, paso a paso.
 - **Cómo colaborar paso a paso:** [CONTRIBUTING](CONTRIBUTING.md).
 - **Reglas del repositorio** (stack, idiomas, glosario), para personas y agentes de IA:
   [AGENTS.md](AGENTS.md).

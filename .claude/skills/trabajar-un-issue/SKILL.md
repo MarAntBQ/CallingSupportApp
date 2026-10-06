@@ -5,6 +5,8 @@ description: Flujo completo para tomar un issue de CallingSupportApp y entregarl
 
 # Trabajar un issue
 
+Si la persona nunca colaboró en el proyecto, empieza por el [Manual del desarrollador](https://callingsupportapp.org/developers/) (herramientas, fork, sitio local y primer PR guiado) y vuelve aquí para el flujo de cada issue.
+
 ## 1. Elegir
 
 ```sh
