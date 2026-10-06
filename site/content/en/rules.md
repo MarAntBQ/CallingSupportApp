@@ -30,16 +30,29 @@ The application **does not handle money**. According to [chapter 34](https://www
   - each participant provides the signed official “Permission and Authorization for Medical Care” form (20.7.4);
   - a participant contribution is requested only if the bishopric authorizes it because the budget is insufficient (20.6.2).
 
-## Business directory
+## No business directory
 
-The directory is **disabled** by default and is activated only with the bishopric’s approval, because the [General Handbook, 38.8.5](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=eng) says: “Church meetinghouses and other properties, Church meetings and classes, and Church websites and social media channels should not be used to promote businesses or entities that are not owned by the Church.”
+The application **has no business directory and no business ads**. It was considered and discarded because the General Handbook does not allow it:
 
-Anyone who publishes accepts a responsibility: every member should help **“safeguard the purity, integrity, and good name of the Church”** (a phrase from [lesson 107 in the Seminary manual on Doctrine and Covenants 102](https://www.churchofjesuschrist.org/study/manual/doctrine-and-covenants-and-church-history-seminary-teacher-manual-2014/section-5/lesson-107-doctrine-and-covenants-102?lang=eng)). In practice:
+- [38.8.5](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=eng) says: “Church meetinghouses and other properties, Church meetings and classes, and Church websites and social media channels should not be used to promote businesses or entities that are not owned by the Church”;
+- the [guidelines for online resources in Church callings](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=eng) (38.8.24.2) say: “No commercial advertising should appear on the site.”
 
-- only truthful information;
-- nothing that harms another person’s reputation (which is why there are no reviews or comments);
-- nothing that suggests the Church or the unit endorses a business;
-- the directory is not promoted in Church meetings, classes, or channels.
+The Self-Reliance module is only a portal of public, free resources, starting with the Church's official ones.
+## Online resources in Church callings (General Handbook 38.8.24.2)
+
+The Church has official guidelines for using websites, apps, and other online tools in callings: [Use of Online Resources in Church Callings](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=eng), which applies [General Handbook, 38.8.24.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=eng). CallingSupportApp follows them, and so does every ward that installs it:
+
+- **Prior approval.** “The creation of a website, blog, or social media account must first be approved by the stake president (for stake resources) or bishop (for ward resources).” No ward installs the application without its bishop's approval.
+- **No logo or official name.** “The Church wordmark or symbol may not be used or imitated.” The name “may include a ward or stake name. However, it may not include the official name of the Church.”
+- **Unofficial disclaimer.** “Members may not state or imply that the online resource's content, images, or other materials are sponsored or endorsed by the Church or officially represent the Church in any way. Rather, a disclaimer should be included stating that it is not an official, Church-sponsored product.” This site and every installation show it.
+- **Contact and more than one administrator.** “The online resource should include contact information.” “More than one administrator should be assigned to be responsible for the online resource.” Every installation has at least two administrators.
+- **Consent.** “When using images, videos, or personal information, consent from the content owner or the individuals involved is required.”
+- **Church materials.** “Church-owned artwork, videos, music, or other materials may not be posted unless the use is clearly authorized by the Terms of Use of an official Church website or by the Church's Intellectual Property Office.”
+- **No duplicating official tools.** “Online resources should not duplicate tools and features that are already on ChurchofJesusChrist.org, Member Tools, or other Church resources.” The application does not replace or copy Member Tools.
+- **No confidential matters by email.** “Because emails on the internet can be intercepted and read by others, they should avoid sending emails containing confidential or sensitive matters.” The application's emails notify and link; the details stay inside the application.
+- **Calendar.** “Make sure event descriptions do not contain confidential or sensitive information.”
+- **No advertising.** “No commercial advertising should appear on the site.”
+- **Retirement.** “Online resources should be retired when they are no longer needed.” When a ward stops using the application, it retires it and deletes its data.
 
 ## If you see misuse
 

@@ -30,7 +30,7 @@ Only data that **each person provides themselves, with their consent**, for a sp
 | Temple trip | National ID or passport, birth date, name, phone, email, gender, selected services and ordinances; consent date, IP, and language | Organize the trip: slots, transportation, meals, lodging |
 | Camp | For the youth: name, birth date, gender, and emergency contact. For their father, mother, or guardian: name, phone, and email | Organize the camp. **Medical data is not stored**: it goes in the official form signed by the parents |
 | EnglishConnect | Name, email, and phone (optional); the representative, if the student is a minor | Organize groups |
-| Self-reliance | In the directory, only what each member publishes about their business, plus a private email | Allow the unit to support them |
+| Self-reliance | None: it is a portal of links to public, free resources | Help the unit find official, reliable resources |
 
 **Ordinances are religious-belief data**: they are requested with explicit consent and are visible only to those who need them. When a **minor** registers, their parent or guardian gives consent.
 

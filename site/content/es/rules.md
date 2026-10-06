@@ -28,16 +28,29 @@ La aplicación **no maneja dinero**. Según el [capítulo 34](https://www.church
   - cada participante entrega el formulario oficial «Permiso y autorización para dar atención médica» firmado (20.7.4);
   - un aporte de los participantes solo se pide si el obispado lo autoriza porque el presupuesto no alcanza (20.6.2).
 
-## Directorio de emprendimientos
+## Sin directorio de negocios
 
-El directorio viene **apagado** y solo se activa con la aprobación del obispado, porque el [Manual General, 38.8.5](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=spa), dice: «Los centros de reuniones y otras propiedades de la Iglesia, las reuniones y las clases de la Iglesia, así como los sitios web y los canales en las redes sociales de la Iglesia no se deben utilizar para promocionar negocios ni entidades que no pertenezcan a la Iglesia.»
+La aplicación **no tiene directorio de emprendimientos ni anuncios de negocios**. Se consideró y se descartó porque el Manual General no lo permite:
 
-Quien publica acepta una responsabilidad: es tarea de cada miembro ayudar a **«salvaguardar la pureza, la integridad y el buen nombre de la Iglesia»** (frase de la [lección 107 del manual de Seminario sobre Doctrina y Convenios 102](https://www.churchofjesuschrist.org/study/manual/doctrine-and-covenants-and-church-history-seminary-teacher-manual-2014/section-5/lesson-107-doctrine-and-covenants-102?lang=spa)). En la práctica:
+- el [38.8.5](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=spa) dice: «Los centros de reuniones y otras propiedades de la Iglesia, las reuniones y las clases de la Iglesia, así como los sitios web y los canales en las redes sociales de la Iglesia no se deben utilizar para promocionar negocios ni entidades que no pertenezcan a la Iglesia»;
+- las [pautas para recursos en línea en los llamamientos](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa) (38.8.24.2) dicen: «No debe aparecer publicidad comercial en el sitio».
 
-- solo información verdadera;
-- nada que dañe la reputación de otra persona (por eso no hay reseñas ni comentarios);
-- nada que dé a entender que la Iglesia o la unidad respaldan un negocio;
-- no se promociona el directorio en reuniones, clases ni canales de la Iglesia.
+El módulo de Autosuficiencia es solo un portal de recursos públicos y gratuitos, empezando por los oficiales de la Iglesia.
+## Recursos en línea en los llamamientos (Manual General 38.8.24.2)
+
+La Iglesia tiene pautas oficiales para usar sitios, aplicaciones y otras herramientas en línea en los llamamientos: [Uso de recursos en línea en los llamamientos de la Iglesia](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa), que aplica el [Manual General, 38.8.24.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=spa). CallingSupportApp las cumple, y cada barrio que la instale también:
+
+- **Aprobación previa.** «La creación de un sitio web, un blog o una cuenta de redes sociales debe ser aprobada primero por el presidente de estaca (para los recursos de estaca) o el obispo (para los recursos del barrio).» Ningún barrio instala la aplicación sin la aprobación de su obispo.
+- **Sin logotipo ni nombre oficial.** «No se debe emplear ni imitar el logotipo de la Iglesia.» El nombre «podría incluir el nombre de un barrio o una estaca. Sin embargo, no puede incluir el nombre oficial de la Iglesia.»
+- **Aviso de que no es oficial.** «Más bien, el recurso en línea debe incluir una explicación clara indicando que no es un producto oficial patrocinado por la Iglesia.» Lo muestran este sitio y cada instalación.
+- **Contacto y más de un administrador.** «El recurso en línea debe incluir información de contacto.» «Se debe asignar a más de un administrador para que sea responsable del recurso en línea.» Cada instalación tiene al menos dos administradores.
+- **Consentimiento.** «Al utilizar imágenes, videos o información personal, se requiere el consentimiento del propietario del contenido o de las personas involucradas.»
+- **Material de la Iglesia.** «No se deben publicar obras de arte, videos, música ni otros materiales que sean propiedad de la Iglesia a menos que tal uso se autorice claramente en la página “Condiciones de uso” de un sitio oficial de la Iglesia o por la Oficina de Propiedad Intelectual de la Iglesia.»
+- **No duplicar herramientas oficiales.** «Los recursos en línea no deben ser una réplica de las herramientas y funciones que ya se encuentran en LaIglesiadeJesucristo.org, Herramientas para miembros u otros recursos de la Iglesia.» La aplicación no reemplaza ni copia Herramientas para Miembros.
+- **Correos sin asuntos confidenciales.** Los líderes «deben evitar enviar correos electrónicos que contengan asuntos confidenciales o delicados». Los correos de la aplicación avisan y enlazan; los detalles se ven dentro de la aplicación.
+- **Calendario.** «Asegúrese de que las descripciones de eventos no contengan información confidencial o delicada.»
+- **Sin publicidad.** «No debe aparecer publicidad comercial en el sitio.»
+- **Retiro.** «Los recursos en línea deben eliminarse cuando ya no sean necesarios.» Cuando un barrio deja de usar la aplicación, la da de baja y borra sus datos.
 
 ## Si ves un uso indebido
 

@@ -178,7 +178,15 @@ borrado físico (`DELETE`), sin borrado lógico ni papelera. Detalle y lista par
    del flujo. En el PR se pega el output, no un resumen.
 9. **Correos siempre en minúsculas** al guardar y al buscar. En la v1 funcionaba solo porque
    MySQL ignora mayúsculas; Postgres no.
-10. **Commits** con tipo (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`) y en
+10. **Recursos en línea en los llamamientos (Manual General 38.8.24.2)** —
+   [pautas oficiales](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa). Cada instalación necesita **la aprobación previa del
+   obispo**, **al menos dos administradores**, un **contacto visible** y el **aviso de que no es
+   oficial**; nunca el logotipo ni el nombre oficial de la Iglesia. Ningún módulo **duplica
+   Herramientas para Miembros** ni LaIglesiadeJesucristo.org. **Los correos y las descripciones
+   de calendario nunca llevan información confidencial ni delicada:** avisan y enlazan; el
+   detalle se ve dentro de la aplicación. Sin publicidad. Cuando un barrio deja de usarla, se da
+   de baja con borrado de datos.
+11. **Commits** con tipo (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`) y en
    español. **Prohibido** agregar líneas de co-autoría de herramientas de IA.
 
 ## Reglas de interfaz
