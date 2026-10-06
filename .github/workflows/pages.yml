@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+      - 'team/**'
+      - '.github/scripts/team-profiles.cjs'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -25,7 +27,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Instalar dependencias del sitio
+        run: npm ci --prefix site --no-audit --no-fund
       - name: Generar el sitio
+        env:
+          SITE_URL: https://callingsupportapp.marantbq.dev
         run: node site/build.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

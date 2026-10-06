@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{page.fullTitle}}</title>
+  <meta name="description" content="{{page.description}}">
+  <link rel="canonical" href="{{url.self}}">
+  <link rel="alternate" hreflang="es" href="{{url.es}}">
+  <link rel="alternate" hreflang="pt" href="{{url.pt}}">
+  <link rel="alternate" hreflang="en" href="{{url.en}}">
+  <link rel="alternate" hreflang="x-default" href="{{url.es}}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CallingSupportApp">
+  <meta property="og:title" content="{{page.fullTitle}}">
+  <meta property="og:description" content="{{page.description}}">
+  <meta property="og:url" content="{{url.self}}">
+  <meta property="og:image" content="{{site.url}}/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="{{ui.ogLocale}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f6f5f4">
+  <link rel="icon" href="{{root}}assets/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="{{root}}assets/apple-touch-icon.png">
+  <link rel="manifest" href="{{root}}assets/site.webmanifest">
+  <link rel="preload" href="{{root}}assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{root}}assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">{{ui.skip}}</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <a class="brand" href="{{root}}{{langPath}}" aria-label="CallingSupportApp — {{ui.home}}">
+        <img src="{{root}}assets/logo.png" alt="CallingSupportApp" width="180" height="48">
+      </a>
+      <nav class="nav nav--desktop" aria-label="{{ui.menu}}">
+        <ul>
+          {{nav}}
+        </ul>
+      </nav>
+      <nav class="nav nav--mobile" aria-label="{{ui.menu}}">
+        <details class="nav__menu">
+          <summary>{{ui.menu}}</summary>
+          <ul>
+            {{nav}}
+          </ul>
+        </details>
+      </nav>
+      <nav class="langs" aria-label="{{ui.language}}">
+        <a href="{{switch.es}}" hreflang="es" lang="es" {{current.es}}>ES</a>
+        <a href="{{switch.pt}}" hreflang="pt" lang="pt" {{current.pt}}>PT</a>
+        <a href="{{switch.en}}" hreflang="en" lang="en" {{current.en}}>EN</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap page">
+    <article class="doc">
+      <header class="doc__header">
+        <h1>{{page.title}}</h1>
+        <p class="doc__lead">{{page.description}}</p>
+        {{page.updatedLine}}
+      </header>
+      <div class="prose">
+        {{content}}
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <ul class="footer__links">
+        {{footerNav}}
+      </ul>
+      <p>{{ui.license}} · <a href="https://github.com/MarAntBQ/CallingSupportApp">GitHub</a> · <a href="mailto:devteam@callingsupportapp.org">devteam@callingsupportapp.org</a></p>
+      <p class="muted">{{ui.unofficial}}</p>
+    </div>
+  </footer>
+
+  <script src="{{root}}assets/live.js" defer></script>
+</body>
+</html>
