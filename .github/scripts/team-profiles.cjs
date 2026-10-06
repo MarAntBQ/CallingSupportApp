@@ -2,10 +2,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const MAX_BODY = 600;
-const BANNED_TITLES = /\b(l[ií]der|lider|leader|fundador|fundadora|founder|creador|creadora|criador|criadora|creator|jefe|jefa|chefe|boss)\b/i;
+const BANNED_TITLES = /\b(l[ií]der|lider|leader|fundador|fundadora|founder|co-?founder|creador|creadora|criador|criadora|creator|jefe|jefa|chefe|boss|autor(?:a)? del proyecto|autor(?:a)? do projeto|project author|due[ñn]o del proyecto|due[ñn]a del proyecto|dono do projeto|dona do projeto|project owner|owner of the project)\b/i;
+const GITHUB_USER = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 const SENSITIVE = [
   { name: 'teléfono', re: /\+?\d[\d\s().-]{7,}\d/ },
   { name: 'correo', re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/ },
+  { name: 'dirección', re: /\b(calle|avenida|av\.|carrera|cra\.|pasaje|jir[oó]n|rua|travessa|street|avenue|road)\b[^.\n]{0,40}\d/i },
 ];
 const LOCALES = ['es', 'pt', 'en'];
 
@@ -48,7 +50,9 @@ function validateProfile(fileName, text) {
     return [e.message];
   }
   const { data, body } = parsed;
-  const user = path.basename(fileName, '.md');
+  const base = path.basename(fileName);
+  const user = base.replace(/\.md$/, '');
+  if (!base.endsWith('.md') || !GITHUB_USER.test(user)) errors.push(`el archivo debe llamarse <usuario-de-github>.md (no "${base}")`);
   if (!data.name || typeof data.name !== 'string') errors.push('falta "name"');
   if (!data.github) errors.push('falta "github"');
   else if (data.github !== user) errors.push(`"github" (${data.github}) no coincide con el archivo (${user}.md)`);

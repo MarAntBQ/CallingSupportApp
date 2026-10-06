@@ -49,4 +49,17 @@ test('validateProfile rechaza errores comunes', () => {
   assert.match(v(ok.replace('https://example.com', 'http://example.com')), /https/);
   assert.match(v(ok.replace('Hago pruebas y traducciones.', 'x'.repeat(601))), /máximo/);
   assert.match(v('sin frontmatter'), /frontmatter/);
+  assert.match(v(ok.replace('github: persona', 'github: not a user'), 'team/not a user.md'), /usuario-de-github/);
+  assert.match(v(ok.replace('Hago pruebas', 'Vivo en la calle Bolívar 123. Hago pruebas')), /dirección/);
+  assert.match(v(ok.replace('Hago pruebas', 'Moro na rua das Flores 45. Hago pruebas')), /dirección/);
+});
+
+test('validateProfile rechaza títulos de jerarquía en los 3 idiomas', () => {
+  const v = (s) => validateProfile('team/persona.md', ok.replace('Hago pruebas', `${s}. Hago pruebas`)).join(' | ');
+  for (const s of ['Soy el autor del proyecto', 'Soy la dueña del proyecto', 'Sou o dono do projeto', 'Sou o criador', 'I am the project owner', 'Co-founder here', 'I am the project author', 'Soy líder del equipo']) {
+    assert.match(v(s), /jerarquía/, s);
+  }
+  for (const s of ['Me gusta servir en mi barrio', 'Apoyo a los líderes de mi unidad con la tecnología', 'Escribo en mi blog']) {
+    assert.equal(v(s), '', s);
+  }
 });
