@@ -16,6 +16,8 @@ Antes de instalar, revisa esta lista. Sale de las [pautas oficiales para recurso
 - [ ] Quién será el **responsable de los datos** de tu instalación, y un **contacto visible** dentro de la aplicación.
 - [ ] El **aviso de que no es un producto oficial** de la Iglesia, sin su logotipo ni su nombre oficial en el nombre de la instalación.
 - [ ] **Sin publicidad** ni promoción de negocios.
+- [ ] **Consentimiento** antes de publicar fotos, videos o información personal de cualquier persona.
+- [ ] **Solo material de la Iglesia autorizado** por sus Condiciones de uso (imágenes, videos, música).
 - [ ] Un **plan para darla de baja** y borrar los datos cuando ya no se use.
 - [ ] Una cuenta gratuita de GitHub, de Vercel y de Supabase.
 

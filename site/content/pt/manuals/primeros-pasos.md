@@ -16,6 +16,8 @@ Antes de instalar, confira esta lista. Ela vem das [diretrizes oficiais para rec
 - [ ] Quem será o **responsável pelos dados** da sua instalação, e um **contato visível** dentro do aplicativo.
 - [ ] O **aviso de que não é um produto oficial** da Igreja, sem o logotipo dela nem o nome oficial no nome da instalação.
 - [ ] **Sem propaganda** nem promoção de negócios.
+- [ ] **Consentimento** antes de publicar fotos, vídeos ou informações pessoais de qualquer pessoa.
+- [ ] **Somente materiais da Igreja autorizados** pelos Termos de uso dela (imagens, vídeos, músicas).
 - [ ] Um **plano para desativá-lo** e apagar os dados quando não for mais usado.
 - [ ] Uma conta gratuita no GitHub, no Vercel e no Supabase.
 

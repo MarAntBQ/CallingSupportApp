@@ -16,6 +16,8 @@ Before installing, go through this list. It comes from the [official guidelines 
 - [ ] Who will be the **data steward** for your installation, and a **visible contact** inside the application.
 - [ ] The **disclaimer that it is not an official Church product**, without the Church's logo or official name in the installation's name.
 - [ ] **No advertising** or business promotion.
+- [ ] **Consent** before posting photos, videos, or personal information about anyone.
+- [ ] **Only Church materials authorized** by its Terms of Use (images, videos, music).
 - [ ] A **plan to retire it** and delete the data when it is no longer used.
 - [ ] A free GitHub, Vercel, and Supabase account.
 
