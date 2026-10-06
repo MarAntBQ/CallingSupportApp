@@ -23,10 +23,10 @@ de cálculo sueltas ni grupos de chat.
 
 | Módulo | Qué resuelve | Estado |
 |---|---|---|
-| Usuarios, organizaciones y llamamientos | Quién entra a la aplicación y qué puede ver o hacer en cada módulo, según su llamamiento | En la v1, por portar |
-| Viaje para Adorar en el Templo | Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, abonos, habitaciones, listados imprimibles | En la v1, por portar |
-| Campamento | Inscripción, cupos, costos y abonos de un campamento | Planeado |
-| EnglishConnect | Grupos por nivel con su sede o aula, día y hora de clase, enlace a la clase y al grupo de WhatsApp. Cada estudiante se inscribe en un grupo y ve el suyo; cada maestro ve a sus estudiantes | Planeado |
+| Usuarios, organizaciones y llamamientos | Quién entra a la aplicación y qué puede ver o hacer en cada módulo, según su llamamiento | Por portar de la v1: [#8](../../issues/8), [#14](../../issues/14)–[#17](../../issues/17) |
+| Viaje para Adorar en el Templo | Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, abonos, habitaciones, listados imprimibles | Por portar de la v1: [#19](../../issues/19)–[#25](../../issues/25) |
+| Campamento | Inscripción de jóvenes y líderes, cuota y abonos de cada joven, lista personal de qué llevar y reparto del equipo del barrio | Especificado: [#30](../../issues/30) |
+| EnglishConnect | Ciclos y grupos por nivel, con sede, día, hora y enlaces. Cada estudiante se inscribe y ve su grupo; cada maestro ve solo a sus estudiantes | Especificado: [#31](../../issues/31) |
 
 ## Cuidado de los datos de los miembros
 
