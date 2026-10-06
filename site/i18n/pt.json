@@ -92,5 +92,10 @@
     },
     "notice": "Responsável: CSATeam, a equipe do projeto. Usamos seu nome, seu e-mail e sua mensagem apenas para responder a você; a equipe os recebe por devteam@callingsupportapp.org e eles são apagados após 90 dias.",
     "policy": "Política de dados"
+  },
+  "templePhoto": {
+    "alt": "Templo de Quito, Equador, ao entardecer, com seu jardim e suas palmeiras",
+    "caption": "Templo de Quito, Equador",
+    "credit": "Foto: Biblioteca de Mídia do Evangelho"
   }
 }

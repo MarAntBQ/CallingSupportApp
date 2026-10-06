@@ -51,7 +51,7 @@ function slugify(text) {
     .replace(/\s+/g, '-');
 }
 
-const MARKERS = ['<!-- roadmap -->', '<!-- contributors -->', '<!-- team-profiles -->', '<!-- updates -->', '<!-- manuals -->', '<!-- docs-index -->', '<!-- contact-form -->'];
+const MARKERS = ['<!-- roadmap -->', '<!-- contributors -->', '<!-- team-profiles -->', '<!-- updates -->', '<!-- manuals -->', '<!-- docs-index -->', '<!-- contact-form -->', '<!-- temple-photo -->'];
 
 function safeHref(href) {
   const h = String(href).trim();
@@ -266,6 +266,20 @@ function docsIndexBlock(l, rel) {
   );
 }
 
+const TEMPLE_PHOTO = {
+  src: 'https://www.churchofjesuschrist.org/imgs/41239702d14611ecbf48eeeeac1e3d15a6d07055/full/500%2C/0/default',
+  page: 'https://www.churchofjesuschrist.org/media/image/quito-ecuador-temple-4123970',
+};
+const CHURCH_LANG = { es: 'spa', pt: 'por', en: 'eng' };
+
+function templePhotoBlock(l) {
+  const t = ui[l].templePhoto;
+  return `<figure class="photo">
+  <img src="${TEMPLE_PHOTO.src}" alt="${escapeHtml(t.alt)}" width="500" height="334" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+  <figcaption>${escapeHtml(t.caption)} · <a href="${TEMPLE_PHOTO.page}?lang=${CHURCH_LANG[l]}" target="_blank" rel="noopener noreferrer">${escapeHtml(t.credit)}<span class="ext" aria-hidden="true">↗</span></a></figcaption>
+</figure>`;
+}
+
 function contactFormBlock(l) {
   const c = ui[l].contactForm;
   const id = (k) => `cf-${l}-${k}`;
@@ -297,6 +311,7 @@ function renderBody(l, rel, body, prefix = '') {
     '<!-- manuals -->': () => manualsBlock(l, rel),
     '<!-- docs-index -->': () => docsIndexBlock(l, rel),
     '<!-- contact-form -->': () => contactFormBlock(l),
+    '<!-- temple-photo -->': () => templePhotoBlock(l),
   };
   for (const [mark, fn] of Object.entries(blocks)) if (html.includes(mark)) html = html.replace(mark, () => fn());
   renderLang = DEFAULT_LOCALE;
