@@ -377,6 +377,10 @@ function writePage({ page, rel, docs, root = rootFor(rel) }) {
     'a.menu': labelIn((l) => ui[l].menu),
     'a.language': labelIn((l) => ui[l].language),
     'a.githubFab': labelIn((l) => ui[l].githubFab),
+    learnMore: LOCALES.map((l) => {
+      const m = ui[l].learnMore;
+      return `<p class="footer__learn" data-l="${l}" lang="${l}">${escapeHtml(m.text)} <a href="${escapeHtml(m.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(m.link)}<span class="ext" aria-hidden="true">↗</span></a></p>`;
+    }).join('\n      '),
     ...Object.fromEntries(Object.keys(uiFlat[DEFAULT_LOCALE]).map((k) => [`t.${k}`, textIn((l) => uiFlat[l][k])])),
   };
   const missing = new Set();
