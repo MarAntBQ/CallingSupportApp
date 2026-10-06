@@ -1,5 +1,5 @@
 name: Tarea
-description: Propone un resultado revisable de forma independiente (producto, ingeniería o documentación).
+description: Un resultado concreto que alguien puede tomar y entregar en un solo PR.
 title: ""
 labels:
   - enhancement
@@ -7,34 +7,66 @@ body:
   - type: markdown
     attributes:
       value: |
-        Un issue = **un resultado**. Si algo puede aceptarse y desplegarse por separado, va en otro issue.
+        ## Regla: el issue se autocontiene
+
+        Quien tome este issue **no estuvo en ninguna conversación previa**. Tiene que poder
+        terminarlo leyendo solo este issue y los archivos que enlaza, sin preguntar.
+
+        - Si la información vive en un chat, una llamada o un tablero privado, **cópiala aquí**
+          (sin datos de personas). Un enlace a algo que el colaborador no puede abrir no cuenta.
+        - Las decisiones ya tomadas van escritas como decisiones, para que no se vuelvan a discutir.
+        - Un issue = **un resultado** que cabe en un PR revisable. Si son dos cosas, son dos issues.
+
+        Guía completa: skill `escribir-un-issue` en `.claude/skills/`.
   - type: input
     id: tarjeta
     attributes:
       label: Tarjeta de Trello
-      description: Enlace a la tarjeta del tablero, si existe. Opcional para colaboradores externos.
+      description: Opcional. Solo si la tarea viene del tablero del autor.
       placeholder: https://trello.com/c/...
-    validations:
-      required: false
   - type: textarea
     id: resultado
     attributes:
       label: Resultado
-      description: Qué problema resuelve, para quién, y qué cambia cuando esté terminado.
+      description: Qué cambia cuando esto esté terminado, y para quién (qué llamamiento o persona lo usa).
     validations:
       required: true
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto y decisiones ya tomadas
+      description: Por qué se hace, y qué ya está decidido (stack, nombres, comportamiento). No se vuelve a discutir dentro del PR.
+    validations:
+      required: true
+  - type: textarea
+    id: legacy
+    attributes:
+      label: Referencia en la v1 (rama legacy)
+      description: Si es un port, las rutas exactas en la rama `legacy` y qué funciones mirar. Se leen con `git show legacy:<ruta>`.
+      placeholder: |
+        - backend/src/templo/templo.service.ts → crearInscripcion()
+        - frontend/src/pages/InscripcionPage.tsx
   - type: textarea
     id: alcance
     attributes:
       label: Alcance
-      description: Qué comportamiento o artefactos entran en este issue.
+      description: Qué entra en este issue.
     validations:
       required: true
   - type: textarea
     id: exclusiones
     attributes:
-      label: Exclusiones importantes
-      description: Trabajo cercano que este issue deliberadamente NO incluye. Evita que el alcance se expanda solo.
+      label: Exclusiones
+      description: Trabajo cercano que este issue NO incluye, para que el alcance no crezca solo.
+    validations:
+      required: true
+  - type: textarea
+    id: especificacion
+    attributes:
+      label: Especificación
+      description: Datos (tablas, campos, tipos, reglas), pantallas, rutas o endpoints, permisos y reglas de negocio. Lo suficiente para construirlo sin adivinar.
+    validations:
+      required: true
   - type: textarea
     id: aceptacion
     attributes:
@@ -49,11 +81,42 @@ body:
     id: verificacion
     attributes:
       label: Verificación
-      description: Qué evidencia hace falta para cerrar esto — pruebas automáticas, navegador, flujo real, revisión en producción.
+      description: Cómo se demuestra que funciona, con comandos o pasos concretos.
+      placeholder: |
+        - npm run typecheck && npm run build sin errores
+        - Abrir /ruta, hacer X, ver Y
     validations:
       required: true
   - type: textarea
-    id: contexto
+    id: dependencias
     attributes:
-      label: Contexto y referencias
-      description: Enlaces a código, documentos, incidentes previos. No incluir credenciales ni datos personales.
+      label: Dependencias
+      description: Issues que deben estar cerrados antes, y los que este desbloquea. "Ninguna" si no hay.
+      placeholder: |
+        Bloqueado por: #N
+        Desbloquea: #M
+    validations:
+      required: true
+  - type: dropdown
+    id: datos
+    attributes:
+      label: ¿Toca datos de personas?
+      description: Si recoge, guarda, muestra o exporta datos de personas, el PR debe pasar por la skill `datos-de-miembros`.
+      options:
+        - "No"
+        - "Sí"
+    validations:
+      required: true
+  - type: checkboxes
+    id: autocontenido
+    attributes:
+      label: Comprobación de autocontenido
+      options:
+        - label: Se puede terminar leyendo solo este issue y los archivos que enlaza.
+          required: true
+        - label: No depende de información privada (chats, tableros privados, repos privados).
+          required: true
+        - label: No contiene datos de personas reales ni secretos.
+          required: true
+        - label: Cabe en un solo PR revisable.
+          required: true
