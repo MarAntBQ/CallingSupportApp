@@ -9,9 +9,15 @@ order: 1
 
 ## Antes de começar
 
-- A aprovação do seu bispado para usar o aplicativo na unidade.
-- Uma conta gratuita no GitHub, no Vercel e no Supabase.
-- Quem será o **responsável pelos dados** da sua instalação.
+Antes de instalar, confira esta lista. Ela vem das [diretrizes oficiais para recursos on-line nos chamados](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=por) (Manual Geral 38.8.24.2):
+
+- [ ] **A aprovação do seu bispo** para usar o aplicativo na unidade.
+- [ ] **Pelo menos dois administradores**, para que o aplicativo continue funcionando quando um chamado mudar.
+- [ ] Quem será o **responsável pelos dados** da sua instalação, e um **contato visível** dentro do aplicativo.
+- [ ] O **aviso de que não é um produto oficial** da Igreja, sem o logotipo dela nem o nome oficial no nome da instalação.
+- [ ] **Sem propaganda** nem promoção de negócios.
+- [ ] Um **plano para desativá-lo** e apagar os dados quando não for mais usado.
+- [ ] Uma conta gratuita no GitHub, no Vercel e no Supabase.
 
 ## Quando estiver pronta, as etapas serão
 

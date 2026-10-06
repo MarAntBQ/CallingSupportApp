@@ -9,9 +9,15 @@ order: 1
 
 ## Before you start
 
-- Approval from your bishopric to use the application in the unit.
-- A free GitHub, Vercel, and Supabase account.
-- Who will be the **data steward** for your installation.
+Before installing, go through this list. It comes from the [official guidelines for online resources in Church callings](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=eng) (General Handbook 38.8.24.2):
+
+- [ ] **Your bishop's approval** to use the application in the unit.
+- [ ] **At least two administrators**, so the application keeps working when a calling changes.
+- [ ] Who will be the **data steward** for your installation, and a **visible contact** inside the application.
+- [ ] The **disclaimer that it is not an official Church product**, without the Church's logo or official name in the installation's name.
+- [ ] **No advertising** or business promotion.
+- [ ] A **plan to retire it** and delete the data when it is no longer used.
+- [ ] A free GitHub, Vercel, and Supabase account.
 
 ## When it is ready, the steps will be
 

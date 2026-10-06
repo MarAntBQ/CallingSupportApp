@@ -9,9 +9,15 @@ order: 1
 
 ## Antes de empezar
 
-- La aprobación de tu obispado para usar la aplicación en la unidad.
-- Una cuenta gratuita de GitHub, de Vercel y de Supabase.
-- Quién será el **responsable de los datos** de tu instalación.
+Antes de instalar, revisa esta lista. Sale de las [pautas oficiales para recursos en línea en los llamamientos](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa) (Manual General 38.8.24.2):
+
+- [ ] **La aprobación de tu obispo** para usar la aplicación en la unidad.
+- [ ] **Al menos dos administradores**, para que la aplicación siga funcionando cuando cambie un llamamiento.
+- [ ] Quién será el **responsable de los datos** de tu instalación, y un **contacto visible** dentro de la aplicación.
+- [ ] El **aviso de que no es un producto oficial** de la Iglesia, sin su logotipo ni su nombre oficial en el nombre de la instalación.
+- [ ] **Sin publicidad** ni promoción de negocios.
+- [ ] Un **plan para darla de baja** y borrar los datos cuando ya no se use.
+- [ ] Una cuenta gratuita de GitHub, de Vercel y de Supabase.
 
 ## Cuando esté lista, los pasos serán
 
