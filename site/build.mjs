@@ -59,12 +59,13 @@ function safeHref(href) {
   return /^[^:/?#]+(?:[/?#]|$)/.test(h) && !/[\x00-\x1f]/.test(h) ? h : '#';
 }
 
+let renderLang = DEFAULT_LOCALE;
 const md = new Marked({ gfm: true });
 md.use({
   renderer: {
     heading({ tokens, depth }) {
       const text = this.parser.parseInline(tokens);
-      const id = slugify(text);
+      const id = `${renderLang === DEFAULT_LOCALE ? '' : `${renderLang}-`}${slugify(text)}`;
       return depth >= 2 && depth <= 3
         ? `<h${depth} id="${id}">${text}<a class="anchor" href="#${id}" aria-label="#">#</a></h${depth}>\n`
         : `<h${depth}>${text}</h${depth}>\n`;
@@ -88,10 +89,7 @@ md.use({
   },
 });
 
-const pathFor = (locale, page) => {
-  const base = locale === DEFAULT_LOCALE ? '' : `${locale}/`;
-  return page === 'index' ? base : `${base}${page}/`;
-};
+const pathFor = (page) => (page === 'index' ? '' : `${page}/`);
 const rootFor = (rel) => '../'.repeat(rel.split('/').filter(Boolean).length);
 const fmtDate = (locale, iso) =>
   new Intl.DateTimeFormat(INTL[locale], { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
@@ -167,6 +165,8 @@ if (problems.length) {
 }
 
 // ---------- bloques especiales del Markdown
+const inLang = (l) => (l === DEFAULT_LOCALE ? '' : `${l}-`);
+
 function teamBlock(l) {
   const t = ui[l].team;
   if (!profiles.length) return `<p class="muted">${escapeHtml(t.empty)}</p>`;
@@ -194,8 +194,8 @@ function teamBlock(l) {
     .join('\n')}</div>`;
 }
 
-const liveBlock = (id, l, group, link) =>
-  `<div id="${id}" class="live panel" aria-live="polite" aria-busy="true" ${Object.entries(ui[l][group])
+const liveBlock = (kind, l, group, link) =>
+  `<div class="live panel" data-live="${kind}" aria-live="polite" aria-busy="true" ${Object.entries(ui[l][group])
     .map(([k, v]) => `data-${k}="${escapeHtml(v)}"`)
     .join(' ')}><p class="muted">${escapeHtml(ui[l][group].loading)}</p></div>
 <p class="live__more"><a href="${link}" target="_blank" rel="noopener noreferrer">${escapeHtml(ui[l][group].all)}</a></p>`;
@@ -204,7 +204,7 @@ function updatesBlock(l) {
   const u = ui[l].updates;
   return content[l].updatesList
     .map(
-      ({ data, body }) => `<article class="update" id="${escapeHtml(data.date)}">
+      ({ data, body }) => `<article class="update" id="${inLang(l)}${escapeHtml(data.date)}">
   <p class="update__date">${fmtDate(l, data.date)}</p>
   <h2>${escapeHtml(data.title)}</h2>
   <p class="update__for"><span class="pill">${escapeHtml(u.for)}: ${escapeHtml(data.audience)}</span></p>
@@ -223,7 +223,7 @@ function manualsBlock(l, rel) {
   const root = rootFor(rel);
   return cards(
     content[l].manualsList.map(
-      ({ slug, data }) => `<a class="card-link" href="${root}${pathFor(l, 'manuals')}${slug}/">
+      ({ slug, data }) => `<a class="card-link" href="${root}${pathFor('manuals')}${slug}/">
   <h3>${escapeHtml(data.title)}</h3>
   <p>${escapeHtml(data.description)}</p>
   <span class="card-link__go">${escapeHtml(ui[l].manuals.open)} →</span>
@@ -237,48 +237,80 @@ function docsIndexBlock(l, rel) {
   return cards(
     [...MAIN_NAV, ...FOOTER_NAV].map((p) => {
       const d = content[l][p].data;
-      return `<a class="card-link" href="${root}${pathFor(l, p)}"><h3>${escapeHtml(d.title)}</h3><p>${escapeHtml(d.description)}</p></a>`;
+      return `<a class="card-link" href="${root}${pathFor(p)}"><h3>${escapeHtml(d.title)}</h3><p>${escapeHtml(d.description)}</p></a>`;
     }),
   );
 }
 
 function renderBody(l, rel, body, prefix = '') {
+  renderLang = l;
   let html = prefix + md.parse(body);
   const blocks = {
-    '<!-- roadmap -->': () => liveBlock('roadmap-list', l, 'roadmap', `${REPO}/milestones?state=all`),
-    '<!-- contributors -->': () => liveBlock('contributors-list', l, 'contributors', `${REPO}/graphs/contributors`),
+    '<!-- roadmap -->': () => liveBlock('roadmap', l, 'roadmap', `${REPO}/milestones?state=all`),
+    '<!-- contributors -->': () => liveBlock('contributors', l, 'contributors', `${REPO}/graphs/contributors`),
     '<!-- team-profiles -->': () => teamBlock(l),
     '<!-- updates -->': () => updatesBlock(l),
     '<!-- manuals -->': () => manualsBlock(l, rel),
     '<!-- docs-index -->': () => docsIndexBlock(l, rel),
   };
   for (const [mark, fn] of Object.entries(blocks)) if (html.includes(mark)) html = html.replace(mark, () => fn());
+  renderLang = DEFAULT_LOCALE;
   return html;
 }
 
-// ---------- páginas
+// ---------- páginas: una URL por página, con los tres idiomas dentro
 const layout = readFileSync(join(here, 'layout.html'), 'utf8');
 const written = [];
 
-function writePage({ l, page, rel, data, body, alt, prefix = '', root = rootFor(rel) }) {
-  const navItem = (p) => `<li><a href="${root}${pathFor(l, p)}"${p === page ? ' aria-current="page"' : ''}>${escapeHtml(ui[l].nav[p])}</a></li>`;
+const textIn = (get) => LOCALES.map((l) => `<span data-l="${l}" lang="${l}">${escapeHtml(get(l))}</span>`).join('');
+const labelIn = (get) =>
+  `aria-label="${escapeHtml(get(DEFAULT_LOCALE))}" ${LOCALES.map((l) => `data-aria-${l}="${escapeHtml(get(l))}"`).join(' ')}`;
+const titleFor = (l, page, data) => (page === 'index' ? data.title : `${data.title} · ${ui[l].titleSuffix}`);
+
+function assertNoLocalePaths(rel, html) {
+  for (const [, href] of html.matchAll(/href="([^"]*)"/g)) {
+    if (/^(https?:|mailto:|#|\/\/)/.test(href)) continue;
+    if (href.split(/[/?#]/).some((seg) => LOCALES.includes(seg))) {
+      console.error(`${rel || '/'}: enlace interno con prefijo de idioma (${href}). Cada página tiene una sola URL.`);
+      process.exit(1);
+    }
+  }
+}
+
+function writePage({ page, rel, docs, root = rootFor(rel) }) {
+  const navItem = (p) => `<li><a href="${root}${pathFor(p)}"${p === page ? ' aria-current="page"' : ''}>${textIn((l) => ui[l].nav[p])}</a></li>`;
+  const es = docs[DEFAULT_LOCALE].data;
+  const articles = LOCALES.map((l) => {
+    const { data, body, prefix = '' } = docs[l];
+    const updated = data.updated ? `<p class="doc__updated">${escapeHtml(ui[l].updated)}: ${fmtDate(l, data.updated)}</p>` : '';
+    return `<article class="doc" data-l="${l}" lang="${l}">
+      <header class="doc__header">
+        <h1>${escapeHtml(data.title)}</h1>
+        <p class="doc__lead">${escapeHtml(data.description)}</p>
+        ${updated}
+      </header>
+      <div class="prose">
+        ${renderBody(l, rel, body, prefix)}
+      </div>
+    </article>`;
+  }).join('\n    ');
   const values = {
-    lang: l,
     root,
-    langPath: pathFor(l, 'index'),
     'site.url': SITE_URL,
-    'page.title': escapeHtml(data.title),
-    'page.fullTitle': escapeHtml(page === 'index' && rel === pathFor(l, 'index') ? data.title : `${data.title} · ${ui[l].titleSuffix}`),
-    'page.description': escapeHtml(data.description),
-    'page.updatedLine': data.updated ? `<p class="doc__updated">${escapeHtml(ui[l].updated)}: ${fmtDate(l, data.updated)}</p>` : '',
+    'url.self': `${SITE_URL}/${rel}`,
+    'page.fullTitle': escapeHtml(titleFor(DEFAULT_LOCALE, page, es)),
+    'page.description': escapeHtml(es.description),
+    ogLocale: escapeHtml(ui[DEFAULT_LOCALE].ogLocale),
+    i18nAttrs: LOCALES.map(
+      (l) => `data-title-${l}="${escapeHtml(titleFor(l, page, docs[l].data))}" data-desc-${l}="${escapeHtml(docs[l].data.description)}"`,
+    ).join(' '),
     nav: MAIN_NAV.map(navItem).join('\n            '),
     footerNav: FOOTER_NAV.map(navItem).join('\n        '),
-    content: renderBody(l, rel, body, prefix),
-    'url.self': `${SITE_URL}/${rel}`,
-    ...Object.fromEntries(LOCALES.map((x) => [`url.${x}`, `${SITE_URL}/${alt(x)}`])),
-    ...Object.fromEntries(LOCALES.map((x) => [`switch.${x}`, `${root}${alt(x)}` || './'])),
-    ...Object.fromEntries(LOCALES.map((x) => [`current.${x}`, x === l ? 'aria-current="true"' : ''])),
-    ...Object.fromEntries(Object.entries(uiFlat[l]).map(([k, v]) => [`ui.${k}`, escapeHtml(v)])),
+    articles,
+    'a.brand': labelIn((l) => `CallingSupportApp — ${ui[l].home}`),
+    'a.menu': labelIn((l) => ui[l].menu),
+    'a.language': labelIn((l) => ui[l].language),
+    ...Object.fromEntries(Object.keys(uiFlat[DEFAULT_LOCALE]).map((k) => [`t.${k}`, textIn((l) => uiFlat[l][k])])),
   };
   const missing = new Set();
   const html = layout.replace(/\{\{([\w.]+)\}\}/g, (_, key) => {
@@ -290,40 +322,42 @@ function writePage({ l, page, rel, data, body, alt, prefix = '', root = rootFor(
     console.error(`layout.html usa claves que no existen (${rel || '/'}): ${[...missing].join(', ')}`);
     process.exit(1);
   }
+  assertNoLocalePaths(rel, html);
   mkdirSync(join(out, rel), { recursive: true });
   writeFileSync(join(out, rel, 'index.html'), html);
-  written.push({ rel, alt });
+  written.push(rel);
 }
 
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 
-for (const l of LOCALES) {
-  for (const p of PAGES) {
-    const { data, body } = content[l][p];
-    writePage({ l, page: p, rel: pathFor(l, p), data, body, alt: (x) => pathFor(x, p) });
-  }
-  for (const m of content[l].manualsList) {
-    const rel = `${pathFor(l, 'manuals')}${m.slug}/`;
-    const back = `<p class="back"><a href="${rootFor(rel)}${pathFor(l, 'manuals')}">← ${escapeHtml(ui[l].manuals.back)}</a></p>\n`;
-    writePage({ l, page: 'manuals', rel, data: m.data, body: m.body, prefix: back, alt: (x) => `${pathFor(x, 'manuals')}${m.slug}/` });
-  }
+const perLocale = (fn) => Object.fromEntries(LOCALES.map((l) => [l, fn(l)]));
+
+for (const p of PAGES) writePage({ page: p, rel: pathFor(p), docs: perLocale((l) => content[l][p]) });
+
+for (const { slug } of content[DEFAULT_LOCALE].manualsList) {
+  const rel = `${pathFor('manuals')}${slug}/`;
+  writePage({
+    page: 'manuals',
+    rel,
+    docs: perLocale((l) => {
+      const m = content[l].manualsList.find((x) => x.slug === slug);
+      const back = `<p class="back"><a href="${rootFor(rel)}${pathFor('manuals')}">← ${escapeHtml(ui[l].manuals.back)}</a></p>\n`;
+      return { data: m.data, body: m.body, prefix: back };
+    }),
+  });
 }
 
-// 404: una sola página (el servidor no sabe el idioma), con los tres idiomas y rutas absolutas
+// 404: el servidor la sirve en cualquier ruta, por eso usa rutas absolutas
 writePage({
-  l: DEFAULT_LOCALE,
   page: '404',
   rel: '404/',
   root: '/',
-  data: { title: ui[DEFAULT_LOCALE].notFound.title, description: ui[DEFAULT_LOCALE].notFound.description },
-  body: '',
-  prefix: LOCALES.map((x) => {
-    const n = ui[x].notFound;
-    const head = x === DEFAULT_LOCALE ? '' : `<strong>${escapeHtml(n.title)}.</strong> `;
-    return `<p lang="${x}">${head}${escapeHtml(n.description)} <a href="/${pathFor(x, 'index')}">${escapeHtml(n.home)}</a></p>`;
-  }).join('\n'),
-  alt: (x) => pathFor(x, 'index'),
+  docs: perLocale((l) => ({
+    data: { title: ui[l].notFound.title, description: ui[l].notFound.description },
+    body: '',
+    prefix: `<p><a href="/">${escapeHtml(ui[l].notFound.home)}</a></p>`,
+  })),
 });
 cpSync(join(out, '404', 'index.html'), join(out, '404.html'));
 rmSync(join(out, '404'), { recursive: true });
@@ -359,21 +393,13 @@ writeFileSync(
 if (existsSync(join(here, 'static'))) cpSync(join(here, 'static'), out, { recursive: true });
 
 const today = new Date().toISOString().slice(0, 10);
-const seen = new Set();
-const urls = [];
-for (const p of written) {
-  const key = p.alt('es');
-  if (seen.has(key)) continue;
-  seen.add(key);
-  const alts = LOCALES.map((x) => `    <xhtml:link rel="alternate" hreflang="${x}" href="${SITE_URL}/${p.alt(x)}"/>`).join('\n');
-  for (const x of LOCALES) urls.push(`  <url>\n    <loc>${SITE_URL}/${p.alt(x)}</loc>\n    <lastmod>${today}</lastmod>\n${alts}\n  </url>`);
-}
+const urls = written.map((rel) => `  <url>\n    <loc>${SITE_URL}/${rel}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`);
 writeFileSync(
   join(out, 'sitemap.xml'),
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`,
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`,
 );
 writeFileSync(join(out, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 
 console.log(
-  `Sitio generado en _site/: ${written.length} páginas (${LOCALES.join(', ')}), ${profiles.length} perfil(es), ${content.es.updatesList.length} novedad(es), ${content.es.manualsList.length} manual(es).`,
+  `Sitio generado en _site/: ${written.length} páginas, cada una con ${LOCALES.join(', ')}; ${profiles.length} perfil(es), ${content.es.updatesList.length} novedad(es), ${content.es.manualsList.length} manual(es).`,
 );

@@ -12,6 +12,8 @@ AddType application/manifest+json .webmanifest
   RewriteCond %{REQUEST_URI} !^/\.well-known/
   RewriteRule ^ https://callingsupportapp.org%{REQUEST_URI} [R=301,L]
 
+  RewriteRule ^(pt|en)(/(.*))?$ https://callingsupportapp.org/$3 [R=301,L]
+
   RewriteCond %{REQUEST_URI} !^/\.well-known/
   RewriteRule (^|/)\. - [F]
 </IfModule>
