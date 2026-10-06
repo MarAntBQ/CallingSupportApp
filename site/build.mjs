@@ -376,6 +376,7 @@ function writePage({ page, rel, docs, root = rootFor(rel) }) {
     'a.brand': labelIn((l) => `CallingSupportApp — ${ui[l].home}`),
     'a.menu': labelIn((l) => ui[l].menu),
     'a.language': labelIn((l) => ui[l].language),
+    'a.githubFab': labelIn((l) => ui[l].githubFab),
     ...Object.fromEntries(Object.keys(uiFlat[DEFAULT_LOCALE]).map((k) => [`t.${k}`, textIn((l) => uiFlat[l][k])])),
   };
   const missing = new Set();

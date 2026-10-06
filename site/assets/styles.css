@@ -631,7 +631,7 @@ html[data-lang='en'] [data-l='es'] {
 /* ---------- Pie */
 .footer {
   margin-top: 80px;
-  padding: 32px 0 40px;
+  padding: 32px 0 104px;
   border-top: 1px solid var(--hairline);
   font-size: 14px;
 }
@@ -713,9 +713,51 @@ html[data-lang='en'] [data-l='es'] {
   }
 }
 
+/* ---------- Botón flotante de GitHub */
+.fab-github {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #1f2328;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  transition: transform var(--ease), background var(--ease);
+}
+
+.fab-github:hover {
+  color: #ffffff;
+  background: #000000;
+  transform: translateY(-2px);
+}
+
+.fab-github:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .fab-github {
+    width: 48px;
+    height: 48px;
+  }
+
+  .fab-github svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 @media print {
   .topbar,
   .footer,
+  .fab-github,
   .skip {
     display: none;
   }
