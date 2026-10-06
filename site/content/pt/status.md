@@ -1,6 +1,6 @@
 ---
-title: Estado do projeto
-description: Em que ponto está o CallingSupportApp e o que vem a seguir.
+title: Estado do projeto e roteiro
+description: Em que ponto está o CallingSupportApp e o que vem a seguir: progresso ao vivo de cada etapa no GitHub, módulos em desenvolvimento e como você pode ajudar.
 updated: 2026-10-06
 ---
 

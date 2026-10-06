@@ -1,6 +1,6 @@
 ---
-title: Términos y descargo
-description: Las condiciones de uso del software y de este sitio.
+title: Términos de uso y descargo
+description: Condiciones para usar el software CallingSupportApp y este sitio: licencia MIT, sin vínculo oficial con la Iglesia y cada instalación responde por su uso.
 updated: 2026-10-06
 ---
 

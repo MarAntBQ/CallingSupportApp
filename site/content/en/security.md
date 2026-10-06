@@ -1,6 +1,6 @@
 ---
-title: Security
-description: How to report a vulnerability privately and responsibly.
+title: Security: report a vulnerability
+description: How to report a security flaw in CallingSupportApp privately and responsibly: through GitHub or by email, without exposing any ward member data to anyone.
 updated: 2026-10-06
 ---
 

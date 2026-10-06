@@ -1,6 +1,6 @@
 ---
-title: Política de datos del proyecto
-description: Cómo está diseñado CallingSupportApp para cuidar los datos de los miembros, y qué datos trata este sitio.
+title: Política de datos y privacidad
+description: Cómo CallingSupportApp protege los datos de los miembros según el Manual General 33.8: qué se guarda, quién puede verlo, cuánto tiempo y qué trata este sitio.
 updated: 2026-10-06
 ---
 

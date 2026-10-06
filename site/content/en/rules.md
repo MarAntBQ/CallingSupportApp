@@ -1,6 +1,6 @@
 ---
-title: Terms of use
-description: The rules followed by people who use CallingSupportApp, based on the Church’s General Handbook.
+title: Terms of use under the General Handbook
+description: The rules for using CallingSupportApp in your ward: the General Handbook comes first, member data stays protected, and the app never handles money or donations.
 updated: 2026-10-06
 ---
 

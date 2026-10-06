@@ -1,6 +1,6 @@
 ---
-title: Team: CSATeam
-description: Who makes CallingSupportApp: a team of equal contributors.
+title: CSATeam and contributors
+description: Meet CSATeam, the volunteer team behind CallingSupportApp: equal contributors with no leaders or owners, working in the open on GitHub. Anyone can join.
 updated: 2026-10-06
 ---
 

@@ -1,6 +1,6 @@
 ---
-title: Temple trip
-description: For the person organizing the trip and the people registering.
+title: Temple trip manual
+description: Manual in preparation: how to organize a temple trip for your ward with CallingSupportApp, including registrations, seats, estimated cost, and approval.
 updated: 2026-10-06
 order: 3
 ---

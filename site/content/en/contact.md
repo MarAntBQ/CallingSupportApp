@@ -1,6 +1,6 @@
 ---
-title: Contact
-description: How to contact the project.
+title: Contact and support
+description: Write to the CallingSupportApp team with questions, suggestions or problems with the app. We reply by email, and technical topics are handled openly on GitHub.
 updated: 2026-10-06
 ---
 

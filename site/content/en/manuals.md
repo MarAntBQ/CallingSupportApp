@@ -1,6 +1,6 @@
 ---
-title: User manuals
-description: How to use CallingSupportApp step by step, according to your calling.
+title: Step-by-step user manuals
+description: Step-by-step guides for using CallingSupportApp according to your calling: getting started, users and permissions, and how to organize your ward's temple trip.
 updated: 2026-10-06
 ---
 

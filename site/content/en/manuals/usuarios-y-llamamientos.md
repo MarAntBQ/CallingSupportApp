@@ -1,6 +1,6 @@
 ---
-title: Users, callings, and permissions
-description: Who enters the application and what each calling can do.
+title: Users, callings and permissions
+description: Manual in preparation: who can sign in to CallingSupportApp, what each calling in the ward can do, and how access is revoked as soon as a calling ends.
 updated: 2026-10-06
 order: 2
 ---

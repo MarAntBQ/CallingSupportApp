@@ -1,6 +1,6 @@
 ---
-title: Project data policy
-description: How CallingSupportApp is designed to protect member data and what data this site processes.
+title: Data and privacy policy
+description: How CallingSupportApp protects member data under General Handbook 33.8: what is stored, who can see it, for how long, and what data this website handles.
 updated: 2026-10-06
 ---
 

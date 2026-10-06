@@ -1,6 +1,6 @@
 ---
 title: Usuários, chamados e permissões
-description: Quem entra no aplicativo e o que cada chamado pode fazer.
+description: Manual em preparação: quem pode entrar no CallingSupportApp, o que cada chamado pode fazer na ala e como o acesso é revogado quando um chamado termina.
 updated: 2026-10-06
 order: 2
 ---

@@ -1,6 +1,6 @@
 ---
 title: Código de conduta
-description: Como trabalhamos juntos como colaboradores da CSATeam.
+description: O código de conduta da CSATeam: como colaboramos com respeito, sem protagonismo e com cuidado com as pessoas no projeto de código aberto CallingSupportApp.
 updated: 2026-10-06
 ---
 

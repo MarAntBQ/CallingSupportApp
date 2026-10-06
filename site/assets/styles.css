@@ -34,6 +34,7 @@
 :root {
   --color-blue: #0075de;
   --color-blue-hover: #005bb0;
+  --color-link: #0068c4;
   --color-canvas: #f6f5f4;
   --color-white: #ffffff;
   --color-ink: #000000;
@@ -86,7 +87,7 @@ img {
 }
 
 a {
-  color: var(--color-blue);
+  color: var(--color-link);
   text-underline-offset: 3px;
 }
 
