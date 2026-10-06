@@ -115,8 +115,11 @@ borrado físico (`DELETE`), sin borrado lógico ni papelera. Detalle y lista par
 1. **Datos de miembros: Manual General 33.8** (sección anterior). Nunca importar listados de
    los sistemas oficiales de la Iglesia. Todo cambio que toque datos de personas pasa por la
    skill `datos-de-miembros`. Si una funcionalidad choca con el Manual, no se construye.
-2. **Flujo:** issue → rama → pull request → squash. `main` está protegida: nadie hace push
-   directo, tampoco el autor del proyecto.
+2. **Flujo:** issue → `/tomar` → rama → PR en borrador → pull request → squash. `main` está
+   protegida: nadie hace push directo, tampoco el autor del proyecto. **Un issue se toma
+   comentando `/tomar`** (el bot lo asigna y le pone `en-progreso`); un issue a la vez por
+   persona; PR en borrador dentro de las 48 horas; `/soltar` si no se puede seguir. Nunca
+   trabajar en un issue asignado a otra persona.
 3. **El issue se autocontiene.** Si algo no está en el issue, se pide en el issue antes de
    programar, y el issue se corrige. Ver skill `escribir-un-issue`.
 4. **Revisión obligatoria.** Antes de abrir un PR, corre la skill `revisar-codigo` sobre tu

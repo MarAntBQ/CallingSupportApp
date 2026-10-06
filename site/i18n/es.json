@@ -68,7 +68,7 @@
     "title": "Colabora",
     "lead": "Cada tarea está escrita para que puedas tomarla sin haber hablado antes con nadie.",
     "s1": "Elige un issue sin asignar y sin la etiqueta «bloqueado».",
-    "s2": "Comenta «Lo tomo» y crea tu rama.",
+    "s2": "Comenta /tomar en el issue: un bot te lo asigna y avisa a los demás que ya está en curso.",
     "s3": "Trabaja dentro del alcance del issue y verifica ejecutando.",
     "s4": "Revisa tu código con la skill del repositorio y abre el pull request.",
     "goodFirst": "Tareas para empezar",

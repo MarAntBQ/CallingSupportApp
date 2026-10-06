@@ -1,0 +1,84 @@
+name: Issues tomados sin actividad
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: issue-claims
+  cancel-in-progress: false
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const l = require('./.github/scripts/claim-logic.cjs');
+            const { owner, repo } = context.repo;
+            const now = new Date().toISOString();
+            const removeInProgress = async (issue_number) => {
+              try {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: l.IN_PROGRESS });
+              } catch (e) {
+                if (e.status !== 404) throw e;
+              }
+            };
+
+            const claimed = (await github.paginate(github.rest.issues.listForRepo, {
+              owner, repo, state: 'open', labels: l.IN_PROGRESS, per_page: 100,
+            })).filter((i) => !i.pull_request);
+
+            for (const listed of claimed) {
+              const number = listed.number;
+              const issue = (await github.rest.issues.get({ owner, repo, issue_number: number })).data;
+              if (issue.state !== 'open' || !issue.labels.some((x) => x.name === l.IN_PROGRESS)) continue;
+              const holders = issue.assignees.map((a) => a.login);
+              if (!holders.length) {
+                await removeInProgress(number);
+                continue;
+              }
+
+              const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: number, per_page: 100 });
+              const events = await github.paginate(github.rest.issues.listEvents, { owner, repo, issue_number: number, per_page: 100 });
+
+              const dates = [];
+              for (const holder of holders) {
+                const assigned = events.filter((e) => e.event === 'assigned' && e.assignee?.login === holder).map((e) => e.created_at);
+                const own = comments.filter((c) => c.user.login === holder).map((c) => c.created_at);
+                const prs = await github.paginate(github.rest.search.issuesAndPullRequests, {
+                  q: `repo:${owner}/${repo} is:pr is:open author:${holder} "#${number}"`, per_page: 50,
+                });
+                dates.push(...assigned, ...own, ...prs.map((p) => p.updated_at));
+              }
+              const lastActivity = dates.sort().at(-1) || issue.created_at;
+              const hasReminderSince = comments.some((c) => c.body.includes(l.REMINDER_MARK) && c.created_at > lastActivity);
+              const action = l.decideStale({ lastActivity, now, hasReminderSince });
+              const who = holders.map((h) => `@${h}`).join(' ');
+
+              if (action === 'remind') {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: number,
+                  body: `${l.REMINDER_MARK}\n${who}, ¿sigues con este issue? Comenta tu avance o "sigo en esto". Si no hay actividad en ${l.RELEASE_AFTER_DAYS - l.REMIND_AFTER_DAYS} días más, se libera para otra persona.`,
+                });
+                core.info(`#${number}: recordatorio`);
+              } else if (action === 'release') {
+                await github.rest.issues.removeAssignees({ owner, repo, issue_number: number, assignees: holders });
+                await removeInProgress(number);
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: number,
+                  body: `Se liberó por ${l.RELEASE_AFTER_DAYS} días sin actividad. ${who}, gracias; si quieres retomarlo, comenta \`/tomar\`.`,
+                });
+                core.info(`#${number}: liberado`);
+              }
+            }

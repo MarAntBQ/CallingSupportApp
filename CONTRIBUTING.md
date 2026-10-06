@@ -16,13 +16,37 @@ Issue  →  Rama  →  Pull Request  →  Revisión  →  Squash a main
 
 ## 1. Elige un issue
 
-En [Issues](../../issues), busca uno que:
+**El repositorio coordina solo: no hace falta preguntarle a nadie.** Para saber si alguien ya
+está trabajando en un issue, mira tres cosas: **a quién está asignado**, si tiene la etiqueta
+**`en-progreso`** y el último comentario del bot.
 
-- **no tenga a nadie asignado**,
-- **no tenga la etiqueta `bloqueado`** (sus dependencias están cerradas),
+Busca uno que:
+
+- **no tenga a nadie asignado** ni la etiqueta `en-progreso`;
+- **no tenga la etiqueta `bloqueado`** (sus dependencias están cerradas) ni `necesita-diseño`;
 - idealmente tenga `good first issue` si es tu primera vez.
 
-Comenta **"Lo tomo"** y asígnatelo. Un issue a la vez.
+[Ver los issues libres](https://github.com/MarAntBQ/CallingSupportApp/issues?q=is%3Aopen+is%3Aissue+no%3Aassignee+-label%3Abloqueado+-label%3A%22necesita-dise%C3%B1o%22)
+
+### Tomarlo: comenta `/tomar`
+
+Escribe en el issue un comentario que empiece con **`/tomar`** (también sirven `/assumir` y
+`/take`). Un bot revisa que esté libre y, si lo está, te lo asigna, le pone la etiqueta
+`en-progreso` y te responde con los pasos. Si ya lo tiene alguien, te dice quién; si está
+bloqueado, te dice por qué. **Nunca empieces a programar sin que el bot te haya confirmado.**
+
+Reglas para que nadie trabaje dos veces en lo mismo:
+
+1. **Un issue a la vez por persona.** Para tomar otro, termina o suelta el que tienes.
+2. **Abre un PR en borrador con `Refs #<número>` dentro de las 48 horas**, aunque tenga poco.
+   Así todos ven el avance.
+3. **Comenta tus avances en el issue.** Si pasan **7 días sin actividad**, el bot te lo
+   recuerda; a los **14 días** lo libera para que lo tome otra persona. Con un comentario como
+   «sigo en esto» basta para seguir.
+4. **Si no puedes seguir, comenta `/soltar`** (o `/liberar`, `/release`). No pasa nada: es
+   mejor soltarlo que dejarlo detenido.
+5. **Si encuentras un issue `en-progreso` que te interesa**, no empieces en paralelo: comenta
+   en el issue para coordinar con quien lo tiene, o elige otro.
 
 El orden recomendado está en los [milestones](../../milestones): primero **1 · Base**, que
 crea el esqueleto sobre el que se construye todo lo demás. Cada issue dice en

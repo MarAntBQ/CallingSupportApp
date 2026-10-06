@@ -12,9 +12,10 @@ gh issue list --state open --search "no:assignee -label:bloqueado"
 gh issue view <n>
 ```
 
-Un issue está disponible si **no tiene a nadie asignado**, **no tiene la etiqueta `bloqueado`**
-y todos los issues de su sección *Dependencias* están cerrados. Si es tu primera vez,
-busca `good first issue`. Un issue a la vez.
+Un issue está disponible si **no tiene a nadie asignado**, **no tiene la etiqueta
+`en-progreso`**, **no tiene `bloqueado` ni `necesita-diseño`**, y todos los issues de su
+sección *Dependencias* están cerrados. Si es tu primera vez, busca `good first issue`. Un issue
+a la vez por persona.
 
 ## 2. Confirmar que se autocontiene
 
@@ -28,9 +29,19 @@ Antes de escribir código, responde:
 Si algo falta, **pregunta en el issue**, no por chat, y espera a que el issue se corrija. Así
 la respuesta queda para el siguiente.
 
-## 3. Tomarlo
+## 3. Tomarlo con `/tomar`
 
-Comenta en el issue `Lo tomo` y asígnatelo (`gh issue edit <n> --add-assignee @me`).
+```sh
+gh issue comment <n> --body "/tomar"
+```
+
+Un bot te asigna el issue, le pone `en-progreso` y responde con los pasos. **Espera su
+confirmación antes de programar.** Si responde que ya lo tiene alguien o que está bloqueado,
+elige otro. Después:
+
+- Abre un **PR en borrador** con `Refs #<n>` dentro de las 48 horas (`gh pr create --draft`).
+- Comenta tus avances. Con 7 días sin actividad llega un recordatorio; a los 14 días se libera.
+- Si no puedes seguir: `gh issue comment <n> --body "/soltar"`.
 
 ## 4. Rama
 

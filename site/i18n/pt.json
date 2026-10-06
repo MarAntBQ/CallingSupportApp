@@ -68,7 +68,7 @@
     "title": "Colabore",
     "lead": "Cada tarefa está escrita para que você possa assumi-la sem ter conversado antes com ninguém.",
     "s1": "Escolha uma issue sem responsável e sem a etiqueta «bloqueado» (bloqueada).",
-    "s2": "Comente na issue que vai assumi-la e crie a sua branch.",
+    "s2": "Comente /tomar na issue: um bot atribui ela a você e avisa os demais que já está em andamento.",
     "s3": "Trabalhe dentro do escopo da issue e verifique executando.",
     "s4": "Revise o seu código com a skill do repositório e abra o pull request.",
     "goodFirst": "Tarefas para começar",
