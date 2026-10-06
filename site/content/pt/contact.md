@@ -4,7 +4,9 @@ description: Fale com a equipe do CallingSupportApp: dúvidas, sugestões ou pro
 updated: 2026-10-06
 ---
 
-Escreva para **[devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org)**.
+Escreva por este formulário ou diretamente para **[devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org)**.
+
+<!-- contact-form -->
 
 ## Para que escrever
 

@@ -52,7 +52,8 @@ There is no central server with data from multiple wards. Each unit installs its
 
 ## This site
 
-- It has no forms, accounts, cookies, or analytics.
+- **Contact form** (Contact page): it collects your name, email, and message only to reply to you. They are kept for **90 days** and then deleted automatically. Your IP address is not stored, only an irreversible fingerprint used to limit spam. It is protected by **Google reCAPTCHA v3**, which loads **only on that page** and sends technical data about your browser to Google under its [privacy policy](https://policies.google.com/privacy).
+- It has no accounts, first-party cookies, or analytics.
 - Resources are served from this same domain.
 - Your browser queries the **public GitHub API** (`api.github.com`) to show progress and contributors, and loads their avatars from GitHub.
 - The hosting provider keeps technical server logs (such as the IP) for security, according to its own policy.

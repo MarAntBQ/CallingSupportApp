@@ -50,7 +50,8 @@ No existe un servidor central con datos de varios barrios. Cada unidad instala s
 
 ## Este sitio
 
-- No tiene formularios, cuentas, cookies ni analítica.
+- **Formulario de contacto** (página Contacto): recoge tu nombre, tu correo y tu mensaje, solo para responderte. Se guardan **90 días** y después se borran solos. Tu IP no se guarda: solo una huella irreversible, para limitar el spam. Para protegerlo se usa **Google reCAPTCHA v3**, que se carga **solo en esa página** y envía a Google datos técnicos de tu navegador, según su [política de privacidad](https://policies.google.com/privacy).
+- No tiene cuentas, cookies propias ni analítica.
 - Las fuentes se sirven desde este mismo dominio.
 - Desde tu navegador se consulta la **API pública de GitHub** (`api.github.com`) para mostrar el avance y los colaboradores, y se cargan sus avatares desde GitHub.
 - El hosting guarda registros técnicos del servidor (como la IP) por seguridad, según su propia política.

@@ -4,7 +4,9 @@ description: Write to the CallingSupportApp team with questions, suggestions or 
 updated: 2026-10-06
 ---
 
-Write to us at **[devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org)**.
+Write to us with this form or directly at **[devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org)**.
+
+<!-- contact-form -->
 
 ## What to write about
 

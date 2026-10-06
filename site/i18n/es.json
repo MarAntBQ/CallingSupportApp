@@ -59,5 +59,36 @@
     "text": "¿Quieres conocer más sobre la Iglesia?",
     "link": "Visita Ven a Cristo",
     "url": "https://www.churchofjesuschrist.org/comeuntochrist?lang=spa"
+  },
+  "contactForm": {
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "message": "Mensaje",
+    "counter": "{n} de 2000 caracteres",
+    "memberData": "No incluyas datos de miembros de la Iglesia (Manual General 33.8).",
+    "trap": "No completes este campo",
+    "consent": "Acepto que guarden mi mensaje 90 días para poder responderme.",
+    "send": "Enviar mensaje",
+    "sending": "Enviando…",
+    "ok": "¡Gracias! Recibimos tu mensaje y te responderemos por correo.",
+    "errors": {
+      "name": "Escribe tu nombre (entre 2 y 100 caracteres).",
+      "email": "Escribe un correo electrónico válido.",
+      "message": "El mensaje debe tener entre 10 y 2000 caracteres.",
+      "consent": "Para enviar el mensaje necesitamos tu consentimiento.",
+      "captcha": "No pudimos comprobar que no eres un robot. Recarga la página e inténtalo de nuevo.",
+      "rate": "Enviaste varios mensajes seguidos. Espera una hora e inténtalo de nuevo.",
+      "mail": "Guardamos tu mensaje, pero el correo no salió. Escríbenos también a devteam@callingsupportapp.org.",
+      "unavailable": "El formulario no está disponible en este momento. Escríbenos a devteam@callingsupportapp.org.",
+      "network": "No hay conexión. Revisa tu internet e inténtalo de nuevo.",
+      "generic": "Algo salió mal. Escríbenos a devteam@callingsupportapp.org."
+    },
+    "recaptcha": {
+      "before": "Este sitio está protegido por reCAPTCHA y se aplican la",
+      "privacy": "Política de privacidad",
+      "and": "y las",
+      "terms": "Condiciones del servicio",
+      "after": "de Google."
+    }
   }
 }
