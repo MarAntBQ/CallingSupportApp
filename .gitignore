@@ -17,3 +17,6 @@ next-env.d.ts
 *.pdf
 *.xlsx
 *.csv
+
+# Sitio público generado por site/build.mjs
+_site/
