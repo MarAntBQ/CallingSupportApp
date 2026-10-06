@@ -52,7 +52,7 @@ There is no central server with data from multiple wards. Each unit installs its
 
 ## This site
 
-- **Contact form** (Contact page): it collects your name, email, and message only to reply to you. They are kept for **90 days** and then deleted automatically. Your IP address is not stored, only an irreversible fingerprint used to limit spam. It is protected by **Google reCAPTCHA v3**, which loads **only on that page** and sends technical data about your browser to Google under its [privacy policy](https://policies.google.com/privacy).
+- **Contact form** (Contact page): it collects your name, email, and message only to reply to you. The project team receives them at devteam@callingsupportapp.org, and they are stored in the project server's database for **90 days**; after that they are deleted automatically, every day. Your IP address is not stored, only an irreversible fingerprint used to limit spam. It is protected by **Google reCAPTCHA v3**, which loads **only on that page**: your browser connects to Google and sends it technical data (including your IP address) under its [privacy policy](https://policies.google.com/privacy). Our server does not send your IP address to Google. We also record that you agreed, which version of this policy applied, and in which language.
 - It has no accounts, first-party cookies, or analytics.
 - Resources are served from this same domain.
 - Your browser queries the **public GitHub API** (`api.github.com`) to show progress and contributors, and loads their avatars from GitHub.

@@ -272,12 +272,13 @@ function contactFormBlock(l) {
   const msgs = Object.entries(c.errors)
     .map(([k, v]) => `data-msg-${k}="${escapeHtml(v)}"`)
     .join(' ');
-  return `<form class="contact-form" data-contact data-lang="${l}" data-sitekey="${RECAPTCHA_SITE_KEY}" action="/api/contact.php" method="post" novalidate hidden data-msg-ok="${escapeHtml(c.ok)}" data-msg-sending="${escapeHtml(c.sending)}" ${msgs}>
+  return `<form class="contact-form" data-contact data-lang="${l}" data-sitekey="${RECAPTCHA_SITE_KEY}" data-policy="${escapeHtml(content[l].privacy.data.updated)}" action="/api/contact.php" method="post" novalidate hidden data-msg-ok="${escapeHtml(c.ok)}" data-msg-sending="${escapeHtml(c.sending)}" ${msgs}>
   <div class="field"><label for="${id('name')}">${escapeHtml(c.name)}</label><input id="${id('name')}" name="name" type="text" required minlength="2" maxlength="100" autocomplete="name"></div>
   <div class="field"><label for="${id('email')}">${escapeHtml(c.email)}</label><input id="${id('email')}" name="email" type="email" required maxlength="254" autocomplete="email"></div>
   <div class="field"><label for="${id('message')}">${escapeHtml(c.message)}</label><textarea id="${id('message')}" name="message" rows="6" required minlength="10" maxlength="2000"></textarea><p class="field__hint" data-counter data-template="${escapeHtml(c.counter)}"></p></div>
   <p class="contact-form__warning">${escapeHtml(c.memberData)}</p>
   <div class="field field--trap" aria-hidden="true"><label for="${id('website')}">${escapeHtml(c.trap)}</label><input id="${id('website')}" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+  <p class="contact-form__notice">${escapeHtml(c.notice)} <a href="../privacy/">${escapeHtml(c.policy)}</a></p>
   <label class="check"><input name="consent" type="checkbox" required><span>${escapeHtml(c.consent)}</span></label>
   <button type="submit" class="button">${escapeHtml(c.send)}</button>
   <p class="contact-form__status" data-status role="status" aria-live="polite"></p>

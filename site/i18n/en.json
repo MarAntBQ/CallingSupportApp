@@ -89,6 +89,8 @@
       "and": "and",
       "terms": "Terms of Service",
       "after": "apply."
-    }
+    },
+    "notice": "Controller: CSATeam, the project team. We use your name, email, and message only to reply to you; the team receives them at devteam@callingsupportapp.org, and they are deleted after 90 days.",
+    "policy": "Data policy"
   }
 }

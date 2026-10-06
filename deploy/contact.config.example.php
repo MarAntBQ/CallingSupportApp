@@ -9,7 +9,7 @@ return [
         'secret' => '',
         'min_score' => 0.5,
         'action' => 'contact',
-        'hostnames' => ['callingsupportapp.org', 'noticiaslaureles.org', 'localhost'],
+        'hostnames' => ['callingsupportapp.org'],
     ],
     'smtp' => [
         'host' => 'mail.callingsupportapp.org',

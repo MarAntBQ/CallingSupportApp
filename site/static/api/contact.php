@@ -60,6 +60,7 @@ $lang = $text('lang');
 $token = $text('token');
 $honeypot = $text('website');
 $consent = ($input['consent'] ?? false) === true;
+$policyVersion = $text('policyVersion');
 
 if ($honeypot !== '') {
     respond(200, ['ok' => true]);
@@ -80,7 +81,7 @@ if ($length($message) < 10 || $length($message) > 2000) {
 if (!in_array($lang, LANGS, true)) {
     fail(422, 'lang');
 }
-if (!$consent) {
+if (!$consent || preg_match('/^\d{4}-\d{2}-\d{2}$/', $policyVersion) !== 1) {
     fail(422, 'consent');
 }
 if ($token === '' || strlen($token) > 4000) {
@@ -90,28 +91,12 @@ if ($token === '' || strlen($token) > 4000) {
 $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
 $ipHash = hash('sha256', $ip . '|' . $config['ip_salt']);
 
-try {
-    $pdo = new PDO($config['db']['dsn'], $config['db']['user'], $config['db']['pass'], [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_EMULATE_PREPARES => false,
-    ]);
-    $recent = $pdo->prepare('SELECT COUNT(*) FROM contact_messages WHERE ip_hash = ? AND created_at > (NOW() - INTERVAL 1 HOUR)');
-    $recent->execute([$ipHash]);
-    if ((int) $recent->fetchColumn() >= (int) $config['rate_limit_per_hour']) {
-        fail(429, 'rate');
-    }
-} catch (PDOException $e) {
-    error_log('contact: la base de datos no responde (' . $e->getCode() . ')');
-    fail(503, 'unavailable');
-}
-
 $curl = curl_init('https://www.google.com/recaptcha/api/siteverify');
 curl_setopt_array($curl, [
     CURLOPT_POST => true,
     CURLOPT_POSTFIELDS => http_build_query([
         'secret' => $config['recaptcha']['secret'],
         'response' => $token,
-        'remoteip' => $ip,
     ]),
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_CONNECTTIMEOUT => 5,
@@ -134,14 +119,31 @@ if (
     fail(403, 'captcha');
 }
 
+$lockName = 'contact:' . substr($ipHash, 0, 32);
 try {
-    $insert = $pdo->prepare('INSERT INTO contact_messages (lang, name, email, message, ip_hash, score) VALUES (?, ?, ?, ?, ?, ?)');
-    $insert->execute([$lang, $name, $email, $message, $ipHash, round($score, 2)]);
+    $pdo = new PDO($config['db']['dsn'], $config['db']['user'], $config['db']['pass'], [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ]);
+    $lock = $pdo->prepare('SELECT GET_LOCK(?, 5)');
+    $lock->execute([$lockName]);
+    if ((int) $lock->fetchColumn() !== 1) {
+        fail(503, 'unavailable');
+    }
+    $recent = $pdo->prepare('SELECT COUNT(*) FROM contact_messages WHERE ip_hash = ? AND created_at > (NOW() - INTERVAL 1 HOUR)');
+    $recent->execute([$ipHash]);
+    if ((int) $recent->fetchColumn() >= (int) $config['rate_limit_per_hour']) {
+        $pdo->prepare('SELECT RELEASE_LOCK(?)')->execute([$lockName]);
+        fail(429, 'rate');
+    }
+    $insert = $pdo->prepare('INSERT INTO contact_messages (lang, name, email, message, ip_hash, score, consent, policy_version) VALUES (?, ?, ?, ?, ?, ?, 1, ?)');
+    $insert->execute([$lang, $name, $email, $message, $ipHash, round($score, 2), $policyVersion]);
     $id = (int) $pdo->lastInsertId();
+    $pdo->prepare('SELECT RELEASE_LOCK(?)')->execute([$lockName]);
     $pdo->prepare('DELETE FROM contact_messages WHERE created_at < (NOW() - INTERVAL ? DAY)')
         ->execute([(int) $config['retention_days']]);
 } catch (PDOException $e) {
-    error_log('contact: no se pudo guardar el mensaje (' . $e->getCode() . ')');
+    error_log('contact: la base de datos falló (' . $e->getCode() . ')');
     fail(503, 'unavailable');
 }
 

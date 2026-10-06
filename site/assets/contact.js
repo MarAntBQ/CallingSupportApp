@@ -95,6 +95,7 @@
                 consent: fields.consent.checked,
                 website: fields.website.value,
                 lang: form.getAttribute('data-lang'),
+                policyVersion: form.getAttribute('data-policy'),
                 token: token,
               }),
             }).then(

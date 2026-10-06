@@ -769,6 +769,7 @@ html[data-lang='en'] [data-l='es'] {
 }
 
 .field__hint,
+.contact-form__notice,
 .contact-form__recaptcha {
   margin: 0;
   color: var(--color-stone);
