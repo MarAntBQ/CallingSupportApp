@@ -323,7 +323,7 @@ writePage({
     const head = x === DEFAULT_LOCALE ? '' : `<strong>${escapeHtml(n.title)}.</strong> `;
     return `<p lang="${x}">${head}${escapeHtml(n.description)} <a href="/${pathFor(x, 'index')}">${escapeHtml(n.home)}</a></p>`;
   }).join('\n'),
-  alt: () => '404/',
+  alt: (x) => pathFor(x, 'index'),
 });
 cpSync(join(out, '404', 'index.html'), join(out, '404.html'));
 rmSync(join(out, '404'), { recursive: true });

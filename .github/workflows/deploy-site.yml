@@ -1,0 +1,38 @@
+name: Publicar el sitio (callingsupportapp.org)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'team/**'
+      - 'deploy/**'
+      - '.github/scripts/team-profiles.cjs'
+      - '.github/workflows/deploy-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-site
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Publicar en el hosting por SSH
+        env:
+          SSH_KEY: ${{ secrets.VPS_DEPLOY_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            -p 22593 callingsupportapp@162.35.180.32 deploy
