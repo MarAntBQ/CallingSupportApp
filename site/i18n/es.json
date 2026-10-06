@@ -1,88 +1,51 @@
 {
-  "meta": {
-    "title": "CallingSupportApp — herramientas abiertas para las unidades de la Iglesia",
-    "description": "Aplicación open source para organizar actividades de un barrio o rama: inscripciones, cupos, costos estimados y listados del viaje al templo, campamentos y EnglishConnect. En español, portugués e inglés.",
-    "ogLocale": "es_LA"
-  },
+  "ogLocale": "es_LA",
+  "skip": "Saltar al contenido",
+  "home": "Inicio",
+  "menu": "Menú",
+  "language": "Idioma",
+  "license": "© 2026 CSATeam OpenSource (Calling Support App Team) · Licencia MIT",
+  "unofficial": "No es un sitio oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días.",
+  "updated": "Última actualización",
+  "titleSuffix": "CallingSupportApp",
   "nav": {
-    "skip": "Saltar al contenido",
-    "language": "Idioma"
-  },
-  "hero": {
-    "eyebrow": "Open source · Español · Português · English",
-    "titleHighlight": "Organiza",
-    "titleRest": " las actividades de tu unidad en un solo lugar",
-    "lead": "CallingSupportApp ayuda a los líderes de un barrio o rama a organizar el viaje al templo, los campamentos y las clases de EnglishConnect: inscripciones, cupos, costos estimados y listados, con el cuidado que merecen los datos de los miembros.",
-    "github": "Ver en GitHub",
-    "contribute": "Cómo colaborar"
-  },
-  "notice": {
-    "label": "Aviso",
-    "unofficial": "No es un sitio oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días. Es una herramienta comunitaria y voluntaria.",
-    "memberTools": "No reemplaza a Herramientas para Miembros (Member Tools), la aplicación oficial: agrega las funcionalidades que hoy no existen."
-  },
-  "modules": {
-    "title": "Módulos",
-    "lead": "Cada módulo se activa por llamamiento: cada líder ve y hace solo lo que su llamamiento le permite.",
-    "users": {
-      "title": "Usuarios y llamamientos",
-      "body": "Quién entra a la aplicación y qué puede ver o hacer en cada módulo, según su llamamiento y organización."
-    },
-    "temple": {
-      "title": "Viaje para Adorar en el Templo",
-      "body": "Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, costo estimado y cómo contribuir, habitaciones y listas imprimibles para el día del viaje."
-    },
-    "camp": {
-      "title": "Campamento",
-      "body": "Jóvenes y líderes, el formulario oficial de permiso, la lista de qué llevar que cada uno marca desde su teléfono y el reparto del equipo del barrio."
-    },
-    "ec": {
-      "title": "EnglishConnect",
-      "body": "Ciclos y grupos por nivel con su sede, día y hora. Cada estudiante se inscribe y ve su grupo; cada maestro ve solo a sus estudiantes."
-    }
-  },
-  "status": {
-    "port": "En construcción",
-    "specified": "Especificado"
-  },
-  "data": {
-    "title": "Cuidado de los datos de los miembros",
-    "lead": "Los datos de los miembros de la Iglesia son de sumo cuidado y no se pueden filtrar. Por eso el proyecto sigue reglas simples:",
-    "p0": "Seguimos el Manual General de la Iglesia (33.8): los datos se limitan a lo necesario, se usan solo para el propósito aprobado, solo los ve quien está autorizado, y nunca para fines personales, políticos ni comerciales.",
-    "p1": "Solo se manejan datos que cada persona entrega por sí misma, con su consentimiento, para una actividad concreta.",
-    "p2": "Nunca se importan listados de los sistemas oficiales de la Iglesia.",
-    "p3": "Las ordenanzas y los datos de salud se tratan como datos sensibles.",
-    "p4": "Cada actividad tiene un plazo de conservación, y los datos se borran solos al cumplirlo.",
-    "p5": "Una instalación por barrio: cada unidad es dueña y responsable de sus datos. No hay un servidor central."
+    "index": "Inicio",
+    "privacy": "Política de datos",
+    "rules": "Normas de uso",
+    "manuals": "Manuales",
+    "updates": "Novedades",
+    "team": "Equipo",
+    "contact": "Contacto",
+    "conduct": "Código de conducta",
+    "terms": "Términos",
+    "security": "Seguridad",
+    "status": "Estado del proyecto"
   },
   "roadmap": {
-    "title": "Avance",
-    "lead": "El proyecto se reescribe desde cero para que cualquier barrio lo instale gratis en Vercel y Supabase. Este es el avance real, leído de GitHub:",
     "of": "de",
     "closed": "cerrados",
     "loading": "Cargando el avance…",
     "error": "No se pudo cargar el avance en este momento.",
     "all": "Ver todos los hitos en GitHub"
   },
-  "contribute": {
-    "title": "Colabora",
-    "lead": "Cada tarea está escrita para que puedas tomarla sin haber hablado antes con nadie.",
-    "s1": "Elige un issue sin asignar y sin la etiqueta «bloqueado».",
-    "s2": "Comenta /tomar en el issue: un bot te lo asigna y avisa a los demás que ya está en curso.",
-    "s3": "Trabaja dentro del alcance del issue y verifica ejecutando.",
-    "s4": "Revisa tu código con la skill del repositorio y abre el pull request.",
-    "goodFirst": "Tareas para empezar",
-    "guide": "Guía para colaborar"
+  "contributors": {
+    "loading": "Cargando colaboradores…",
+    "error": "No se pudo cargar la lista en este momento.",
+    "all": "Ver colaboradores en GitHub",
+    "contributions": "aportes"
   },
-  "about": {
-    "title": "Equipo: CSATeam",
-    "p1": "CallingSupportApp lo hace CSATeam (Calling Support App Team), una comunidad de colaboradores voluntarios. Todos somos colaboradores y ninguno es más que otro: no hay creador, ni dueños, ni líderes del proyecto.",
-    "p2": "Las decisiones se toman en los issues y, por encima de todo, manda el Manual General de la Iglesia. Cada persona que se suma escribe su propio perfil en el equipo.",
-    "p3": "No está patrocinado por ninguna empresa. Es un proyecto voluntario, abierto para que cualquier barrio lo use y para que quien quiera colabore.",
-    "link": "Conoce al equipo"
+  "team": {
+    "since": "Desde",
+    "languages": "Idiomas",
+    "profile": "Perfil en GitHub",
+    "empty": "Todavía no hay perfiles."
   },
-  "footer": {
-    "license": "© 2026 CSATeam OpenSource (Calling Support App Team) and contributors · Licencia MIT",
-    "unofficial": "No es un sitio oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días."
+  "updates": {
+    "for": "Para",
+    "pr": "Ver el cambio"
+  },
+  "manuals": {
+    "open": "Leer el manual",
+    "back": "Volver a los manuales"
   }
 }

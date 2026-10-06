@@ -1,88 +1,51 @@
 {
-  "meta": {
-    "title": "CallingSupportApp — open tools for Church units",
-    "description": "Open source app to organize the activities of a ward or branch: sign-ups, quotas, estimated costs and lists for temple trips, camps and EnglishConnect. In English, Spanish and Portuguese.",
-    "ogLocale": "en_US"
-  },
+  "ogLocale": "en_US",
+  "skip": "Skip to content",
+  "home": "Home",
+  "menu": "Menu",
+  "language": "Language",
+  "license": "© 2026 CSATeam OpenSource (Calling Support App Team) · MIT License",
+  "unofficial": "Not an official website of The Church of Jesus Christ of Latter-day Saints.",
+  "updated": "Last updated",
+  "titleSuffix": "CallingSupportApp",
   "nav": {
-    "skip": "Skip to content",
-    "language": "Language"
-  },
-  "hero": {
-    "eyebrow": "Open source · Español · Português · English",
-    "titleHighlight": "Organize",
-    "titleRest": " your unit's activities in one place",
-    "lead": "CallingSupportApp helps the leaders of a ward or branch organize the temple trip, camps and EnglishConnect classes: sign-ups, quotas, estimated costs and lists, with the care that members' data deserves.",
-    "github": "View on GitHub",
-    "contribute": "How to contribute"
-  },
-  "notice": {
-    "label": "Notice",
-    "unofficial": "This is not an official website of The Church of Jesus Christ of Latter-day Saints. It is a volunteer, community-built tool.",
-    "memberTools": "It does not replace Member Tools, the official app: it adds features that don't exist today."
-  },
-  "modules": {
-    "title": "Modules",
-    "lead": "Each module is enabled per calling: every leader sees and does only what their calling allows.",
-    "users": {
-      "title": "Users and callings",
-      "body": "Who can sign in and what they can see or do in each module, based on their calling and organization."
-    },
-    "temple": {
-      "title": "Temple trip",
-      "body": "Public sign-up, quotas per ordinance and gender, transportation and lodging, estimated cost and how to contribute, rooms and printable lists for the day of the trip."
-    },
-    "camp": {
-      "title": "Camp",
-      "body": "Youth and leaders, the official permission form, a packing list everyone checks off from their phone, and who brings the ward's shared equipment."
-    },
-    "ec": {
-      "title": "EnglishConnect",
-      "body": "Cycles and groups by level with their location, day and time. Each student signs up and sees their group; each teacher sees only their own students."
-    }
-  },
-  "status": {
-    "port": "In progress",
-    "specified": "Specified"
-  },
-  "data": {
-    "title": "Caring for members' data",
-    "lead": "Church members' data must be handled with the utmost care and must never leak. That's why the project follows simple rules:",
-    "p0": "We follow the Church's General Handbook (33.8): data is limited to what is needed, used only for the approved purpose, seen only by those who are authorized, and never used for personal, political or commercial purposes.",
-    "p1": "We only handle data that each person provides themselves, with their consent, for a specific activity.",
-    "p2": "Lists from the Church's official systems are never imported.",
-    "p3": "Ordinances and health information are treated as sensitive data.",
-    "p4": "Every activity has a retention period, and the data is deleted automatically when it ends.",
-    "p5": "One installation per ward: each unit owns and is responsible for its data. There is no central server."
+    "index": "Home",
+    "privacy": "Data policy",
+    "rules": "Rules of use",
+    "manuals": "Manuals",
+    "updates": "Updates",
+    "team": "Team",
+    "contact": "Contact",
+    "conduct": "Code of conduct",
+    "terms": "Terms",
+    "security": "Security",
+    "status": "Project status"
   },
   "roadmap": {
-    "title": "Progress",
-    "lead": "The project is being rewritten from scratch so any ward can install it for free on Vercel and Supabase. This is the real progress, read from GitHub:",
     "of": "of",
     "closed": "closed",
     "loading": "Loading progress…",
-    "error": "Progress couldn't be loaded right now.",
+    "error": "Progress could not be loaded right now.",
     "all": "See all milestones on GitHub"
   },
-  "contribute": {
-    "title": "Contribute",
-    "lead": "Every task is written so you can pick it up without having talked to anyone first.",
-    "s1": "Pick an unassigned issue without the “bloqueado” (blocked) label.",
-    "s2": "Comment /tomar on the issue: a bot assigns it to you and lets everyone know it is in progress.",
-    "s3": "Stay within the issue's scope and verify by running it.",
-    "s4": "Review your code with the repository's skill and open the pull request.",
-    "goodFirst": "Good first issues",
-    "guide": "Contributing guide"
+  "contributors": {
+    "loading": "Loading contributors…",
+    "error": "The list could not be loaded right now.",
+    "all": "See contributors on GitHub",
+    "contributions": "contributions"
   },
-  "about": {
-    "title": "Team: CSATeam",
-    "p1": "CallingSupportApp is made by CSATeam (Calling Support App Team), a community of volunteer contributors. We are all contributors and no one is above anyone else: there is no creator, no owners and no project leaders.",
-    "p2": "Decisions are made in the issues and, above all, the Church's General Handbook governs. Everyone who joins writes their own profile on the team.",
-    "p3": "It is not sponsored by any company. It's a volunteer project, open for any ward to use and for anyone who wants to contribute.",
-    "link": "Meet the team"
+  "team": {
+    "since": "Since",
+    "languages": "Languages",
+    "profile": "GitHub profile",
+    "empty": "There are no profiles yet."
   },
-  "footer": {
-    "license": "© 2026 CSATeam OpenSource (Calling Support App Team) and contributors · MIT License",
-    "unofficial": "Not an official website of The Church of Jesus Christ of Latter-day Saints."
+  "updates": {
+    "for": "For",
+    "pr": "See the change"
+  },
+  "manuals": {
+    "open": "Read the manual",
+    "back": "Back to manuals"
   }
 }
