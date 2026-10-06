@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "CallingSupportApp — herramientas abiertas para las unidades de la Iglesia",
-    "description": "Aplicación open source para organizar actividades de un barrio o rama: inscripciones, cupos, pagos y listados del viaje al templo, campamentos y EnglishConnect. En español, portugués e inglés.",
+    "description": "Aplicación open source para organizar actividades de un barrio o rama: inscripciones, cupos, costos estimados y listados del viaje al templo, campamentos y EnglishConnect. En español, portugués e inglés.",
     "ogLocale": "es_LA"
   },
   "nav": {
@@ -12,7 +12,7 @@
     "eyebrow": "Open source · Español · Português · English",
     "titleHighlight": "Organiza",
     "titleRest": " las actividades de tu unidad en un solo lugar",
-    "lead": "CallingSupportApp ayuda a los líderes de un barrio o rama a organizar el viaje al templo, los campamentos y las clases de EnglishConnect: inscripciones, cupos, pagos y listados, con el cuidado que merecen los datos de los miembros.",
+    "lead": "CallingSupportApp ayuda a los líderes de un barrio o rama a organizar el viaje al templo, los campamentos y las clases de EnglishConnect: inscripciones, cupos, costos estimados y listados, con el cuidado que merecen los datos de los miembros.",
     "github": "Ver en GitHub",
     "contribute": "Cómo colaborar"
   },
@@ -30,11 +30,11 @@
     },
     "temple": {
       "title": "Viaje para Adorar en el Templo",
-      "body": "Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, abonos, habitaciones y listas imprimibles para el día del viaje."
+      "body": "Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, costo estimado y cómo contribuir, habitaciones y listas imprimibles para el día del viaje."
     },
     "camp": {
       "title": "Campamento",
-      "body": "Jóvenes y líderes, la cuota de cada joven, la lista de qué llevar que cada uno marca desde su teléfono y el reparto del equipo del barrio."
+      "body": "Jóvenes y líderes, el formulario oficial de permiso, la lista de qué llevar que cada uno marca desde su teléfono y el reparto del equipo del barrio."
     },
     "ec": {
       "title": "EnglishConnect",

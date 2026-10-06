@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "CallingSupportApp — ferramentas abertas para as unidades da Igreja",
-    "description": "Aplicativo open source para organizar as atividades de uma ala ou ramo: inscrições, vagas, pagamentos e listas da viagem ao templo, acampamentos e EnglishConnect. Em português, espanhol e inglês.",
+    "description": "Aplicativo open source para organizar as atividades de uma ala ou ramo: inscrições, vagas, custos estimados e listas da viagem ao templo, acampamentos e EnglishConnect. Em português, espanhol e inglês.",
     "ogLocale": "pt_BR"
   },
   "nav": {
@@ -12,7 +12,7 @@
     "eyebrow": "Open source · Español · Português · English",
     "titleHighlight": "Organize",
     "titleRest": " as atividades da sua unidade em um só lugar",
-    "lead": "O CallingSupportApp ajuda os líderes de uma ala ou ramo a organizar a viagem ao templo, os acampamentos e as aulas do EnglishConnect: inscrições, vagas, pagamentos e listas, com o cuidado que os dados dos membros merecem.",
+    "lead": "O CallingSupportApp ajuda os líderes de uma ala ou ramo a organizar a viagem ao templo, os acampamentos e as aulas do EnglishConnect: inscrições, vagas, custos estimados e listas, com o cuidado que os dados dos membros merecem.",
     "github": "Ver no GitHub",
     "contribute": "Como colaborar"
   },
@@ -30,11 +30,11 @@
     },
     "temple": {
       "title": "Viagem ao Templo",
-      "body": "Inscrição pública, vagas por ordenança e gênero, transporte e hospedagem, pagamentos, quartos e listas para imprimir no dia da viagem."
+      "body": "Inscrição pública, vagas por ordenança e gênero, transporte e hospedagem, custo estimado e como contribuir, quartos e listas para imprimir no dia da viagem."
     },
     "camp": {
       "title": "Acampamento",
-      "body": "Jovens e líderes, a contribuição de cada jovem, a lista do que levar que cada um marca pelo celular e a divisão do equipamento da ala."
+      "body": "Jovens e líderes, o formulário oficial de permissão, a lista do que levar que cada um marca pelo celular e a divisão do equipamento da ala."
     },
     "ec": {
       "title": "EnglishConnect",

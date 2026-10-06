@@ -16,7 +16,7 @@ aplicación oficial de la Iglesia. Directorio, calendario, llamamientos y minist
 viviendo ahí.
 
 El objetivo de este proyecto es **agregar las funcionalidades que hoy no existen**: organizar
-una actividad de principio a fin, con sus inscripciones, cupos, pagos y listados, sin hojas
+una actividad de principio a fin, con sus inscripciones, cupos, costos estimados y listados, sin hojas
 de cálculo sueltas ni grupos de chat.
 
 ## Módulos
@@ -24,8 +24,8 @@ de cálculo sueltas ni grupos de chat.
 | Módulo | Qué resuelve | Estado |
 |---|---|---|
 | Usuarios, organizaciones y llamamientos | Quién entra a la aplicación y qué puede ver o hacer en cada módulo, según su llamamiento | Por portar de la v1: [#8](../../issues/8), [#14](../../issues/14)–[#17](../../issues/17) |
-| Viaje para Adorar en el Templo | Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, abonos, habitaciones, listados imprimibles | Por portar de la v1: [#19](../../issues/19)–[#25](../../issues/25) |
-| Campamento | Inscripción de jóvenes y líderes, cuota y abonos de cada joven, lista personal de qué llevar y reparto del equipo del barrio | Especificado: [#30](../../issues/30) |
+| Viaje para Adorar en el Templo | Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, costo estimado y cómo contribuir (la app no maneja dinero), habitaciones, listados imprimibles | Por portar de la v1: [#19](../../issues/19)–[#25](../../issues/25) |
+| Campamento | Inscripción de jóvenes y líderes, aporte sugerido si el obispado lo autoriza (sin manejar dinero), formulario oficial de permiso, lista personal de qué llevar y reparto del equipo del barrio | Especificado: [#30](../../issues/30) |
 | EnglishConnect | Ciclos y grupos por nivel, con sede, día, hora y enlaces. Cada estudiante se inscribe y ve su grupo; cada maestro ve solo a sus estudiantes | Especificado: [#31](../../issues/31) |
 
 ## Cuidado de los datos de los miembros
@@ -67,6 +67,9 @@ completa en la rama [`legacy`](../../tree/legacy) como referencia funcional para
 
 ## Principios
 
+- **El Manual General manda.** Toda idea y todo módulo deben estar de acuerdo con el
+  [Manual General](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa)
+  de la Iglesia. Si algo lo contradice, no se construye.
 - **Una instalación por barrio.** Cada barrio despliega su propia copia y es responsable
   de sus datos. No existe un servidor central que guarde datos de varios barrios.
 - **Nada fijo de un barrio en el código.** Nombre, logo, responsable de los datos y textos

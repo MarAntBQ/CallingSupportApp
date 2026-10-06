@@ -37,6 +37,7 @@ Quien lo implemente agrega el portugués y el inglés; no hace falta escribirlos
 
 Antes de publicarlo, léelo como si no supieras nada del proyecto:
 
+- [ ] ¿Está de acuerdo con el [Manual General](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa)? Si es un módulo, ¿cita las secciones que lo rigen, textuales y con número?
 - [ ] ¿Podría empezar a programar ahora mismo, sin preguntar?
 - [ ] ¿Cada regla de negocio está escrita con sus números y casos borde?
 - [ ] ¿Las rutas de la v1 son exactas (`backend/src/...`), no "como en la v1"?

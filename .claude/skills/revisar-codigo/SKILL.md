@@ -41,6 +41,10 @@ teléfono. Una prueba que nadie vio pasar **no es cobertura**.
 
 Recorre el diff completo con esta lista. Cada punto es un error que ya pasó en proyectos reales.
 
+0. **¿Contradice el Manual General?** Si el cambio introduce una práctica, un flujo o un
+   texto que va contra el [Manual General](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa),
+   es un `[bug]` que bloquea, aunque el código sea perfecto. Revisa también que las citas del
+   Manual sean textuales y con su número de sección.
 1. **El hueco entre las pruebas.** No leas las pruebas buscando errores: escribe en una línea
    qué caso cubre cada una y busca el caso que **ninguna** cubre. Ahí está el bug.
 2. **Revierte el cambio y mira si algo se pone rojo.** Si quitar el arreglo deja todo en
