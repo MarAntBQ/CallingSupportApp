@@ -30,7 +30,7 @@ Somente são tratados dados que **cada pessoa fornece por si mesma, com seu cons
 | Viagem ao Templo | Documento de identidade ou passaporte, data de nascimento, nome, telefone, e-mail, gênero, serviços escolhidos e ordenanças; data, IP e idioma do consentimento | Organizar a viagem: vagas, transporte, refeições, hospedagem |
 | Acampamento | Do jovem: nome, data de nascimento, gênero e contato de emergência. Do pai, mãe ou responsável: nome, telefone e e-mail | Organizar o acampamento. **Não são armazenados dados médicos**: eles ficam no formulário oficial assinado pelos pais |
 | EnglishConnect | Nome, e-mail e telefone (opcional); o representante, se for menor | Organizar os grupos |
-| Autossuficiência | No diretório, somente o que cada irmão publica sobre seu negócio, além de um e-mail privado | Permitir que a unidade o apoie |
+| Autossuficiência | Nenhum: é um portal de links para recursos públicos e gratuitos | Que a unidade encontre recursos oficiais e confiáveis |
 
 **As ordenanças são dados de crença religiosa**: são solicitadas com consentimento explícito e somente ficam visíveis para quem precisa delas. Quando um **menor** se inscreve, seu pai, mãe ou responsável dá o consentimento.
 
