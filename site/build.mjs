@@ -424,7 +424,7 @@ function writePage({ page, rel, docs, root = rootFor(rel) }) {
     navMobile: NAV.map((n) =>
       n.page
         ? navItem(n.page)
-        : `<li><span class="nav__heading">${textIn((l) => ui[l].navGroups[n.group])}</span><ul class="nav__sub">${n.items.map(navItem).join('')}</ul></li>`,
+        : `<li><span class="nav__heading" role="heading" aria-level="2">${textIn((l) => ui[l].navGroups[n.group])}</span><ul class="nav__sub">${n.items.map(navItem).join('')}</ul></li>`,
     ).join('\n            '),
     footerNav: FOOTER_NAV.map(navItem).join('\n        '),
     articles,
