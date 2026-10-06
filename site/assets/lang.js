@@ -52,6 +52,6 @@
     if (e.persisted) apply(saved());
   });
   window.addEventListener('storage', function (e) {
-    if (e.key === KEY) apply(saved());
+    if (e.key === KEY || e.key === null) apply(saved());
   });
 })();

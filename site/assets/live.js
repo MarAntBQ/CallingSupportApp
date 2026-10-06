@@ -5,6 +5,10 @@
     for (var i = 0; i < list.length; i++) fn(list[i]);
   }
 
+  function count(n) {
+    return typeof n === 'number' && Number.isFinite(n) && n >= 0;
+  }
+
   function ready(el) {
     el.setAttribute('aria-busy', 'false');
     el.replaceChildren();
@@ -94,7 +98,7 @@
       .then(function (data) {
         var milestones = (Array.isArray(data) ? data : [])
           .filter(function (m) {
-            return m && typeof m.title === 'string' && typeof m.open_issues === 'number' && typeof m.closed_issues === 'number';
+            return m && typeof m.title === 'string' && count(m.open_issues) && count(m.closed_issues);
           })
           .sort(function (a, b) {
             return a.title.localeCompare(b.title, undefined, { numeric: true });
@@ -114,7 +118,7 @@
     get('/contributors?per_page=100')
       .then(function (data) {
         var humans = (Array.isArray(data) ? data : []).filter(function (u) {
-          return u && u.type !== 'Bot' && typeof u.login === 'string';
+          return u && u.type !== 'Bot' && typeof u.login === 'string' && count(u.contributions);
         });
         if (!humans.length) return each(groups, showError);
         each(groups, function (el) {

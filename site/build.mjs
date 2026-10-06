@@ -204,7 +204,7 @@ function updatesBlock(l) {
   const u = ui[l].updates;
   return content[l].updatesList
     .map(
-      ({ data, body }) => `<article class="update" id="${inLang(l)}${escapeHtml(data.date)}">
+      ({ slug, data, body }) => `<article class="update" id="${inLang(l)}${escapeHtml(slug)}">
   <p class="update__date">${fmtDate(l, data.date)}</p>
   <h2>${escapeHtml(data.title)}</h2>
   <p class="update__for"><span class="pill">${escapeHtml(u.for)}: ${escapeHtml(data.audience)}</span></p>
@@ -323,8 +323,15 @@ function writePage({ page, rel, docs, root = rootFor(rel) }) {
     process.exit(1);
   }
   assertNoLocalePaths(rel, html);
+  const final =
+    page === '404'
+      ? html
+          .replace(/\n\s*<link rel="(canonical|alternate)"[^>]*>/g, '')
+          .replace(/\n\s*<meta property="og:url"[^>]*>/, '')
+          .replace('<meta name="description"', '<meta name="robots" content="noindex">\n  <meta name="description"')
+      : html;
   mkdirSync(join(out, rel), { recursive: true });
-  writeFileSync(join(out, rel, 'index.html'), html);
+  writeFileSync(join(out, rel, 'index.html'), final);
   written.push(rel);
 }
 
