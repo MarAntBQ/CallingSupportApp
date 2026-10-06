@@ -100,7 +100,7 @@ autocontiene: trae todo lo necesario para trabajarlo sin preguntar.
   [AGENTS.md](AGENTS.md).
 - **Roadmap:** los [milestones](../../milestones) en orden, empezando por **1 · Base**.
 - **Para empezar:** issues con
-  [`good first issue`](../../issues?q=is%3Aopen+label%3A%22good+first+issue%22) que no
+  [`good first issue`](../../issues?q=is%3Aopen+no%3Aassignee+label%3A%22good+first+issue%22+-label%3Abloqueado) sin asignar que no
   estén `bloqueado`.
 
 ## Licencia

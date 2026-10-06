@@ -1,3 +1,5 @@
+<!-- Ábrelo como borrador (Draft) apenas empieces, con `Refs #<número>`, para que todos vean que el issue está en curso. Cuando esté listo, cámbialo a `Closes #<número>` y márcalo como listo para revisión. -->
+
 ## Resumen
 
 <!-- Qué cambió y por qué. Si el PR hace algo más o distinto de lo que pidió el issue, dilo aquí. -->

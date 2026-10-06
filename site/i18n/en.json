@@ -68,7 +68,7 @@
     "title": "Contribute",
     "lead": "Every task is written so you can pick it up without having talked to anyone first.",
     "s1": "Pick an unassigned issue without the “bloqueado” (blocked) label.",
-    "s2": "Comment on the issue that you're taking it and create your branch.",
+    "s2": "Comment /tomar on the issue: a bot assigns it to you and lets everyone know it is in progress.",
     "s3": "Stay within the issue's scope and verify by running it.",
     "s4": "Review your code with the repository's skill and open the pull request.",
     "goodFirst": "Good first issues",
