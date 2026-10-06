@@ -92,8 +92,11 @@ para que cualquier barrio lo use y para que quien quiera colabore.
 
 ## Colaborar
 
-Toda contribución entra por **issue → rama → pull request → squash**. Cada issue se
-autocontiene: trae todo lo necesario para trabajarlo sin preguntar.
+Toda contribución entra por **issue → `/tomar` → rama → PR en borrador → squash**. Cada issue
+se autocontiene: trae todo lo necesario para trabajarlo sin preguntar. Para tomar uno, se
+comenta **`/tomar`** y un bot lo asigna y le pone la etiqueta `en-progreso`, así todos saben
+que está en curso. Un issue a la vez por persona, PR en borrador en 48 horas y `/soltar` si no
+se puede seguir; con 14 días sin actividad se libera solo.
 
 - **Cómo colaborar paso a paso:** [CONTRIBUTING](CONTRIBUTING.md).
 - **Reglas del repositorio** (stack, idiomas, glosario), para personas y agentes de IA:

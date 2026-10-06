@@ -36,6 +36,17 @@ test('decideRelease: solo quien lo tiene o el responsable', () => {
   assert.deepEqual(l.decideRelease({ assignees: ['luis'], actor: 'steven' }), { ok: false, reason: 'not-yours', by: 'luis' });
 });
 
+test('decideStale: límites exactos y cruce de medianoche', () => {
+  assert.equal(l.decideStale({ lastActivity: '2026-10-13T12:00:01Z', now: '2026-10-20T12:00:00Z', hasReminderSince: false }), 'none');
+  assert.equal(l.decideStale({ lastActivity: '2026-10-13T12:00:00Z', now: '2026-10-20T12:00:00Z', hasReminderSince: false }), 'remind');
+  assert.equal(l.decideStale({ lastActivity: '2026-10-06T23:59:00Z', now: '2026-10-20T23:58:00Z', hasReminderSince: true }), 'none');
+  assert.equal(l.decideStale({ lastActivity: '2026-10-06T23:59:00Z', now: '2026-10-20T23:59:00Z', hasReminderSince: true }), 'release');
+});
+
+test('decideTake: con varios asignados, informa al primero que no es quien pide', () => {
+  assert.deepEqual(l.decideTake({ ...base, assignees: ['luis', 'steven'], actor: 'steven' }), { ok: false, reason: 'taken', by: 'luis' });
+});
+
 test('decideStale: recuerda a los 7 días, una sola vez, y libera a los 14', () => {
   const now = '2026-10-20T12:00:00Z';
   assert.equal(l.decideStale({ lastActivity: '2026-10-14T12:00:00Z', now, hasReminderSince: false }), 'none');

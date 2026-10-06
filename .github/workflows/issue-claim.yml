@@ -9,12 +9,12 @@ permissions:
   issues: write
 
 concurrency:
-  group: issue-claim-${{ github.event.issue.number }}
+  group: issue-claims
   cancel-in-progress: false
 
 jobs:
   claim:
-    if: ${{ !github.event.issue.pull_request && startsWith(github.event.comment.body, '/') }}
+    if: ${{ !github.event.issue.pull_request && github.event.comment.user.type != 'Bot' && startsWith(github.event.comment.body, '/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,16 +24,23 @@ jobs:
         with:
           script: |
             const l = require('./.github/scripts/claim-logic.cjs');
-            const issue = context.payload.issue;
             const actor = context.payload.comment.user.login;
             const command = l.parseCommand(context.payload.comment.body);
             if (!command) return;
 
             const { owner, repo } = context.repo;
-            const number = issue.number;
+            const number = context.payload.issue.number;
+            const issue = (await github.rest.issues.get({ owner, repo, issue_number: number })).data;
             const labels = issue.labels.map((x) => x.name);
             const assignees = issue.assignees.map((x) => x.login);
             const free = `https://github.com/${owner}/${repo}/issues?q=is%3Aopen+is%3Aissue+no%3Aassignee+-label%3Abloqueado+-label%3A%22necesita-dise%C3%B1o%22`;
+            const removeInProgress = async () => {
+              try {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number: number, name: l.IN_PROGRESS });
+              } catch (e) {
+                if (e.status !== 404) throw e;
+              }
+            };
             const reply = (body) => github.rest.issues.createComment({ owner, repo, issue_number: number, body });
             const fecha = (d) => new Date(d).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
@@ -60,7 +67,8 @@ jobs:
               await github.rest.issues.addAssignees({ owner, repo, issue_number: number, assignees: [actor] });
               const after = await github.rest.issues.get({ owner, repo, issue_number: number });
               if (!after.data.assignees.some((a) => a.login === actor)) {
-                await reply(`@${actor}, no pude asignarte el issue automáticamente. Lo dejo marcado como tuyo con este comentario y la etiqueta \`${l.IN_PROGRESS}\`; el responsable del repositorio te asignará.`);
+                await reply(`@${actor}, no pude asignarte el issue automáticamente, así que **no quedó tomado**. Vuelve a comentar \`/tomar\` en unos minutos; si sigue fallando, comenta aquí para que el responsable del repositorio lo revise.`);
+                return;
               }
               await github.rest.issues.addLabels({ owner, repo, issue_number: number, labels: [l.IN_PROGRESS] });
               await reply([
@@ -85,7 +93,5 @@ jobs:
               return;
             }
             await github.rest.issues.removeAssignees({ owner, repo, issue_number: number, assignees });
-            if (labels.includes(l.IN_PROGRESS)) {
-              await github.rest.issues.removeLabel({ owner, repo, issue_number: number, name: l.IN_PROGRESS });
-            }
+            await removeInProgress();
             await reply('Issue liberado: está disponible para otra persona. Para tomarlo, comenta `/tomar`.');

@@ -10,6 +10,10 @@ permissions:
   issues: write
   pull-requests: read
 
+concurrency:
+  group: issue-claims
+  cancel-in-progress: false
+
 jobs:
   stale:
     runs-on: ubuntu-latest
@@ -23,16 +27,25 @@ jobs:
             const l = require('./.github/scripts/claim-logic.cjs');
             const { owner, repo } = context.repo;
             const now = new Date().toISOString();
+            const removeInProgress = async (issue_number) => {
+              try {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: l.IN_PROGRESS });
+              } catch (e) {
+                if (e.status !== 404) throw e;
+              }
+            };
 
             const claimed = (await github.paginate(github.rest.issues.listForRepo, {
               owner, repo, state: 'open', labels: l.IN_PROGRESS, per_page: 100,
             })).filter((i) => !i.pull_request);
 
-            for (const issue of claimed) {
-              const number = issue.number;
+            for (const listed of claimed) {
+              const number = listed.number;
+              const issue = (await github.rest.issues.get({ owner, repo, issue_number: number })).data;
+              if (issue.state !== 'open' || !issue.labels.some((x) => x.name === l.IN_PROGRESS)) continue;
               const holders = issue.assignees.map((a) => a.login);
               if (!holders.length) {
-                await github.rest.issues.removeLabel({ owner, repo, issue_number: number, name: l.IN_PROGRESS });
+                await removeInProgress(number);
                 continue;
               }
 
@@ -61,7 +74,7 @@ jobs:
                 core.info(`#${number}: recordatorio`);
               } else if (action === 'release') {
                 await github.rest.issues.removeAssignees({ owner, repo, issue_number: number, assignees: holders });
-                await github.rest.issues.removeLabel({ owner, repo, issue_number: number, name: l.IN_PROGRESS });
+                await removeInProgress(number);
                 await github.rest.issues.createComment({
                   owner, repo, issue_number: number,
                   body: `Se liberó por ${l.RELEASE_AFTER_DAYS} días sin actividad. ${who}, gracias; si quieres retomarlo, comenta \`/tomar\`.`,
