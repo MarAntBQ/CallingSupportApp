@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "title": "CallingSupportApp — open tools for Church units",
+    "description": "Open source app to organize the activities of a ward or branch: sign-ups, quotas, payments and lists for temple trips, camps and EnglishConnect. In English, Spanish and Portuguese.",
+    "ogLocale": "en_US"
+  },
+  "nav": {
+    "skip": "Skip to content",
+    "language": "Language"
+  },
+  "hero": {
+    "eyebrow": "Open source · Español · Português · English",
+    "titleHighlight": "Organize",
+    "titleRest": " your unit's activities in one place",
+    "lead": "CallingSupportApp helps the leaders of a ward or branch organize the temple trip, camps and EnglishConnect classes: sign-ups, quotas, payments and lists, with the care that members' data deserves.",
+    "github": "View on GitHub",
+    "contribute": "How to contribute"
+  },
+  "notice": {
+    "label": "Notice",
+    "unofficial": "This is not an official website of The Church of Jesus Christ of Latter-day Saints. It is a volunteer, community-built tool.",
+    "memberTools": "It does not replace Member Tools, the official app: it adds features that don't exist today."
+  },
+  "modules": {
+    "title": "Modules",
+    "lead": "Each module is enabled per calling: every leader sees and does only what their calling allows.",
+    "users": {
+      "title": "Users and callings",
+      "body": "Who can sign in and what they can see or do in each module, based on their calling and organization."
+    },
+    "temple": {
+      "title": "Temple trip",
+      "body": "Public sign-up, quotas per ordinance and gender, transportation and lodging, payments, rooms and printable lists for the day of the trip."
+    },
+    "camp": {
+      "title": "Camp",
+      "body": "Youth and leaders, each youth's fee, a packing list everyone checks off from their phone, and who brings the ward's shared equipment."
+    },
+    "ec": {
+      "title": "EnglishConnect",
+      "body": "Cycles and groups by level with their location, day and time. Each student signs up and sees their group; each teacher sees only their own students."
+    }
+  },
+  "status": {
+    "port": "In progress",
+    "specified": "Specified"
+  },
+  "data": {
+    "title": "Caring for members' data",
+    "lead": "Church members' data must be handled with the utmost care and must never leak. That's why the project follows simple rules:",
+    "p1": "We only handle data that each person provides themselves, with their consent, for a specific activity.",
+    "p2": "Lists from the Church's official systems are never imported.",
+    "p3": "Ordinances and health information are treated as sensitive data.",
+    "p4": "Every activity has a retention period, and the data is deleted automatically when it ends.",
+    "p5": "One installation per ward: each unit owns and is responsible for its data. There is no central server."
+  },
+  "roadmap": {
+    "title": "Progress",
+    "lead": "The project is being rewritten from scratch so any ward can install it for free on Vercel and Supabase. This is the real progress, read from GitHub:",
+    "of": "of",
+    "closed": "closed",
+    "loading": "Loading progress…",
+    "error": "Progress couldn't be loaded right now.",
+    "all": "See all milestones on GitHub"
+  },
+  "contribute": {
+    "title": "Contribute",
+    "lead": "Every task is written so you can pick it up without having talked to anyone first.",
+    "s1": "Pick an unassigned issue without the “bloqueado” (blocked) label.",
+    "s2": "Comment on the issue that you're taking it and create your branch.",
+    "s3": "Stay within the issue's scope and verify by running it.",
+    "s4": "Review your code with the repository's skill and open the pull request.",
+    "goodFirst": "Good first issues",
+    "guide": "Contributing guide"
+  },
+  "about": {
+    "title": "About the creator",
+    "p1": "I'm Marco Antonio Bustillos Quiroz, a software developer from Ecuador. I graduated from Brigham Young University–Idaho (B.S. in Web Design and Development) and served a full-time mission in Paraguay.",
+    "p2": "This project comes from something simple: building tools that help Church units. In 2022, when my stake was running EnglishConnect, I built an app to organize the groups, teachers and students; the EnglishConnect module grows out of that experience.",
+    "p3": "It is not sponsored by any company. It's a personal, volunteer project, open for any ward to use and for anyone who wants to contribute."
+  },
+  "footer": {
+    "license": "MIT License",
+    "unofficial": "Not an official website of The Church of Jesus Christ of Latter-day Saints."
+  }
+}

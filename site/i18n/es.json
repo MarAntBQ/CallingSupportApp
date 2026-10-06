@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "title": "CallingSupportApp — herramientas abiertas para las unidades de la Iglesia",
+    "description": "Aplicación open source para organizar actividades de un barrio o rama: inscripciones, cupos, pagos y listados del viaje al templo, campamentos y EnglishConnect. En español, portugués e inglés.",
+    "ogLocale": "es_LA"
+  },
+  "nav": {
+    "skip": "Saltar al contenido",
+    "language": "Idioma"
+  },
+  "hero": {
+    "eyebrow": "Open source · Español · Português · English",
+    "titleHighlight": "Organiza",
+    "titleRest": " las actividades de tu unidad en un solo lugar",
+    "lead": "CallingSupportApp ayuda a los líderes de un barrio o rama a organizar el viaje al templo, los campamentos y las clases de EnglishConnect: inscripciones, cupos, pagos y listados, con el cuidado que merecen los datos de los miembros.",
+    "github": "Ver en GitHub",
+    "contribute": "Cómo colaborar"
+  },
+  "notice": {
+    "label": "Aviso",
+    "unofficial": "No es un sitio oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días. Es una herramienta comunitaria y voluntaria.",
+    "memberTools": "No reemplaza a Herramientas para Miembros (Member Tools), la aplicación oficial: agrega las funcionalidades que hoy no existen."
+  },
+  "modules": {
+    "title": "Módulos",
+    "lead": "Cada módulo se activa por llamamiento: cada líder ve y hace solo lo que su llamamiento le permite.",
+    "users": {
+      "title": "Usuarios y llamamientos",
+      "body": "Quién entra a la aplicación y qué puede ver o hacer en cada módulo, según su llamamiento y organización."
+    },
+    "temple": {
+      "title": "Viaje para Adorar en el Templo",
+      "body": "Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, abonos, habitaciones y listas imprimibles para el día del viaje."
+    },
+    "camp": {
+      "title": "Campamento",
+      "body": "Jóvenes y líderes, la cuota de cada joven, la lista de qué llevar que cada uno marca desde su teléfono y el reparto del equipo del barrio."
+    },
+    "ec": {
+      "title": "EnglishConnect",
+      "body": "Ciclos y grupos por nivel con su sede, día y hora. Cada estudiante se inscribe y ve su grupo; cada maestro ve solo a sus estudiantes."
+    }
+  },
+  "status": {
+    "port": "En construcción",
+    "specified": "Especificado"
+  },
+  "data": {
+    "title": "Cuidado de los datos de los miembros",
+    "lead": "Los datos de los miembros de la Iglesia son de sumo cuidado y no se pueden filtrar. Por eso el proyecto sigue reglas simples:",
+    "p1": "Solo se manejan datos que cada persona entrega por sí misma, con su consentimiento, para una actividad concreta.",
+    "p2": "Nunca se importan listados de los sistemas oficiales de la Iglesia.",
+    "p3": "Las ordenanzas y los datos de salud se tratan como datos sensibles.",
+    "p4": "Cada actividad tiene un plazo de conservación, y los datos se borran solos al cumplirlo.",
+    "p5": "Una instalación por barrio: cada unidad es dueña y responsable de sus datos. No hay un servidor central."
+  },
+  "roadmap": {
+    "title": "Avance",
+    "lead": "El proyecto se reescribe desde cero para que cualquier barrio lo instale gratis en Vercel y Supabase. Este es el avance real, leído de GitHub:",
+    "of": "de",
+    "closed": "cerrados",
+    "loading": "Cargando el avance…",
+    "error": "No se pudo cargar el avance en este momento.",
+    "all": "Ver todos los hitos en GitHub"
+  },
+  "contribute": {
+    "title": "Colabora",
+    "lead": "Cada tarea está escrita para que puedas tomarla sin haber hablado antes con nadie.",
+    "s1": "Elige un issue sin asignar y sin la etiqueta «bloqueado».",
+    "s2": "Comenta «Lo tomo» y crea tu rama.",
+    "s3": "Trabaja dentro del alcance del issue y verifica ejecutando.",
+    "s4": "Revisa tu código con la skill del repositorio y abre el pull request.",
+    "goodFirst": "Tareas para empezar",
+    "guide": "Guía para colaborar"
+  },
+  "about": {
+    "title": "Acerca del creador",
+    "p1": "Soy Marco Antonio Bustillos Quiroz, desarrollador de software de Ecuador. Me gradué de Brigham Young University–Idaho (Licenciatura en Diseño y Desarrollo Web) y serví una misión de tiempo completo en Paraguay.",
+    "p2": "Este proyecto nace de algo sencillo: hacer herramientas que ayuden a las unidades de la Iglesia. En 2022, cuando en mi estaca dábamos EnglishConnect, hice una aplicación para organizar los grupos, los maestros y los estudiantes; de esa experiencia sale el módulo de EnglishConnect.",
+    "p3": "No está patrocinado por ninguna empresa. Es un proyecto personal y voluntario, abierto para que cualquier barrio lo use y para que quien quiera colabore."
+  },
+  "footer": {
+    "license": "Licencia MIT",
+    "unofficial": "No es un sitio oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días."
+  }
+}
