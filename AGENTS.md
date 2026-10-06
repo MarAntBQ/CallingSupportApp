@@ -107,6 +107,16 @@ Días").
 Orden de las reglas: **1)** el Manual General en todo; **2)** dentro de él, para los datos de
 los miembros, el 33.8 (sección siguiente); **3)** las reglas técnicas de este archivo.
 
+## CSATeam: un equipo de iguales
+
+El proyecto es de **CSATeam (Calling Support App Team)**: todos somos colaboradores y ninguno
+es más que otro. En el repositorio, el sitio, los issues y los PRs **no se escribe "creador",
+"autor del proyecto", "fundador" ni "líder"** para referirse a una persona del equipo
+(cuando se habla de los líderes de una unidad de la Iglesia, sí). "Mantenedor" es solo la
+función técnica de mergear ([`.github/maintainers.json`](.github/maintainers.json)). Ninguna
+regla tiene excepciones por persona. Cada colaborador escribe su propio perfil en
+[`team/`](team/README.md).
+
 ## La regla que manda: los datos de los miembros
 
 Por encima de cualquier conveniencia técnica, los datos de los miembros se rigen por el
@@ -147,7 +157,7 @@ borrado físico (`DELETE`), sin borrado lógico ni papelera. Detalle y lista par
    (secciones anteriores). Nunca importar listados de los sistemas oficiales de la Iglesia. Todo cambio que toque datos de personas pasa por la
    skill `datos-de-miembros`. Si una funcionalidad choca con el Manual, no se construye.
 2. **Flujo:** issue → `/tomar` → rama → PR en borrador → pull request → squash. `main` está
-   protegida: nadie hace push directo, tampoco el autor del proyecto. **Un issue se toma
+   protegida: nadie hace push directo, sin excepción. **Un issue se toma
    comentando `/tomar`** (el bot lo asigna y le pone `en-progreso`); un issue a la vez por
    persona; PR en borrador dentro de las 48 horas; `/soltar` si no se puede seguir. Nunca
    trabajar en un issue asignado a otra persona.

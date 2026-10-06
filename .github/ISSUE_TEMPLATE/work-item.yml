@@ -22,7 +22,7 @@ body:
     id: tarjeta
     attributes:
       label: Tarjeta de Trello
-      description: Opcional. Solo si la tarea viene del tablero del autor.
+      description: Opcional. Solo si la tarea viene de una tarjeta de Trello.
       placeholder: https://trello.com/c/...
   - type: textarea
     id: resultado

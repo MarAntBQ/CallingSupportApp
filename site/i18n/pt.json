@@ -75,13 +75,14 @@
     "guide": "Guia para colaborar"
   },
   "about": {
-    "title": "Sobre o criador",
-    "p1": "Sou Marco Antonio Bustillos Quiroz, desenvolvedor de software do Equador. Me formei pela Brigham Young University–Idaho (bacharelado em Design e Desenvolvimento Web) e servi uma missão de tempo integral no Paraguai.",
-    "p2": "Este projeto nasce de algo simples: criar ferramentas que ajudem as unidades da Igreja. Em 2022, quando dávamos EnglishConnect na minha estaca, criei um aplicativo para organizar os grupos, os professores e os alunos; dessa experiência nasce o módulo de EnglishConnect.",
-    "p3": "Não é patrocinado por nenhuma empresa. É um projeto pessoal e voluntário, aberto para que qualquer ala o use e para que quem quiser colabore."
+    "title": "Equipe: CSATeam",
+    "p1": "O CallingSupportApp é feito pelo CSATeam (Calling Support App Team), uma comunidade de colaboradores voluntários. Todos somos colaboradores e ninguém é mais do que ninguém: não há criador, nem donos, nem líderes do projeto.",
+    "p2": "As decisões são tomadas nas issues e, acima de tudo, vale o Manual Geral da Igreja. Cada pessoa que entra escreve o próprio perfil na equipe.",
+    "p3": "Não é patrocinado por nenhuma empresa. É um projeto voluntário, aberto para que qualquer ala o use e para que quem quiser colabore.",
+    "link": "Conheça a equipe"
   },
   "footer": {
-    "license": "Licença MIT",
+    "license": "© 2026 CSATeam OpenSource (Calling Support App Team) and contributors · Licença MIT",
     "unofficial": "Não é um site oficial de A Igreja de Jesus Cristo dos Santos dos Últimos Dias."
   }
 }

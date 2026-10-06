@@ -77,21 +77,18 @@ completa en la rama [`legacy`](../../tree/legacy) como referencia funcional para
 - **Para varios países.** La aplicación es trilingüe (**español, portugués e inglés**), con
   un selector de idioma en el menú y el idioma por defecto en la configuración.
 
-## Acerca del creador
+## Equipo: CSATeam
 
-Soy **Marco Antonio Bustillos Quiroz**, desarrollador de software de Ecuador. Me gradué de
-**Brigham Young University–Idaho** (Licenciatura en Diseño y Desarrollo Web) y serví una
-**misión de tiempo completo** en Paraguay.
+CallingSupportApp lo hace **CSATeam (Calling Support App Team)**, una comunidad de
+colaboradores voluntarios. **Todos somos colaboradores y ninguno es más que otro:** no hay
+creador, ni dueños, ni líderes del proyecto. Las decisiones se toman en los issues y, por
+encima de todo, manda el [Manual General](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa).
 
-Este proyecto nace de algo sencillo: hacer herramientas que ayuden a las unidades de la
-Iglesia. No es la primera vez. En 2022, cuando en mi estaca dábamos EnglishConnect, hice una
-aplicación para organizar los grupos, los maestros y los estudiantes; de esa experiencia
-sale el módulo de EnglishConnect que está planeado aquí.
+Cada persona que se suma escribe su propio perfil en [`team/`](team/). Conoce al equipo ahí, y
+si quieres sumarte, tu primer aporte puede ser agregar el tuyo.
 
-**No está patrocinado por ninguna empresa.** Es un proyecto personal y voluntario, abierto
-para que cualquier barrio lo use y para que quien quiera colabore.
-
-[MarAntBQ.dev](https://marantbq.dev)
+**No está patrocinado por ninguna empresa.** Es un proyecto voluntario, abierto para que
+cualquier barrio lo use y para que quien quiera colabore.
 
 ## Colaborar
 
@@ -111,4 +108,4 @@ se puede seguir; con 14 días sin actividad se libera solo.
 
 ## Licencia
 
-[MIT](LICENSE)
+[MIT](LICENSE) © 2026 CSATeam OpenSource (Calling Support App Team) and contributors.

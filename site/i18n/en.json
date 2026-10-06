@@ -75,13 +75,14 @@
     "guide": "Contributing guide"
   },
   "about": {
-    "title": "About the creator",
-    "p1": "I'm Marco Antonio Bustillos Quiroz, a software developer from Ecuador. I graduated from Brigham Young University–Idaho (B.S. in Web Design and Development) and served a full-time mission in Paraguay.",
-    "p2": "This project comes from something simple: building tools that help Church units. In 2022, when my stake was running EnglishConnect, I built an app to organize the groups, teachers and students; the EnglishConnect module grows out of that experience.",
-    "p3": "It is not sponsored by any company. It's a personal, volunteer project, open for any ward to use and for anyone who wants to contribute."
+    "title": "Team: CSATeam",
+    "p1": "CallingSupportApp is made by CSATeam (Calling Support App Team), a community of volunteer contributors. We are all contributors and no one is above anyone else: there is no creator, no owners and no project leaders.",
+    "p2": "Decisions are made in the issues and, above all, the Church's General Handbook governs. Everyone who joins writes their own profile on the team.",
+    "p3": "It is not sponsored by any company. It's a volunteer project, open for any ward to use and for anyone who wants to contribute.",
+    "link": "Meet the team"
   },
   "footer": {
-    "license": "MIT License",
+    "license": "© 2026 CSATeam OpenSource (Calling Support App Team) and contributors · MIT License",
     "unofficial": "Not an official website of The Church of Jesus Christ of Latter-day Saints."
   }
 }
