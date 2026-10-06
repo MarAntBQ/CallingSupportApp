@@ -53,5 +53,6 @@
     "description": "La página que buscas no existe o cambió de lugar.",
     "home": "Volver al inicio"
   },
-  "ogImageAlt": "Logotipo de CallingSupportApp, herramientas abiertas y gratuitas para barrios y ramas"
+  "ogImageAlt": "Logotipo de CallingSupportApp, herramientas abiertas y gratuitas para barrios y ramas",
+  "githubFab": "Ver el código en GitHub"
 }
