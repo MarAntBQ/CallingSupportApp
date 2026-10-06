@@ -34,7 +34,9 @@ Comenta en el issue `Lo tomo` y asígnatelo (`gh issue edit <n> --add-assignee @
 
 ## 4. Rama
 
-Siempre desde `main` actualizado, con el tipo y el número del issue:
+Siempre desde `main` actualizado, con el tipo y el número del issue. Si no eres colaborador
+del repositorio, trabaja desde tu fork y usa `upstream` en lugar de `origin` (ver la sección
+3 de [CONTRIBUTING](../../../CONTRIBUTING.md)).
 
 ```sh
 git switch main && git pull

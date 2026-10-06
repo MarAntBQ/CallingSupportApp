@@ -39,12 +39,32 @@ Muchos issues portan funcionalidad de la primera versión, que vive completa en 
 
 ## 3. Crea tu rama
 
+**Si eres colaborador del repositorio** (tienes permiso de escritura), trabaja en una rama
+del propio repositorio:
+
 ```sh
-git switch main && git pull
+git clone https://github.com/MarAntBQ/CallingSupportApp.git
+cd CallingSupportApp
 git switch -c feat/<número>-titulo-corto
 ```
 
-Tipos: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`.
+**Si no lo eres**, trabaja desde tu fork:
+
+```sh
+gh repo fork MarAntBQ/CallingSupportApp --clone   # o "Fork" en GitHub y git clone de tu copia
+cd CallingSupportApp
+git remote -v                                     # origin = tu fork, upstream = el original
+git switch -c feat/<número>-titulo-corto
+```
+
+Antes de empezar y antes de abrir el PR, trae lo último de `main`:
+
+```sh
+git fetch upstream            # colaboradores: git fetch origin
+git rebase upstream/main      # colaboradores: git rebase origin/main
+```
+
+Tipos de rama: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`.
 
 ## 4. Trabaja dentro del alcance
 
@@ -99,8 +119,11 @@ inventados. Detalle completo en la skill `datos-de-miembros`.
 La aplicación es **trilingüe: español, portugués e inglés**, porque la usan unidades de
 varios países. Ningún texto visible se escribe dentro de un componente: va en
 `messages/es.json`, `pt.json` y `en.json`. Los issues traen los textos en español; tú agregas
-el portugués y el inglés usando el glosario de [AGENTS.md](AGENTS.md#idiomas). Si te falta
-uno de los dos idiomas, dilo en el PR y alguien del equipo lo completa en la revisión.
+el portugués y el inglés usando el glosario de [AGENTS.md](AGENTS.md#idiomas).
+
+**Los tres idiomas van completos en tu PR** y `npm run i18n:check` tiene que pasar. Si no
+dominas alguno, tradúcelo con la herramienta que prefieras respetando el glosario, y anota
+en el PR qué textos conviene que revise un hablante nativo.
 
 ## Instalación local
 

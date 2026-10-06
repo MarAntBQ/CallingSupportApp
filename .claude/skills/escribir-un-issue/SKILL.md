@@ -72,6 +72,9 @@ divide en Tareas autocontenidas y la propuesta las enlaza.
 
 | Etiqueta | Cuándo |
 |---|---|
+| `bug` | Defecto reproducible (lo pone la plantilla Bug) |
+| `enhancement` | Tarea nueva o mejora (lo pone la plantilla Tarea) |
+| `documentation` | Solo documentación |
 | `port-v1` | Lleva a la versión nueva algo que ya existe en la rama `legacy` |
 | `módulo-nuevo` | Funcionalidad que no existe en la v1 |
 | `infraestructura` | Esqueleto, CI, despliegue, configuración del proyecto |
