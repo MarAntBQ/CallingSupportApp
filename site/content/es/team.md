@@ -30,7 +30,7 @@ Todas las personas que aportaron al repositorio:
 
 Ser colaborador oficial da acceso de escritura al repositorio. **No es un rango:** nadie queda por encima de nadie y las reglas son las mismas. Se llega por dos caminos:
 
-1. **Por invitación** de alguien del equipo.
-2. **Colaborando abiertamente:** después de varios PRs mergeados, el equipo te invita a participar.
+1. **Por invitación:** alguien del equipo la propone.
+2. **Colaborando abiertamente:** después de varios PRs mergeados, alguien del equipo propone invitarte.
 
 La invitación se propone en un issue público y, si en una semana nadie plantea una objeción fundada, se envía.

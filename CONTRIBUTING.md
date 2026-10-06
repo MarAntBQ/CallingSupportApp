@@ -14,7 +14,8 @@ los miembros) y [AGENTS.md](AGENTS.md) (stack, idioma, glosario y reglas del rep
 
 **Cualquier persona, miembro o amiga de La Iglesia de Jesucristo de los Santos de los Últimos
 Días, puede ayudar sin pedir permiso.** Haz un fork del repositorio, toma un issue libre
-comentando `/tomar`, trabaja en tu fork y abre un PR. Si se aprueba, tu trabajo entra al
+comentando `/tomar` (el bot también asigna a quien trabaja desde un fork), trabaja en tu fork y
+abre un PR. Si se aprueba, tu trabajo entra al
 proyecto. Las reglas son las mismas para todos, y también el
 [código de conducta](https://callingsupportapp.org/conduct/).
 
@@ -47,9 +48,9 @@ Ser **colaborador oficial** te da acceso de escritura al repositorio: puedes cre
 en vez de trabajar desde un fork. **No es un rango:** no te pone por encima de nadie y las
 reglas siguen siendo las mismas para todos. Hay dos caminos:
 
-1. **Que alguien del equipo te invite.**
+1. **Que alguien del equipo proponga tu invitación.**
 2. **Colaborar abiertamente:** después de varios PRs mergeados (como referencia, tres o más),
-   el equipo te invita a participar.
+   alguien del equipo propone invitarte.
 
 La invitación se propone **en público**, como toda decisión del proyecto:
 

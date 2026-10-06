@@ -30,7 +30,7 @@ Todas as pessoas que contribuíram para o repositório:
 
 Ser colaborador oficial dá acesso de escrita ao repositório. **Não é uma hierarquia:** ninguém fica acima de ninguém e as regras são as mesmas. Há dois caminhos:
 
-1. **Por convite** de alguém da equipe.
-2. **Colaborando abertamente:** depois de vários PRs aceitos, a equipe convida você para participar.
+1. **Por convite:** alguém da equipe propõe.
+2. **Colaborando abertamente:** depois de vários PRs integrados, alguém da equipe propõe convidar você.
 
 O convite é proposto em um issue público e, se em uma semana ninguém apresentar uma objeção fundamentada, ele é enviado.

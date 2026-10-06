@@ -30,7 +30,7 @@ Everyone who has contributed to the repository:
 
 Being an official contributor gives you write access to the repository. **It is not a rank:** no one is above anyone else, and the rules are the same for everyone. There are two paths:
 
-1. **By invitation** from someone on the team.
-2. **By contributing in the open:** after several merged PRs, the team invites you to join.
+1. **By invitation:** someone on the team proposes it.
+2. **By contributing in the open:** after several merged PRs, someone on the team proposes inviting you.
 
 The invitation is proposed in a public issue and, if no one raises a well-founded objection within a week, it is sent.

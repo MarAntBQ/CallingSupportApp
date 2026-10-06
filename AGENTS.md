@@ -117,7 +117,7 @@ función técnica de mergear ([`.github/maintainers.json`](.github/maintainers.j
 regla tiene excepciones por persona. Cada colaborador escribe su propio perfil en
 [`team/`](team/README.md). **Cualquier miembro o amigo de la Iglesia puede participar** con un
 fork y un PR, sin pedir permiso. Se llega a **colaborador oficial** (acceso de escritura, no un
-rango) por invitación de alguien del equipo o después de varios PRs mergeados; el
+rango) cuando alguien del equipo propone invitarte, o después de varios PRs mergeados; el
 procedimiento está en [CONTRIBUTING.md](CONTRIBUTING.md#cómo-llegar-a-ser-colaborador-oficial).
 
 ## La regla que manda: los datos de los miembros
