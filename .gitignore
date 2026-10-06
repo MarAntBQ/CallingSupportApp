@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+build/
+coverage/
+*.log
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+
+.env
+.env.*
+!.env.example
+
+# Datos personales reales de miembros del barrio (listados, exportaciones del
+# sistema de la Iglesia). Este repositorio es público: jamás deben subirse.
+*.pdf
+*.xlsx
+*.csv

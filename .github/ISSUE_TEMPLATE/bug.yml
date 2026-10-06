@@ -1,0 +1,74 @@
+name: Bug
+description: Reporta un defecto reproducible o una regresión.
+title: ""
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Si no se puede reproducir, no es un bug todavía: es una sospecha. Documenta los pasos.
+  - type: input
+    id: tarjeta
+    attributes:
+      label: Tarjeta de Trello
+      placeholder: https://trello.com/c/...
+  - type: textarea
+    id: resumen
+    attributes:
+      label: Resumen
+      description: Qué está mal, en una o dos frases.
+    validations:
+      required: true
+  - type: input
+    id: superficie
+    attributes:
+      label: Dónde ocurre
+      description: Sitio, ruta, módulo o endpoint afectado.
+      placeholder: módulo, pantalla, endpoint o script afectado
+    validations:
+      required: true
+  - type: textarea
+    id: reproduccion
+    attributes:
+      label: Reproducción
+      description: Pasos exactos. Incluye navegador y si fue en escritorio o móvil.
+      placeholder: |
+        1. Entrar a ...
+        2. Hacer clic en ...
+        3. Observar que ...
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+    validations:
+      required: true
+  - type: textarea
+    id: real
+    attributes:
+      label: Comportamiento real y evidencia
+      description: Captura, error de consola, log o respuesta del servidor. La evidencia vale más que la descripción.
+    validations:
+      required: true
+  - type: dropdown
+    id: impacto
+    attributes:
+      label: Impacto
+      options:
+        - Producción caída o riesgo de datos
+        - Degradación visible para el usuario
+        - Defecto interno o solo en desarrollo
+    validations:
+      required: true
+  - type: dropdown
+    id: entorno
+    attributes:
+      label: Entorno
+      options:
+        - Producción
+        - Local / desarrollo
+        - Ambos
+    validations:
+      required: true
