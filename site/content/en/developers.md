@@ -144,7 +144,35 @@ node --test .github/scripts/claim-logic.test.cjs .github/scripts/team-profiles.t
 
 ## 7. Start the application
 
-> **Arrives with [#4](https://github.com/MarAntBQ/CallingSupportApp/issues/4)** (Next.js + Supabase skeleton). When that issue is closed, this step will explain how to start the application and its development database.
+You need **Docker** ([Docker Desktop](https://www.docker.com/products/docker-desktop/) on Windows and macOS, or Docker Engine on Linux) for the development database: a Postgres 17 with made-up data.
+
+```sh
+nvm use                    # Node 22, from .nvmrc
+npm install
+docker compose up -d
+cp .env.example .env
+npm run db:migrate
+npm run dev
+```
+
+**You should see:**
+- `npm run db:migrate` ends with `migrations applied successfully!`;
+- `npm run dev` shows `Ready` and the address `http://localhost:3000`;
+- `http://localhost:3000/api/health` returns `{"ok":true,"db":true}`, and the home page says "Under construction".
+
+Before opening a PR, these four must finish without errors:
+
+```sh
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+```
+
+**If it fails:**
+- `/api/health` returns `{"ok":false,"db":false}` → the database is not running. Check `docker compose ps` (it should say `healthy`) and that Docker Desktop is open.
+- `Falta DIRECT_DATABASE_URL` *(the program prints in Spanish)* → you did not copy `.env.example` to `.env`.
+- Port 5432 is taken → you already have another Postgres. Change it in `docker-compose.yml` (for example, `'5433:5432'`) and in both URLs in `.env`.
 
 ## 8. Your first contribution, guided: your team profile
 

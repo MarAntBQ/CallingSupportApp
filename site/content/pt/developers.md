@@ -144,7 +144,35 @@ node --test .github/scripts/claim-logic.test.cjs .github/scripts/team-profiles.t
 
 ## 7. Iniciar o aplicativo
 
-> **Chega com [#4](https://github.com/MarAntBQ/CallingSupportApp/issues/4)** (esqueleto Next.js + Supabase). Quando esse issue for encerrado, este passo explicará como iniciar o aplicativo e seu banco de dados de desenvolvimento.
+Você precisa do **Docker** ([Docker Desktop](https://www.docker.com/products/docker-desktop/) no Windows e no macOS, ou Docker Engine no Linux) para o banco de dados de desenvolvimento: um Postgres 17 com dados fictícios.
+
+```sh
+nvm use                    # Node 22, a partir do .nvmrc
+npm install
+docker compose up -d
+cp .env.example .env
+npm run db:migrate
+npm run dev
+```
+
+**Você deve ver:**
+- `npm run db:migrate` termina com `migrations applied successfully!`;
+- `npm run dev` mostra `Ready` e o endereço `http://localhost:3000`;
+- `http://localhost:3000/api/health` responde `{"ok":true,"db":true}`, e a página inicial diz "Em construção".
+
+Antes de abrir um PR, estes quatro precisam terminar sem erros:
+
+```sh
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+```
+
+**Se falhar:**
+- `/api/health` responde `{"ok":false,"db":false}` → o banco não está em execução. Confira `docker compose ps` (deve dizer `healthy`) e se o Docker Desktop está aberto.
+- `Falta DIRECT_DATABASE_URL` *(o programa imprime em espanhol)* → você não copiou `.env.example` para `.env`.
+- A porta 5432 está ocupada → você já tem outro Postgres. Troque-a no `docker-compose.yml` (por exemplo, `'5433:5432'`) e nas duas URLs do `.env`.
 
 ## 8. Sua primeira contribuição, com orientação: seu perfil na equipe
 
