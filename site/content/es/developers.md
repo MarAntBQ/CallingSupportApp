@@ -142,7 +142,35 @@ node --test .github/scripts/claim-logic.test.cjs .github/scripts/team-profiles.t
 
 ## 7. Levantar la aplicación
 
-> **Llega con [#4](https://github.com/MarAntBQ/CallingSupportApp/issues/4)** (esqueleto Next.js + Supabase). Cuando ese issue se cierre, este paso explicará cómo levantar la aplicación y su base de datos de desarrollo.
+Necesitas **Docker** ([Docker Desktop](https://www.docker.com/products/docker-desktop/) en Windows y macOS, o Docker Engine en Linux) para la base de datos de desarrollo: un Postgres 17 con datos inventados.
+
+```sh
+nvm use                    # Node 22, desde .nvmrc
+npm install
+docker compose up -d
+cp .env.example .env
+npm run db:migrate
+npm run dev
+```
+
+**Deberías ver:**
+- `npm run db:migrate` termina sin errores (con la versión actual de drizzle-kit dice `migrations applied successfully!`);
+- `npm run dev` muestra `Ready` y la dirección `http://localhost:3000`;
+- `http://localhost:3000/api/health` responde `{"ok":true,"db":true}`, y la portada dice "En construcción".
+
+Antes de abrir un PR, estos cuatro tienen que terminar sin errores:
+
+```sh
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+```
+
+**Si falla:**
+- `/api/health` responde `{"ok":false,"db":false}` → la base no está arriba. Revisa `docker compose ps` (debe decir `healthy`) y que Docker Desktop esté abierto.
+- `Falta DIRECT_DATABASE_URL` → no copiaste `.env.example` a `.env`.
+- El puerto 5432 está ocupado → ya tienes otro Postgres. Cámbialo en `docker-compose.yml` (por ejemplo, `'5433:5432'`) y en las dos URL de `.env`.
 
 ## 8. Tu primer aporte, guiado: tu perfil en el equipo
 

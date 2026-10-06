@@ -212,9 +212,30 @@ en el PR qué textos conviene que revise un hablante nativo.
 
 ## Instalación local
 
-La guía para levantar el proyecto en tu máquina llega con el issue
-[#4](../../issues/4) (esqueleto). Hasta entonces, ese es el issue por donde empieza todo,
-seguido de [#5](../../issues/5) (idiomas).
+Necesitas Node 22 (`.nvmrc`) y Docker. Desde la raíz del repositorio:
+
+```sh
+npm install
+docker compose up -d
+cp .env.example .env
+npm run db:migrate
+npm run dev
+```
+
+Abre `http://localhost:3000/api/health`: debe responder `{"ok":true,"db":true}`. La base de
+desarrollo es un Postgres 17 en Docker, con datos inventados; nunca uses datos reales.
+
+Antes de abrir un PR, todo esto tiene que terminar sin errores:
+
+```sh
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+```
+
+El paso a paso con lo que deberías ver y qué hacer si algo falla está en el
+[Manual del desarrollador](https://callingsupportapp.org/developers/).
 
 ## Reportar un problema o proponer una idea
 
