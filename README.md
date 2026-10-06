@@ -92,6 +92,11 @@ cualquier barrio lo use y para que quien quiera colabore.
 
 ## Colaborar
 
+**Cualquier persona, miembro o amiga de la Iglesia, puede participar sin pedir permiso:** fork,
+`/tomar` en un issue y PR. Para ser colaborador oficial del equipo hay dos caminos: que alguien
+del equipo te invite o, después de varios PRs mergeados, que el equipo te invite. Detalle en
+[CONTRIBUTING](CONTRIBUTING.md#quién-puede-participar).
+
 Toda contribución entra por **issue → `/tomar` → rama → PR en borrador → squash**. Cada issue
 se autocontiene: trae todo lo necesario para trabajarlo sin preguntar. Para tomar uno, se
 comenta **`/tomar`** y un bot lo asigna y le pone la etiqueta `en-progreso`, así todos saben

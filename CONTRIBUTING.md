@@ -10,6 +10,14 @@ rige toda idea del proyecto. Si algo lo contradice, no se construye. Detalle en
 Antes de empezar, lee el [README](README.md) (qué es el proyecto y cómo trata los datos de
 los miembros) y [AGENTS.md](AGENTS.md) (stack, idioma, glosario y reglas del repositorio).
 
+## Quién puede participar
+
+**Cualquier persona, miembro o amiga de La Iglesia de Jesucristo de los Santos de los Últimos
+Días, puede ayudar sin pedir permiso.** Haz un fork del repositorio, toma un issue libre
+comentando `/tomar`, trabaja en tu fork y abre un PR. Si se aprueba, tu trabajo entra al
+proyecto. Las reglas son las mismas para todos, y también el
+[código de conducta](https://callingsupportapp.org/conduct/).
+
 ## El recorrido
 
 ```
@@ -32,6 +40,24 @@ colaboradores y ninguno es más que otro:** no hay creador, ni dueños, ni líde
   [`.github/maintainers.json`](.github/maintainers.json) y puede crecer.
 - **Las reglas son iguales para todos.** Nadie tiene excepciones: un issue a la vez, PR en
   borrador en 48 horas, revisión obligatoria.
+
+## Cómo llegar a ser colaborador oficial
+
+Ser **colaborador oficial** te da acceso de escritura al repositorio: puedes crear ramas en él
+en vez de trabajar desde un fork. **No es un rango:** no te pone por encima de nadie y las
+reglas siguen siendo las mismas para todos. Hay dos caminos:
+
+1. **Que alguien del equipo te invite.**
+2. **Colaborar abiertamente:** después de varios PRs mergeados (como referencia, tres o más),
+   el equipo te invita a participar.
+
+La invitación se propone **en público**, como toda decisión del proyecto:
+
+1. Alguien del equipo abre un issue *Invitación al equipo: @usuario*, con el motivo (por
+   ejemplo, los PRs mergeados).
+2. Si en una semana nadie del equipo plantea una objeción fundada, quien tiene permisos de
+   administración en GitHub envía la invitación.
+3. La persona invitada la acepta y, si quiere, agrega su perfil en `team/`.
 
 ## Tu primer aporte: agrega tu perfil al equipo
 
@@ -89,8 +115,8 @@ Muchos issues portan funcionalidad de la primera versión, que vive completa en 
 
 ## 3. Crea tu rama
 
-**Si eres colaborador del repositorio** (tienes permiso de escritura), trabaja en una rama
-del propio repositorio:
+**Si eres colaborador oficial** (tienes permiso de escritura), trabaja en una rama del propio
+repositorio:
 
 ```sh
 git clone https://github.com/MarAntBQ/CallingSupportApp.git
@@ -98,7 +124,7 @@ cd CallingSupportApp
 git switch -c feat/<número>-titulo-corto
 ```
 
-**Si no lo eres**, trabaja desde tu fork:
+**Si todavía no lo eres** (la forma normal de empezar), trabaja desde tu fork:
 
 ```sh
 gh repo fork MarAntBQ/CallingSupportApp --clone   # o "Fork" en GitHub y git clone de tu copia

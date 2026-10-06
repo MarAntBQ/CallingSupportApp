@@ -5,7 +5,8 @@ Todas somos colaboradoras y ninguna es más que otra: no hay creador, ni dueños
 proyecto. Las decisiones se toman en los issues y, por encima de todo, manda el
 [Manual General](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa).
 
-Cada persona que se suma agrega aquí **su propio perfil**, escrito por ella misma. Todos
+Cada persona que colabora, sea colaboradora oficial o no, agrega aquí **su propio perfil**,
+escrito por ella misma. Todos
 los perfiles tienen el mismo formato y aparecen en orden alfabético.
 
 ## Agrega tu perfil (tu primer aporte)
