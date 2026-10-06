@@ -20,7 +20,7 @@ Todas las personas que aportaron al repositorio:
 
 ## Súmate
 
-**Cualquier persona, miembro o amiga de la Iglesia, puede participar sin pedir permiso.** Haces un fork del repositorio, abres un PR y, si se aprueba, tu trabajo entra al proyecto:
+**Cualquier persona, miembro o amigo de la Iglesia, puede participar sin pedir permiso.** Haces un fork del repositorio, abres un PR y, si se aprueba, tu trabajo entra al proyecto:
 
 1. Lee [cómo colaborar](https://github.com/MarAntBQ/CallingSupportApp/blob/main/CONTRIBUTING.md).
 2. Agrega tu perfil en [`team/`](https://github.com/MarAntBQ/CallingSupportApp/tree/main/team): es tu primer aporte.

@@ -92,7 +92,7 @@ cualquier barrio lo use y para que quien quiera colabore.
 
 ## Colaborar
 
-**Cualquier persona, miembro o amiga de la Iglesia, puede participar sin pedir permiso:** fork,
+**Cualquier persona, miembro o amigo de la Iglesia, puede participar sin pedir permiso:** fork,
 `/tomar` en un issue y PR. Para ser colaborador oficial del equipo hay dos caminos: que alguien
 del equipo proponga invitarte, o colaborar abiertamente hasta tener varios PRs mergeados. Detalle en
 [CONTRIBUTING](CONTRIBUTING.md#quién-puede-participar).
