@@ -3,7 +3,7 @@
 
   function ready(el) {
     el.setAttribute('aria-busy', 'false');
-    el.innerHTML = '';
+    el.replaceChildren();
   }
 
   function showError(el) {
@@ -25,6 +25,11 @@
   if (roadmap) {
     get('/milestones?state=all&per_page=50')
       .then(function (data) {
+        if (Array.isArray(data)) {
+          data = data.filter(function (m) {
+            return m && typeof m.title === 'string' && typeof m.open_issues === 'number' && typeof m.closed_issues === 'number';
+          });
+        }
         if (!Array.isArray(data) || !data.length) return showError(roadmap);
         ready(roadmap);
         data

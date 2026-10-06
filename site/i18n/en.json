@@ -4,7 +4,7 @@
   "home": "Home",
   "menu": "Menu",
   "language": "Language",
-  "license": "© 2026 CSATeam OpenSource (Calling Support App Team) · MIT License",
+  "license": "© 2026 CSATeam OpenSource (Calling Support App Team) and contributors · MIT License",
   "unofficial": "Not an official website of The Church of Jesus Christ of Latter-day Saints.",
   "updated": "Last updated",
   "titleSuffix": "CallingSupportApp",
@@ -47,5 +47,10 @@
   "manuals": {
     "open": "Read the manual",
     "back": "Back to manuals"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has moved.",
+    "home": "Back to home"
   }
 }

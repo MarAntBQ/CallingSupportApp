@@ -4,7 +4,7 @@
   "home": "Inicio",
   "menu": "Menú",
   "language": "Idioma",
-  "license": "© 2026 CSATeam OpenSource (Calling Support App Team) · Licencia MIT",
+  "license": "© 2026 CSATeam OpenSource (Calling Support App Team) y colaboradores · Licencia MIT",
   "unofficial": "No es un sitio oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días.",
   "updated": "Última actualización",
   "titleSuffix": "CallingSupportApp",
@@ -47,5 +47,10 @@
   "manuals": {
     "open": "Leer el manual",
     "back": "Volver a los manuales"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o cambió de lugar.",
+    "home": "Volver al inicio"
   }
 }

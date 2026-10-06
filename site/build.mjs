@@ -7,7 +7,11 @@ import { Marked } from 'marked';
 const require = createRequire(import.meta.url);
 const { parseProfile, validateProfile, profileFiles } = require('../.github/scripts/team-profiles.cjs');
 
-const SITE_URL = process.env.SITE_URL || 'https://callingsupportapp.org';
+const SITE_URL = (process.env.SITE_URL || 'https://callingsupportapp.org').replace(/\/+$/, '');
+if (!/^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(SITE_URL)) {
+  console.error(`SITE_URL debe ser https://dominio, sin ruta: ${SITE_URL}`);
+  process.exit(1);
+}
 const REPO = 'https://github.com/MarAntBQ/CallingSupportApp';
 const LOCALES = ['es', 'pt', 'en'];
 const DEFAULT_LOCALE = 'es';
@@ -46,6 +50,15 @@ function slugify(text) {
     .replace(/\s+/g, '-');
 }
 
+const MARKERS = ['<!-- roadmap -->', '<!-- contributors -->', '<!-- team-profiles -->', '<!-- updates -->', '<!-- manuals -->', '<!-- docs-index -->'];
+
+function safeHref(href) {
+  const h = String(href).trim();
+  if (/^(https?:\/\/|mailto:)/i.test(h)) return h;
+  if (/^(\/(?!\/)|\.{1,2}\/|#|\?)/.test(h)) return h;
+  return /^[^:/?#]+(?:[/?#]|$)/.test(h) && !/[\x00-\x1f]/.test(h) ? h : '#';
+}
+
 const md = new Marked({ gfm: true });
 md.use({
   renderer: {
@@ -56,8 +69,16 @@ md.use({
         ? `<h${depth} id="${id}">${text}<a class="anchor" href="#${id}" aria-label="#">#</a></h${depth}>\n`
         : `<h${depth}>${text}</h${depth}>\n`;
     },
-    link({ href, title, tokens }) {
+    html({ text }) {
+      return MARKERS.includes(text.trim()) ? `${text.trim()}\n` : escapeHtml(text);
+    },
+    image({ href, title, text }) {
+      const t = title ? ` title="${escapeHtml(title)}"` : '';
+      return `<img src="${escapeHtml(safeHref(href))}" alt="${escapeHtml(text)}"${t} loading="lazy">`;
+    },
+    link({ href: rawHref, title, tokens }) {
       const text = this.parser.parseInline(tokens);
+      const href = safeHref(rawHref);
       const external = /^https?:\/\//.test(href) && !href.startsWith(SITE_URL);
       const t = title ? ` title="${escapeHtml(title)}"` : '';
       return external
@@ -221,8 +242,8 @@ function docsIndexBlock(l, rel) {
   );
 }
 
-function renderBody(l, rel, body) {
-  let html = md.parse(body);
+function renderBody(l, rel, body, prefix = '') {
+  let html = prefix + md.parse(body);
   const blocks = {
     '<!-- roadmap -->': () => liveBlock('roadmap-list', l, 'roadmap', `${REPO}/milestones?state=all`),
     '<!-- contributors -->': () => liveBlock('contributors-list', l, 'contributors', `${REPO}/graphs/contributors`),
@@ -231,7 +252,7 @@ function renderBody(l, rel, body) {
     '<!-- manuals -->': () => manualsBlock(l, rel),
     '<!-- docs-index -->': () => docsIndexBlock(l, rel),
   };
-  for (const [mark, fn] of Object.entries(blocks)) if (html.includes(mark)) html = html.replace(mark, fn());
+  for (const [mark, fn] of Object.entries(blocks)) if (html.includes(mark)) html = html.replace(mark, () => fn());
   return html;
 }
 
@@ -239,8 +260,7 @@ function renderBody(l, rel, body) {
 const layout = readFileSync(join(here, 'layout.html'), 'utf8');
 const written = [];
 
-function writePage({ l, page, rel, data, body, alt }) {
-  const root = rootFor(rel);
+function writePage({ l, page, rel, data, body, alt, prefix = '', root = rootFor(rel) }) {
   const navItem = (p) => `<li><a href="${root}${pathFor(l, p)}"${p === page ? ' aria-current="page"' : ''}>${escapeHtml(ui[l].nav[p])}</a></li>`;
   const values = {
     lang: l,
@@ -253,7 +273,7 @@ function writePage({ l, page, rel, data, body, alt }) {
     'page.updatedLine': data.updated ? `<p class="doc__updated">${escapeHtml(ui[l].updated)}: ${fmtDate(l, data.updated)}</p>` : '',
     nav: MAIN_NAV.map(navItem).join('\n            '),
     footerNav: FOOTER_NAV.map(navItem).join('\n        '),
-    content: renderBody(l, rel, body),
+    content: renderBody(l, rel, body, prefix),
     'url.self': `${SITE_URL}/${rel}`,
     ...Object.fromEntries(LOCALES.map((x) => [`url.${x}`, `${SITE_URL}/${alt(x)}`])),
     ...Object.fromEntries(LOCALES.map((x) => [`switch.${x}`, `${root}${alt(x)}` || './'])),
@@ -285,18 +305,24 @@ for (const l of LOCALES) {
   }
   for (const m of content[l].manualsList) {
     const rel = `${pathFor(l, 'manuals')}${m.slug}/`;
-    const back = `<p class="back"><a href="${rootFor(rel)}${pathFor(l, 'manuals')}">← ${escapeHtml(ui[l].manuals.back)}</a></p>\n\n`;
-    writePage({ l, page: 'manuals', rel, data: m.data, body: back + m.body, alt: (x) => `${pathFor(x, 'manuals')}${m.slug}/` });
+    const back = `<p class="back"><a href="${rootFor(rel)}${pathFor(l, 'manuals')}">← ${escapeHtml(ui[l].manuals.back)}</a></p>\n`;
+    writePage({ l, page: 'manuals', rel, data: m.data, body: m.body, prefix: back, alt: (x) => `${pathFor(x, 'manuals')}${m.slug}/` });
   }
 }
 
-// 404 con el layout en español
+// 404: una sola página (el servidor no sabe el idioma), con los tres idiomas y rutas absolutas
 writePage({
-  l: 'es',
+  l: DEFAULT_LOCALE,
   page: '404',
   rel: '404/',
-  data: { title: 'Página no encontrada', description: 'La página que buscas no existe o cambió de lugar.' },
-  body: `[Volver al inicio](/) · [Go home](/en/) · [Ir para o início](/pt/)`,
+  root: '/',
+  data: { title: ui[DEFAULT_LOCALE].notFound.title, description: ui[DEFAULT_LOCALE].notFound.description },
+  body: '',
+  prefix: LOCALES.map((x) => {
+    const n = ui[x].notFound;
+    const head = x === DEFAULT_LOCALE ? '' : `<strong>${escapeHtml(n.title)}.</strong> `;
+    return `<p lang="${x}">${head}${escapeHtml(n.description)} <a href="/${pathFor(x, 'index')}">${escapeHtml(n.home)}</a></p>`;
+  }).join('\n'),
   alt: () => '404/',
 });
 cpSync(join(out, '404', 'index.html'), join(out, '404.html'));
