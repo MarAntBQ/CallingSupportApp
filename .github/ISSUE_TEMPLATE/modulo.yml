@@ -1,0 +1,62 @@
+name: Propuesta de módulo
+description: Una idea de módulo nuevo (por ejemplo, campamento) que todavía necesita diseño antes de construirse.
+title: "Módulo: "
+labels:
+  - módulo-nuevo
+  - necesita-diseño
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Una propuesta **no se implementa directamente**. Primero se responden las preguntas
+        abiertas; cuando el diseño está acordado, se divide en issues de **Tarea**, cada uno
+        autocontenido, y esta propuesta los enlaza.
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema que resuelve
+      description: Qué se hace hoy a mano (hojas de cálculo, chats, papel) y qué duele de eso.
+    validations:
+      required: true
+  - type: textarea
+    id: usuarios
+    attributes:
+      label: Quién lo usa
+      description: Qué llamamientos o personas lo usan, y qué puede hacer cada uno (leer, crear, editar, eliminar, recibir avisos).
+    validations:
+      required: true
+  - type: textarea
+    id: flujo
+    attributes:
+      label: Flujo de principio a fin
+      description: Los pasos de la actividad, desde que se abre hasta que se cierra.
+    validations:
+      required: true
+  - type: textarea
+    id: datos
+    attributes:
+      label: Datos que se recogen
+      description: Cada dato de personas que el módulo guardaría, para qué se usa, y cómo se pide el consentimiento. Ver skill `datos-de-miembros`.
+    validations:
+      required: true
+  - type: textarea
+    id: pantallas
+    attributes:
+      label: Pantallas esperadas
+      description: Públicas (formulario) y de administración (listados, reportes, imprimibles).
+  - type: textarea
+    id: reuso
+    attributes:
+      label: Qué reutiliza de otros módulos
+      description: Por ejemplo, inscripción con cupos, abonos o listados del Viaje al Templo.
+  - type: textarea
+    id: preguntas
+    attributes:
+      label: Preguntas abiertas
+      description: Lo que falta decidir antes de poder escribir las tareas.
+    validations:
+      required: true
+  - type: textarea
+    id: fuera
+    attributes:
+      label: Fuera de alcance

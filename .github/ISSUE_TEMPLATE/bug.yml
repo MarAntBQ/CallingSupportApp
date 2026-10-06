@@ -8,10 +8,14 @@ body:
     attributes:
       value: |
         Si no se puede reproducir, no es un bug todavía: es una sospecha. Documenta los pasos.
+
+        **Este repositorio es público.** En capturas, logs o respuestas del servidor, tapa
+        nombres, cédulas, teléfonos, correos y ordenanzas de personas reales antes de pegarlos.
   - type: input
     id: tarjeta
     attributes:
       label: Tarjeta de Trello
+      description: Opcional. Solo si el bug viene del tablero del autor.
       placeholder: https://trello.com/c/...
   - type: textarea
     id: resumen
