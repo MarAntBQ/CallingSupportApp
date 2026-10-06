@@ -7,6 +7,8 @@ order: 3
 
 > **Estado:** em preparação ([#19](https://github.com/MarAntBQ/CallingSupportApp/issues/19) a [#25](https://github.com/MarAntBQ/CallingSupportApp/issues/25)).
 
+<!-- temple-photo -->
+
 ## Para quem se inscreve
 
 1. Abra o link da viagem que sua unidade compartilhar com você.

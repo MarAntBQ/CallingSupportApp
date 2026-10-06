@@ -721,6 +721,25 @@ html[data-lang='en'] [data-l='es'] {
   }
 }
 
+/* ---------- Foto en un manual */
+.photo {
+  margin: 24px 0 32px;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: var(--radius-card);
+}
+
+.photo figcaption {
+  margin-top: 8px;
+  color: var(--color-stone);
+  font-size: 14px;
+}
+
 /* ---------- Formulario de contacto */
 .contact-form {
   display: grid;

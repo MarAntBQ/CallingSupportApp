@@ -7,6 +7,8 @@ order: 3
 
 > **Status:** in preparation ([#19](https://github.com/MarAntBQ/CallingSupportApp/issues/19) to [#25](https://github.com/MarAntBQ/CallingSupportApp/issues/25)).
 
+<!-- temple-photo -->
+
 ## For people registering
 
 1. Open the trip link shared by your unit.
