@@ -65,6 +65,8 @@ completa en la rama [`legacy`](../../tree/legacy) como referencia funcional para
   de sus datos. No existe un servidor central que guarde datos de varios barrios.
 - **Nada fijo de un barrio en el código.** Nombre, logo, responsable de los datos y textos
   se configuran desde la aplicación.
+- **Para varios países.** La aplicación es trilingüe (**español, portugués e inglés**), con
+  un selector de idioma en el menú y el idioma por defecto en la configuración.
 
 ## Acerca del creador
 
@@ -84,9 +86,16 @@ para que cualquier barrio lo use y para que quien quiera colabore.
 
 ## Colaborar
 
-Toda contribución entra por **issue → rama → pull request → squash**. Abre un issue con la
-plantilla antes de escribir código; ahí se acuerdan el alcance y los criterios de
-aceptación.
+Toda contribución entra por **issue → rama → pull request → squash**. Cada issue se
+autocontiene: trae todo lo necesario para trabajarlo sin preguntar.
+
+- **Cómo colaborar paso a paso:** [CONTRIBUTING](CONTRIBUTING.md).
+- **Reglas del repositorio** (stack, idiomas, glosario), para personas y agentes de IA:
+  [AGENTS.md](AGENTS.md).
+- **Roadmap:** los [milestones](../../milestones) en orden, empezando por **1 · Base**.
+- **Para empezar:** issues con
+  [`good first issue`](../../issues?q=is%3Aopen+label%3A%22good+first+issue%22) que no
+  estén `bloqueado`.
 
 ## Licencia
 
