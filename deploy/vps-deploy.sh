@@ -22,7 +22,7 @@ echo "[deploy] $(git log --oneline -1) · node $(node -v)"
 npm ci --prefix site --no-audit --no-fund
 SITE_URL=https://callingsupportapp.org node site/build.mjs
 
-for f in index.html pt/index.html en/index.html 404.html sitemap.xml robots.txt .htaccess; do
+for f in index.html privacy/index.html 404.html sitemap.xml robots.txt .htaccess assets/lang.js assets/live.js assets/styles.css assets/logo.png assets/site.webmanifest; do
   [ -s "_site/$f" ] || fallo "el build no generó $f"
 done
 

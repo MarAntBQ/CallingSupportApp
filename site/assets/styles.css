@@ -208,7 +208,7 @@ a:hover {
 
 .nav__menu li a,
 .nav--desktop a,
-.langs a {
+.langs button {
   display: flex;
   align-items: center;
   min-height: 44px;
@@ -223,13 +223,13 @@ a:hover {
 
 .nav__menu li a:hover,
 .nav--desktop a:hover,
-.langs a:hover {
+.langs button:hover {
   color: var(--color-ink);
 }
 
 .nav__menu li a[aria-current='page'],
 .nav--desktop a[aria-current='page'],
-.langs a[aria-current='true'] {
+.langs button[aria-pressed='true'] {
   color: var(--color-blue-hover);
   background: var(--color-sky-tint);
 }
@@ -239,12 +239,31 @@ a:hover {
   gap: 2px;
 }
 
-.langs a {
+.langs button {
   flex: none;
   justify-content: center;
   min-width: 44px;
   padding: 0 8px;
   font-size: 14px;
+}
+
+.langs[hidden] {
+  display: none;
+}
+
+.langs button {
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---------- Idioma: una sola URL, el bloque visible depende de html[data-lang] */
+html:not([data-lang='pt']) [data-l='pt'],
+html:not([data-lang='en']) [data-l='en'],
+html[data-lang='pt'] [data-l='es'],
+html[data-lang='en'] [data-l='es'] {
+  display: none !important;
 }
 
 /* ---------- Documento */
@@ -687,7 +706,7 @@ a:hover {
     height: 24px;
   }
 
-  .langs a {
+  .langs button {
     min-width: 44px;
     padding: 0 4px;
   }

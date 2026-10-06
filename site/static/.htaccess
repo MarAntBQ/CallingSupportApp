@@ -7,6 +7,8 @@ AddType application/manifest+json .webmanifest
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  RewriteRule ^(pt|en)(/(.*))?$ https://callingsupportapp.org/$3 [R=301,L]
+
   RewriteCond %{HTTPS} !=on [OR]
   RewriteCond %{HTTP_HOST} !^callingsupportapp\.org$ [NC]
   RewriteCond %{REQUEST_URI} !^/\.well-known/

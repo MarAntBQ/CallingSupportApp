@@ -19,7 +19,7 @@ despliega a mano.
 
 - El clon es de git, tiene commit y viene del repositorio oficial.
 - El docroot existe, no es un enlace a otro lugar y es del usuario `callingsupportapp`.
-- El build generó las páginas de los tres idiomas, la 404, el sitemap, el `robots.txt` y el `.htaccess`.
+- El build generó las páginas (cada una con los tres idiomas), la 404, el sitemap, el `robots.txt` y el `.htaccess`.
 - Ninguna página enlaza a un archivo interno que no exista.
 - En seco, `rsync --delete` no borraría más de 200 archivos del docroot.
 
