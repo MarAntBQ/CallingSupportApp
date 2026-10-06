@@ -71,6 +71,9 @@ md.use({
         ? `<h${depth} id="${id}">${text}<a class="anchor" href="#${id}" aria-label="#">#</a></h${depth}>\n`
         : `<h${depth}>${text}</h${depth}>\n`;
     },
+    checkbox({ checked }) {
+      return `<input type="checkbox" disabled aria-hidden="true"${checked ? " checked" : ""}> `;
+    },
     html({ text }) {
       return MARKERS.includes(text.trim()) ? `${text.trim()}\n` : escapeHtml(text);
     },
