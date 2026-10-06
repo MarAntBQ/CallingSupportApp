@@ -67,6 +67,9 @@ completa en la rama [`legacy`](../../tree/legacy) como referencia funcional para
 
 ## Principios
 
+- **El Manual General manda.** Toda idea y todo módulo deben estar de acuerdo con el
+  [Manual General](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa)
+  de la Iglesia. Si algo lo contradice, no se construye.
 - **Una instalación por barrio.** Cada barrio despliega su propia copia y es responsable
   de sus datos. No existe un servidor central que guarde datos de varios barrios.
 - **Nada fijo de un barrio en el código.** Nombre, logo, responsable de los datos y textos

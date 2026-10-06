@@ -76,6 +76,28 @@ Glosario para nombrar las cosas igual en el código y en las traducciones:
 | Campamento | Acampamento | camp |
 | Grupo de EnglishConnect / maestro / estudiante | Grupo do EnglishConnect / professor / aluno | EnglishConnect group / teacher / student |
 
+## El Manual General manda
+
+CallingSupportApp es una herramienta al servicio de las unidades de la Iglesia, no un lugar
+para inventar prácticas nuevas. **Toda idea, módulo, flujo y texto debe estar de acuerdo con
+el [Manual General](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa)** ("Servir en La Iglesia de Jesucristo de los Santos de los Últimos
+Días").
+
+- **Si algo contradice el Manual, no se construye**, aunque sea útil o alguien lo pida.
+- **Si el Manual no regula algo**, se dice explícitamente ("el Manual no regula X") y la
+  decisión queda como decisión del proyecto, sin atribuírsela al Manual.
+- **Al citar el Manual:** texto literal, número de sección y enlace. Nunca se le atribuye algo
+  que no dice.
+- Cada módulo deja escrito, en su issue, qué secciones del Manual lo rigen y cómo las cumple.
+- **La app no maneja dinero de los miembros** ([capítulo 34](https://www.churchofjesuschrist.org/study/manual/general-handbook/34-finances-and-audits?lang=spa)): «Solo el obispo y sus
+  consejeros pueden recibir los diezmos y las otras ofrendas» (34.5.2), y los montos donados son
+  confidenciales (34.4). No hay abonos, pagos, cobradores, saldos ni donativos registrados; solo
+  costos estimados y las instrucciones para donar en la categoría que el obispado tenga
+  autorizada, en línea o con el formulario. Participar no depende de pagar (34.6.2.2).
+
+Orden de las reglas: **1)** el Manual General en todo; **2)** dentro de él, para los datos de
+los miembros, el 33.8 (sección siguiente); **3)** las reglas técnicas de este archivo.
+
 ## La regla que manda: los datos de los miembros
 
 Por encima de cualquier conveniencia técnica, los datos de los miembros se rigen por el
@@ -112,8 +134,8 @@ borrado físico (`DELETE`), sin borrado lógico ni papelera. Detalle y lista par
 
 ## Reglas duras
 
-1. **Datos de miembros: Manual General 33.8** (sección anterior). Nunca importar listados de
-   los sistemas oficiales de la Iglesia. Todo cambio que toque datos de personas pasa por la
+1. **El Manual General manda** sobre toda idea; para los datos de los miembros, el **33.8**
+   (secciones anteriores). Nunca importar listados de los sistemas oficiales de la Iglesia. Todo cambio que toque datos de personas pasa por la
    skill `datos-de-miembros`. Si una funcionalidad choca con el Manual, no se construye.
 2. **Flujo:** issue → `/tomar` → rama → PR en borrador → pull request → squash. `main` está
    protegida: nadie hace push directo, tampoco el autor del proyecto. **Un issue se toma

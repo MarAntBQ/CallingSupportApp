@@ -26,6 +26,16 @@ body:
     validations:
       required: true
   - type: textarea
+    id: conformidad
+    attributes:
+      label: Conformidad con el Manual General
+      description: Qué secciones del Manual General rigen este módulo, con cita textual, número y enlace, y cómo el módulo las cumple. Si el Manual no regula algo, dilo. Si alguna parte contradice el Manual, la propuesta no avanza.
+      placeholder: |
+        - 20.7.1 «Deben estar presentes por lo menos dos adultos» → el reporte avisa si hay menos de 2 líderes.
+        - El Manual no regula X → decisión del proyecto: …
+    validations:
+      required: true
+  - type: textarea
     id: flujo
     attributes:
       label: Flujo de principio a fin

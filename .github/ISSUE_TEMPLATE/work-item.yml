@@ -112,6 +112,8 @@ body:
     attributes:
       label: Comprobación de autocontenido
       options:
+        - label: Revisé que esto no contradice el Manual General de la Iglesia.
+          required: true
         - label: Se puede terminar leyendo solo este issue y los archivos que enlaza.
           required: true
         - label: No depende de información privada (chats, tableros privados, repos privados).

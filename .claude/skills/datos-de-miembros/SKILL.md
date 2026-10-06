@@ -44,6 +44,9 @@ o alguien la pida.
 - **Computadoras compartidas.** "Recordar mi sesión" viene sin marcar. Al descargar un Excel o
   imprimir una lista se muestra: «Este archivo tiene datos de miembros. No lo guardes en una
   computadora compartida y bórralo cuando ya no lo necesites.»
+- **Dinero:** la app no registra pagos, abonos, donativos ni saldos de los miembros. Los
+  registros financieros son confidenciales (33.8) y solo el obispado recibe las ofrendas
+  ([Manual General 34.5.2 y 34.4](https://www.churchofjesuschrist.org/study/manual/general-handbook/34-finances-and-audits?lang=spa)).
 - **Retención:** solo el tiempo necesario para la actividad.
 - **Destrucción irrecuperable:** el Manual pide destruir lo que ya no se necesita «de tal modo
   que no sea posible recuperar ni reconstruir ninguna información». **Decisión del proyecto**
