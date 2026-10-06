@@ -57,4 +57,4 @@ No existe un servidor central con datos de varios barrios. Cada unidad instala s
 
 ## Contacto
 
-Por los datos guardados en la aplicación de **un barrio**, escribe al responsable de esa unidad. Por el proyecto: [church@marantbq.dev](mailto:church@marantbq.dev).
+Por los datos guardados en la aplicación de **un barrio**, escribe al responsable de esa unidad. Por el proyecto: [devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org).

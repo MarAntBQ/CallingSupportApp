@@ -4,7 +4,7 @@ description: Como entrar em contato com o projeto.
 updated: 2026-10-06
 ---
 
-Escreva para **[church@marantbq.dev](mailto:church@marantbq.dev)**.
+Escreva para **[devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org)**.
 
 ## Para que escrever
 

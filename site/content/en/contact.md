@@ -4,7 +4,7 @@ description: How to contact the project.
 updated: 2026-10-06
 ---
 
-Write to us at **[church@marantbq.dev](mailto:church@marantbq.dev)**.
+Write to us at **[devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org)**.
 
 ## What to write about
 

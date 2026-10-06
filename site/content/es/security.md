@@ -8,7 +8,7 @@ Si encuentras una falla de seguridad, gracias por avisarnos. **No abras un issue
 
 ## Cómo reportarla
 
-Escribe a [church@marantbq.dev](mailto:church@marantbq.dev) con el asunto **"Seguridad: …"**, o usa el botón [**Report a vulnerability**](https://github.com/MarAntBQ/CallingSupportApp/security/advisories/new) del repositorio. Incluye:
+Escribe a [devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org) con el asunto **"Seguridad: …"**, o usa el botón [**Report a vulnerability**](https://github.com/MarAntBQ/CallingSupportApp/security/advisories/new) del repositorio. Incluye:
 
 - qué encontraste y dónde (ruta, archivo, versión o commit);
 - los pasos para reproducirlo;

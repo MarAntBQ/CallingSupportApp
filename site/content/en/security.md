@@ -8,7 +8,7 @@ If you find a security flaw, thank you for telling us. **Do not open a public is
 
 ## How to report it
 
-Write to [church@marantbq.dev](mailto:church@marantbq.dev) with the subject **"Security: …"**, or use the repository’s [**Report a vulnerability**](https://github.com/MarAntBQ/CallingSupportApp/security/advisories/new) button. Include:
+Write to [devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org) with the subject **"Security: …"**, or use the repository’s [**Report a vulnerability**](https://github.com/MarAntBQ/CallingSupportApp/security/advisories/new) button. Include:
 
 - what you found and where (route, file, version, or commit);
 - the steps to reproduce it;

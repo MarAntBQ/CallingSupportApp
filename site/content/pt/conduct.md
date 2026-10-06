@@ -23,4 +23,4 @@ O CallingSupportApp é desenvolvido pela **CSATeam (Calling Support App Team)**.
 
 ## O que acontece se isso ocorrer
 
-Quem mantém o repositório pode ocultar comentários, encerrar conversas ou bloquear o acesso de quem não respeitar este código, sempre explicando o motivo. Se algo deixar você desconfortável, escreva para [church@marantbq.dev](mailto:church@marantbq.dev): a mensagem será tratada com discrição.
+Quem mantém o repositório pode ocultar comentários, encerrar conversas ou bloquear o acesso de quem não respeitar este código, sempre explicando o motivo. Se algo deixar você desconfortável, escreva para [devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org): a mensagem será tratada com discrição.

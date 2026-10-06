@@ -4,7 +4,7 @@ description: Cómo comunicarte con el proyecto.
 updated: 2026-10-06
 ---
 
-Escríbenos a **[church@marantbq.dev](mailto:church@marantbq.dev)**.
+Escríbenos a **[devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org)**.
 
 ## Para qué escribir
 

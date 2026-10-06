@@ -7,7 +7,7 @@ issue público:** los datos que protege esta aplicación son de personas reales.
 
 - Usa **[Report a vulnerability](https://github.com/MarAntBQ/CallingSupportApp/security/advisories/new)**
   (pestaña *Security* del repositorio), o
-- escribe a **church@marantbq.dev** con el asunto "Seguridad: …".
+- escribe a **devteam@callingsupportapp.org** con el asunto "Seguridad: …".
 
 Incluye qué encontraste y dónde (ruta, archivo, commit), los pasos para reproducirlo y el
 impacto que crees que tiene.

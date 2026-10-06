@@ -23,4 +23,4 @@ CallingSupportApp is made by **CSATeam (Calling Support App Team)**. We are all 
 
 ## What happens if it occurs
 
-Repository maintainers may hide comments, close conversations, or block access for anyone who does not respect this code, always explaining why. If something makes you uncomfortable, write to [church@marantbq.dev](mailto:church@marantbq.dev): the message will be handled discreetly.
+Repository maintainers may hide comments, close conversations, or block access for anyone who does not respect this code, always explaining why. If something makes you uncomfortable, write to [devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org): the message will be handled discreetly.

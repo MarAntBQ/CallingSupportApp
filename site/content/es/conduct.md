@@ -23,4 +23,4 @@ CallingSupportApp lo hace **CSATeam (Calling Support App Team)**. Todos somos co
 
 ## Qué pasa si ocurre
 
-Quienes mantienen el repositorio pueden ocultar comentarios, cerrar conversaciones o bloquear el acceso a quien no respete este código, siempre explicando el motivo. Si algo te incomoda, escribe a [church@marantbq.dev](mailto:church@marantbq.dev): el mensaje se trata con discreción.
+Quienes mantienen el repositorio pueden ocultar comentarios, cerrar conversaciones o bloquear el acceso a quien no respete este código, siempre explicando el motivo. Si algo te incomoda, escribe a [devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org): el mensaje se trata con discreción.

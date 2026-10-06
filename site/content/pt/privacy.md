@@ -59,4 +59,4 @@ Não existe um servidor central com dados de várias alas. Cada unidade instala 
 
 ## Contato
 
-Para os dados armazenados no aplicativo de **uma ala**, escreva para o responsável por essa unidade. Sobre o projeto: [church@marantbq.dev](mailto:church@marantbq.dev).
+Para os dados armazenados no aplicativo de **uma ala**, escreva para o responsável por essa unidade. Sobre o projeto: [devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org).

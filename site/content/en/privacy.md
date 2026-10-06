@@ -59,4 +59,4 @@ There is no central server with data from multiple wards. Each unit installs its
 
 ## Contact
 
-For data stored in **a ward’s** application, write to that unit’s data steward. About the project: [church@marantbq.dev](mailto:church@marantbq.dev).
+For data stored in **a ward’s** application, write to that unit’s data steward. About the project: [devteam@callingsupportapp.org](mailto:devteam@callingsupportapp.org).
