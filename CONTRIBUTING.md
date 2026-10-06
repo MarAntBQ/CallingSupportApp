@@ -12,7 +12,7 @@ los miembros) y [AGENTS.md](AGENTS.md) (stack, idioma, glosario y reglas del rep
 
 ## Quién puede participar
 
-**Cualquier persona, miembro o amiga de La Iglesia de Jesucristo de los Santos de los Últimos
+**Cualquier persona, miembro o amigo de La Iglesia de Jesucristo de los Santos de los Últimos
 Días, puede ayudar sin pedir permiso.** Haz un fork del repositorio, toma un issue libre
 comentando `/tomar` (el bot también asigna a quien trabaja desde un fork), trabaja en tu fork y
 abre un PR. Si se aprueba, tu trabajo entra al
