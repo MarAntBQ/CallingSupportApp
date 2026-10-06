@@ -17,7 +17,13 @@ const RECAPTCHA_SITE_KEY = '6LdKguItAAAAAAVLfpo2INl4o6C3D8oia3h-hr6q';
 const LOCALES = ['es', 'pt', 'en'];
 const DEFAULT_LOCALE = 'es';
 const PAGES = ['index', 'privacy', 'rules', 'manuals', 'updates', 'team', 'contact', 'developers', 'conduct', 'terms', 'security', 'status'];
-const MAIN_NAV = ['privacy', 'rules', 'manuals', 'updates', 'team', 'contact'];
+const NAV = [
+  { group: 'project', items: ['updates', 'status', 'team'] },
+  { group: 'policies', items: ['privacy', 'rules', 'conduct', 'terms', 'security'] },
+  { group: 'guides', items: ['manuals', 'developers'] },
+  { page: 'contact' },
+];
+const MAIN_NAV = NAV.flatMap((n) => n.items || [n.page]);
 const FOOTER_NAV = ['developers', 'conduct', 'terms', 'security', 'status'];
 const INTL = { es: 'es', pt: 'pt-BR', en: 'en-US' };
 
@@ -262,7 +268,7 @@ function manualsBlock(l, rel) {
 function docsIndexBlock(l, rel) {
   const root = rootFor(rel);
   return cards(
-    [...MAIN_NAV, ...FOOTER_NAV].map((p) => {
+    [...new Set([...MAIN_NAV, ...FOOTER_NAV])].map((p) => {
       const d = content[l][p].data;
       return `<a class="card-link" href="${root}${pathFor(p)}"><h3>${escapeHtml(d.title)}</h3><p>${escapeHtml(d.description)}</p></a>`;
     }),
@@ -410,7 +416,16 @@ function writePage({ page, rel, docs, root = rootFor(rel) }) {
     i18nAttrs: LOCALES.map(
       (l) => `data-title-${l}="${escapeHtml(titleFor(l, page, docs[l].data))}" data-desc-${l}="${escapeHtml(docs[l].data.description)}"`,
     ).join(' '),
-    nav: MAIN_NAV.map(navItem).join('\n            '),
+    navDesktop: NAV.map((n) =>
+      n.page
+        ? navItem(n.page)
+        : `<li class="nav__group"><details class="nav__drop"><summary${n.items.includes(page) ? ' class="is-current"' : ''}>${textIn((l) => ui[l].navGroups[n.group])}</summary><ul class="nav__sub">${n.items.map(navItem).join('')}</ul></details></li>`,
+    ).join('\n            '),
+    navMobile: NAV.map((n) =>
+      n.page
+        ? navItem(n.page)
+        : `<li><span class="nav__heading">${textIn((l) => ui[l].navGroups[n.group])}</span><ul class="nav__sub">${n.items.map(navItem).join('')}</ul></li>`,
+    ).join('\n            '),
     footerNav: FOOTER_NAV.map(navItem).join('\n        '),
     articles,
     'a.brand': labelIn((l) => `CallingSupportApp — ${ui[l].home}`),

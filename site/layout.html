@@ -42,14 +42,14 @@
       </a>
       <nav class="nav nav--desktop" {{a.menu}}>
         <ul>
-          {{nav}}
+          {{navDesktop}}
         </ul>
       </nav>
       <nav class="nav nav--mobile" {{a.menu}}>
         <details class="nav__menu">
           <summary>{{t.menu}}</summary>
           <ul>
-            {{nav}}
+            {{navMobile}}
           </ul>
         </details>
       </nav>
@@ -81,6 +81,7 @@
   </a>
 
   <script src="{{root}}assets/live.js" defer></script>
+  <script src="{{root}}assets/nav.js" defer></script>
   {{pageScripts}}
 </body>
 </html>

@@ -235,6 +235,87 @@ a:hover {
   background: var(--color-sky-tint);
 }
 
+.nav__group {
+  position: relative;
+}
+
+.nav__drop > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--radius-button);
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--ease), background var(--ease);
+}
+
+.nav__drop > summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav__drop > summary::after {
+  content: '▾';
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+.nav__drop > summary:hover {
+  color: var(--color-ink);
+}
+
+.nav__drop[open] > summary,
+.nav__drop > summary.is-current {
+  color: var(--color-blue-hover);
+  background: var(--color-sky-tint);
+}
+
+.nav--desktop .nav__sub {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 10;
+  display: block;
+  min-width: 240px;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  background: var(--color-white);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.nav--desktop .nav__sub a {
+  white-space: nowrap;
+}
+
+.nav__menu > ul {
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
+}
+
+.nav__menu .nav__sub {
+  position: static;
+  margin: 0 0 4px;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.nav__heading {
+  display: block;
+  padding: 12px 12px 4px;
+  color: var(--color-stone);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .langs {
   display: flex;
   gap: 2px;
