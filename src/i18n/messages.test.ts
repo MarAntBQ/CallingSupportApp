@@ -44,6 +44,23 @@ describe('i18n:check detecta claves que faltan o sobran', () => {
     });
   });
 
+  it('detecta cuando una clave cambia de forma entre idiomas', () => {
+    expect(compareKeys({ a: { b: '1' } }, { a: '1' })).toEqual({ missing: ['a.b'], extra: ['a'] });
+    expect(compareKeys({ a: '1' }, { a: { b: '1' } })).toEqual({ missing: ['a'], extra: ['a.b'] });
+  });
+
+  it('trata null, arreglos y números como valores, no como áreas', () => {
+    expect(compareKeys({ a: null, b: ['x'], c: 1 }, { a: 'x', b: 'y', c: 'z' })).toEqual({
+      missing: [],
+      extra: [],
+    });
+    expect(compareKeys({ a: ['x'] }, {})).toEqual({ missing: ['a'], extra: [] });
+  });
+
+  it('un área vacía no exige claves', () => {
+    expect(compareKeys({ a: {} }, {})).toEqual({ missing: [], extra: [] });
+  });
+
   it('nombra la clave y el idioma en el mensaje', () => {
     const message = formatProblems(checkMessagesDir(fixture).problems);
     expect(message).toContain('pt.json: falta la clave "home.subtitle"');

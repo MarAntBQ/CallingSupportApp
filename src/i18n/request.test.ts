@@ -4,6 +4,13 @@ import es from '../../messages/es.json';
 import pt from '../../messages/pt.json';
 
 let cookieValue: string | undefined;
+let userLocale: string | null = null;
+let installationLocale: string | null = null;
+
+vi.mock('./preferences', () => ({
+  getUserLocale: async () => userLocale,
+  getInstallationLocale: async () => installationLocale,
+}));
 
 vi.mock('next/headers', () => ({
   cookies: async () => ({
@@ -21,9 +28,38 @@ const loadConfig = requestConfig as unknown as () => Promise<{ locale: string; m
 describe('resolución del idioma', () => {
   beforeEach(() => {
     cookieValue = undefined;
+    userLocale = null;
+    installationLocale = null;
   });
 
   it('sin cookie usa español', async () => {
+    expect(await resolveLocale()).toBe('es');
+  });
+
+  it('el idioma del usuario manda sobre la cookie y la instalación', async () => {
+    userLocale = 'en';
+    cookieValue = 'pt';
+    installationLocale = 'pt';
+    expect(await resolveLocale()).toBe('en');
+  });
+
+  it('la cookie manda sobre el idioma de la instalación', async () => {
+    cookieValue = 'pt';
+    installationLocale = 'en';
+    expect(await resolveLocale()).toBe('pt');
+  });
+
+  it('sin usuario ni cookie usa el idioma de la instalación', async () => {
+    installationLocale = 'en';
+    expect(await resolveLocale()).toBe('en');
+  });
+
+  it('salta los valores inválidos de cada fuente', async () => {
+    userLocale = 'fr';
+    cookieValue = 'de';
+    installationLocale = 'pt';
+    expect(await resolveLocale()).toBe('pt');
+    installationLocale = 'it';
     expect(await resolveLocale()).toBe('es');
   });
 

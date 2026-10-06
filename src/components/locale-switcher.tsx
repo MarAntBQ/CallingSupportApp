@@ -12,17 +12,20 @@ export function LocaleSwitcher() {
   const id = useId();
   const [selected, setSelected] = useState(locale);
   const [failed, setFailed] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [pending, startTransition] = useTransition();
 
   async function change(next: string) {
-    if (!isLocale(next) || next === locale) return;
+    if (saving || !isLocale(next) || next === locale) return;
     setSelected(next);
     setFailed(false);
+    setSaving(true);
     const response = await fetch('/api/locale', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ locale: next }),
     }).catch(() => null);
+    setSaving(false);
     if (!response?.ok) {
       setSelected(locale);
       setFailed(true);
@@ -39,7 +42,7 @@ export function LocaleSwitcher() {
       <select
         id={id}
         value={selected}
-        disabled={pending}
+        disabled={saving || pending}
         onChange={(event) => void change(event.target.value)}
         className="rounded-md border border-border bg-surface px-3 py-1.5 text-text"
       >
