@@ -54,5 +54,10 @@
     "home": "Volver al inicio"
   },
   "ogImageAlt": "Logotipo de CallingSupportApp, herramientas abiertas y gratuitas para barrios y ramas",
-  "githubFab": "Ver el código en GitHub"
+  "githubFab": "Ver el código en GitHub",
+  "learnMore": {
+    "text": "¿Quieres conocer más sobre la Iglesia?",
+    "link": "Visita Ven a Cristo",
+    "url": "https://www.churchofjesuschrist.org/comeuntochrist?lang=spa"
+  }
 }

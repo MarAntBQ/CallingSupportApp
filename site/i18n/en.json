@@ -54,5 +54,10 @@
     "home": "Back to home"
   },
   "ogImageAlt": "CallingSupportApp logo, open and free tools for wards and branches",
-  "githubFab": "View the code on GitHub"
+  "githubFab": "View the code on GitHub",
+  "learnMore": {
+    "text": "Want to learn more about the Church?",
+    "link": "Visit Come unto Christ",
+    "url": "https://www.churchofjesuschrist.org/comeuntochrist?lang=eng"
+  }
 }

@@ -54,5 +54,10 @@
     "home": "Voltar ao início"
   },
   "ogImageAlt": "Logotipo do CallingSupportApp, ferramentas abertas e gratuitas para alas e ramos",
-  "githubFab": "Ver o código no GitHub"
+  "githubFab": "Ver o código no GitHub",
+  "learnMore": {
+    "text": "Quer conhecer mais sobre a Igreja?",
+    "link": "Visite Vinde a Cristo",
+    "url": "https://www.churchofjesuschrist.org/comeuntochrist?lang=por"
+  }
 }
