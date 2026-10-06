@@ -1,7 +1,7 @@
 # Cómo colaborar
 
 Gracias por querer ayudar. Esta guía es todo lo que necesitas para tomar un issue y
-entregarlo, aunque nunca hayas hablado con el autor del proyecto.
+entregarlo, aunque nunca hayas hablado con nadie del equipo.
 
 **La regla que manda:** el [Manual General de la Iglesia](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa)
 rige toda idea del proyecto. Si algo lo contradice, no se construye. Detalle en
@@ -16,7 +16,29 @@ los miembros) y [AGENTS.md](AGENTS.md) (stack, idioma, glosario y reglas del rep
 Issue  →  Rama  →  Pull Request  →  Revisión  →  Squash a main
 ```
 
-`main` está protegida: nadie hace push directo, tampoco el autor. Todo entra por PR.
+`main` está protegida: nadie hace push directo, sin excepción. Todo entra por PR.
+
+## Cómo nos organizamos: CSATeam
+
+Lo hacemos entre todos como **CSATeam (Calling Support App Team)**. **Todos somos
+colaboradores y ninguno es más que otro:** no hay creador, ni dueños, ni líderes del proyecto.
+
+- **Cualquiera** propone (abre un issue), toma (`/tomar`), implementa y revisa (skill
+  `revisar-codigo`).
+- **Las decisiones se toman en los issues**, con argumentos y por escrito. Por encima de todo
+  manda el [Manual General]({MG}).
+- **"Mantenedor" es una función técnica, no un rango:** quien tiene permiso de escritura puede
+  mergear y cambiar la configuración del repositorio. La lista está en
+  [`.github/maintainers.json`](.github/maintainers.json) y puede crecer.
+- **Las reglas son iguales para todos.** Nadie tiene excepciones: un issue a la vez, PR en
+  borrador en 48 horas, revisión obligatoria.
+
+## Tu primer aporte: agrega tu perfil al equipo
+
+Crea `team/<tu-usuario-de-github>.md` con la plantilla de [`team/README.md`](team/README.md) y
+abre un PR solo con ese archivo. Es el **único aporte que no necesita issue ni `/tomar`**. Ahí
+cuentas quién eres y cómo te gusta aportar, en tus palabras; sin títulos de jerarquía y sin
+datos sensibles.
 
 ## 1. Elige un issue
 
@@ -121,7 +143,7 @@ la revisión. Marca solo lo que de verdad corriste; lo que no aplique, N/A con e
 ## 8. Revisión y merge
 
 Responde cada comentario con la corrección o con la evidencia de por qué no aplica, y
-resuelve las conversaciones. El merge lo hace el responsable del repositorio, siempre por
+resuelve las conversaciones. El merge lo hace alguien que mantiene el repositorio, siempre por
 **squash**: un issue, un PR, un commit en `main`.
 
 ## Si usas IA

@@ -15,7 +15,7 @@ body:
     id: tarjeta
     attributes:
       label: Tarjeta de Trello
-      description: Opcional. Solo si el bug viene del tablero del autor.
+      description: Opcional. Solo si el bug viene de una tarjeta de Trello.
       placeholder: https://trello.com/c/...
   - type: textarea
     id: resumen

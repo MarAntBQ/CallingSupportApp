@@ -10,7 +10,7 @@ description: Cómo escribir un issue AUTOCONTENIDO para CallingSupportApp — qu
 > **El issue se autocontiene.** Quien lo tome tiene que poder terminarlo leyendo solo el
 > issue y los archivos que enlaza, sin preguntar nada a nadie.
 
-El colaborador no estuvo en la llamada, no ve el tablero del autor y no leyó el chat. Lo que
+El colaborador no estuvo en la llamada, no ve tableros privados y no leyó el chat. Lo que
 no está escrito en el issue, para él no existe.
 
 ## Qué tiene que llevar

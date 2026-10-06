@@ -24,16 +24,23 @@ test('decideTake: ya lo tiene otra persona', () => {
   assert.deepEqual(l.decideTake({ ...base, assignees: ['steven'] }), { ok: false, reason: 'taken', by: 'steven' });
 });
 
-test('decideTake: un issue a la vez, salvo el responsable', () => {
+test('decideTake: un issue a la vez para todas las personas, sin excepciones', () => {
   assert.deepEqual(l.decideTake({ ...base, actorOpenClaims: [12] }), { ok: false, reason: 'has-other', other: 12 });
-  assert.deepEqual(l.decideTake({ ...base, actor: 'MarAntBQ', actorOpenClaims: [12] }), { ok: true });
+  assert.deepEqual(l.decideTake({ ...base, actor: 'MarAntBQ', actorOpenClaims: [12] }), { ok: false, reason: 'has-other', other: 12 });
 });
 
-test('decideRelease: solo quien lo tiene o el responsable', () => {
-  assert.equal(l.decideRelease({ assignees: [], actor: 'luis' }).reason, 'not-taken');
-  assert.deepEqual(l.decideRelease({ assignees: ['luis'], actor: 'luis' }), { ok: true });
-  assert.deepEqual(l.decideRelease({ assignees: ['luis'], actor: 'MarAntBQ' }), { ok: true });
-  assert.deepEqual(l.decideRelease({ assignees: ['luis'], actor: 'steven' }), { ok: false, reason: 'not-yours', by: 'luis' });
+test('decideRelease: quien lo tiene o quien mantiene el repositorio', () => {
+  const maintainers = ['ana'];
+  assert.equal(l.decideRelease({ assignees: [], actor: 'luis', maintainers }).reason, 'not-taken');
+  assert.deepEqual(l.decideRelease({ assignees: ['luis'], actor: 'luis', maintainers }), { ok: true });
+  assert.deepEqual(l.decideRelease({ assignees: ['luis'], actor: 'ana', maintainers }), { ok: true });
+  assert.deepEqual(l.decideRelease({ assignees: ['luis'], actor: 'steven', maintainers }), { ok: false, reason: 'not-yours', by: 'luis' });
+  assert.deepEqual(l.decideRelease({ assignees: ['luis'], actor: 'MarAntBQ' }), { ok: false, reason: 'not-yours', by: 'luis' });
+});
+
+test('maintainers.json es una lista de usuarios', () => {
+  const list = require('../maintainers.json');
+  assert.ok(Array.isArray(list) && list.length >= 1 && list.every((u) => typeof u === 'string' && u));
 });
 
 test('decideStale: límites exactos y cruce de medianoche', () => {

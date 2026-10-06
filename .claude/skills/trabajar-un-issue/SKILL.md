@@ -97,7 +97,7 @@ conversaciones abiertas.
 
 ## 10. Cierre
 
-El merge lo hace el responsable del repositorio, siempre por **squash**. La rama se borra
+El merge lo hace alguien que mantiene el repositorio, siempre por **squash**. La rama se borra
 sola. Después:
 
 ```sh

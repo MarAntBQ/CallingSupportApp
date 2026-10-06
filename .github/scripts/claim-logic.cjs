@@ -1,4 +1,3 @@
-const MAINTAINER = 'MarAntBQ';
 const IN_PROGRESS = 'en-progreso';
 const BLOCKED = 'bloqueado';
 const NEEDS_DESIGN = 'necesita-diseño';
@@ -28,13 +27,13 @@ function decideTake({ issueState, labels, assignees, actor, actorOpenClaims }) {
   const others = assignees.filter((a) => a !== actor);
   if (others.length) return { ok: false, reason: 'taken', by: others[0] };
   if (assignees.includes(actor)) return { ok: false, reason: 'already-yours' };
-  if (actor !== MAINTAINER && actorOpenClaims.length) return { ok: false, reason: 'has-other', other: actorOpenClaims[0] };
+  if (actorOpenClaims.length) return { ok: false, reason: 'has-other', other: actorOpenClaims[0] };
   return { ok: true };
 }
 
-function decideRelease({ assignees, actor }) {
+function decideRelease({ assignees, actor, maintainers = [] }) {
   if (!assignees.length) return { ok: false, reason: 'not-taken' };
-  if (assignees.includes(actor) || actor === MAINTAINER) return { ok: true };
+  if (assignees.includes(actor) || maintainers.includes(actor)) return { ok: true };
   return { ok: false, reason: 'not-yours', by: assignees[0] };
 }
 
@@ -46,7 +45,6 @@ function decideStale({ lastActivity, now, hasReminderSince }) {
 }
 
 module.exports = {
-  MAINTAINER,
   IN_PROGRESS,
   BLOCKED,
   NEEDS_DESIGN,

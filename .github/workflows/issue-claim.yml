@@ -19,11 +19,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: .github/scripts
+          sparse-checkout: .github
       - uses: actions/github-script@v7
         with:
           script: |
             const l = require('./.github/scripts/claim-logic.cjs');
+            const maintainers = require('./.github/maintainers.json');
             const actor = context.payload.comment.user.login;
             const command = l.parseCommand(context.payload.comment.body);
             if (!command) return;
@@ -67,7 +68,7 @@ jobs:
               await github.rest.issues.addAssignees({ owner, repo, issue_number: number, assignees: [actor] });
               const after = await github.rest.issues.get({ owner, repo, issue_number: number });
               if (!after.data.assignees.some((a) => a.login === actor)) {
-                await reply(`@${actor}, no pude asignarte el issue automáticamente, así que **no quedó tomado**. Vuelve a comentar \`/tomar\` en unos minutos; si sigue fallando, comenta aquí para que el responsable del repositorio lo revise.`);
+                await reply(`@${actor}, no pude asignarte el issue automáticamente, así que **no quedó tomado**. Vuelve a comentar \`/tomar\` en unos minutos; si sigue fallando, comenta aquí para que quien mantiene el repositorio lo revise.`);
                 return;
               }
               await github.rest.issues.addLabels({ owner, repo, issue_number: number, labels: [l.IN_PROGRESS] });
@@ -85,11 +86,11 @@ jobs:
               return;
             }
 
-            const d = l.decideRelease({ assignees, actor });
+            const d = l.decideRelease({ assignees, actor, maintainers });
             if (!d.ok) {
               await reply(d.reason === 'not-taken'
                 ? 'Este issue no está tomado por nadie.'
-                : `Solo @${d.by} o el responsable del repositorio pueden soltarlo.`);
+                : `Solo @${d.by} o quien mantiene el repositorio pueden soltarlo.`);
               return;
             }
             await github.rest.issues.removeAssignees({ owner, repo, issue_number: number, assignees });
