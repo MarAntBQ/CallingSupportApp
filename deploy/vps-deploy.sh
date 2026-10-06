@@ -26,21 +26,28 @@ for f in index.html pt/index.html en/index.html 404.html sitemap.xml robots.txt 
   [ -s "_site/$f" ] || fallo "el build no generó $f"
 done
 
+HTMLS=$(find _site -name '*.html') || fallo "no se pudo recorrer _site"
+[ -n "$HTMLS" ] || fallo "el build no tiene páginas"
 ROTAS=0
 while IFS= read -r html; do
   dir=$(dirname "$html")
+  refs=$(grep -oE '(src|href)="[^"]*"' "$html") || [ $? -eq 1 ] || fallo "no se pudo leer $html"
   while IFS= read -r ref; do
+    ref=${ref#*=\"}
+    ref=${ref%\"}
     case "$ref" in
+      '' | '#'* | '?'* | http:* | https:* | mailto:* | //* | data:*) continue ;;
       /*) destino="_site$ref" ;;
       *) destino="$dir/$ref" ;;
     esac
     destino="${destino%%[?#]*}"
     [ -e "$destino" ] || { echo "referencia rota en ${html#_site/}: $ref" >&2; ROTAS=$((ROTAS + 1)); }
-  done < <(grep -oE '(src|href)="[^"#][^"]*"' "$html" | sed -E 's/^(src|href)="//; s/"$//' | grep -vE '^(https?:|mailto:|//|data:)' || true)
-done < <(find _site -name '*.html')
+  done <<< "$refs"
+done <<< "$HTMLS"
 [ "$ROTAS" -eq 0 ] || fallo "$ROTAS referencia(s) interna(s) rota(s)"
 
-BORRARIA=$(rsync -a --delete --dry-run --out-format='%o %n' "${EXCLUSIONES[@]}" _site/ "$DOCROOT/" | grep -c '^del\.' || true)
+EN_SECO=$(rsync -a --delete --dry-run --out-format='%o %n' "${EXCLUSIONES[@]}" _site/ "$DOCROOT/") || fallo "rsync en seco falló"
+BORRARIA=$(printf '%s\n' "$EN_SECO" | grep -c '^del\.' || true)
 [ "$BORRARIA" -le "$MAX_BORRADOS" ] || fallo "borraría $BORRARIA archivos del docroot (máximo $MAX_BORRADOS)"
 
 rsync -a --delete "${EXCLUSIONES[@]}" _site/ "$DOCROOT/"
