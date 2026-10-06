@@ -1,0 +1,13 @@
+{
+  "common": {
+    "appName": "CallingSupportApp",
+    "localeSwitcher": {
+      "label": "Language",
+      "error": "The language could not be changed. Please try again."
+    }
+  },
+  "home": {
+    "underConstruction": "Under construction",
+    "docsLink": "Read the documentation"
+  }
+}

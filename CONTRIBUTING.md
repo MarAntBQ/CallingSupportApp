@@ -210,6 +210,23 @@ el portugués y el inglés usando el glosario de [AGENTS.md](AGENTS.md#idiomas).
 dominas alguno, tradúcelo con la herramienta que prefieras respetando el glosario, y anota
 en el PR qué textos conviene que revise un hablante nativo.
 
+**Cómo agregar un texto:**
+
+1. Agrega la clave en `messages/es.json`, dentro del área que corresponda (`common`, `home`,
+   `admin`, `templeTrips`…). Crea un área nueva si tu módulo todavía no tiene una.
+2. Agrega **la misma clave** en `pt.json` y `en.json`.
+3. Úsala con `t(clave)`:
+   - en un Server Component, `const t = await getTranslations(area)` (de `next-intl/server`);
+   - en un Client Component, `const t = useTranslations(area)` (de `next-intl`).
+4. Para variables y plurales usa el formato ICU:
+   `"slots": "{count, plural, one {# cupo} other {# cupos}}"` → `t(slots, { count: 3 })`.
+5. Corre `npm run i18n:check`. Si falta o sobra una clave en algún idioma, la nombra y termina
+   con error; la misma comprobación corre dentro de `npm run test`.
+
+TypeScript conoce las claves de `es.json`: si escribes una que no existe, `npm run typecheck`
+falla. Para fechas, números y dinero usa `formatDate`, `formatNumber` y `formatMoney` de
+`src/lib/format.ts`, con el idioma activo (`useLocale()` o `getLocale()`).
+
 ## Instalación local
 
 Necesitas Node 22 (`.nvmrc`) y Docker. Desde la raíz del repositorio:
