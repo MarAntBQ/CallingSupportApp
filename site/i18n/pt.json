@@ -22,6 +22,11 @@
     "security": "Segurança",
     "status": "Andamento do projeto"
   },
+  "navGroups": {
+    "project": "Projeto",
+    "policies": "Normas",
+    "guides": "Guias"
+  },
   "roadmap": {
     "of": "de",
     "closed": "concluídas",
