@@ -1,12 +1,54 @@
 ---
 name: datos-de-miembros
-description: Reglas para tratar datos de personas en CallingSupportApp — consentimiento, datos sensibles (las ordenanzas son creencia religiosa), menores de edad, prohibición de importar listados de los sistemas oficiales de la Iglesia, retención y purga, permisos, exportaciones, logs, y qué nunca puede llegar al repositorio público. Úsala SIEMPRE que un cambio recoja, guarde, muestre, exporte, notifique o borre datos de personas — formularios de inscripción, tablas, reportes, imprimibles, Excel, correos, Telegram — y al escribir o revisar la política de datos.
+description: Reglas para tratar datos de personas en CallingSupportApp, regidas por el Manual General de la Iglesia 33.8 (carácter confidencial de los registros) y 33.9 (administración de los registros) — solo lo necesario, solo para el propósito aprobado, solo para quien está autorizado, nunca para fines personales, políticos, comerciales ni estudios; además consentimiento, datos sensibles (las ordenanzas son creencia religiosa), menores de edad, prohibición de importar listados de los sistemas oficiales de la Iglesia, retención y purga, permisos, exportaciones, logs, y qué nunca puede llegar al repositorio público. Úsala SIEMPRE que un cambio recoja, guarde, muestre, exporte, notifique o borre datos de personas — formularios de inscripción, tablas, reportes, imprimibles, Excel, correos, Telegram — y al escribir o revisar la política de datos.
 ---
 
 # Datos de miembros
 
 Los datos de los miembros de la Iglesia son de sumo cuidado y **no se pueden filtrar**. Un
 error aquí no es un bug más: expone a personas reales de un barrio.
+
+## La regla que manda: Manual General 33.8
+
+Esta sección rige por encima de todo lo demás del proyecto. Fuente:
+[Manual General, capítulo 33](https://www.churchofjesuschrist.org/study/manual/general-handbook/33-records-and-reports?lang=spa),
+sección 33.8 "Carácter confidencial de los registros". Los líderes se aseguran de que la
+información que se recabe de los miembros:
+
+> - «Se limite a lo que la Iglesia requiere.»
+> - «Se utilice solo para los propósitos aprobados de la Iglesia.»
+> - «Se entregue únicamente a las personas que estén autorizadas a utilizarla.»
+
+Y de que esos datos **«no se empleen para objetivos personales, políticos ni comerciales»**.
+No se da información **a ninguna persona ni agencia que lleve a cabo estudios de
+investigación o encuestas**.
+
+| 33.8 | En el código |
+|---|---|
+| Se limite a lo que se requiere | Cada campo tiene un uso concreto en la actividad. Nada "por si acaso", nada "puede servir después" |
+| Solo para los propósitos aprobados | Un dato vive y se usa solo en el módulo y la actividad donde se entregó. Prohibido cruzar módulos (por ejemplo, usar los teléfonos del viaje para el directorio o para avisos de otra cosa) |
+| Solo a personas autorizadas | Permiso del módulo en el servidor para leer, exportar, imprimir y avisar. Ocultar un botón no autoriza ni desautoriza |
+| Ni personales, ni políticos, ni comerciales | Ningún dato de miembros alimenta promociones, campañas ni negocios. El directorio de emprendimientos solo muestra lo que cada hermano publica de sí mismo, y viene apagado hasta que el obispado lo apruebe (Manual 38.8.5) |
+| Ni estudios ni encuestas | Sin analítica que envíe datos de personas, sin integraciones con terceros que reciban datos, sin exportaciones "para un estudio" |
+
+**Si una funcionalidad choca con el 33.8, no se construye**, aunque técnicamente sea posible
+o alguien la pida.
+
+### Lo que agrega el 33.9 (administración de los registros)
+
+- **Protección** contra acceso, modificación, destrucción o divulgación no autorizados.
+  Secretos cifrados (AES-256-GCM con `ENC_KEY`) y contraseñas con hash.
+- **Nunca compartir cuentas.** Cada persona tiene la suya; no hay usuarios genéricos ("secretario").
+  **Verificación en dos pasos** para quien tiene acceso a datos (#36).
+- **Computadoras compartidas.** "Recordar mi sesión" viene sin marcar. Al descargar un Excel o
+  imprimir una lista se muestra: «Este archivo tiene datos de miembros. No lo guardes en una
+  computadora compartida y bórralo cuando ya no lo necesites.»
+- **Retención:** solo el tiempo necesario para la actividad.
+- **Destrucción irrecuperable:** la purga hace **borrado físico** (`DELETE`), nunca un borrado
+  lógico ni una papelera.
+- **Uso indebido:** ingresar a propósito información falsa o usar datos para fines ajenos a la
+  Iglesia es grave, según el Manual. La aplicación no lo facilita: sin exportaciones masivas,
+  sin copias entre módulos.
 
 ## El principio
 
@@ -85,6 +127,8 @@ una persona solo puede consentir lo que entiende. Se guarda en qué idioma se ac
 
 ## Lista para el PR
 
+- [ ] **33.8:** solo lo necesario, solo para el propósito de esta actividad, solo para quien tiene el permiso, y nada que sirva a fines personales, políticos, comerciales o a estudios.
+- [ ] **33.9:** sin cuentas compartidas, sin datos en computadoras compartidas (aviso al exportar o imprimir) y purga con borrado físico.
 - [ ] Ningún dato viene de un sistema oficial de la Iglesia.
 - [ ] El formulario tiene aviso corto y casilla sin premarcar; el servidor exige el consentimiento.
 - [ ] Se guarda `consent` + `policyVersion`.

@@ -110,6 +110,11 @@ Lo que entregas es tu responsabilidad: revisa y prueba todo lo que el agente esc
 
 ## Datos de los miembros
 
+**Rige el Manual General de la Iglesia, 33.8 "Carácter confidencial de los registros":** la
+información de los miembros se limita a lo necesario, se usa solo para el propósito aprobado,
+se entrega solo a quien está autorizado y nunca se usa para fines personales, políticos ni
+comerciales, ni para estudios o encuestas. Ver [AGENTS.md](AGENTS.md#la-regla-que-manda-los-datos-de-los-miembros).
+
 Este repositorio es **público**. Nunca subas datos reales de personas: ni en el código, ni en
 seeds, ni en pruebas, ni en capturas de pantalla, ni en issues. Los datos de prueba son
 inventados. Detalle completo en la skill `datos-de-miembros`.

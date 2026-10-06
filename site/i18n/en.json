@@ -48,6 +48,7 @@
   "data": {
     "title": "Caring for members' data",
     "lead": "Church members' data must be handled with the utmost care and must never leak. That's why the project follows simple rules:",
+    "p0": "We follow the Church's General Handbook (33.8): data is limited to what is needed, used only for the approved purpose, seen only by those who are authorized, and never used for personal, political or commercial purposes.",
     "p1": "We only handle data that each person provides themselves, with their consent, for a specific activity.",
     "p2": "Lists from the Church's official systems are never imported.",
     "p3": "Ordinances and health information are treated as sensitive data.",

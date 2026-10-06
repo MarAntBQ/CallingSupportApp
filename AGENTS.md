@@ -76,17 +76,49 @@ Glosario para nombrar las cosas igual en el código y en las traducciones:
 | Campamento | Acampamento | camp |
 | Grupo de EnglishConnect / maestro / estudiante | Grupo do EnglishConnect / professor / aluno | EnglishConnect group / teacher / student |
 
+## La regla que manda: los datos de los miembros
+
+Por encima de cualquier conveniencia técnica, los datos de los miembros se rigen por el
+**Manual General de la Iglesia, 33.8 "Carácter confidencial de los registros"**
+([fuente](https://www.churchofjesuschrist.org/study/manual/general-handbook/33-records-and-reports?lang=spa)).
+Los líderes se aseguran de que la información que se recabe de los miembros:
+
+> - «Se limite a lo que la Iglesia requiere.»
+> - «Se utilice solo para los propósitos aprobados de la Iglesia.»
+> - «Se entregue únicamente a las personas que estén autorizadas a utilizarla.»
+
+Y de que esos datos **«no se empleen para objetivos personales, políticos ni comerciales»**.
+Tampoco se da información **a ninguna persona ni agencia que haga estudios de investigación o
+encuestas**.
+
+En este código eso significa:
+
+1. **Solo lo necesario.** Cada campo se justifica con un uso concreto de la actividad.
+2. **Solo para el propósito aprobado.** Un dato se usa únicamente en la actividad para la que
+   se entregó. Nunca se cruza entre módulos, nunca se reutiliza para otra cosa y nunca se usa
+   para fines personales, políticos ni comerciales.
+3. **Solo para quien está autorizado.** Cada lectura, exportación, impresión y aviso pasa por
+   el permiso del módulo en el servidor.
+4. **Nunca para estudios ni encuestas.** No se comparten datos con terceros, no hay analítica
+   que envíe datos de personas y no se exportan datos para investigaciones.
+
+La sección **33.9** agrega el cómo: proteger contra acceso, cambios, destrucción o divulgación
+no autorizados; cada persona con su propia cuenta y sin compartir contraseñas; verificación en
+dos pasos; nada de datos en computadoras compartidas; conservar solo lo necesario; y destruir
+de forma irrecuperable (borrado físico). Detalle y lista para el PR: skill
+[`datos-de-miembros`](.claude/skills/datos-de-miembros/SKILL.md).
+
 ## Reglas duras
 
-1. **Flujo:** issue → rama → pull request → squash. `main` está protegida: nadie hace push
+1. **Datos de miembros: Manual General 33.8** (sección anterior). Nunca importar listados de
+   los sistemas oficiales de la Iglesia. Todo cambio que toque datos de personas pasa por la
+   skill `datos-de-miembros`. Si una funcionalidad choca con el Manual, no se construye.
+2. **Flujo:** issue → rama → pull request → squash. `main` está protegida: nadie hace push
    directo, tampoco el autor del proyecto.
-2. **El issue se autocontiene.** Si algo no está en el issue, se pide en el issue antes de
+3. **El issue se autocontiene.** Si algo no está en el issue, se pide en el issue antes de
    programar, y el issue se corrige. Ver skill `escribir-un-issue`.
-3. **Revisión obligatoria.** Antes de abrir un PR, corre la skill `revisar-codigo` sobre tu
+4. **Revisión obligatoria.** Antes de abrir un PR, corre la skill `revisar-codigo` sobre tu
    propio diff. Al revisar el PR de otra persona, usa la misma skill.
-4. **Datos de miembros.** Solo datos que cada persona entrega con su consentimiento para una
-   actividad concreta. Nunca importar listados de los sistemas oficiales de la Iglesia.
-   Cualquier cambio que toque datos de personas pasa por la skill `datos-de-miembros`.
 5. **Nada fijo de un barrio** en el código: nombre, logo, responsable de los datos y textos
    salen de la configuración de la instalación.
 6. **Trilingüe siempre.** Ningún texto visible queda escrito en el código, y cada texto
