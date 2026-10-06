@@ -1,6 +1,6 @@
 ---
 title: Manual del viaje al templo
-description: Cómo organizar el viaje al templo de tu barrio con CallingSupportApp: inscripciones, cupos, costo estimado y aprobación, para quien organiza y para quien viaja.
+description: Manual en preparación: cómo organizar el viaje al templo de tu barrio o rama con CallingSupportApp, con inscripciones, cupos, costo estimado y aprobación.
 updated: 2026-10-06
 order: 3
 ---

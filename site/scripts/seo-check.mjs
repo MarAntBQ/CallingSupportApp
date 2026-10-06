@@ -8,6 +8,12 @@ const LOCALES = ['es', 'pt', 'en'];
 const TITLE_MAX = 60;
 const DESC_MIN = 150;
 const DESC_MAX = 160;
+const REQUIRED = {
+  WebSite: ['name', 'url'],
+  Organization: ['name', 'url', 'logo'],
+  SoftwareSourceCode: ['name', 'codeRepository', 'license'],
+  BreadcrumbList: ['itemListElement'],
+};
 
 const decode = (s) =>
   s.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
@@ -44,14 +50,34 @@ for (const file of pages(site).sort()) {
     const n = count(html, re);
     if (n !== 1) problems.push(`${url}: ${label} aparece ${n} veces (debe ser 1)`);
   }
+  const rendered = {
+    title: decode((html.match(/<title>([^<]*)<\/title>/) || [])[1] || ''),
+    description: attr(html, '<meta name="description" content'),
+  };
+  if (rendered.title !== attr(html, 'data-title-es')) problems.push(`${url}: el <title> no coincide con el título en español`);
+  if (rendered.description !== attr(html, 'data-desc-es')) problems.push(`${url}: la meta description no coincide con la descripción en español`);
+
+  const types = [];
   for (const [, json] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    let data;
     try {
-      JSON.parse(json);
+      data = JSON.parse(json);
     } catch (e) {
       problems.push(`${url}: JSON-LD inválido (${e.message})`);
+      continue;
+    }
+    types.push(data['@type']);
+    if (data['@context'] !== 'https://schema.org') problems.push(`${url}: JSON-LD sin @context de schema.org`);
+    const need = REQUIRED[data['@type']];
+    if (!need) problems.push(`${url}: JSON-LD con @type no esperado (${data['@type']})`);
+    else for (const k of need) if (!data[k] || (Array.isArray(data[k]) && !data[k].length)) problems.push(`${url}: ${data['@type']} sin "${k}"`);
+    if (data['@type'] === 'BreadcrumbList') {
+      for (const item of data.itemListElement || []) {
+        if (!item.position || !item.name || !String(item.item || '').startsWith('https://')) problems.push(`${url}: BreadcrumbList con un elemento incompleto`);
+      }
     }
   }
-  if (!html.includes('application/ld+json')) problems.push(`${url}: sin JSON-LD`);
+  for (const t of ['WebSite', 'Organization', 'SoftwareSourceCode']) if (!types.includes(t)) problems.push(`${url}: falta el JSON-LD ${t}`);
 }
 
 console.log(rows.join('\n'));

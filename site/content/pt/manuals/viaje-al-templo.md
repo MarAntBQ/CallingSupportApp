@@ -1,6 +1,6 @@
 ---
 title: Manual da viagem ao templo
-description: Como organizar a viagem ao templo da sua ala com o CallingSupportApp: inscrições, vagas, custo estimado e aprovação, para quem organiza e para quem viaja.
+description: Manual em preparação: como organizar a viagem ao templo da sua ala ou ramo com o CallingSupportApp, com inscrições, vagas, custo estimado e aprovação.
 updated: 2026-10-06
 order: 3
 ---
