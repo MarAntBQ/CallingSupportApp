@@ -2,7 +2,7 @@
   "name": "callingsupportapp-site",
   "private": true,
   "type": "module",
-  "description": "Sitio de documentación de CallingSupportApp (GitHub Pages)",
+  "description": "Sitio de documentación de CallingSupportApp (callingsupportapp.org)",
   "scripts": {
     "build": "node build.mjs"
   },

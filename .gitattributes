@@ -1,0 +1,4 @@
+*.sh text eol=lf
+deploy/** text eol=lf
+.github/workflows/*.yml text eol=lf
+site/static/.htaccess text eol=lf
