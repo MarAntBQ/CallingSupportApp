@@ -35,7 +35,7 @@ export function findRealLookingEmails(files: { path: string; text: string }[]) {
   );
 }
 
-const PREVIOUS_HANDBOOK_NUMBER = /38\.8\.24\.2/;
+const PREVIOUS_HANDBOOK_NUMBER = /38\.8\.24\.2/g;
 const PREVIOUS_NUMBERING_NOTE = /numeración anterior|numeração anterior|previous Handbook numbering/i;
 
 export function findOutdatedHandbookCitations(files: { path: string; text: string }[]) {
@@ -43,7 +43,7 @@ export function findOutdatedHandbookCitations(files: { path: string; text: strin
     text
       .split('\n')
       .map((line, index) => ({ line, number: index + 1 }))
-      .filter(({ line }) => PREVIOUS_HANDBOOK_NUMBER.test(line) && !PREVIOUS_NUMBERING_NOTE.test(line))
+      .filter(({ line }) => (line.match(PREVIOUS_HANDBOOK_NUMBER) ?? []).length > (PREVIOUS_NUMBERING_NOTE.test(line) ? 1 : 0))
       .map(({ number }) => `${path}:${number}`),
   );
 }
@@ -89,6 +89,11 @@ describe('citas del Manual General', () => {
     expect(
       findOutdatedHandbookCitations([{ path: 'b.md', text: 'La página de pautas todavía cita la numeración anterior del Manual (38.8.24.2).' }]),
     ).toEqual([]);
+    expect(
+      findOutdatedHandbookCitations([
+        { path: 'c.md', text: 'Ver Manual General 38.8.24.2. La página de pautas todavía cita la numeración anterior del Manual (38.8.24.2).' },
+      ]),
+    ).toEqual(['c.md:1']);
   });
 });
 
