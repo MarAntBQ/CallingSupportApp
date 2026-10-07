@@ -3,7 +3,7 @@
 // unix socket que asigna el hosting en process.env.APP_SOCKET (sin abrir puertos). En
 // desarrollo, sin APP_SOCKET, cae al puerto de siempre.
 const { createServer } = require('http');
-const { existsSync, unlinkSync, chmodSync } = require('fs');
+const { lstatSync, unlinkSync, chmodSync } = require('fs');
 const next = require('next');
 
 const socket = process.env.APP_SOCKET;
@@ -13,11 +13,11 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = createServer((req, res) => handle(req, res));
   if (socket) {
-    if (existsSync(socket)) {
-      try {
-        unlinkSync(socket);
-      } catch {}
-    }
+    // Solo borramos un socket viejo; si en esa ruta hay otra cosa, dejamos que listen
+    // falle ruidoso en vez de borrar un archivo que no es nuestro.
+    try {
+      if (lstatSync(socket).isSocket()) unlinkSync(socket);
+    } catch {}
     server.listen(socket, () => {
       chmodSync(socket, 0o660);
       // Tras crear el socket (que ya quedó 0660), devolvemos el umask a 0022: con el 0117
