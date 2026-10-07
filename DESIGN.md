@@ -100,6 +100,7 @@ Contraste de cada token de texto, medido contra `surface`: `text` 17.5 · `text-
 - **Personas:** avatar redondo junto al nombre, en tareas, llamamientos y comentarios. Sin foto, las iniciales sobre `surface-muted`.
 - **Navegación:** barra superior blanca con el nombre de la unidad, el menú y el selector de idioma. En el teléfono, el menú se pliega en un botón y las tarjetas se apilan en una columna. Sin desplazamiento horizontal a 360px.
 - **Modales:** título y botones fijos; solo el contenido se desplaza.
+- **Cursor:** todo lo que se puede clickear muestra la **mano** (botones, enlaces, selectores, casillas, radios y las etiquetas que los envuelven); lo deshabilitado, **no permitido**; los campos de texto, el cursor de texto. Lo resuelve una regla global en `globals.css`: no hace falta poner `cursor-pointer` en cada componente.
 
 ## Sí y no
 
