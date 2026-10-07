@@ -1,18 +1,19 @@
 import 'server-only';
 import { createHmac } from 'node:crypto';
+import { ipAddress } from '@vercel/functions';
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
-function allowedHosts(request: Request) {
-  const hosts = new Set<string>();
-  try {
-    hosts.add(new URL(request.url).host);
-  } catch {}
-  for (const name of ['host', 'x-forwarded-host']) {
-    const value = request.headers.get(name);
-    if (value) hosts.add(value.split(',')[0]!.trim());
+function allowedOrigins(request: Request) {
+  const origins = new Set<string>();
+  const url = new URL(request.url);
+  origins.add(url.origin);
+  const host = request.headers.get('host');
+  if (host) origins.add(`${url.protocol}//${host}`);
+  for (const extra of (process.env.APP_ORIGINS ?? '').split(',')) {
+    if (extra.trim()) origins.add(extra.trim().replace(/\/+$/, ''));
   }
-  return hosts;
+  return origins;
 }
 
 export function isSameOrigin(request: Request) {
@@ -20,15 +21,16 @@ export function isSameOrigin(request: Request) {
   const origin = request.headers.get('origin');
   if (!origin || origin === 'null') return false;
   try {
-    return allowedHosts(request).has(new URL(origin).host);
+    return allowedOrigins(request).has(new URL(origin).origin);
   } catch {
     return false;
   }
 }
 
 export function clientIp(request: Request) {
-  const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
-  return forwarded || request.headers.get('x-real-ip')?.trim() || 'unknown';
+  const fromVercel = ipAddress(request);
+  if (fromVercel) return fromVercel;
+  return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
 }
 
 export function privateHash(scope: string, value: string) {

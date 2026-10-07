@@ -32,6 +32,8 @@ impacto que crees que tiene.
 | Fugas en errores | `{ error: "internal_error", id }` sin traza; los logs no llevan datos de personas | `src/server/auth/errors.ts` |
 | Dependencias vulnerables | Dependabot semanal (npm y Actions) y CodeQL en cada PR y cada semana | `.github/` |
 
+**Compromiso conocido:** el límite por correo permite que alguien bloquee durante 15 minutos el inicio de sesión de una cuenta ajena si conoce su correo. Es la protección que pide #79 contra la fuerza bruta; si se vuelve un problema real, se agregará un captcha o un desbloqueo por correo.
+
 ## Versiones con soporte
 
 Solo la rama `main`. La rama `legacy` (primera versión) no recibe arreglos.

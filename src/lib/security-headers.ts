@@ -19,6 +19,8 @@ export function buildCsp(nonce: string, { development = false, vercelPreview = f
   return directives.join('; ');
 }
 
+export const API_CSP = "default-src 'none'; frame-ancestors 'none'";
+
 export const STATIC_SECURITY_HEADERS = [
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },

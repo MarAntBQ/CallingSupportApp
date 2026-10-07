@@ -309,6 +309,25 @@ it('el sexto intento fallido con el mismo correo en 15 minutos responde 429 con 
     expect(statuses.filter((status) => status === 429)).toHaveLength(15);
   }, 60_000);
 
+  it('authenticate tarda lo mismo con un correo inexistente que con una contraseña incorrecta (20 de cada uno)', async () => {
+    const { authenticate } = await import('./login');
+    await createUser('tiempo-existe@example.com');
+    const measure = async (email: string) => {
+      const started = performance.now();
+      await authenticate(db, email, 'contraseña-mala').catch(() => undefined);
+      return performance.now() - started;
+    };
+    await measure('calentar@example.com');
+    const missing: number[] = [];
+    const wrong: number[] = [];
+    for (let i = 0; i < 20; i++) {
+      missing.push(await measure(`no-existe-${i}@example.com`));
+      wrong.push(await measure('tiempo-existe@example.com'));
+    }
+    const median = (values: number[]) => [...values].sort((a, b) => a - b)[10]!;
+    expect(Math.abs(median(missing) - median(wrong))).toBeLessThan(100);
+  }, 120_000);
+
   it('un inicio de sesión correcto limpia el contador de su correo', async () => {
     await createUser('vuelve@example.com');
     for (let i = 0; i < 4; i++) await login('vuelve@example.com', 'mala');

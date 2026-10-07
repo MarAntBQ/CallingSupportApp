@@ -16,7 +16,7 @@ function walk(dir: string): string[] {
 
 describe('toda ruta y Server Action declara cómo se protege', () => {
   it('cada método exportado de un route.ts usa withAuth o publicRoute', () => {
-    const files = walk(APP).filter((file) => /[\\/]route\.ts$/.test(file));
+    const files = walk(APP).filter((file) => /[\\/]route\.(?:ts|tsx|js|jsx|mjs)$/.test(file));
     expect(files.length).toBeGreaterThan(0);
     const problems = files.flatMap((file) =>
       findUnprotectedRoutes(readFileSync(file, 'utf8')).map((method) => `${relative(SRC, file)}: ${method}`),
@@ -25,7 +25,7 @@ describe('toda ruta y Server Action declara cómo se protege', () => {
   });
 
   it('cada acción exportada de un archivo "use server" usa authedAction', () => {
-    const files = walk(SRC).filter((file) => /\.tsx?$/.test(file) && !/\.test\.tsx?$/.test(file));
+    const files = walk(SRC).filter((file) => /\.(?:ts|tsx|js|jsx|mjs)$/.test(file) && !/\.test\.tsx?$/.test(file));
     const problems = files.flatMap((file) =>
       findUnprotectedActions(readFileSync(file, 'utf8')).map((name) => `${relative(SRC, file)}: ${name}`),
     );
@@ -41,9 +41,11 @@ describe('detector de rutas sin proteger', () => {
       export const POST = async () => new Response('abierta');
       export const PUT = withAuth(async () => new Response('ok'));
       export const PATCH = publicRoute(async () => new Response('ok'), { reason: 'prueba' });
+      export let HEAD = async () => new Response();
+      export var OPTIONS = handler;
       export const dynamic = 'force-dynamic';
     `;
-    expect(findUnprotectedRoutes(source)).toEqual(['GET', 'DELETE', 'POST']);
+    expect(findUnprotectedRoutes(source)).toEqual(['GET', 'DELETE', 'POST', 'HEAD', 'OPTIONS']);
   });
 
   it('marca las re-exportaciones de métodos, que esconden el envoltorio', () => {

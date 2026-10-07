@@ -32,12 +32,24 @@ describe('isSameOrigin', () => {
     expect(isSameOrigin(request('PUT', { origin: 'no es una url' }))).toBe(false);
   });
 
-  it('respeta el host original detrás del proxy de Vercel', () => {
-    const behindProxy = new Request('https://callingsupportapp-abc.vercel.app/api/x', {
+  it('compara el origen completo: el esquema http no vale para un sitio https', () => {
+    expect(isSameOrigin(request('POST', { origin: 'http://staging.callingsupportapp.org' }))).toBe(false);
+    expect(isSameOrigin(request('POST', { origin: 'https://staging.callingsupportapp.org:8443' }))).toBe(false);
+    expect(isSameOrigin(request('POST', { origin: 'https://evil.staging.callingsupportapp.org' }))).toBe(false);
+  });
+
+  it('no confía en X-Forwarded-Host, que puede venir del cliente', () => {
+    const spoofed = new Request('https://staging.callingsupportapp.org/api/x', {
       method: 'POST',
-      headers: { origin: 'https://staging.callingsupportapp.org', 'x-forwarded-host': 'staging.callingsupportapp.org' },
+      headers: { origin: 'https://otro-sitio.example', 'x-forwarded-host': 'otro-sitio.example' },
     });
-    expect(isSameOrigin(behindProxy)).toBe(true);
+    expect(isSameOrigin(spoofed)).toBe(false);
+  });
+
+  it('acepta los orígenes extra de APP_ORIGINS', () => {
+    process.env.APP_ORIGINS = 'https://app.ejemplo.org/';
+    expect(isSameOrigin(request('POST', { origin: 'https://app.ejemplo.org' }))).toBe(true);
+    delete process.env.APP_ORIGINS;
   });
 });
 
@@ -45,6 +57,10 @@ describe('clientIp y privateHash', () => {
   it('toma la primera IP de x-forwarded-for', () => {
     expect(clientIp(request('GET', { 'x-forwarded-for': '203.0.113.7, 10.0.0.1' }))).toBe('203.0.113.7');
     expect(clientIp(request('GET'))).toBe('unknown');
+  });
+
+  it('prefiere la IP que pone Vercel (x-real-ip) sobre x-forwarded-for', () => {
+    expect(clientIp(request('GET', { 'x-real-ip': '198.51.100.20', 'x-forwarded-for': '1.2.3.4' }))).toBe('198.51.100.20');
   });
 
   it('no guarda la IP ni el correo en claro y normaliza mayúsculas', () => {

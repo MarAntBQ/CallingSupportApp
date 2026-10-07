@@ -1,11 +1,14 @@
 import 'server-only';
+import { randomUUID } from 'node:crypto';
 import type { z } from 'zod';
 import { AuthError } from '@/server/auth/errors';
 import { getSession } from '@/server/auth/session';
 import { assertGlobalAdmin, type Session } from '@/server/auth/sessions';
 import type { Permission } from './route';
 
-export type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string; fields?: string[] };
+export type ActionResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; error: string; fields?: string[]; id?: string };
 
 export function authedAction<S extends z.ZodType, T>(
   schema: S,
@@ -25,8 +28,9 @@ export function authedAction<S extends z.ZodType, T>(
       return { ok: true, data: await action(parsed.data, { session }) };
     } catch (error) {
       if (error instanceof AuthError) return { ok: false, error: error.code };
-      console.error(JSON.stringify({ event: 'action_error', name: (error as Error | null)?.name }));
-      return { ok: false, error: 'internal_error' };
+      const id = randomUUID();
+      console.error(JSON.stringify({ event: 'internal_error', id, name: (error as Error | null)?.name }));
+      return { ok: false, error: 'internal_error', id };
     }
   };
 }
