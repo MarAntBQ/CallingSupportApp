@@ -33,6 +33,8 @@ export type PublicTripView = {
   costTransport: string;
   costBreakfast: string;
   costLunch: string;
+  donationCategoryName: string | null;
+  donationInstructions: string | null;
   registrationOpen: boolean;
   remainingQuotas: Quotas;
 };
@@ -88,6 +90,8 @@ export async function getPublicActiveTrip(db: Database, timeZone: string): Promi
     costTransport: trip.costTransport,
     costBreakfast: trip.costBreakfast,
     costLunch: trip.costLunch,
+    donationCategoryName: trip.donationCategoryName,
+    donationInstructions: trip.donationInstructions,
     registrationOpen: todayInZone(timeZone) <= trip.registrationDeadline,
     remainingQuotas,
   };

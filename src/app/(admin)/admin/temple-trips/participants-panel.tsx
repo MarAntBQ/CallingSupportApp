@@ -366,6 +366,7 @@ function draftPayload(draft: Draft) {
 function ParticipantModal({ trip, participant, canUpdate, onClose, onSaved }: { trip: TempleTripListItem; participant: ParticipantListItem; canUpdate: boolean; onClose: () => void; onSaved: () => Promise<unknown> }) {
   const t = useTranslations('templeTrips.participants');
   const tErrors = useTranslations('errors');
+  const tPublic = useTranslations('templeTrips.public');
   const locale = useLocale();
   const titleId = useId();
   const [draft, setDraft] = useState<Draft>({
@@ -406,6 +407,13 @@ function ParticipantModal({ trip, participant, canUpdate, onClose, onSaved }: { 
           <h2 id={titleId} className="text-lg font-semibold text-text">{t('modal.title')}</h2>
           <p className="text-sm text-text-muted">{t('modal.registration', { date: registrationDate })}</p>
           <p className="text-sm text-text-muted">{t('modal.consent', { version: participant.policyVersion })}</p>
+          <p className="text-sm font-medium text-text">
+            {t('modal.estimatedCost', { cost: new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(Number(participant.totalCost)) })}
+          </p>
+          {trip.donationCategoryName && (
+            <p className="text-sm text-text-muted">{tPublic('contributionCategory', { category: trip.donationCategoryName })}</p>
+          )}
+          {trip.donationInstructions && <p className="text-sm text-text-muted">{trip.donationInstructions}</p>}
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">
           <div className="flex flex-col gap-4">

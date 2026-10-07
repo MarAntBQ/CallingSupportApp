@@ -29,6 +29,16 @@ export const templeTripSchema = z
     inAssignedDistrict: z.boolean(),
     scheduledWithTemple: z.boolean(),
     active: z.boolean(),
+    donationCategoryName: z
+      .string()
+      .max(80)
+      .optional()
+      .transform((value) => value?.trim() || null),
+    donationInstructions: z
+      .string()
+      .max(600)
+      .optional()
+      .transform((value) => value?.trim() || null),
   })
   .refine((data) => data.registrationDeadline <= data.date, {
     message: 'deadline_after_date',

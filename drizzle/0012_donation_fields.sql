@@ -1,0 +1,4 @@
+ALTER TABLE "temple_trips" ADD COLUMN "donation_category_name" text;--> statement-breakpoint
+ALTER TABLE "temple_trips" ADD COLUMN "donation_instructions" text;--> statement-breakpoint
+ALTER TABLE "temple_trips" ADD CONSTRAINT "temple_trips_donation_category_length" CHECK ("temple_trips"."donation_category_name" is null or char_length("temple_trips"."donation_category_name") <= 80);--> statement-breakpoint
+ALTER TABLE "temple_trips" ADD CONSTRAINT "temple_trips_donation_instructions_length" CHECK ("temple_trips"."donation_instructions" is null or char_length("temple_trips"."donation_instructions") <= 600);

@@ -246,7 +246,14 @@ function RegistrationForm({
   }
 
   if (done) {
-    return <Alert tone="success" role="status" title={t('success')} />;
+    return (
+      <div className="flex flex-col gap-3">
+        <Alert tone="success" role="status" title={t('success')} />
+        <p className="text-sm text-text-muted">{t('contributionNote')}</p>
+        {trip.donationCategoryName && <p className="text-sm font-medium text-text">{t('contributionCategory', { category: trip.donationCategoryName })}</p>}
+        {trip.donationInstructions && <p className="text-sm text-text-muted">{trip.donationInstructions}</p>}
+      </div>
+    );
   }
 
   return (
@@ -317,6 +324,8 @@ function RegistrationForm({
       <section className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
         <p className="text-base font-semibold text-text">{t('estimatedTotal', { cost: formatMoney(total) })}</p>
         <p className="text-sm text-text-muted">{t('contributionNote')}</p>
+        {trip.donationCategoryName && <p className="text-sm font-medium text-text">{t('contributionCategory', { category: trip.donationCategoryName })}</p>}
+        {trip.donationInstructions && <p className="text-sm text-text-muted">{trip.donationInstructions}</p>}
         <p className="text-sm text-text-muted">
           {t('dataNotice', { unit: unitName, months: retentionMonths })}{' '}
           <Link href="/privacy" className="font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">

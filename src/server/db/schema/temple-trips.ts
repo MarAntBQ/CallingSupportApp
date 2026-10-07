@@ -34,6 +34,11 @@ export const templeTrips = pgTable(
     inAssignedDistrict: boolean('in_assigned_district').notNull().default(true),
     scheduledWithTemple: boolean('scheduled_with_temple').notNull().default(false),
 
+    // La app NO maneja dinero (Manual General 34): solo muestra la categoría de donativo que el
+    // obispado ya tenga autorizada y cómo contribuir. No crea categorías ni registra pagos.
+    donationCategoryName: text('donation_category_name'),
+    donationInstructions: text('donation_instructions'),
+
     active: boolean('active').notNull().default(false),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true })
@@ -55,5 +60,7 @@ export const templeTrips = pgTable(
         and ${table.quotaBaptismMale} >= 0 and ${table.quotaBaptismFemale} >= 0 and ${table.quotaInitiatoryMale} >= 0 and ${table.quotaInitiatoryFemale} >= 0
         and ${table.quotaEndowmentMale} >= 0 and ${table.quotaEndowmentFemale} >= 0 and ${table.quotaSealingMale} >= 0 and ${table.quotaSealingFemale} >= 0`,
     ),
+    check('temple_trips_donation_category_length', sql`${table.donationCategoryName} is null or char_length(${table.donationCategoryName}) <= 80`),
+    check('temple_trips_donation_instructions_length', sql`${table.donationInstructions} is null or char_length(${table.donationInstructions}) <= 600`),
   ],
 );

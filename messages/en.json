@@ -618,7 +618,11 @@
       "activeHelp": "Only one trip can be active; activating this one deactivates the other.",
       "templeName": "Temple",
       "inAssignedDistrict": "It is the temple of the assigned district",
-      "scheduledWithTemple": "This trip was scheduled with the temple"
+      "scheduledWithTemple": "This trip was scheduled with the temple",
+      "donationCategoryName": "Donation category (optional)",
+      "donationCategoryHint": "The one your bishopric has authorized (e.g. \"Local — Temple Trips\"). The app does not create categories.",
+      "donationInstructions": "How to contribute (optional)",
+      "donationInstructionsHint": "Instructions to find the category when donating online."
     },
     "services": {
       "legend": "Services",
@@ -693,7 +697,7 @@
         "tooYoung": "Must be at least {age} years old on the trip date.",
         "noQuota": "There are no spots for this ordinance."
       },
-      "participantCost": "Cost for this participant: {cost}",
+      "participantCost": "Estimated cost for this participant (for reference): {cost}",
       "addParticipant": "Add another participant",
       "removeParticipant": "Remove",
       "estimatedTotal": "Estimated trip cost (for reference): {cost}",
@@ -709,7 +713,8 @@
         "quota_exceeded": "There are not enough spots for one of the options you chose.",
         "recaptcha_failed": "We could not verify that you are not a robot. Please try again."
       },
-      "dataNotice": "Controller: {unit}. We process this data only to organize this temple trip and keep it for {months} months, according to our data policy:"
+      "dataNotice": "Controller: {unit}. We process this data only to organize this temple trip and keep it for {months} months, according to our data policy:",
+      "contributionCategory": "Donate to the \"{category}\" category."
     },
     "participants": {
       "tab": "Participants",
@@ -752,7 +757,8 @@
         "consent": "Consent accepted (policy {version})",
         "save": "Save",
         "saved": "Saved.",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "estimatedCost": "Estimated cost (for reference): {cost}"
       },
       "create": {
         "title": "New registration",

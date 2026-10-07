@@ -104,6 +104,13 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     expect(trip.remainingQuotas.quotaBaptismMale).toBe(3);
   });
 
+  it('el viaje activo expone la categoría de donativo y las instrucciones (#22)', async () => {
+    await activeTrip({ donationCategoryName: 'Local — Viajes al Templo', donationInstructions: 'Dona en línea en esa categoría.' });
+    const trip = await (await routes.public.GET(request('GET', '/api/public/temple-trip'))).json();
+    expect(trip.donationCategoryName).toBe('Local — Viajes al Templo');
+    expect(trip.donationInstructions).toBe('Dona en línea en esa categoría.');
+  });
+
   it('un menor de 11 con ordenanzas a la fecha del viaje se rechaza con 400', async () => {
     await activeTrip();
     const response = await post(bodyOf([participant({ birthDate: '2020-01-01', gender: 'male', ordinances: ['baptism'] })]));
