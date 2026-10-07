@@ -133,7 +133,8 @@
       "settings": "Configurações",
       "sessions": "Sessões ativas",
       "emails": "E-mails enviados",
-      "organizations": "Organizações"
+      "organizations": "Organizações",
+      "templeTrips": "Viagem ao Templo"
     },
     "logout": "Sair",
     "welcome": "Olá, {name}",
@@ -584,6 +585,73 @@
       "readOnly": "Você pode ver as permissões, mas seu chamado não permite alterá-las.",
       "noRows": "Nenhum chamado corresponde à busca.",
       "unknownCalling": "Um chamado não existe mais. Recarregue a página."
+    }
+  },
+  "templeTrips": {
+    "title": "Viagem ao Templo",
+    "intro": "Crie e edite as viagens ao templo: data, prazo de inscrição, serviços, custos e vagas.",
+    "newTrip": "Nova viagem",
+    "editTrip": "Editar viagem",
+    "empty": "Ainda não há viagens. Crie a primeira com «Nova viagem».",
+    "unconfirmedDate": "Data a confirmar",
+    "badges": {
+      "active": "ATIVA",
+      "unconfirmed": "A CONFIRMAR"
+    },
+    "counts": {
+      "registered": "Inscritos: {n}",
+      "approved": "Aprovados: {n}",
+      "pending": "Pendentes: {n}"
+    },
+    "tabs": {
+      "participants": "Participantes",
+      "rooms": "Quartos",
+      "reports": "Relatórios",
+      "soon": "Em breve"
+    },
+    "fields": {
+      "date": "Data da viagem",
+      "registrationDeadline": "Prazo de inscrição",
+      "dateConfirmed": "Data confirmada",
+      "dateConfirmedHelp": "Se não estiver confirmada, a viagem aparece como «a confirmar», mas a data é usada do mesmo jeito para calcular vagas e idades.",
+      "active": "Viagem ativa",
+      "activeHelp": "Só pode haver uma viagem ativa; ativar esta desativa a outra.",
+      "templeName": "Templo",
+      "inAssignedDistrict": "É o templo do distrito designado",
+      "scheduledWithTemple": "Esta viagem foi programada com o templo"
+    },
+    "services": {
+      "legend": "Serviços",
+      "transport": "Transporte",
+      "lodging": "Hospedagem",
+      "breakfast": "Café da manhã",
+      "lunch": "Almoço",
+      "includes": "Inclui {service}",
+      "cost": "Custo",
+      "quota": "Vaga"
+    },
+    "quotas": {
+      "legend": "Vagas por ordenança e gênero",
+      "ordinances": {
+        "baptism": "Batismo vicário",
+        "initiatory": "Iniciatória",
+        "endowment": "Investidura",
+        "sealing": "Selamento"
+      },
+      "genders": {
+        "male": "Homem",
+        "female": "Mulher"
+      },
+      "cell": "{ordinance}, {gender}"
+    },
+    "districtWarning": "O Manual Geral 25.1.2 não recomenda viagens organizadas a templos fora do distrito designado. Confirme que deseja continuar.",
+    "confirmOutsideDistrict": "Entendo e quero continuar",
+    "save": "Salvar viagem",
+    "cancel": "Cancelar",
+    "saved": "Viagem salva.",
+    "errors": {
+      "schedule_with_temple_required": "Para ativar a viagem, programe-a primeiro com o templo (Manual Geral 25.1.2).",
+      "deadline_after_date": "O prazo de inscrição não pode ser posterior à data da viagem."
     }
   }
 }
