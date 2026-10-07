@@ -306,6 +306,14 @@
       "saved": "Password changed.",
       "savedBody": "You were signed out on your other devices; this session stays open."
     },
+    "sessions": {
+      "title": "Sessions",
+      "intro": "Sign out your sessions on other devices. This session stays open.",
+      "submit": "Sign out my other sessions",
+      "working": "Signing out…",
+      "done": "Done.",
+      "doneBody": "{n, plural, =0 {There were no other open sessions.} one {Signed out # session.} other {Signed out # sessions.}}"
+    },
     "errors": {
       "name": "Enter at least 2 characters (up to 100).",
       "phone": "Enter a valid phone number: numbers, spaces and + ( ) - . (up to 30).",
@@ -313,6 +321,22 @@
       "passwordTooShort": "The new password must be at least {min} characters.",
       "passwordMismatch": "The passwords don't match."
     }
+  },
+  "sessions": {
+    "title": "Active sessions",
+    "intro": "Open sessions in the system. You can sign out any of them; the person is signed out on their next action.",
+    "caption": "Active sessions",
+    "empty": "No active sessions.",
+    "columns": {
+      "user": "User",
+      "email": "Email",
+      "createdAt": "Started",
+      "expiresAt": "Expires",
+      "actions": "Actions"
+    },
+    "revoke": "Revoke",
+    "thisSession": "This session",
+    "revokeError": "The session could not be revoked."
   },
   "privacyPolicy": {
     "title": "Personal data processing policy",

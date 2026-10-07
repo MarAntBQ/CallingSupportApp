@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, count, eq, gt, gte, isNull, lt } from 'drizzle-orm';
+import { and, count, desc, eq, gt, gte, isNull, lt, ne } from 'drizzle-orm';
 import { GLOBAL_ADMIN_LEVEL, type ModuleKey } from '@/lib/modules';
 import type { Database } from '@/server/db';
 import { roles, sessions, users } from '@/server/db/schema';
@@ -128,6 +128,63 @@ export async function revokeSession(db: Database, sessionId: string) {
     .update(sessions)
     .set({ revokedAt: new Date() })
     .where(and(eq(sessions.id, sessionId), isNull(sessions.revokedAt)));
+}
+
+// Sesión activa para el panel del SuperAdmin. Nunca expone el hash del token.
+export type SessionListItem = {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  expiresAt: string;
+  userAgent: string | null;
+};
+
+// Sesiones no revocadas y no vencidas, de la más nueva a la más vieja.
+export async function listActiveSessions(db: Database, now = new Date()): Promise<SessionListItem[]> {
+  const rows = await db
+    .select({
+      id: sessions.id,
+      userId: users.id,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      email: users.email,
+      createdAt: sessions.createdAt,
+      expiresAt: sessions.expiresAt,
+      userAgent: sessions.userAgent,
+    })
+    .from(sessions)
+    .innerJoin(users, eq(sessions.userId, users.id))
+    .where(and(isNull(sessions.revokedAt), gt(sessions.expiresAt, now)))
+    .orderBy(desc(sessions.createdAt));
+  return rows.map((row) => ({
+    id: row.id,
+    userId: row.userId,
+    name: `${row.firstName} ${row.lastName}`,
+    email: row.email,
+    createdAt: row.createdAt.toISOString(),
+    expiresAt: row.expiresAt.toISOString(),
+    userAgent: row.userAgent,
+  }));
+}
+
+// Revoca una sesión por id; devuelve false si no existe (404). Idempotente si ya está revocada.
+export async function revokeSessionChecked(db: Database, sessionId: string, now = new Date()): Promise<boolean> {
+  const [row] = await db.select({ id: sessions.id }).from(sessions).where(eq(sessions.id, sessionId)).limit(1);
+  if (!row) return false;
+  await db.update(sessions).set({ revokedAt: now }).where(and(eq(sessions.id, sessionId), isNull(sessions.revokedAt)));
+  return true;
+}
+
+// Revoca todas las sesiones del usuario MENOS la actual; devuelve cuántas revocó.
+export async function revokeOtherSessions(db: Database, userId: string, exceptSessionId: string, now = new Date()): Promise<number> {
+  const revoked = await db
+    .update(sessions)
+    .set({ revokedAt: now })
+    .where(and(eq(sessions.userId, userId), ne(sessions.id, exceptSessionId), isNull(sessions.revokedAt)))
+    .returning({ id: sessions.id });
+  return revoked.length;
 }
 
 export function isGlobalAdmin(session: Session) {
