@@ -6,7 +6,7 @@ import { setLocaleCookie, setSessionCookie } from '@/server/auth/session';
 import { createSession, findSession, toMe } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
 import { clientIp, privateHash } from '@/server/security/http';
-import { clear, consume, LIMITS } from '@/server/security/rate-limit';
+import { clear, consume, LIMITS, refund } from '@/server/security/rate-limit';
 import { publicRoute } from '@/server/security/route';
 
 export const POST = publicRoute(
@@ -23,6 +23,7 @@ export const POST = publicRoute(
     await consume(db, [emailKey, ipKey]);
     const user = await authenticate(db, email, password);
     await clear(db, emailKey.key);
+    await refund(db, ipKey.key);
 
     const { token, expiresAt } = await createSession(db, user.id, {
       rememberMe,

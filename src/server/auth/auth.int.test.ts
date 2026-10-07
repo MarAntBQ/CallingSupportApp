@@ -328,6 +328,14 @@ it('el sexto intento fallido con el mismo correo en 15 minutos responde 429 con 
     expect(Math.abs(median(missing) - median(wrong))).toBeLessThan(100);
   }, 120_000);
 
+  it('los inicios de sesión correctos no gastan el cupo de la IP (oficina o red compartida)', async () => {
+    for (let i = 0; i < 25; i++) await createUser(`oficina${i}@example.com`);
+    for (let i = 0; i < 25; i++) expect((await login(`oficina${i}@example.com`)).status).toBe(200);
+    for (let i = 0; i < 19; i++) expect((await login(`oficina${i}@example.com`, 'mala')).status).toBe(401);
+    expect((await login('oficina20@example.com', 'mala')).status).toBe(401);
+    expect((await login('oficina21@example.com', 'mala')).status).toBe(429);
+  }, 180_000);
+
   it('un inicio de sesión correcto limpia el contador de su correo', async () => {
     await createUser('vuelve@example.com');
     for (let i = 0; i < 4; i++) await login('vuelve@example.com', 'mala');

@@ -38,6 +38,13 @@ export async function consume(db: Database, limits: Limit[], now = new Date()) {
   }
 }
 
+export async function refund(db: Database, key: string) {
+  await db
+    .update(rateLimits)
+    .set({ count: sql`greatest(${rateLimits.count} - 1, 0)` })
+    .where(eq(rateLimits.key, key));
+}
+
 export async function clear(db: Database, key: string) {
   await db.delete(rateLimits).where(eq(rateLimits.key, key));
 }
