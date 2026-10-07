@@ -51,6 +51,15 @@
   "setup": {
     "title": "Set up the app",
     "intro": "Create the first administrator account for this installation. This can only be done once.",
+    "unitSection": "Your unit",
+    "unitType": "The unit is a",
+    "ward": "Ward",
+    "branch": "Branch",
+    "unitName": "Unit name",
+    "unitNameHint": "For example: Pine Hills Ward or North Branch.",
+    "unitTypeRequired": "Choose whether the unit is a ward or a branch.",
+    "unitNameRequired": "Enter the unit name.",
+    "officialName": "The name can't include the official name of the Church.",
     "accountSection": "Your account",
     "firstName": "First names",
     "lastName": "Last names",
@@ -60,10 +69,26 @@
     "passwordTooShort": "The password must have at least {min} characters.",
     "confirmPassword": "Confirm the password",
     "passwordMismatch": "The passwords don't match.",
-    "approvalSection": "Bishop's approval",
-    "approvalIntro": "The Church's guidelines for online resources ask that the bishop first approve their use in the ward.",
-    "bishopApproved": "The bishop approved using this app in the unit.",
-    "bishopApprovedRequired": "You can't finish without the bishop's approval.",
+    "approvalSection": {
+      "ward": "Bishop's approval",
+      "branch": "Branch president's approval",
+      "none": "Approval from the unit's presiding leader"
+    },
+    "approvalIntro": {
+      "ward": "The Church's guidelines for online resources ask that the bishop first approve their use in the ward.",
+      "branch": "The Church's guidelines for online resources ask that the branch president first approve their use in the branch.",
+      "none": "The Church's guidelines for online resources ask that the unit's presiding leader first approve their use."
+    },
+    "bishopApproved": {
+      "ward": "The bishop approved using this app in the ward.",
+      "branch": "The branch president approved using this app in the branch.",
+      "none": "The unit's presiding leader approved using this app."
+    },
+    "bishopApprovedRequired": {
+      "ward": "You can't finish without the bishop's approval.",
+      "branch": "You can't finish without the branch president's approval.",
+      "none": "You can't finish without the presiding leader's approval."
+    },
     "bishopApprovedBy": "Name of the person who approved",
     "bishopApprovedOn": "Approval date",
     "futureDate": "The date can't be in the future.",
@@ -71,7 +96,11 @@
     "submitting": "Creating the account…",
     "privacy": {
       "title": "Privacy notice",
-      "controller": "Data controller: the bishopric of this unit.",
+      "controller": {
+        "ward": "Data controller: the bishopric of this unit.",
+        "branch": "Data controller: the branch presidency of this unit.",
+        "none": "Data controller: the unit's presiding leaders (the bishopric or the branch presidency)."
+      },
       "what": "We store your names, your email and your password (stored so that nobody can read it, not even administrators) for your administrator account, plus the name of the person who approved and the date, as a record of the approval (General Handbook 38.8.24.2).",
       "who": "Only the administrators of this installation can see them. They are not used for anything else or shared with anyone.",
       "howLong": "They are kept while your account exists. If it is deleted, they are erased.",
