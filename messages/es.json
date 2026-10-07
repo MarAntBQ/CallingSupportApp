@@ -18,7 +18,10 @@
     "forbidden": "No tienes permiso para esta acción.",
     "not_found": "Esta página ya no está disponible.",
     "network": "No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.",
-    "unknown": "Algo salió mal. Inténtalo de nuevo."
+    "unknown": "Algo salió mal. Inténtalo de nuevo.",
+    "rate_limited": "Demasiados intentos. Espera unos minutos e inténtalo de nuevo.",
+    "bad_origin": "La solicitud no vino de esta aplicación. Recarga la página e inténtalo de nuevo.",
+    "internal_error": "Algo salió mal en el servidor. Inténtalo de nuevo en un momento."
   },
   "roles": {
     "super_admin": "SuperAdmin",

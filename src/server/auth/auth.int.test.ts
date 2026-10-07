@@ -9,7 +9,15 @@ import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
 import { hashPassword, hashSessionToken } from './crypto';
 import { AuthError } from './errors';
-import { countActiveAdmins, createSession, findSession, revokeSession, SESSION_COOKIE } from './sessions';
+import {
+  countActiveAdmins,
+  createSession,
+  findSession,
+  IDLE_TIMEOUT_MS,
+  revokeSession,
+  sessionCookieName,
+  TOUCH_INTERVAL_MS,
+} from './sessions';
 
 const url = process.env.TEST_DATABASE_URL;
 const MIGRATIONS = fileURLToPath(new URL('../../../drizzle', import.meta.url));
@@ -29,7 +37,7 @@ const setupBody = {
 function jsonRequest(path: string, body: unknown, cookie?: string) {
   return new Request(`http://localhost${path}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...(cookie ? { cookie } : {}) },
+    headers: { 'Content-Type': 'application/json', Origin: 'http://localhost', ...(cookie ? { cookie } : {}) },
     body: JSON.stringify(body),
   });
 }
@@ -40,8 +48,8 @@ function getRequest(path: string, cookie?: string) {
 
 function sessionCookieFrom(response: Response) {
   const header = response.headers.get('set-cookie') ?? '';
-  const match = header.match(new RegExp(`${SESSION_COOKIE}=([^;]*)`));
-  return match ? `${SESSION_COOKIE}=${match[1]}` : undefined;
+  const match = header.match(new RegExp(`${sessionCookieName()}=([^;]*)`));
+  return match ? `${sessionCookieName()}=${match[1]}` : undefined;
 }
 
 describe.skipIf(!url)('autenticación contra Postgres', () => {
@@ -105,7 +113,7 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
   }, 60_000);
 
   beforeEach(async () => {
-    await db.execute(sql`truncate table sessions, users, installation restart identity cascade`);
+    await db.execute(sql`truncate table sessions, users, installation, rate_limits restart identity cascade`);
   });
 
   afterAll(async () => {
@@ -155,7 +163,7 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
   }, 30_000);
 
   it('/api/setup: crea el SuperAdmin, guarda la aprobación e inicia sesión; después responde 404', async () => {
-    expect(await (await routes.setup.GET()).json()).toEqual({ needed: true });
+    expect(await (await routes.setup.GET(getRequest('/api/setup'))).json()).toEqual({ needed: true });
 
     const response = await routes.setup.POST(jsonRequest('/api/setup', setupBody));
     expect(response.status).toBe(201);
@@ -177,7 +185,7 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
     const [approval] = await db.select().from(schema.installation);
     expect(approval).toMatchObject({ bishopApprovedBy: 'Obispo de prueba', bishopApprovedOn: '2026-01-15' });
 
-    expect(await (await routes.setup.GET()).json()).toEqual({ needed: false });
+    expect(await (await routes.setup.GET(getRequest('/api/setup'))).json()).toEqual({ needed: false });
     expect((await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, email: 'otro@example.com' }))).status).toBe(404);
   }, 30_000);
 
@@ -280,5 +288,102 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
 
     const again = await login('idioma@example.com');
     expect(again.headers.get('set-cookie')).toMatch(/csa_locale=pt/);
+  }, 20_000);
+it('el sexto intento fallido con el mismo correo en 15 minutos responde 429 con Retry-After', async () => {
+    await createUser('limite@example.com');
+    for (let i = 0; i < 5; i++) expect((await login('limite@example.com', 'mala')).status).toBe(401);
+    const blocked = await login('limite@example.com', 'mala');
+    expect(blocked.status).toBe(429);
+    expect(await blocked.json()).toEqual({ error: 'rate_limited' });
+    expect(Number(blocked.headers.get('retry-after'))).toBeGreaterThan(800);
+    expect((await login('LIMITE@example.com', 'clave-correcta')).status).toBe(429);
+    const stored = await db.select().from(schema.rateLimits);
+    expect(JSON.stringify(stored)).not.toContain('limite@');
+  }, 60_000);
+
+  it('una ráfaga de 20 intentos simultáneos con el mismo correo solo deja pasar 5', async () => {
+    await createUser('rafaga@example.com');
+    const responses = await Promise.all(Array.from({ length: 20 }, () => login('rafaga@example.com', 'mala')));
+    const statuses = responses.map((response) => response.status);
+    expect(statuses.filter((status) => status === 401)).toHaveLength(5);
+    expect(statuses.filter((status) => status === 429)).toHaveLength(15);
+  }, 60_000);
+
+  it('authenticate tarda lo mismo con un correo inexistente que con una contraseña incorrecta (20 de cada uno)', async () => {
+    const { authenticate } = await import('./login');
+    await createUser('tiempo-existe@example.com');
+    const measure = async (email: string) => {
+      const started = performance.now();
+      await authenticate(db, email, 'contraseña-mala').catch(() => undefined);
+      return performance.now() - started;
+    };
+    await measure('calentar@example.com');
+    const missing: number[] = [];
+    const wrong: number[] = [];
+    for (let i = 0; i < 20; i++) {
+      missing.push(await measure(`no-existe-${i}@example.com`));
+      wrong.push(await measure('tiempo-existe@example.com'));
+    }
+    const median = (values: number[]) => [...values].sort((a, b) => a - b)[10]!;
+    expect(Math.abs(median(missing) - median(wrong))).toBeLessThan(100);
+  }, 120_000);
+
+  it('los inicios de sesión correctos no gastan el cupo de la IP (oficina o red compartida)', async () => {
+    for (let i = 0; i < 25; i++) await createUser(`oficina${i}@example.com`);
+    for (let i = 0; i < 25; i++) expect((await login(`oficina${i}@example.com`)).status).toBe(200);
+    for (let i = 0; i < 19; i++) expect((await login(`oficina${i}@example.com`, 'mala')).status).toBe(401);
+    expect((await login('oficina20@example.com', 'mala')).status).toBe(401);
+    expect((await login('oficina21@example.com', 'mala')).status).toBe(429);
+  }, 180_000);
+
+  it('un inicio de sesión correcto limpia el contador de su correo', async () => {
+    await createUser('vuelve@example.com');
+    for (let i = 0; i < 4; i++) await login('vuelve@example.com', 'mala');
+    expect((await login('vuelve@example.com')).status).toBe(200);
+    for (let i = 0; i < 4; i++) expect((await login('vuelve@example.com', 'mala')).status).toBe(401);
+  }, 60_000);
+
+  it('el setup acepta 10 intentos por IP por hora y el undécimo responde 429', async () => {
+    const fromIp = (body: unknown) =>
+      routes.setup.POST(
+        new Request('http://localhost/api/setup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Origin: 'http://localhost', 'x-forwarded-for': '198.51.100.9' },
+          body: JSON.stringify(body),
+        }),
+      );
+    for (let i = 0; i < 10; i++) expect((await fromIp({ ...setupBody, privacyConsent: false })).status).toBe(400);
+    const blocked = await fromIp(setupBody);
+    expect(blocked.status).toBe(429);
+    expect(blocked.headers.get('retry-after')).toBeTruthy();
+    expect(await db.select().from(schema.users)).toHaveLength(0);
+  }, 60_000);
+
+  it('un POST desde otro sitio responde 403 sin tocar la base', async () => {
+    await createUser('csrf@example.com');
+    const response = await routes.login.POST(
+      new Request('http://localhost/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: 'https://otro-sitio.example' },
+        body: JSON.stringify({ email: 'csrf@example.com', password: 'clave-correcta' }),
+      }),
+    );
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({ error: 'bad_origin' });
+    expect(await db.select().from(schema.sessions)).toHaveLength(0);
+  }, 20_000);
+
+  it('la sesión vence tras 8 horas sin uso y se renueva al usarla', async () => {
+    const user = await createUser('inactivo@example.com');
+    const start = new Date();
+    const { token } = await createSession(db, user.id, { rememberMe: true, now: start });
+    const later = new Date(start.getTime() + TOUCH_INTERVAL_MS + 1000);
+    expect(await findSession(db, token, later)).not.toBeNull();
+    const [touched] = await db.select().from(schema.sessions);
+    expect(touched!.lastSeenAt.getTime()).toBe(later.getTime());
+
+    expect(await findSession(db, token, new Date(later.getTime() + IDLE_TIMEOUT_MS - 1000))).not.toBeNull();
+    const [again] = await db.select().from(schema.sessions);
+    expect(await findSession(db, token, new Date(again!.lastSeenAt.getTime() + IDLE_TIMEOUT_MS + 1000))).toBeNull();
   }, 20_000);
 });

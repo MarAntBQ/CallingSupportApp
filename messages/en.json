@@ -18,7 +18,10 @@
     "forbidden": "You don't have permission for this action.",
     "not_found": "This page is no longer available.",
     "network": "Could not connect. Check your connection and try again.",
-    "unknown": "Something went wrong. Please try again."
+    "unknown": "Something went wrong. Please try again.",
+    "rate_limited": "Too many attempts. Wait a few minutes and try again.",
+    "bad_origin": "The request did not come from this app. Reload the page and try again.",
+    "internal_error": "Something went wrong on the server. Please try again in a moment."
   },
   "roles": {
     "super_admin": "SuperAdmin",
