@@ -88,6 +88,32 @@ test('Configuración: cambiar el nombre se ve en la barra lateral sin recargar',
   await expect(page.getByTestId('unit-name')).toHaveText('Barrio Los Pinos');
 });
 
+test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
+  await page.goto('/privacy');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);
+  await expect(page.getByText(es.privacyPolicy.missingController)).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(17);
+
+  await login(page, PASSWORD);
+  await expect(page).toHaveURL(/\/admin$/);
+  await page.goto('/admin/settings');
+  await page.getByLabel(es.settings.controller.name, { exact: true }).fill('Obispado de prueba');
+  await page.getByLabel(es.settings.controller.email, { exact: true }).fill('obispado.prueba@example.com');
+  await page.getByLabel(es.settings.controller.city).fill('Quito, Ecuador');
+  await page.getByLabel(es.settings.controller.retentionMonths).fill('6');
+  await page.locator('form').nth(1).getByRole('button', { name: es.settings.save }).click();
+  await expect(page.locator('form').nth(1).getByText(es.settings.saved)).toBeVisible();
+
+  await page.goto('/privacy');
+  await expect(page.getByText(es.privacyPolicy.missingController)).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'obispado.prueba@example.com' }).first()).toHaveAttribute('href', 'mailto:obispado.prueba@example.com');
+  await expect(page.getByText('Quito, Ecuador')).toBeVisible();
+  await expect(page.getByText(/^6 meses desde la inscripción/)).toBeVisible();
+  await expect(page.getByTestId('policy-subtitle')).toContainText('Barrio Los Pinos');
+  await page.locator('footer').getByRole('link', { name: es.common.privacyLink }).click();
+  await expect(page).toHaveURL(/\/privacy$/);
+});
+
 for (const [locale, messages] of [
   ['pt', pt],
   ['en', en],
@@ -103,7 +129,7 @@ for (const [locale, messages] of [
 test.describe('teléfono (390 px)', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  for (const path of ['/', '/login']) {
+  for (const path of ['/', '/login', '/privacy']) {
     test(`${path} no se desborda`, async ({ page }) => {
       await page.goto(path);
       await expectNoHorizontalOverflow(page);
