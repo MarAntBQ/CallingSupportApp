@@ -710,6 +710,65 @@
         "recaptcha_failed": "We could not verify that you are not a robot. Please try again."
       },
       "dataNotice": "Controller: {unit}. We process this data only to organize this temple trip and keep it for {months} months, according to our data policy:"
+    },
+    "participants": {
+      "tab": "Participants",
+      "subtabs": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "all": "All"
+      },
+      "empty": "No registrations for this trip yet.",
+      "noRows": "No participants match those filters.",
+      "search": "Search by name, ID, phone or email",
+      "columns": {
+        "participant": "Participant",
+        "contact": "Contact",
+        "ordinances": "Ordinances",
+        "services": "Services",
+        "cost": "Cost",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved"
+      },
+      "none": "None",
+      "actions": {
+        "detail": "Detail",
+        "approve": "Approve",
+        "disapprove": "Disapprove"
+      },
+      "select": "{name}",
+      "selectAll": "Select all",
+      "approveSelected": "Approve selected",
+      "disapproveSelected": "Disapprove selected",
+      "summary": "{approved} approved; {failed} without a spot.",
+      "newRegistration": "New registration",
+      "modal": {
+        "title": "Participant",
+        "registration": "Registration from {date}",
+        "consent": "Consent accepted (policy {version})",
+        "save": "Save",
+        "saved": "Saved.",
+        "cancel": "Cancel"
+      },
+      "create": {
+        "title": "New registration",
+        "trip": "Trip",
+        "activeTag": "— active",
+        "toConfirmTag": "(to be confirmed)",
+        "consent": "I confirm I have the consent of the people I am registering.",
+        "submit": "Register",
+        "received": "Registration recorded."
+      },
+      "errors": {
+        "no_quota": "There is no spot for one of the options.",
+        "age_ordinance": "A person under {age} cannot have ordinances.",
+        "duplicate_existing": "A participant with that ID already exists for this trip.",
+        "empty_id": "The ID cannot be empty."
+      }
     }
   }
 }

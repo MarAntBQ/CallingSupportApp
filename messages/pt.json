@@ -710,6 +710,65 @@
         "recaptcha_failed": "Não conseguimos verificar que você não é um robô. Tente novamente."
       },
       "dataNotice": "Responsável: {unit}. Tratamos estes dados apenas para organizar esta viagem ao templo e os conservamos {months} meses, conforme nossa política de dados:"
+    },
+    "participants": {
+      "tab": "Participantes",
+      "subtabs": {
+        "pending": "Pendentes",
+        "approved": "Aprovados",
+        "all": "Todos"
+      },
+      "empty": "Ainda não há inscrições nesta viagem.",
+      "noRows": "Não há participantes com esses filtros.",
+      "search": "Buscar por nome, documento, telefone ou e-mail",
+      "columns": {
+        "participant": "Participante",
+        "contact": "Contato",
+        "ordinances": "Ordenanças",
+        "services": "Serviços",
+        "cost": "Custo",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "status": {
+        "pending": "Pendente",
+        "approved": "Aprovado"
+      },
+      "none": "Nenhuma",
+      "actions": {
+        "detail": "Detalhe",
+        "approve": "Aprovar",
+        "disapprove": "Reprovar"
+      },
+      "select": "{name}",
+      "selectAll": "Selecionar tudo",
+      "approveSelected": "Aprovar selecionados",
+      "disapproveSelected": "Reprovar selecionados",
+      "summary": "Foram aprovados {approved}; {failed} sem vaga.",
+      "newRegistration": "Nova inscrição",
+      "modal": {
+        "title": "Participante",
+        "registration": "Inscrição de {date}",
+        "consent": "Consentimento aceito (política {version})",
+        "save": "Salvar",
+        "saved": "Salvo.",
+        "cancel": "Cancelar"
+      },
+      "create": {
+        "title": "Nova inscrição",
+        "trip": "Viagem",
+        "activeTag": "— ativa",
+        "toConfirmTag": "(a confirmar)",
+        "consent": "Confirmo que tenho o consentimento das pessoas que inscrevo.",
+        "submit": "Inscrever",
+        "received": "Inscrição registrada."
+      },
+      "errors": {
+        "no_quota": "Não há vaga para uma das opções.",
+        "age_ordinance": "Menor de {age} anos não pode ter ordenanças.",
+        "duplicate_existing": "Já existe um participante com esse documento nesta viagem.",
+        "empty_id": "O documento não pode ficar vazio."
+      }
     }
   }
 }

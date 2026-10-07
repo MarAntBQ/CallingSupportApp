@@ -208,6 +208,21 @@ test('Viaje al Templo (público): el SuperAdmin activa un viaje y un miembro se 
   await expectNoHorizontalOverflow(page);
 });
 
+test('Viaje al Templo: el SuperAdmin aprueba un participante en el panel', async ({ page }) => {
+  const tp = es.templeTrips.participants;
+  await login(page, PASSWORD);
+  await page.getByRole('link', { name: es.admin.nav.templeTrips }).click();
+  await expect(page).toHaveURL(/\/admin\/temple-trips$/);
+  // El viaje activo está seleccionado por defecto y el panel abre en "Pendientes".
+  await expect(page.getByRole('button', { name: 'Persona Prueba' })).toBeVisible();
+  await page.getByRole('button', { name: tp.actions.approve, exact: true }).first().click();
+  // Tras aprobar sale de Pendientes; en "Aprobados" aparece.
+  await page.getByRole('tab', { name: tp.subtabs.approved }).click();
+  await expect(page.getByRole('button', { name: 'Persona Prueba' })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 900 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);

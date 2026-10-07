@@ -710,6 +710,65 @@
         "recaptcha_failed": "No pudimos verificar que no eres un robot. Intenta de nuevo."
       },
       "dataNotice": "Responsable: {unit}. Tratamos estos datos solo para organizar este viaje al templo y los conservamos {months} meses, según nuestra política de datos:"
+    },
+    "participants": {
+      "tab": "Participantes",
+      "subtabs": {
+        "pending": "Pendientes",
+        "approved": "Aprobados",
+        "all": "Todos"
+      },
+      "empty": "Todavía no hay inscripciones en este viaje.",
+      "noRows": "No hay participantes con esos filtros.",
+      "search": "Buscar por nombre, cédula, teléfono o correo",
+      "columns": {
+        "participant": "Participante",
+        "contact": "Contacto",
+        "ordinances": "Ordenanzas",
+        "services": "Servicios",
+        "cost": "Costo",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "status": {
+        "pending": "Pendiente",
+        "approved": "Aprobado"
+      },
+      "none": "Ninguna",
+      "actions": {
+        "detail": "Detalle",
+        "approve": "Aprobar",
+        "disapprove": "Desaprobar"
+      },
+      "select": "{name}",
+      "selectAll": "Seleccionar todo",
+      "approveSelected": "Aprobar seleccionados",
+      "disapproveSelected": "Desaprobar seleccionados",
+      "summary": "Se aprobaron {approved}; {failed} sin cupo.",
+      "newRegistration": "Nueva inscripción",
+      "modal": {
+        "title": "Participante",
+        "registration": "Inscripción del {date}",
+        "consent": "Consentimiento aceptado (política {version})",
+        "save": "Guardar",
+        "saved": "Guardado.",
+        "cancel": "Cancelar"
+      },
+      "create": {
+        "title": "Nueva inscripción",
+        "trip": "Viaje",
+        "activeTag": "— activo",
+        "toConfirmTag": "(por confirmar)",
+        "consent": "Confirmo que cuento con el consentimiento de las personas que inscribo.",
+        "submit": "Inscribir",
+        "received": "Inscripción registrada."
+      },
+      "errors": {
+        "no_quota": "No hay cupo para una de las opciones.",
+        "age_ordinance": "Un menor de {age} años no puede tener ordenanzas.",
+        "duplicate_existing": "Ya existe un participante con esa cédula en este viaje.",
+        "empty_id": "La cédula no puede quedar vacía."
+      }
     }
   }
 }
