@@ -25,7 +25,9 @@
     "unknown": "Something went wrong. Please try again.",
     "rate_limited": "Too many attempts. Wait a few minutes and try again.",
     "bad_origin": "The request did not come from this app. Reload the page and try again.",
-    "internal_error": "Something went wrong on the server. Please try again in a moment."
+    "internal_error": "Something went wrong on the server. Please try again in a moment.",
+    "server_misconfigured": "The server's encryption key (ENC_KEY) is missing. Let whoever installed the app know.",
+    "smtp_failed": "The test email couldn't be sent."
   },
   "roles": {
     "super_admin": "SuperAdmin",
@@ -123,7 +125,8 @@
       "home": "Home",
       "profile": "My profile",
       "settings": "Settings",
-      "sessions": "Active sessions"
+      "sessions": "Active sessions",
+      "emails": "Sent emails"
     },
     "logout": "Sign out",
     "welcome": "Hi, {name}",
@@ -231,6 +234,37 @@
       "timezone": "Choose a time zone from the list.",
       "retentionMonths": "Enter a number of months between 1 and 120.",
       "phone": "Enter a valid phone number: numbers, spaces and + ( ) - . (up to 30)."
+    },
+    "smtp": {
+      "title": "Email (SMTP)",
+      "intro": "The server the app uses to send email. The password is stored encrypted and is never shown again.",
+      "host": "Server (host)",
+      "port": "Port",
+      "secure": "Use TLS from the start (port 465)",
+      "user": "Username (the sender email)",
+      "password": "Password",
+      "passwordSaved": "A password is already saved: leave this empty to keep it.",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Email settings saved.",
+      "testTitle": "Test",
+      "testTo": "Send a test email to",
+      "testSend": "Send test email",
+      "testSending": "Sending…",
+      "testSent": "Test email sent. Check the inbox.",
+      "testFailed": "The test email couldn't be sent",
+      "errors": {
+        "host": "Enter a valid server, for example smtp.example.com.",
+        "port": "Enter a port between 1 and 65535.",
+        "user": "Enter the username.",
+        "password": "Enter the password."
+      },
+      "mailErrors": {
+        "smtp_not_configured": "Email (SMTP) isn't set up yet.",
+        "smtp_password_unreadable": "The saved password couldn't be read: type it again and save.",
+        "smtp_host_not_allowed": "The SMTP server points to an internal or private address, which is not allowed in production.",
+        "invalid_message": "The email's recipient or subject is not valid."
+      }
     }
   },
   "profile": {
@@ -353,5 +387,34 @@
         "body": "None. No profiling of people is done."
       }
     }
+  },
+  "emails": {
+    "layout": {
+      "signature": "Sincerely, {unitName}",
+      "footer": "© {year} {unitName}"
+    },
+    "test": {
+      "subject": "Test email",
+      "preheader": "Email settings work.",
+      "body": "If you received this email, {unitName}'s SMTP settings work."
+    },
+    "smtpNotConfigured": "SMTP not configured",
+    "passwordUnreadable": "Could not decrypt the SMTP password (did ENC_KEY change?)"
+  },
+  "mailLogs": {
+    "title": "Sent emails",
+    "intro": "The last {limit} emails the app tried to send. The content is not stored, only the recipient, the subject and the result, and each entry is deleted after {days} days.",
+    "caption": "Email log",
+    "columns": {
+      "date": "Date",
+      "source": "Source",
+      "to": "To",
+      "subject": "Subject",
+      "status": "Status"
+    },
+    "sent": "Sent",
+    "failed": "Failed",
+    "empty": "No emails have been sent yet.",
+    "noRows": "No emails match the search."
   }
 }

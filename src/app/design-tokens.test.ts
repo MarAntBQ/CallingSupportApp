@@ -2,11 +2,13 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { EMAIL_COLORS } from '../server/mail/email-colors';
 import manifest from './manifest';
 
 const SRC = fileURLToPath(new URL('..', import.meta.url));
 const GLOBALS = fileURLToPath(new URL('./globals.css', import.meta.url));
 const MANIFEST = fileURLToPath(new URL('./manifest.ts', import.meta.url));
+const EMAIL_COLORS_FILE = fileURLToPath(new URL('../server/mail/email-colors.ts', import.meta.url));
 
 function readTokens(css: string) {
   const tokens: Record<string, string> = {};
@@ -84,7 +86,7 @@ describe('tokens de diseño', () => {
 
   it('ningún archivo de src/ escribe colores fuera de globals.css', () => {
     const offenders = sourceFiles(SRC)
-      .filter((file) => file !== GLOBALS && file !== MANIFEST)
+      .filter((file) => file !== GLOBALS && file !== MANIFEST && file !== EMAIL_COLORS_FILE)
       .flatMap((file) =>
         readFileSync(file, 'utf8')
           .split('\n')
@@ -93,6 +95,18 @@ describe('tokens de diseño', () => {
           .map(({ at, line }) => `${at}  ${line.trim()}`),
       );
     expect(offenders).toEqual([]);
+  });
+
+  it('los correos usan los mismos colores que globals.css', () => {
+    expect(EMAIL_COLORS).toEqual({
+      primary: tokens.primary,
+      onPrimary: tokens['on-primary'],
+      text: tokens.text,
+      textMuted: tokens['text-muted'],
+      bg: tokens.bg,
+      surface: tokens.surface,
+      border: tokens.border,
+    });
   });
 
   it('el manifest usa los mismos colores que globals.css', () => {

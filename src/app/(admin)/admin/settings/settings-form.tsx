@@ -12,6 +12,7 @@ import { useConfig, useSetConfig } from '@/lib/config/use-config';
 import { configSchema, type PublicConfig } from '@/lib/validation/config';
 import { Card } from './card';
 import { LogoCard } from './logo-card';
+import { SmtpCard } from './smtp-card';
 
 type Values = {
   unitName: string;
@@ -96,10 +97,15 @@ function merge(saved: Values, draft: Values, section: Section): Values {
   return next;
 }
 
-export function SettingsForm({ timeZones }: { timeZones: string[] }) {
+export function SettingsForm({ timeZones, currentEmail }: { timeZones: string[]; currentEmail: string }) {
   const { data: config } = useConfig();
   if (!config) return null;
-  return <SettingsCards config={config} timeZones={timeZones} />;
+  return (
+    <>
+      <SettingsCards config={config} timeZones={timeZones} />
+      <SmtpCard currentEmail={currentEmail} />
+    </>
+  );
 }
 
 function SettingsCards({ config, timeZones }: { config: PublicConfig; timeZones: string[] }) {

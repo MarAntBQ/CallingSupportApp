@@ -34,6 +34,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     ...(admin
       ? [
           { href: '/admin/settings', label: t('nav.settings'), ready: true },
+          { href: '/admin/emails', label: t('nav.emails'), ready: true },
           { href: '/admin/sessions', label: t('nav.sessions'), ready: false },
         ]
       : []),

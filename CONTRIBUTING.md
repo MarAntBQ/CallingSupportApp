@@ -275,6 +275,20 @@ levanta el contenedor. (Si tu contenedor es anterior a este cambio, créala una 
 Esa base se **vacía** en cada corrida, por eso su nombre tiene que contener `test`: la prueba se
 niega a correr contra otra base.
 
+**Correo de pruebas (Mailpit).** `docker compose up -d` levanta también Mailpit, un servidor SMTP
+que **no entrega nada**: guarda cada correo para que lo veas en `http://localhost:8025`. Para
+probar el correo:
+
+1. En `.env`, pon una `ENC_KEY` (`openssl rand -hex 32`); con ella se cifra la contraseña SMTP.
+2. En la app, entra a **Configuración → Correo (SMTP)**: servidor `localhost`, puerto `1025`, sin
+   TLS, usuario `avisos@example.com` y cualquier contraseña.
+3. "Enviar correo de prueba" y ábrelo en `http://localhost:8025`. Nunca uses un SMTP real para
+   probar.
+
+Con `npm run dev` funciona tal cual. Con un build de producción (`npm run build` y `npm run start`),
+agrega `SMTP_ALLOW_PRIVATE_HOSTS=true` en `.env`: en producción la app no se conecta a servidores con
+dirección interna, y `localhost` lo es.
+
 **Pruebas de punta a punta (E2E).** Recorren en un navegador real los flujos críticos: `/setup`,
 inicio y cierre de sesión, redirecciones de `/admin`, Configuración, los tres idiomas y el ancho
 de un teléfono. Corren en el job `e2e` de cada PR. Para correrlas en tu máquina necesitas una base

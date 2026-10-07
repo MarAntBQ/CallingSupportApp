@@ -25,7 +25,7 @@ export default async function SettingsPage() {
         <h1 className="text-3xl font-semibold text-text">{t('title')}</h1>
         <p className="text-text-muted">{t('intro')}</p>
       </div>
-      <SettingsForm timeZones={timeZoneOptions()} />
+      <SettingsForm timeZones={timeZoneOptions()} currentEmail={session.user.email} />
     </section>
   );
 }
