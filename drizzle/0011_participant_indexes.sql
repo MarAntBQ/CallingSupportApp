@@ -1,0 +1,2 @@
+CREATE INDEX "temple_participants_registration_approved_idx" ON "temple_participants" USING btree ("registration_id","approved");--> statement-breakpoint
+CREATE INDEX "temple_registrations_trip_id_idx" ON "temple_registrations" USING btree ("trip_id");

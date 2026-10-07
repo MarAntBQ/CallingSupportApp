@@ -26,3 +26,20 @@ export const registrationSchema = z.strictObject({
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;
 export type ParticipantInput = z.infer<typeof participant>;
+
+// Edición desde el panel (#21): todos los campos opcionales.
+export const participantPatchSchema = z.strictObject({
+  idNumber: z.string().trim().min(3).max(40).optional(),
+  birthDate: z.iso.date().refine(notFuture, { message: 'future_date' }).optional(),
+  fullName: z.string().trim().min(3).max(150).optional(),
+  phone: z.string().trim().min(6).max(40).optional(),
+  email: z.string().trim().toLowerCase().pipe(z.email().max(254)).optional(),
+  gender: z.enum(GENDERS).optional(),
+  wantsTransport: z.boolean().optional(),
+  needsLodging: z.boolean().optional(),
+  wantsBreakfast: z.boolean().optional(),
+  wantsLunch: z.boolean().optional(),
+  ordinances: z.array(z.enum(ORDINANCES)).max(ORDINANCES.length).optional(),
+});
+
+export type ParticipantPatch = z.infer<typeof participantPatchSchema>;

@@ -9,6 +9,7 @@ import { Field } from '@/components/ui/field';
 import { postJson, patchJson, type ApiResult } from '@/lib/api-client';
 import { GENDERS, ORDINANCES, quotaKey, type QuotaKey } from '@/lib/temple-trips/constants';
 import type { TempleTripListItem } from '@/lib/temple-trips/types';
+import { ParticipantsPanel } from './participants-panel';
 
 const TRIPS_KEY = ['temple-trips'] as const;
 
@@ -168,7 +169,7 @@ export function TempleTripsAdmin({
         </ul>
       )}
 
-      {selected && <TripTabs />}
+      {selected && <TripTabs trip={selected} allTrips={trips} canCreate={canCreate} canUpdate={canUpdate} />}
 
       {editing && (
         <TripModal
@@ -231,7 +232,7 @@ function TripCard({
   );
 }
 
-function TripTabs() {
+function TripTabs({ trip, allTrips, canCreate, canUpdate }: { trip: TempleTripListItem; allTrips: TempleTripListItem[]; canCreate: boolean; canUpdate: boolean }) {
   const t = useTranslations('templeTrips');
   const tabs = ['participants', 'rooms', 'reports'] as const;
   const [active, setActive] = useState<(typeof tabs)[number]>('participants');
@@ -250,7 +251,11 @@ function TripTabs() {
           </Button>
         ))}
       </div>
-      <p className="text-sm text-text-muted">{t('tabs.soon')}</p>
+      {active === 'participants' ? (
+        <ParticipantsPanel trip={trip} allTrips={allTrips} canCreate={canCreate} canUpdate={canUpdate} />
+      ) : (
+        <p className="text-sm text-text-muted">{t('tabs.soon')}</p>
+      )}
     </div>
   );
 }
