@@ -87,7 +87,7 @@ describe('tokens de diseño', () => {
         readFileSync(file, 'utf8')
           .split('\n')
           .map((line, i) => ({ line, at: `${relative(SRC, file)}:${i + 1}` }))
-          .filter(({ line }) => /#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?(?:[0-9a-fA-F]{2})?\b|\b(?:rgb|hsl)a?\(/.test(line))
+          .filter(({ line }) => /#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b|\b(?:rgb|hsl)a?\(/.test(line))
           .map(({ at, line }) => `${at}  ${line.trim()}`),
       );
     expect(offenders).toEqual([]);
