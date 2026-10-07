@@ -17,11 +17,10 @@ export default async function SetupPage() {
   if (!(await isSetupNeeded(getDb()))) redirect('/login');
 
   const t = await getTranslations('setup');
-  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <AuthShell title={t('title')} intro={t('intro')}>
-      <SetupForm today={today} />
+      <SetupForm />
     </AuthShell>
   );
 }

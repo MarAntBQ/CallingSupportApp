@@ -33,7 +33,14 @@ const FIELD_ORDER: FieldName[] = [
   'privacyConsent',
 ];
 
-export function SetupForm({ today }: { today: string }) {
+function localToday() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+export function SetupForm() {
   const t = useTranslations('setup');
   const tCommon = useTranslations('common');
   const tErrors = useTranslations('errors');
@@ -86,6 +93,7 @@ export function SetupForm({ today }: { today: string }) {
       }
     }
     if (value('confirmPassword') !== input.password) next.confirmPassword = t('passwordMismatch');
+    if (!next.bishopApprovedOn && input.bishopApprovedOn > localToday()) next.bishopApprovedOn = t('futureDate');
     setErrors(next);
     setFormError(null);
     if (Object.keys(next).length > 0) {
@@ -169,7 +177,6 @@ export function SetupForm({ today }: { today: string }) {
             label={t('bishopApprovedOn')}
             name="bishopApprovedOn"
             type="date"
-            max={today}
             required
             error={errors.bishopApprovedOn}
           />
