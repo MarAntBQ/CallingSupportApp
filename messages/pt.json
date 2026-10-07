@@ -25,7 +25,9 @@
     "unknown": "Algo deu errado. Tente novamente.",
     "rate_limited": "Muitas tentativas. Aguarde alguns minutos e tente novamente.",
     "bad_origin": "A solicitação não veio deste aplicativo. Recarregue a página e tente novamente.",
-    "internal_error": "Algo deu errado no servidor. Tente novamente em instantes."
+    "internal_error": "Algo deu errado no servidor. Tente novamente em instantes.",
+    "server_misconfigured": "Falta a chave de criptografia do servidor (ENC_KEY). Avise quem instalou o aplicativo.",
+    "smtp_failed": "Não foi possível enviar o e-mail de teste."
   },
   "roles": {
     "super_admin": "SuperAdmin",
@@ -123,7 +125,8 @@
       "home": "Início",
       "profile": "Meu perfil",
       "settings": "Configurações",
-      "sessions": "Sessões ativas"
+      "sessions": "Sessões ativas",
+      "emails": "E-mails enviados"
     },
     "logout": "Sair",
     "welcome": "Olá, {name}",
@@ -231,6 +234,35 @@
       "timezone": "Escolha um fuso horário da lista.",
       "retentionMonths": "Escreva um número de meses entre 1 e 120.",
       "phone": "Escreva um telefone válido: números, espaços e + ( ) - . (máximo 30)."
+    },
+    "smtp": {
+      "title": "E-mail (SMTP)",
+      "intro": "O servidor que o aplicativo usa para enviar e-mails. A senha é guardada criptografada e nunca mais é mostrada.",
+      "host": "Servidor (host)",
+      "port": "Porta",
+      "secure": "Usar TLS desde o início (porta 465)",
+      "user": "Usuário (o e-mail remetente)",
+      "password": "Senha",
+      "passwordSaved": "Já existe uma senha salva: deixe vazio para mantê-la.",
+      "save": "Salvar",
+      "saving": "Salvando…",
+      "saved": "Configuração de e-mail salva.",
+      "testTitle": "Testar",
+      "testTo": "Enviar um e-mail de teste para",
+      "testSend": "Enviar e-mail de teste",
+      "testSending": "Enviando…",
+      "testSent": "E-mail de teste enviado. Verifique a caixa de entrada.",
+      "testFailed": "Não foi possível enviar o e-mail de teste",
+      "errors": {
+        "host": "Escreva um servidor válido, por exemplo smtp.example.com.",
+        "port": "Escreva uma porta entre 1 e 65535.",
+        "user": "Escreva o usuário.",
+        "password": "Escreva a senha."
+      },
+      "mailErrors": {
+        "smtp_not_configured": "O e-mail (SMTP) ainda não está configurado.",
+        "smtp_password_unreadable": "Não foi possível ler a senha salva: escreva-a de novo e salve."
+      }
     }
   },
   "profile": {
@@ -353,5 +385,34 @@
         "body": "Nenhuma. Não são feitos perfis das pessoas."
       }
     }
+  },
+  "emails": {
+    "layout": {
+      "signature": "Atenciosamente, {unitName}",
+      "footer": "© {year} {unitName}"
+    },
+    "test": {
+      "subject": "E-mail de teste",
+      "preheader": "A configuração de e-mail funciona.",
+      "body": "Se você recebeu este e-mail, a configuração SMTP de {unitName} funciona."
+    },
+    "smtpNotConfigured": "SMTP não configurado",
+    "passwordUnreadable": "Não foi possível descriptografar a senha SMTP (a ENC_KEY mudou?)"
+  },
+  "mailLogs": {
+    "title": "E-mails enviados",
+    "intro": "Os últimos {limit} e-mails que o aplicativo tentou enviar. O conteúdo não é guardado, apenas o destinatário, o assunto e o resultado.",
+    "caption": "Registro de e-mails",
+    "columns": {
+      "date": "Data",
+      "source": "Origem",
+      "to": "Para",
+      "subject": "Assunto",
+      "status": "Status"
+    },
+    "sent": "Enviado",
+    "failed": "Falhou",
+    "empty": "Ainda não foi enviado nenhum e-mail.",
+    "noRows": "Nenhum e-mail corresponde à pesquisa."
   }
 }

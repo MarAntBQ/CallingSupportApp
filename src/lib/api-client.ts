@@ -9,6 +9,8 @@ export const ERROR_CODES = [
   'rate_limited',
   'bad_origin',
   'internal_error',
+  'server_misconfigured',
+  'smtp_failed',
   'network',
   'unknown',
 ] as const;

@@ -23,6 +23,11 @@ const DEFAULT_ROW: Omit<ConfigRow, 'updatedAt'> = {
   controllerWebsite: null,
   retentionMonths: 12,
   policyVersion: '2026-10',
+  smtpHost: null,
+  smtpPort: null,
+  smtpSecure: null,
+  smtpUser: null,
+  smtpPasswordEnc: null,
 };
 
 export function toPublicConfig(row: Omit<ConfigRow, 'updatedAt'>): PublicConfig {

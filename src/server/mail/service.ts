@@ -1,0 +1,144 @@
+import 'server-only';
+import { desc, eq } from 'drizzle-orm';
+import { createTranslator } from 'next-intl';
+import nodemailer, { type Transporter } from 'nodemailer';
+import en from '../../../messages/en.json';
+import es from '../../../messages/es.json';
+import pt from '../../../messages/pt.json';
+import { isLocale, type Locale } from '@/i18n/config';
+import { decrypt } from '@/server/crypto/aes';
+import { getDb, type Database } from '@/server/db';
+import { appConfig, emailLog } from '@/server/db/schema';
+import { buildBrandedEmail } from './template';
+
+const MESSAGES = { es, pt, en };
+
+export const SEND_TIMEOUT_MS = 30_000;
+export const TEST_TIMEOUT_MS = 15_000;
+export const LOG_LIMIT = 200;
+export const MAX_ERROR_LENGTH = 500;
+
+export const MAIL_ERROR_CODES = ['smtp_not_configured', 'smtp_password_unreadable'] as const;
+
+export type SmtpSettings = { host: string; port: number; secure: boolean; user: string; password: string };
+
+export type MailMessage = {
+  to: string;
+  subject: string;
+  html?: string;
+  text?: string;
+  preheader?: string;
+  locale?: string;
+};
+
+type TransportFactory = (settings: SmtpSettings, timeoutMs: number) => Pick<Transporter, 'sendMail'>;
+
+export const defaultTransport: TransportFactory = (settings, timeoutMs) =>
+  nodemailer.createTransport({
+    host: settings.host,
+    port: settings.port,
+    secure: settings.secure,
+    auth: { user: settings.user, pass: settings.password },
+    connectionTimeout: timeoutMs,
+    greetingTimeout: timeoutMs,
+    socketTimeout: timeoutMs,
+  });
+
+export function emailTranslator(locale: string | undefined) {
+  const lang: Locale = isLocale(locale) ? locale : 'es';
+  return createTranslator({ locale: lang, messages: MESSAGES[lang], namespace: 'emails' });
+}
+
+async function loadSmtp(db: Database) {
+  const [row] = await db
+    .select({
+      unitName: appConfig.unitName,
+      host: appConfig.smtpHost,
+      port: appConfig.smtpPort,
+      secure: appConfig.smtpSecure,
+      user: appConfig.smtpUser,
+      passwordEnc: appConfig.smtpPasswordEnc,
+    })
+    .from(appConfig)
+    .where(eq(appConfig.id, 1))
+    .limit(1);
+  return row;
+}
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number) {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`Tiempo de espera agotado (${timeoutMs / 1000} s)`)), timeoutMs);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+async function log(db: Database, entry: { source: string; to: string; subject: string; success: boolean; error: string | null }) {
+  try {
+    await db.insert(emailLog).values({
+      source: entry.source.slice(0, 100),
+      emailTo: entry.to.slice(0, 254),
+      emailSubject: entry.subject.slice(0, 300),
+      success: entry.success,
+      errorMessage: entry.error?.slice(0, MAX_ERROR_LENGTH) ?? null,
+    });
+  } catch (error) {
+    console.error(JSON.stringify({ event: 'email_log_failed', name: (error as Error | null)?.name }));
+  }
+}
+
+export async function sendMail(
+  source: string,
+  message: MailMessage,
+  options: { db?: Database; timeoutMs?: number; transport?: TransportFactory } = {},
+): Promise<{ sent: boolean; error?: string }> {
+  let db: Database | undefined;
+  try {
+    db = options.db ?? getDb();
+    const timeoutMs = options.timeoutMs ?? SEND_TIMEOUT_MS;
+    const row = await loadSmtp(db);
+    if (!row?.host || !row.port || !row.user || !row.passwordEnc) {
+      await log(db, { source, to: message.to, subject: message.subject, success: false, error: 'smtp_not_configured' });
+      return { sent: false, error: 'smtp_not_configured' };
+    }
+    let password: string;
+    try {
+      password = decrypt(row.passwordEnc);
+    } catch {
+      await log(db, { source, to: message.to, subject: message.subject, success: false, error: 'smtp_password_unreadable' });
+      return { sent: false, error: 'smtp_password_unreadable' };
+    }
+    const t = emailTranslator(message.locale);
+    const unitName = row.unitName || 'CallingSupportApp';
+    const html = buildBrandedEmail(message.subject, message.html ?? '', unitName, message.preheader ?? '', {
+      signature: t('layout.signature', { unitName }),
+      footer: t('layout.footer', { unitName, year: new Date().getFullYear() }),
+      notOfficial: MESSAGES[isLocale(message.locale) ? message.locale : 'es'].common.notOfficial,
+    });
+    const transport = (options.transport ?? defaultTransport)(
+      { host: row.host, port: row.port, secure: Boolean(row.secure), user: row.user, password },
+      timeoutMs,
+    );
+    await withTimeout(
+      transport.sendMail({
+        from: { name: unitName, address: row.user },
+        to: message.to,
+        subject: message.subject,
+        html,
+        text: message.text,
+      }),
+      timeoutMs,
+    );
+    await log(db, { source, to: message.to, subject: message.subject, success: true, error: null });
+    return { sent: true };
+  } catch (error) {
+    const text = error instanceof Error ? error.message : String(error);
+    if (db) await log(db, { source, to: message.to, subject: message.subject, success: false, error: text });
+    else console.error(JSON.stringify({ event: 'send_mail_failed', name: (error as Error | null)?.name }));
+    return { sent: false, error: text.slice(0, MAX_ERROR_LENGTH) };
+  }
+}
+
+export async function listMailLogs(db: Database) {
+  return db.select().from(emailLog).orderBy(desc(emailLog.createdAt)).limit(LOG_LIMIT);
+}

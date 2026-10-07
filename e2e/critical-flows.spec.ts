@@ -139,6 +139,24 @@ test.describe('teléfono (390 px)', () => {
     });
   }
 
+  test('/admin/emails: un envío fallido queda registrado y la tabla no desborda la página', async ({ page }) => {
+    await login(page, PASSWORD);
+    await expect(page).toHaveURL(/\/admin$/);
+    const status = await page.evaluate(async (to) => {
+      const response = await fetch('/api/config/smtp/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to }),
+      });
+      return response.status;
+    }, EMAIL);
+    expect(status).toBe(400);
+    await page.goto('/admin/emails');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.mailLogs.title);
+    await expect(page.locator('tbody tr').first()).toContainText(es.mailLogs.failed);
+    await expectNoHorizontalOverflow(page);
+  });
+
   test('/admin/settings no se desborda', async ({ page }) => {
     await login(page, PASSWORD);
     await expect(page).toHaveURL(/\/admin$/);
