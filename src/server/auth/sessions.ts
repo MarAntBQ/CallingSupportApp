@@ -50,8 +50,9 @@ export async function createLoginSession(
   db: Database,
   userId: string,
   verifiedCredential: string,
-  options: { rememberMe?: boolean; userAgent?: string | null } = {},
+  options: { rememberMe?: boolean; userAgent?: string | null; replacesSessionId?: string } = {},
 ) {
+  const { replacesSessionId, ...sessionOptions } = options;
   return db.transaction(async (tx) => {
     const [row] = await tx
       .select({ passwordHash: users.passwordHash })
@@ -60,7 +61,13 @@ export async function createLoginSession(
       .for('share')
       .limit(1);
     if (!row || row.passwordHash !== verifiedCredential) throw new AuthError(401, 'invalid_credentials');
-    return createSession(tx, userId, options);
+    if (replacesSessionId) {
+      await tx
+        .update(sessions)
+        .set({ revokedAt: new Date() })
+        .where(and(eq(sessions.id, replacesSessionId), isNull(sessions.revokedAt)));
+    }
+    return createSession(tx, userId, sessionOptions);
   });
 }
 

@@ -8,7 +8,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
 import { hashPassword } from './crypto';
-import { sessionCookieName } from './sessions';
+import { createLoginSession, findSession, sessionCookieName } from './sessions';
 
 const url = process.env.TEST_DATABASE_URL;
 const MIGRATIONS = fileURLToPath(new URL('../../../drizzle', import.meta.url));
@@ -170,6 +170,16 @@ describe.skipIf(!url)('cookie de sesión y rotación contra Postgres', () => {
     const first = sessionSetCookie(await login(false));
     const failed = await routes.login.POST(post('/api/auth/login', { email: EMAIL, password: 'x'.repeat(10) }, first.cookie));
     expect(failed.status).toBe(401);
+    expect((await me(first.cookie)).status).toBe(200);
+  }, 30_000);
+
+  it('si el login se rechaza por un cambio de contraseña en curso, la sesión previa no se revoca', async () => {
+    await createUser();
+    const first = sessionSetCookie(await login(false));
+    const previous = await findSession(db, first.value);
+    await expect(
+      createLoginSession(db, previous!.user.id, 'hash-que-ya-no-coincide', { replacesSessionId: previous!.id }),
+    ).rejects.toMatchObject({ status: 401 });
     expect((await me(first.cookie)).status).toBe(200);
   }, 30_000);
 
