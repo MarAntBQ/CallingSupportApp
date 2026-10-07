@@ -71,6 +71,13 @@
       "when": 1791382028831,
       "tag": "0009_temple_trips",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791384753770,
+      "tag": "0010_temple_registrations",
+      "breakpoints": true
     }
   ]
 }

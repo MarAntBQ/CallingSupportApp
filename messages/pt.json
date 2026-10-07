@@ -652,6 +652,64 @@
     "errors": {
       "schedule_with_temple_required": "Para ativar a viagem, programe-a primeiro com o templo (Manual Geral 25.1.2).",
       "deadline_after_date": "O prazo de inscrição não pode ser posterior à data da viagem."
+    },
+    "notice": {
+      "subject": "Nova inscrição — Viagem ao Templo",
+      "body": "{n, plural, one {# inscrição nova} other {# inscrições novas}} para revisar.",
+      "openPanel": "Abrir o painel",
+      "telegram": "Viagem ao Templo: {n, plural, one {# inscrição nova} other {# inscrições novas}} para revisar."
+    },
+    "public": {
+      "title": "Inscrição — Viagem para Adorar no Templo",
+      "loading": "Carregando…",
+      "noActiveTrip": "Não há nenhuma viagem ao templo aberta neste momento.",
+      "closed": "O prazo de inscrição para esta viagem já encerrou.",
+      "tripOn": "Viagem de {date}",
+      "dateToConfirm": "Data a confirmar",
+      "deadline": "Inscreva-se antes de {date}",
+      "includesLabel": "Esta viagem inclui:",
+      "notOfficial": "Este não é um site oficial de A Igreja de Jesus Cristo dos Santos dos Últimos Dias.",
+      "participant": "Participante {n}",
+      "fields": {
+        "idNumber": "Documento ou passaporte",
+        "birthDate": "Data de nascimento",
+        "fullName": "Nome completo",
+        "phone": "Telefone",
+        "email": "E-mail",
+        "gender": "Gênero"
+      },
+      "wants": {
+        "transport": "Quero transporte",
+        "lodging": "Preciso de hospedagem",
+        "breakfast": "Quero café da manhã",
+        "lunch": "Quero almoço"
+      },
+      "available": "{n} disponíveis",
+      "noQuota": "Sem vagas",
+      "ordinancesLegend": "Ordenanças",
+      "ordinanceDisabled": {
+        "needsGender": "Escolha o gênero primeiro.",
+        "needsBirthDate": "Informe a data de nascimento primeiro.",
+        "tooYoung": "Deve ter pelo menos {age} anos na data da viagem.",
+        "noQuota": "Não há vagas para esta ordenança."
+      },
+      "participantCost": "Custo deste participante: {cost}",
+      "addParticipant": "Adicionar outro participante",
+      "removeParticipant": "Remover",
+      "estimatedTotal": "Custo estimado da viagem (referencial): {cost}",
+      "contributionNote": "Participar não depende de pagar. Se desejar contribuir para os gastos, faça-o com um donativo à categoria que seu bispado indicar, on-line ou com o formulário de Dízimo e outras ofertas entregue ao bispo ou a um conselheiro. Os líderes não recebem dinheiro.",
+      "consent": "Autorizo o tratamento dos dados das pessoas que inscrevo, incluídas suas ordenanças, conforme a política de dados. Se inscrevo um menor, sou seu pai, mãe ou responsável legal.",
+      "submit": "Enviar inscrição",
+      "success": "Inscrição recebida!",
+      "errors": {
+        "registration_closed": "O prazo de inscrição já encerrou.",
+        "age_ordinance": "Uma pessoa com menos de {age} anos na data da viagem não pode marcar ordenanças.",
+        "duplicate_in_submission": "Há um documento repetido nesta inscrição.",
+        "duplicate_existing": "Já existe uma inscrição com esse documento para esta viagem. Fale com os organizadores.",
+        "quota_exceeded": "Não há vagas suficientes para uma das opções que você escolheu.",
+        "recaptcha_failed": "Não conseguimos verificar que você não é um robô. Tente novamente."
+      },
+      "dataNotice": "Responsável: {unit}. Tratamos estes dados apenas para organizar esta viagem ao templo e os conservamos {months} meses, conforme nossa política de dados:"
     }
   }
 }

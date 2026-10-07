@@ -174,6 +174,40 @@ test('Viaje al Templo: el SuperAdmin crea un viaje y aparece en el panel', async
   await expectNoHorizontalOverflow(page);
 });
 
+test('Viaje al Templo (público): el SuperAdmin activa un viaje y un miembro se inscribe', async ({ page }) => {
+  // Activa el viaje creado antes (programado con el templo + activo).
+  await login(page, PASSWORD);
+  await page.getByRole('link', { name: es.admin.nav.templeTrips }).click();
+  await expect(page).toHaveURL(/\/admin\/temple-trips$/);
+  await page.getByRole('button', { name: es.templeTrips.editTrip }).first().click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('checkbox', { name: es.templeTrips.fields.scheduledWithTemple }).click();
+  await dialog.getByRole('checkbox', { name: es.templeTrips.fields.active }).click();
+  await dialog.getByRole('button', { name: es.templeTrips.save }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByText(es.templeTrips.badges.active)).toBeVisible();
+  await page.getByRole('button', { name: es.admin.logout }).click();
+  await expect(page).toHaveURL(/\/login/);
+
+  // Inscripción pública (sin sesión): `/` redirige a `/temple-trip`.
+  const tp = es.templeTrips.public;
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/temple-trip$/);
+  await expect(page.getByRole('heading', { name: tp.title })).toBeVisible();
+  await page.getByLabel(tp.fields.idNumber, { exact: true }).fill('1710034065');
+  await page.getByLabel(tp.fields.birthDate, { exact: true }).fill('1990-05-10');
+  await page.getByLabel(tp.fields.fullName, { exact: true }).fill('Persona Prueba');
+  await page.getByLabel(tp.fields.phone, { exact: true }).fill('+593999999999');
+  await page.getByLabel(tp.fields.email, { exact: true }).fill('persona@example.com');
+  await page.getByLabel(tp.fields.gender, { exact: true }).selectOption('male');
+  await page.getByRole('checkbox', { name: tp.consent }).check();
+  await page.getByRole('button', { name: tp.submit }).click();
+  await expect(page.getByText(tp.success)).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 900 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);

@@ -652,6 +652,64 @@
     "errors": {
       "schedule_with_temple_required": "To activate the trip, first schedule it with the temple (General Handbook 25.1.2).",
       "deadline_after_date": "The registration deadline cannot be later than the trip date."
+    },
+    "notice": {
+      "subject": "New registration — Temple Trip",
+      "body": "{n, plural, one {# new registration} other {# new registrations}} to review.",
+      "openPanel": "Open the panel",
+      "telegram": "Temple Trip: {n, plural, one {# new registration} other {# new registrations}} to review."
+    },
+    "public": {
+      "title": "Registration — Trip to Worship in the Temple",
+      "loading": "Loading…",
+      "noActiveTrip": "There is no temple trip open at this time.",
+      "closed": "Registration for this trip has closed.",
+      "tripOn": "Trip on {date}",
+      "dateToConfirm": "Date to be confirmed",
+      "deadline": "Register before {date}",
+      "includesLabel": "This trip includes:",
+      "notOfficial": "This is not an official site of The Church of Jesus Christ of Latter-day Saints.",
+      "participant": "Participant {n}",
+      "fields": {
+        "idNumber": "ID or passport",
+        "birthDate": "Date of birth",
+        "fullName": "Full name",
+        "phone": "Phone",
+        "email": "Email",
+        "gender": "Gender"
+      },
+      "wants": {
+        "transport": "I want transport",
+        "lodging": "I need lodging",
+        "breakfast": "I want breakfast",
+        "lunch": "I want lunch"
+      },
+      "available": "{n} available",
+      "noQuota": "No spots",
+      "ordinancesLegend": "Ordinances",
+      "ordinanceDisabled": {
+        "needsGender": "Choose the gender first.",
+        "needsBirthDate": "Enter the date of birth first.",
+        "tooYoung": "Must be at least {age} years old on the trip date.",
+        "noQuota": "There are no spots for this ordinance."
+      },
+      "participantCost": "Cost for this participant: {cost}",
+      "addParticipant": "Add another participant",
+      "removeParticipant": "Remove",
+      "estimatedTotal": "Estimated trip cost (for reference): {cost}",
+      "contributionNote": "Participation does not depend on payment. If you wish to contribute to the costs, do so with a donation to the category your bishopric indicates, online or with the Tithing and Other Offerings form given to the bishop or a counselor. Leaders do not receive money.",
+      "consent": "I authorize the processing of the data of the people I register, including their ordinances, according to the data policy. If I register a minor, I am their parent or legal guardian.",
+      "submit": "Submit registration",
+      "success": "Registration received!",
+      "errors": {
+        "registration_closed": "Registration has closed.",
+        "age_ordinance": "A person under {age} years old on the trip date cannot select ordinances.",
+        "duplicate_in_submission": "There is a duplicate ID in this registration.",
+        "duplicate_existing": "A registration with that ID already exists for this trip. Contact the organizers.",
+        "quota_exceeded": "There are not enough spots for one of the options you chose.",
+        "recaptcha_failed": "We could not verify that you are not a robot. Please try again."
+      },
+      "dataNotice": "Controller: {unit}. We process this data only to organize this temple trip and keep it for {months} months, according to our data policy:"
     }
   }
 }
