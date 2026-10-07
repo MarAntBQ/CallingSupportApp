@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { eq, sql } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Pool } from 'pg';
@@ -33,9 +33,11 @@ describe.skipIf(!url)('semilla demo contra Postgres', () => {
       sql`truncate table temple_participants, temple_registrations, temple_trips, user_callings, callings, organizations, sessions, users restart identity cascade`,
     );
     await db.update(schema.appConfig).set({ unitName: '' }).where(eq(schema.appConfig.id, 1));
+    delete process.env.APP_ENV;
   });
 
   afterAll(async () => {
+    delete process.env.APP_ENV;
     await pool.end();
   });
 
@@ -83,5 +85,61 @@ describe.skipIf(!url)('semilla demo contra Postgres', () => {
     expect(second.registration.created).toBe(false);
     expect(second.users.every((user) => !user.created && user.password === null)).toBe(true);
     expect(second.participants).toBe(10);
+  });
+
+  it('preserva el unitName si la unidad ya estaba configurada con otro nombre', async () => {
+    await db.update(schema.appConfig).set({ unitName: 'Barrio Real Existente' }).where(eq(schema.appConfig.id, 1));
+    await seedDemo(db);
+    const [config] = await db.select({ unitName: schema.appConfig.unitName }).from(schema.appConfig).where(eq(schema.appConfig.id, 1));
+    expect(config?.unitName).toBe('Barrio Real Existente');
+  });
+
+  it('estado parcial: una inscripción con menos de 10 participantes se reconcilia a 10 sin duplicar', async () => {
+    await seedDemo(db);
+    // Simula un estado parcial borrando 3 participantes de la inscripción demo.
+    await db.delete(schema.templeParticipants).where(inArray(schema.templeParticipants.idNumber, ['DEMO0000008', 'DEMO0000009', 'DEMO0000010']));
+    expect(await db.select().from(schema.templeParticipants)).toHaveLength(7);
+
+    const second = await seedDemo(db);
+    expect(await db.select().from(schema.templeRegistrations)).toHaveLength(1);
+    expect(await db.select().from(schema.templeParticipants)).toHaveLength(10);
+    expect(second.registration.created).toBe(false);
+    expect(second.participants).toBe(10);
+  });
+
+  it('estado parcial: una inscripción sin participantes se completa sin crear otra inscripción', async () => {
+    await seedDemo(db);
+    await db.delete(schema.templeParticipants);
+    expect(await db.select().from(schema.templeParticipants)).toHaveLength(0);
+    expect(await db.select().from(schema.templeRegistrations)).toHaveLength(1);
+
+    const second = await seedDemo(db);
+    expect(await db.select().from(schema.templeRegistrations)).toHaveLength(1);
+    expect(await db.select().from(schema.templeParticipants)).toHaveLength(10);
+    expect(second.registration.created).toBe(false);
+    expect(second.participants).toBe(10);
+  });
+
+  it('si ya hay otro viaje activo, no falla: lo desactiva y deja activo solo el viaje demo', async () => {
+    await db
+      .insert(schema.templeTrips)
+      .values({ date: '2026-11-15', registrationDeadline: '2026-11-01', templeName: 'Templo de Lima Perú', scheduledWithTemple: true, active: true })
+      .returning();
+
+    const summary = await seedDemo(db);
+    const trips = await db.select().from(schema.templeTrips);
+    expect(trips).toHaveLength(2);
+    const active = trips.filter((trip) => trip.active);
+    expect(active).toHaveLength(1);
+    expect(active[0]!.id).toBe(summary.trip.id);
+    expect(active[0]!.templeName).toBe('Templo de Guayaquil Ecuador');
+  });
+
+  it('rechaza correr con APP_ENV=production', async () => {
+    process.env.APP_ENV = 'production';
+    await expect(seedDemo(db)).rejects.toThrow(/production/i);
+    // No sembró nada.
+    expect(await db.select().from(schema.organizations)).toHaveLength(0);
+    expect(await db.select().from(schema.templeTrips)).toHaveLength(0);
   });
 });

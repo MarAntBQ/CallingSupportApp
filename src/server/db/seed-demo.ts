@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, ne, or } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { appEnv } from '@/lib/app-env';
@@ -118,172 +118,205 @@ function generatePassword(): string {
   return `Demo-${randomBytes(9).toString('base64url')}`;
 }
 
+const DEMO_IP = '203.0.113.10';
+
 export async function seedDemo(db: Database): Promise<SeedSummary> {
   if (appEnv() === 'production') {
     throw new Error('La semilla demo no se ejecuta en producción (APP_ENV=production): solo en staging, demo o desarrollo local.');
   }
 
-  await db
-    .insert(appConfig)
-    .values({ id: 1, unitName: DEMO_UNIT_NAME, allowRegistration: true })
-    .onConflictDoUpdate({ target: appConfig.id, set: { unitName: DEMO_UNIT_NAME } });
+  // Todo en una sola transacción: un fallo no deja datos a medias.
+  return db.transaction(async (tx) => {
+    // Config de la unidad: asegura la fila singleton y fija "Barrio de Prueba" SOLO cuando la
+    // unidad aún no está configurada (unitName vacío). Nunca pisa una config existente.
+    await tx.insert(appConfig).values({ id: 1, unitName: DEMO_UNIT_NAME, allowRegistration: true }).onConflictDoNothing();
+    await tx
+      .update(appConfig)
+      .set({ unitName: DEMO_UNIT_NAME, allowRegistration: true })
+      .where(and(eq(appConfig.id, 1), eq(appConfig.unitName, '')));
 
-  const [config] = await db.select({ policyVersion: appConfig.policyVersion }).from(appConfig).where(eq(appConfig.id, 1));
-  const policyVersion = config?.policyVersion ?? '2026-10';
+    const [config] = await tx
+      .select({ policyVersion: appConfig.policyVersion, unitName: appConfig.unitName })
+      .from(appConfig)
+      .where(eq(appConfig.id, 1));
+    const policyVersion = config?.policyVersion ?? '2026-10';
+    const unitName = config?.unitName || DEMO_UNIT_NAME;
 
-  let callingCount = 0;
-  for (const org of DEMO_ORGS) {
-    await db.insert(organizations).values({ name: org.name }).onConflictDoNothing();
-    const [orgRow] = await db.select({ id: organizations.id }).from(organizations).where(eq(organizations.name, org.name));
-    if (!orgRow) throw new Error(`No se pudo asegurar la organización "${org.name}".`);
-    for (const callingName of org.callings) {
-      await db.insert(callings).values({ organizationId: orgRow.id, name: callingName }).onConflictDoNothing();
-      callingCount += 1;
+    let callingCount = 0;
+    for (const org of DEMO_ORGS) {
+      await tx.insert(organizations).values({ name: org.name }).onConflictDoNothing();
+      const [orgRow] = await tx.select({ id: organizations.id }).from(organizations).where(eq(organizations.name, org.name));
+      if (!orgRow) throw new Error(`No se pudo asegurar la organización "${org.name}".`);
+      for (const callingName of org.callings) {
+        await tx.insert(callings).values({ organizationId: orgRow.id, name: callingName }).onConflictDoNothing();
+        callingCount += 1;
+      }
     }
-  }
 
-  const roleRows = await db.select({ id: roles.id, key: roles.key }).from(roles);
-  const roleByKey = new Map(roleRows.map((role) => [role.key, role.id]));
+    const roleRows = await tx.select({ id: roles.id, key: roles.key }).from(roles);
+    const roleByKey = new Map(roleRows.map((role) => [role.key, role.id]));
 
-  const seededUsers: SeededUser[] = [];
-  for (const demoUser of DEMO_USERS) {
-    const roleId = roleByKey.get(demoUser.roleKey);
-    if (!roleId) throw new Error(`Falta el rol "${demoUser.roleKey}": corre las migraciones.`);
-    const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, demoUser.email));
-    if (existing) {
-      seededUsers.push({ ...demoUser, created: false, password: null });
-      continue;
+    const seededUsers: SeededUser[] = [];
+    for (const demoUser of DEMO_USERS) {
+      const roleId = roleByKey.get(demoUser.roleKey);
+      if (!roleId) throw new Error(`Falta el rol "${demoUser.roleKey}": corre las migraciones.`);
+      const [existing] = await tx.select({ id: users.id }).from(users).where(eq(users.email, demoUser.email));
+      if (existing) {
+        seededUsers.push({ ...demoUser, created: false, password: null });
+        continue;
+      }
+      const password = generatePassword();
+      const inserted = await tx
+        .insert(users)
+        .values({
+          firstName: demoUser.firstName,
+          lastName: demoUser.lastName,
+          email: demoUser.email,
+          phone: demoUser.phone,
+          passwordHash: await hashPassword(password),
+          roleId,
+          status: 'active',
+          locale: 'es',
+          consentAt: new Date(),
+          consentPolicyVersion: policyVersion,
+          consentLocale: 'es',
+        })
+        .onConflictDoNothing()
+        .returning({ id: users.id });
+      seededUsers.push({ ...demoUser, created: inserted.length > 0, password: inserted.length > 0 ? password : null });
     }
-    const password = generatePassword();
-    const inserted = await db
-      .insert(users)
-      .values({
-        firstName: demoUser.firstName,
-        lastName: demoUser.lastName,
-        email: demoUser.email,
-        phone: demoUser.phone,
-        passwordHash: await hashPassword(password),
-        roleId,
-        status: 'active',
-        locale: 'es',
-        consentAt: new Date(),
-        consentPolicyVersion: policyVersion,
-        consentLocale: 'es',
-      })
-      .onConflictDoNothing()
-      .returning({ id: users.id });
-    seededUsers.push({ ...demoUser, created: inserted.length > 0, password: inserted.length > 0 ? password : null });
-  }
 
-  const [existingTrip] = await db
-    .select()
-    .from(templeTrips)
-    .where(and(eq(templeTrips.templeName, DEMO_TRIP.templeName), eq(templeTrips.date, DEMO_TRIP.date)));
-  let trip = existingTrip;
-  let tripCreated = false;
-  if (!trip) {
-    const [inserted] = await db
-      .insert(templeTrips)
-      .values({
-        date: DEMO_TRIP.date,
-        registrationDeadline: DEMO_TRIP.registrationDeadline,
-        dateConfirmed: true,
-        includesTransport: DEMO_TRIP.includesTransport,
-        includesLodging: DEMO_TRIP.includesLodging,
-        includesBreakfast: DEMO_TRIP.includesBreakfast,
-        includesLunch: DEMO_TRIP.includesLunch,
-        quotaTransport: DEMO_TRIP.quotaTransport,
-        quotaLodging: DEMO_TRIP.quotaLodging,
-        costTransport: DEMO_TRIP.costTransport,
-        costBreakfast: DEMO_TRIP.costBreakfast,
-        costLunch: DEMO_TRIP.costLunch,
-        quotaBaptismMale: DEMO_TRIP.ordinanceQuota,
-        quotaBaptismFemale: DEMO_TRIP.ordinanceQuota,
-        quotaInitiatoryMale: DEMO_TRIP.ordinanceQuota,
-        quotaInitiatoryFemale: DEMO_TRIP.ordinanceQuota,
-        quotaEndowmentMale: DEMO_TRIP.ordinanceQuota,
-        quotaEndowmentFemale: DEMO_TRIP.ordinanceQuota,
-        quotaSealingMale: DEMO_TRIP.ordinanceQuota,
-        quotaSealingFemale: DEMO_TRIP.ordinanceQuota,
-        templeName: DEMO_TRIP.templeName,
-        inAssignedDistrict: true,
-        scheduledWithTemple: true,
-        active: true,
-      })
-      .returning();
-    trip = inserted;
-    tripCreated = true;
-  }
-  if (!trip) throw new Error('No se pudo asegurar el viaje al templo de la semilla.');
+    // Viaje demo: solo puede haber uno activo (índice parcial temple_trips_one_active). Primero
+    // desactiva cualquier OTRO viaje activo, luego find-or-create del viaje demo asegurándolo
+    // activo (reactivándolo si existía inactivo).
+    await tx
+      .update(templeTrips)
+      .set({ active: false })
+      .where(and(eq(templeTrips.active, true), or(ne(templeTrips.templeName, DEMO_TRIP.templeName), ne(templeTrips.date, DEMO_TRIP.date))));
 
-  const adminId = (await db.select({ id: users.id }).from(users).where(eq(users.email, DEMO_USERS[0]!.email)))[0]?.id ?? null;
+    const [existingTrip] = await tx
+      .select()
+      .from(templeTrips)
+      .where(and(eq(templeTrips.templeName, DEMO_TRIP.templeName), eq(templeTrips.date, DEMO_TRIP.date)));
+    let trip = existingTrip;
+    let tripCreated = false;
+    if (!trip) {
+      const [inserted] = await tx
+        .insert(templeTrips)
+        .values({
+          date: DEMO_TRIP.date,
+          registrationDeadline: DEMO_TRIP.registrationDeadline,
+          dateConfirmed: true,
+          includesTransport: DEMO_TRIP.includesTransport,
+          includesLodging: DEMO_TRIP.includesLodging,
+          includesBreakfast: DEMO_TRIP.includesBreakfast,
+          includesLunch: DEMO_TRIP.includesLunch,
+          quotaTransport: DEMO_TRIP.quotaTransport,
+          quotaLodging: DEMO_TRIP.quotaLodging,
+          costTransport: DEMO_TRIP.costTransport,
+          costBreakfast: DEMO_TRIP.costBreakfast,
+          costLunch: DEMO_TRIP.costLunch,
+          quotaBaptismMale: DEMO_TRIP.ordinanceQuota,
+          quotaBaptismFemale: DEMO_TRIP.ordinanceQuota,
+          quotaInitiatoryMale: DEMO_TRIP.ordinanceQuota,
+          quotaInitiatoryFemale: DEMO_TRIP.ordinanceQuota,
+          quotaEndowmentMale: DEMO_TRIP.ordinanceQuota,
+          quotaEndowmentFemale: DEMO_TRIP.ordinanceQuota,
+          quotaSealingMale: DEMO_TRIP.ordinanceQuota,
+          quotaSealingFemale: DEMO_TRIP.ordinanceQuota,
+          templeName: DEMO_TRIP.templeName,
+          inAssignedDistrict: true,
+          scheduledWithTemple: true,
+          active: true,
+        })
+        .returning();
+      trip = inserted;
+      tripCreated = true;
+    } else if (!trip.active) {
+      const [reactivated] = await tx
+        .update(templeTrips)
+        .set({ active: true, scheduledWithTemple: true })
+        .where(eq(templeTrips.id, trip.id))
+        .returning();
+      trip = reactivated;
+    }
+    if (!trip) throw new Error('No se pudo asegurar el viaje al templo de la semilla.');
+    const tripRow = trip;
 
-  const existingParticipants = await db
-    .select({ id: templeParticipants.id })
-    .from(templeParticipants)
-    .innerJoin(templeRegistrations, eq(templeParticipants.registrationId, templeRegistrations.id))
-    .where(and(eq(templeRegistrations.tripId, trip.id), inArray(templeParticipants.idNumber, DEMO_PARTICIPANT_IDS)));
+    const adminId = (await tx.select({ id: users.id }).from(users).where(eq(users.email, DEMO_USERS[0]!.email)))[0]?.id ?? null;
 
-  let registrationCreated = false;
-  let participantCount = existingParticipants.length;
-  if (existingParticipants.length === 0) {
-    const [registration] = await db
-      .insert(templeRegistrations)
-      .values({
-        tripId: trip.id,
-        ip: '203.0.113.10',
-        consent: true,
-        policyVersion,
-        locale: 'es',
-        createdByUserId: adminId,
-      })
-      .returning({ id: templeRegistrations.id });
-    if (!registration) throw new Error('No se pudo crear la inscripción de la semilla.');
+    // Inscripción demo estable: una sola por (viaje, IP marcadora). Si ya existe, se reutiliza.
+    const [existingRegistration] = await tx
+      .select({ id: templeRegistrations.id })
+      .from(templeRegistrations)
+      .where(and(eq(templeRegistrations.tripId, tripRow.id), eq(templeRegistrations.ip, DEMO_IP)));
+    let registration = existingRegistration;
+    let registrationCreated = false;
+    if (!registration) {
+      const [inserted] = await tx
+        .insert(templeRegistrations)
+        .values({ tripId: tripRow.id, ip: DEMO_IP, consent: true, policyVersion, locale: 'es', createdByUserId: adminId })
+        .returning({ id: templeRegistrations.id });
+      registration = inserted;
+      registrationCreated = true;
+    }
+    if (!registration) throw new Error('No se pudo asegurar la inscripción de la semilla.');
+    const registrationId = registration.id;
 
-    const rows = DEMO_PARTICIPANTS.map((person) => {
-      const wantsTransport = trip!.includesTransport && person.wantsTransport;
-      const needsLodging = trip!.includesLodging && person.needsLodging;
-      const wantsBreakfast = trip!.includesBreakfast && person.wantsBreakfast;
-      const wantsLunch = trip!.includesLunch && person.wantsLunch;
-      const prices = participantPrices(trip!, { wantsTransport, wantsBreakfast, wantsLunch });
-      const { lastNames, firstNames } = splitFullName(person.fullName);
-      return {
-        registrationId: registration.id,
-        idNumber: person.idNumber,
-        birthDate: person.birthDate,
-        fullName: person.fullName,
-        phone: person.phone,
-        email: person.email,
-        gender: person.gender,
-        wantsTransport,
-        needsLodging,
-        wantsBreakfast,
-        wantsLunch,
-        ordinances: person.ordinances,
-        approved: person.approved,
-        priceTransport: prices.priceTransport.toFixed(2),
-        priceBreakfast: prices.priceBreakfast.toFixed(2),
-        priceLunch: prices.priceLunch.toFixed(2),
-        totalCost: prices.totalCost.toFixed(2),
-        lastNames,
-        firstNames,
-        nationality: 'Ecuatoriana',
-      };
-    });
-    await db.insert(templeParticipants).values(rows);
-    registrationCreated = true;
-    participantCount = rows.length;
-  }
+    // Participantes: reconcilia hasta 10 insertando solo los que faltan (por idNumber en el viaje),
+    // de modo que un estado parcial (1-9) se completa y nunca se duplica.
+    const presentRows = await tx
+      .select({ idNumber: templeParticipants.idNumber })
+      .from(templeParticipants)
+      .innerJoin(templeRegistrations, eq(templeParticipants.registrationId, templeRegistrations.id))
+      .where(and(eq(templeRegistrations.tripId, tripRow.id), inArray(templeParticipants.idNumber, DEMO_PARTICIPANT_IDS)));
+    const presentIds = new Set(presentRows.map((row) => row.idNumber));
+    const missing = DEMO_PARTICIPANTS.filter((person) => !presentIds.has(person.idNumber));
+    if (missing.length > 0) {
+      const rows = missing.map((person) => {
+        const wantsTransport = tripRow.includesTransport && person.wantsTransport;
+        const needsLodging = tripRow.includesLodging && person.needsLodging;
+        const wantsBreakfast = tripRow.includesBreakfast && person.wantsBreakfast;
+        const wantsLunch = tripRow.includesLunch && person.wantsLunch;
+        const prices = participantPrices(tripRow, { wantsTransport, wantsBreakfast, wantsLunch });
+        const { lastNames, firstNames } = splitFullName(person.fullName);
+        return {
+          registrationId,
+          idNumber: person.idNumber,
+          birthDate: person.birthDate,
+          fullName: person.fullName,
+          phone: person.phone,
+          email: person.email,
+          gender: person.gender,
+          wantsTransport,
+          needsLodging,
+          wantsBreakfast,
+          wantsLunch,
+          ordinances: person.ordinances,
+          approved: person.approved,
+          priceTransport: prices.priceTransport.toFixed(2),
+          priceBreakfast: prices.priceBreakfast.toFixed(2),
+          priceLunch: prices.priceLunch.toFixed(2),
+          totalCost: prices.totalCost.toFixed(2),
+          lastNames,
+          firstNames,
+          nationality: 'Ecuatoriana',
+        };
+      });
+      await tx.insert(templeParticipants).values(rows);
+    }
+    const participantCount = presentIds.size + missing.length;
 
-  return {
-    unitName: DEMO_UNIT_NAME,
-    organizations: DEMO_ORGS.length,
-    callings: callingCount,
-    users: seededUsers,
-    trip: { id: trip.id, created: tripCreated },
-    registration: { created: registrationCreated },
-    participants: participantCount,
-  };
+    return {
+      unitName,
+      organizations: DEMO_ORGS.length,
+      callings: callingCount,
+      users: seededUsers,
+      trip: { id: tripRow.id, created: tripCreated },
+      registration: { created: registrationCreated },
+      participants: participantCount,
+    };
+  });
 }
 
 function printSummary(summary: SeedSummary): void {
