@@ -5,9 +5,11 @@ import type { ReactNode } from 'react';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { Logo } from '@/components/logo';
 import { LogoutButton } from '@/components/logout-button';
+import { UnitBrand } from '@/components/unit-brand';
 import { Alert } from '@/components/ui/alert';
 import { getSession } from '@/server/auth/session';
 import { countActiveAdmins, isGlobalAdmin } from '@/server/auth/sessions';
+import { currentConfig } from '@/server/config/current';
 import { getDb } from '@/server/db';
 
 export const dynamic = 'force-dynamic';
@@ -22,6 +24,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const tRoles = await getTranslations('roles');
   const admin = isGlobalAdmin(session);
   const missingSecondAdmin = admin && (await countActiveAdmins(getDb())) < 2;
+  const missingContact = admin && !(await currentConfig()).contact;
   const roleKey = ROLE_KEYS.find((key) => key === session.user.role.key);
   const roleLabel = roleKey ? tRoles(roleKey) : session.user.role.name;
 
@@ -30,20 +33,21 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     { href: '/admin/profile', label: t('nav.profile'), ready: false },
     ...(admin
       ? [
-          { href: '/admin/settings', label: t('nav.settings'), ready: false },
+          { href: '/admin/settings', label: t('nav.settings'), ready: true },
           { href: '/admin/sessions', label: t('nav.sessions'), ready: false },
         ]
       : []),
   ];
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex flex-1 flex-col md:flex-row">
       <aside className="border-b border-border bg-surface md:w-60 md:shrink-0 md:border-r md:border-b-0">
         <Link
           href="/admin"
-          className="block w-fit px-5 py-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
+          aria-label={t('nav.home')}
+          className="flex max-w-full px-5 py-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
         >
-          <Logo className="h-8 w-auto" />
+          <UnitBrand size={36} fallback={<Logo className="h-8 w-auto" />} />
         </Link>
         <nav aria-label={t('navLabel')}>
           <ul className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col md:pb-0">
@@ -78,6 +82,13 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           {missingSecondAdmin && (
             <Alert tone="warning" role="status" title={t('secondAdmin.title')}>
               {t('secondAdmin.body')}
+            </Alert>
+          )}
+          {missingContact && (
+            <Alert tone="warning" role="status" title={t('missingContact.title')}>
+              <Link href="/admin/settings" className="font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">
+                {t('missingContact.body')}
+              </Link>
             </Alert>
           )}
           {children}

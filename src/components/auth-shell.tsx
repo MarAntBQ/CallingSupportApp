@@ -1,14 +1,22 @@
-import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { Logo } from '@/components/logo';
+import { UnitBrand } from '@/components/unit-brand';
 
-export async function AuthShell({ title, intro, children }: { title: string; intro?: string; children: ReactNode }) {
-  const t = await getTranslations('common');
-
+export function AuthShell({
+  title,
+  intro,
+  showUnit = false,
+  children,
+}: {
+  title: string;
+  intro?: string;
+  showUnit?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <div className="flex min-h-screen flex-col items-center px-4 py-10">
+    <div className="flex flex-1 flex-col items-center px-4 py-10">
       <main className="flex w-full max-w-lg flex-1 flex-col justify-center">
         <Link
           href="/"
@@ -17,15 +25,15 @@ export async function AuthShell({ title, intro, children }: { title: string; int
           <Logo priority className="h-10 w-auto sm:h-12" />
         </Link>
         <div className="rounded-md border border-border bg-surface p-6 shadow-md sm:p-8">
+          {showUnit && <UnitBrand size={48} className="mb-5" />}
           <h1 className="text-2xl font-semibold text-text">{title}</h1>
           {intro && <p className="mt-2 text-text-muted">{intro}</p>}
           <div className="mt-6">{children}</div>
         </div>
       </main>
-      <footer className="mt-8 flex flex-col items-center gap-4 text-center">
+      <div className="mt-8 flex justify-center">
         <LocaleSwitcher />
-        <p className="max-w-md text-sm text-text-muted">{t('notOfficial')}</p>
-      </footer>
+      </div>
     </div>
   );
 }

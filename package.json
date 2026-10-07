@@ -20,6 +20,7 @@
     "i18n:check": "node scripts/i18n-check.mjs"
   },
   "dependencies": {
+    "@tanstack/react-query": "5.104.1",
     "@vercel/functions": "3.9.11",
     "bcryptjs": "3.0.3",
     "drizzle-orm": "0.45.3",

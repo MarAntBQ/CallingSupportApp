@@ -6,10 +6,14 @@ import pt from '../../messages/pt.json';
 let cookieValue: string | undefined;
 let userLocale: string | null = null;
 let installationLocale: string | null = null;
+let installationCalls = 0;
 
 vi.mock('./preferences', () => ({
   getUserLocale: async () => userLocale,
-  getInstallationLocale: async () => installationLocale,
+  getInstallationLocale: async () => {
+    installationCalls += 1;
+    return installationLocale;
+  },
 }));
 
 vi.mock('next/headers', () => ({
@@ -30,6 +34,19 @@ describe('resolución del idioma', () => {
     cookieValue = undefined;
     userLocale = null;
     installationLocale = null;
+    installationCalls = 0;
+  });
+
+  it('no consulta el idioma de la instalación si ya decidió el usuario o la cookie', async () => {
+    userLocale = 'en';
+    await resolveLocale();
+    userLocale = null;
+    cookieValue = 'pt';
+    await resolveLocale();
+    expect(installationCalls).toBe(0);
+    cookieValue = undefined;
+    await resolveLocale();
+    expect(installationCalls).toBe(1);
   });
 
   it('sin cookie usa español', async () => {

@@ -13,6 +13,7 @@ import { PASSWORD_MIN_LENGTH, setupSchema, UNIT_TYPES, type UnitType } from '@/l
 type FieldName =
   | 'unitType'
   | 'unitName'
+  | 'contact'
   | 'firstName'
   | 'lastName'
   | 'email'
@@ -26,6 +27,7 @@ type FieldName =
 const FIELD_ORDER: FieldName[] = [
   'unitType',
   'unitName',
+  'contact',
   'firstName',
   'lastName',
   'email',
@@ -63,6 +65,7 @@ export function SetupForm() {
   function messageFor(field: string, code?: string) {
     if (field === 'unitType') return t('unitTypeRequired');
     if (field === 'unitName') return code === 'official_name' ? t('officialName') : t('unitNameRequired');
+    if (field === 'contact') return code === 'official_name' ? t('officialName') : t('contactRequired');
     if (field === 'email') return tCommon('invalidEmail');
     if (field === 'password') return t('passwordTooShort', { min: PASSWORD_MIN_LENGTH });
     if (field === 'bishopApproved') return t(`bishopApprovedRequired.${leader}`);
@@ -84,6 +87,7 @@ export function SetupForm() {
     const input = {
       unitType: value('unitType') || undefined,
       unitName: value('unitName'),
+      contact: value('contact'),
       firstName: value('firstName'),
       lastName: value('lastName'),
       email: value('email'),
@@ -172,6 +176,7 @@ export function SetupForm() {
           )}
         </div>
         <Field label={t('unitName')} name="unitName" required hint={t('unitNameHint')} error={errors.unitName} />
+        <Field label={t('contact')} name="contact" required hint={t('contactHint')} error={errors.contact} />
       </fieldset>
 
       <fieldset className="flex flex-col gap-5">

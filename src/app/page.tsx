@@ -7,7 +7,7 @@ export default async function HomePage() {
   const t = await getTranslations();
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-xl flex-col px-4 text-center">
+    <div className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 text-center">
       <main className="flex flex-1 flex-col items-center justify-center gap-4">
         <h1>
           <Logo priority className="h-14 w-auto sm:h-16" />
@@ -28,9 +28,9 @@ export default async function HomePage() {
           </a>
         </p>
       </main>
-      <footer className="py-8">
+      <div className="py-8">
         <LocaleSwitcher />
-      </footer>
+      </div>
     </div>
   );
 }
