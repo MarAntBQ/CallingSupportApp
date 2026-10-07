@@ -1,6 +1,7 @@
 {
   "common": {
     "appName": "CallingSupportApp",
+    "logoAlt": "CallingSupportApp",
     "localeSwitcher": {
       "label": "Idioma",
       "error": "Não foi possível mudar o idioma. Tente novamente."
