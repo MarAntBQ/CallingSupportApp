@@ -188,6 +188,8 @@ escritas para que los agentes las sigan:
 
 Lo que entregas es tu responsabilidad: revisa y prueba todo lo que el agente escriba.
 
+Las tres skills base (`trabajar-un-issue`, `escribir-un-issue`, `revisar-codigo`) se sincronizan automáticamente desde el directorio oficial `MarbustTechnologyCompany/ClaudeSkills` (workflow `sync-skills`) y **no se editan a mano**: una mejora se hace en el oficial y se propaga por un PR. Las skills de dominio (`datos-de-miembros`, `portar-desde-legacy`) son propias de este repo y no se sincronizan.
+
 ## Datos de los miembros
 
 **Rige el Manual General de la Iglesia, 33.8 "Carácter confidencial de los registros":** la

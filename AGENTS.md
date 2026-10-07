@@ -258,3 +258,5 @@ pásale el `SKILL.md` correspondiente.
 | [`revisar-codigo`](.claude/skills/revisar-codigo/SKILL.md) | **Obligatoria** antes de abrir un PR y al revisar el de otro |
 | [`datos-de-miembros`](.claude/skills/datos-de-miembros/SKILL.md) | Al recoger, guardar, mostrar o exportar datos de personas |
 | [`portar-desde-legacy`](.claude/skills/portar-desde-legacy/SKILL.md) | Al llevar una función de la v1 (rama `legacy`) a la versión nueva |
+
+Las tres skills base (`trabajar-un-issue`, `escribir-un-issue`, `revisar-codigo`) se **sincronizan automáticamente** desde el directorio oficial `MarbustTechnologyCompany/ClaudeSkills` mediante el workflow [`sync-skills`](.github/workflows/sync-skills.yml) (programado y manual). **No se editan a mano:** una mejora nace en el directorio oficial y se propaga a este repo por un PR `chore: sincronizar skills oficiales`. Las skills de dominio de este repo (`datos-de-miembros`, `portar-desde-legacy`) son propias y **no** se sincronizan.
