@@ -4,10 +4,83 @@
     "localeSwitcher": {
       "label": "Idioma",
       "error": "No se pudo cambiar el idioma. Inténtalo de nuevo."
-    }
+    },
+    "required": "Este campo es obligatorio.",
+    "invalidEmail": "Escribe un correo válido.",
+    "notOfficial": "Esta aplicación no es oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días."
+  },
+  "errors": {
+    "invalid_credentials": "Correo o contraseña incorrectos.",
+    "account_pending": "Tu cuenta aún no está verificada. Revisa tu correo.",
+    "account_suspended": "Tu cuenta está suspendida. Contacta a los líderes de tu unidad.",
+    "invalid_input": "Revisa los campos marcados.",
+    "unauthenticated": "Tu sesión terminó. Inicia sesión de nuevo.",
+    "forbidden": "No tienes permiso para esta acción.",
+    "not_found": "Esta página ya no está disponible.",
+    "network": "No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.",
+    "unknown": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "roles": {
+    "super_admin": "SuperAdmin",
+    "leader": "Líder",
+    "member": "Miembro",
+    "friend": "Amigo de la Iglesia"
   },
   "home": {
     "underConstruction": "En construcción",
-    "docsLink": "Ver la documentación"
+    "docsLink": "Ver la documentación",
+    "loginLink": "Iniciar sesión"
+  },
+  "login": {
+    "title": "Iniciar sesión",
+    "email": "Correo",
+    "password": "Contraseña",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "rememberMe": "Recordar mi sesión",
+    "rememberMeHelp": "No la marques en una computadora compartida.",
+    "submit": "Iniciar sesión",
+    "submitting": "Iniciando sesión…",
+    "messages": {
+      "logged_out": "Cerraste sesión."
+    }
+  },
+  "setup": {
+    "title": "Poner en marcha la aplicación",
+    "intro": "Crea la primera cuenta de administrador de esta instalación. Solo se puede hacer una vez.",
+    "accountSection": "Tu cuenta",
+    "firstName": "Nombres",
+    "lastName": "Apellidos",
+    "email": "Correo",
+    "password": "Contraseña",
+    "passwordHint": "Al menos {min} caracteres.",
+    "passwordTooShort": "La contraseña debe tener al menos {min} caracteres.",
+    "confirmPassword": "Confirma la contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "approvalSection": "Aprobación del obispo",
+    "approvalIntro": "Las pautas de la Iglesia para los recursos en línea piden que el obispo apruebe primero su uso en el barrio.",
+    "bishopApproved": "El obispo aprobó usar esta aplicación en la unidad.",
+    "bishopApprovedRequired": "Sin la aprobación del obispo no se puede terminar.",
+    "bishopApprovedBy": "Nombre de quien aprobó",
+    "bishopApprovedOn": "Fecha de la aprobación",
+    "futureDate": "La fecha no puede ser futura.",
+    "submit": "Crear cuenta y entrar",
+    "submitting": "Creando la cuenta…"
+  },
+  "admin": {
+    "navLabel": "Menú del panel",
+    "nav": {
+      "home": "Inicio",
+      "profile": "Mi perfil",
+      "settings": "Configuración",
+      "sessions": "Sesiones activas"
+    },
+    "logout": "Cerrar sesión",
+    "welcome": "Hola, {name}",
+    "welcomeBody": "Los módulos aparecerán aquí a medida que se habiliten en esta instalación.",
+    "secondAdmin": {
+      "title": "Falta un segundo administrador",
+      "body": "Las pautas de la Iglesia para los recursos en línea piden más de un administrador. Da el rol SuperAdmin a otro líder de la unidad."
+    }
   }
 }

@@ -4,10 +4,83 @@
     "localeSwitcher": {
       "label": "Language",
       "error": "The language could not be changed. Please try again."
-    }
+    },
+    "required": "This field is required.",
+    "invalidEmail": "Enter a valid email address.",
+    "notOfficial": "This app is not an official app of The Church of Jesus Christ of Latter-day Saints."
+  },
+  "errors": {
+    "invalid_credentials": "Incorrect email or password.",
+    "account_pending": "Your account is not verified yet. Check your email.",
+    "account_suspended": "Your account is suspended. Contact the leaders of your unit.",
+    "invalid_input": "Check the highlighted fields.",
+    "unauthenticated": "Your session ended. Please sign in again.",
+    "forbidden": "You don't have permission for this action.",
+    "not_found": "This page is no longer available.",
+    "network": "Could not connect. Check your connection and try again.",
+    "unknown": "Something went wrong. Please try again."
+  },
+  "roles": {
+    "super_admin": "SuperAdmin",
+    "leader": "Leader",
+    "member": "Member",
+    "friend": "Friend of the Church"
   },
   "home": {
     "underConstruction": "Under construction",
-    "docsLink": "Read the documentation"
+    "docsLink": "Read the documentation",
+    "loginLink": "Sign in"
+  },
+  "login": {
+    "title": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "rememberMe": "Keep me signed in",
+    "rememberMeHelp": "Don't check this on a shared computer.",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "messages": {
+      "logged_out": "You signed out."
+    }
+  },
+  "setup": {
+    "title": "Set up the app",
+    "intro": "Create the first administrator account for this installation. This can only be done once.",
+    "accountSection": "Your account",
+    "firstName": "First names",
+    "lastName": "Last names",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least {min} characters.",
+    "passwordTooShort": "The password must have at least {min} characters.",
+    "confirmPassword": "Confirm the password",
+    "passwordMismatch": "The passwords don't match.",
+    "approvalSection": "Bishop's approval",
+    "approvalIntro": "The Church's guidelines for online resources ask that the bishop first approve their use in the ward.",
+    "bishopApproved": "The bishop approved using this app in the unit.",
+    "bishopApprovedRequired": "You can't finish without the bishop's approval.",
+    "bishopApprovedBy": "Name of the person who approved",
+    "bishopApprovedOn": "Approval date",
+    "futureDate": "The date can't be in the future.",
+    "submit": "Create account and sign in",
+    "submitting": "Creating the account…"
+  },
+  "admin": {
+    "navLabel": "Dashboard menu",
+    "nav": {
+      "home": "Home",
+      "profile": "My profile",
+      "settings": "Settings",
+      "sessions": "Active sessions"
+    },
+    "logout": "Sign out",
+    "welcome": "Hi, {name}",
+    "welcomeBody": "Modules will appear here as they are enabled in this installation.",
+    "secondAdmin": {
+      "title": "A second administrator is missing",
+      "body": "The Church's guidelines for online resources ask for more than one administrator. Give the SuperAdmin role to another leader of the unit."
+    }
   }
 }

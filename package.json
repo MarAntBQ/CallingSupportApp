@@ -20,6 +20,7 @@
     "i18n:check": "node scripts/i18n-check.mjs"
   },
   "dependencies": {
+    "bcryptjs": "3.0.3",
     "drizzle-orm": "0.45.3",
     "next": "16.4.0",
     "next-intl": "4.14.9",
