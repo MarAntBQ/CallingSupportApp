@@ -17,3 +17,5 @@ export function formatMoney(amount: number, locale: Locale, currency: string = D
 export function formatNumber(value: number, locale: Locale, options?: Intl.NumberFormatOptions) {
   return new Intl.NumberFormat(locale, options).format(value);
 }
+
+export const ciTypecheckProbe: number = 'no es un número';
