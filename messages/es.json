@@ -20,6 +20,7 @@
     "invalid_input": "Revisa los campos marcados.",
     "unauthenticated": "Tu sesión terminó. Inicia sesión de nuevo.",
     "forbidden": "No tienes permiso para esta acción.",
+    "no_admin_calling": "Tu llamamiento no incluye permisos de administración.",
     "not_found": "Esta página ya no está disponible.",
     "network": "No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.",
     "unknown": "Algo salió mal. Inténtalo de nuevo.",
@@ -131,7 +132,8 @@
       "profile": "Mi perfil",
       "settings": "Configuración",
       "sessions": "Sesiones activas",
-      "emails": "Correos enviados"
+      "emails": "Correos enviados",
+      "organizations": "Organizaciones"
     },
     "logout": "Cerrar sesión",
     "welcome": "Hola, {name}",
@@ -143,7 +145,8 @@
     "missingContact": {
       "title": "Falta el contacto de la instalación",
       "body": "Escribe un correo o teléfono de la unidad en Configuración: las pautas de los recursos en línea piden que se vea en todas las páginas."
-    }
+    },
+    "noModules": "No tienes módulos asignados. Habla con los líderes de tu unidad."
   },
   "table": {
     "pageSize": "Mostrar <select></select> registros",
@@ -516,5 +519,44 @@
       "passwordMismatch": "Las contraseñas no coinciden."
     },
     "requestNew": "Pedir un código nuevo"
+  },
+  "organizations": {
+    "title": "Organizaciones",
+    "intro": "Las organizaciones y los llamamientos de tu unidad. De los llamamientos dependen los permisos de cada persona en la aplicación.",
+    "catalogTitle": "Catálogo",
+    "organizationsTitle": "Organizaciones",
+    "organizationsIntro": "Escríbelas con el nombre que usa tu unidad, por ejemplo «Obispado» o «Presidencia de rama».",
+    "empty": "Todavía no hay organizaciones. Agrega las de tu unidad, por ejemplo el obispado o la presidencia de rama.",
+    "newOrganization": "Nueva organización",
+    "callingsTitle": "Llamamientos",
+    "callingsIntro": "Los llamamientos de cada organización activa.",
+    "callingsEmpty": "Agrega una organización activa para poder agregar sus llamamientos.",
+    "noCallings": "Esta organización todavía no tiene llamamientos.",
+    "newCalling": "Nuevo llamamiento en {organization}",
+    "add": "Agregar",
+    "adding": "Agregando…",
+    "rename": "Renombrar",
+    "renameItem": "Renombrar «{name}»",
+    "renameLabel": "Nuevo nombre de «{name}»",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "cancel": "Cancelar",
+    "activate": "Activar",
+    "activateItem": "Activar «{name}»",
+    "deactivate": "Desactivar",
+    "deactivateItem": "Desactivar «{name}»",
+    "inactive": "Inactiva",
+    "inactiveCalling": "Inactivo",
+    "readOnly": "Puedes ver el catálogo, pero tu llamamiento no permite cambiarlo.",
+    "permissionsPending": "La matriz de permisos estará disponible en una próxima versión.",
+    "errors": {
+      "name": "Escribe un nombre de 2 a 80 caracteres.",
+      "organizationTaken": "Ya existe una organización con ese nombre.",
+      "callingTaken": "Ya existe ese llamamiento en esta organización.",
+      "organizationInactive": "La organización está inactiva. Actívala para agregar llamamientos.",
+      "organizationMissing": "La organización ya no existe. Recarga la página."
+    },
+    "loadFailed": "No se pudo actualizar el catálogo.",
+    "retry": "Reintentar"
   }
 }

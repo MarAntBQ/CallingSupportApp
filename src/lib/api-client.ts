@@ -5,6 +5,7 @@ export const ERROR_CODES = [
   'invalid_input',
   'unauthenticated',
   'forbidden',
+  'no_admin_calling',
   'not_found',
   'rate_limited',
   'bad_origin',

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { setupSchema } from '@/lib/validation/auth';
 import { setSessionCookie } from '@/server/auth/session';
-import { createSession, findSession, toMe } from '@/server/auth/sessions';
+import { createSession, findSession } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
+import { meOf } from '@/server/permissions/service';
 import { clientIp, privateHash } from '@/server/security/http';
 import { consume, LIMITS } from '@/server/security/rate-limit';
 import { publicRoute } from '@/server/security/route';
@@ -37,7 +38,7 @@ export const POST = publicRoute(
     const { userId } = await performSetup(db, parsed.data);
     const { token, expiresAt } = await createSession(db, userId, { userAgent: request.headers.get('user-agent') });
     const session = await findSession(db, token);
-    const response = NextResponse.json(toMe(session!), { status: 201 });
+    const response = NextResponse.json(await meOf(db, session!), { status: 201 });
     setSessionCookie(response, token, { expiresAt, persistent: false });
     return response;
   },

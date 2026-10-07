@@ -48,6 +48,15 @@ describe('detector de rutas sin proteger', () => {
     expect(findUnprotectedRoutes(source)).toEqual(['GET', 'DELETE', 'POST', 'HEAD', 'OPTIONS']);
   });
 
+  it('acepta el envoltorio con tipo genérico y sigue marcando lo que no lo usa', () => {
+    const source = `
+      export const PATCH = withAuth<{ id: string }>(async () => new Response('ok'), { permission: 'global-admin' });
+      export const PUT = handler<{ id: string }>(async () => new Response('abierta'));
+      export const DELETE = <T,>() => new Response('abierta');
+    `;
+    expect(findUnprotectedRoutes(source)).toEqual(['PUT', 'DELETE']);
+  });
+
   it('marca las re-exportaciones de métodos, que esconden el envoltorio', () => {
     expect(findUnprotectedRoutes(`export { handler as GET, other as POST } from './x';`)).toEqual(['GET', 'POST']);
   });

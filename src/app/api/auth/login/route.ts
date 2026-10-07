@@ -3,8 +3,9 @@ import { isLocale } from '@/i18n/config';
 import { loginSchema } from '@/lib/validation/auth';
 import { authenticate } from '@/server/auth/login';
 import { getSessionFromRequest, setLocaleCookie, setSessionCookie } from '@/server/auth/session';
-import { createLoginSession, findSession, toMe } from '@/server/auth/sessions';
+import { createLoginSession, findSession } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
+import { meOf } from '@/server/permissions/service';
 import { clientIp, privateHash } from '@/server/security/http';
 import { clear, consume, LIMITS, refund } from '@/server/security/rate-limit';
 import { publicRoute } from '@/server/security/route';
@@ -32,7 +33,7 @@ export const POST = publicRoute(
       userAgent: request.headers.get('user-agent'),
     });
     const session = await findSession(db, token);
-    const response = NextResponse.json(toMe(session!));
+    const response = NextResponse.json(await meOf(db, session!));
     setSessionCookie(response, token, { expiresAt, persistent: rememberMe });
     if (isLocale(user.locale)) setLocaleCookie(response, user.locale);
     return response;

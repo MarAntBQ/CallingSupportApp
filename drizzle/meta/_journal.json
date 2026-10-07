@@ -57,6 +57,13 @@
       "when": 1791362494287,
       "tag": "0007_otp",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791375767483,
+      "tag": "0008_organizations",
+      "breakpoints": true
     }
   ]
 }

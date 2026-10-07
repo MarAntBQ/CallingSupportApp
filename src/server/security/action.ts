@@ -3,8 +3,8 @@ import { randomUUID } from 'node:crypto';
 import type { z } from 'zod';
 import { AuthError } from '@/server/auth/errors';
 import { getSession } from '@/server/auth/session';
-import { assertGlobalAdmin, type Session } from '@/server/auth/sessions';
-import type { Permission } from './route';
+import type { Session } from '@/server/auth/sessions';
+import { assertPermission, type Permission } from './permission';
 
 export type ActionResult<T> =
   | { ok: true; data: T }
@@ -19,7 +19,7 @@ export function authedAction<S extends z.ZodType, T>(
     try {
       const session = await getSession();
       if (!session) throw new AuthError(401, 'unauthenticated');
-      if (options.permission === 'global-admin') assertGlobalAdmin(session);
+      await assertPermission(session, options.permission);
       const parsed = schema.safeParse(raw);
       if (!parsed.success) {
         const fields = [...new Set(parsed.error.issues.map((issue) => String(issue.path[0] ?? '')))].filter(Boolean);
