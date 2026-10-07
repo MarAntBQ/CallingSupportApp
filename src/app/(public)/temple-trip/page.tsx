@@ -20,6 +20,7 @@ export default async function TempleTripPage() {
     <PublicRegistration
       unitName={config.unitName}
       logoDataUrl={config.logoDataUrl}
+      retentionMonths={config.retentionMonths}
       recaptchaSiteKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? null}
       trip={trip}
     />

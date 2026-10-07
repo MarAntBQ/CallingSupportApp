@@ -709,7 +709,7 @@
         "quota_exceeded": "There are not enough spots for one of the options you chose.",
         "recaptcha_failed": "We could not verify that you are not a robot. Please try again."
       },
-      "dataNotice": "We process this data only to organize this temple trip and keep it according to our data policy."
+      "dataNotice": "Controller: {unit}. We process this data only to organize this temple trip and keep it for {months} months, according to our data policy:"
     }
   }
 }

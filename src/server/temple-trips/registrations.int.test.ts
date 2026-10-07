@@ -172,6 +172,13 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     expect((await post(bodyOf([participant({ idNumber: 'R200' })]))).status).toBe(201);
   });
 
+  it('una fecha de nacimiento futura se rechaza', async () => {
+    await activeTrip();
+    const response = await post(bodyOf([participant({ idNumber: 'FUT1', birthDate: '2099-01-01' })]));
+    expect(response.status).toBe(400);
+    expect((await response.json()).fields.some((field: string) => field.includes('birthDate'))).toBe(true);
+  });
+
   it('sin consentimiento, el servidor rechaza el envío', async () => {
     await activeTrip();
     const response = await post({ participants: [participant({ idNumber: 'C100' })], consent: false });

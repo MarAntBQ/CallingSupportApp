@@ -58,8 +58,6 @@ function emptyPerson(): Person {
   };
 }
 
-const money = (value: number) => `$${value.toFixed(2)}`;
-
 const ERROR_KEYS = [
   'registration_closed',
   'age_ordinance',
@@ -72,11 +70,13 @@ const ERROR_KEYS = [
 export function PublicRegistration({
   unitName,
   logoDataUrl,
+  retentionMonths,
   recaptchaSiteKey,
   trip,
 }: {
   unitName: string;
   logoDataUrl: string | null;
+  retentionMonths: number;
   recaptchaSiteKey: string | null;
   trip: PublicTripView | null;
 }) {
@@ -109,7 +109,7 @@ export function PublicRegistration({
       ) : !trip.registrationOpen ? (
         <Alert tone="info" role="status" title={t('closed')} />
       ) : (
-        <RegistrationForm trip={trip} recaptchaSiteKey={recaptchaSiteKey} />
+        <RegistrationForm trip={trip} recaptchaSiteKey={recaptchaSiteKey} unitName={unitName} retentionMonths={retentionMonths} />
       )}
 
       <footer className="flex flex-col items-center gap-2 border-t border-border pt-4 text-center text-sm text-text-muted">
@@ -123,11 +123,23 @@ export function PublicRegistration({
   );
 }
 
-function RegistrationForm({ trip, recaptchaSiteKey }: { trip: PublicTripView; recaptchaSiteKey: string | null }) {
+function RegistrationForm({
+  trip,
+  recaptchaSiteKey,
+  unitName,
+  retentionMonths,
+}: {
+  trip: PublicTripView;
+  recaptchaSiteKey: string | null;
+  unitName: string;
+  retentionMonths: number;
+}) {
   const t = useTranslations('templeTrips.public');
   const tErrors = useTranslations('errors');
+  const tCommon = useTranslations('common');
   const tGenders = useTranslations('templeTrips.quotas.genders');
   const locale = useLocale();
+  const formatMoney = (value: number) => new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(value);
   const [people, setPeople] = useState<Person[]>([emptyPerson()]);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -273,6 +285,7 @@ function RegistrationForm({ trip, recaptchaSiteKey }: { trip: PublicTripView; re
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-medium text-text-muted">{t('fields.gender')}</span>
               <select
+                aria-label={t('fields.gender')}
                 className="w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-base text-text focus:outline-2 focus:outline-offset-1 focus:outline-primary"
                 value={person.gender}
                 onChange={(event) => update(index, { gender: event.target.value as Gender })}
@@ -293,7 +306,7 @@ function RegistrationForm({ trip, recaptchaSiteKey }: { trip: PublicTripView; re
           <Services trip={trip} person={person} onChange={(patch) => update(index, patch)} />
           <Ordinances trip={trip} person={person} enabled={(ordinance) => ordinanceEnabled(person, ordinance)} onChange={(patch) => update(index, patch)} />
 
-          <p className="text-sm font-medium text-text">{t('participantCost', { cost: money(costOf(person)) })}</p>
+          <p className="text-sm font-medium text-text">{t('participantCost', { cost: formatMoney(costOf(person)) })}</p>
         </fieldset>
       ))}
 
@@ -302,9 +315,14 @@ function RegistrationForm({ trip, recaptchaSiteKey }: { trip: PublicTripView; re
       </Button>
 
       <section className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
-        <p className="text-base font-semibold text-text">{t('estimatedTotal', { cost: money(total) })}</p>
+        <p className="text-base font-semibold text-text">{t('estimatedTotal', { cost: formatMoney(total) })}</p>
         <p className="text-sm text-text-muted">{t('contributionNote')}</p>
-        <p className="text-sm text-text-muted">{t('dataNotice')}</p>
+        <p className="text-sm text-text-muted">
+          {t('dataNotice', { unit: unitName, months: retentionMonths })}{' '}
+          <Link href="/privacy" className="font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">
+            {tCommon('privacyLink')}
+          </Link>
+        </p>
         <label className="flex items-start gap-2 text-sm text-text">
           <input type="checkbox" className="mt-1 size-4 accent-primary" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
           <span>{t('consent')}</span>

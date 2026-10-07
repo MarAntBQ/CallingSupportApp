@@ -709,7 +709,7 @@
         "quota_exceeded": "No hay cupos suficientes para una de las opciones que elegiste.",
         "recaptcha_failed": "No pudimos verificar que no eres un robot. Intenta de nuevo."
       },
-      "dataNotice": "Tratamos estos datos solo para organizar este viaje al templo y los conservamos según nuestra política de datos."
+      "dataNotice": "Responsable: {unit}. Tratamos estos datos solo para organizar este viaje al templo y los conservamos {months} meses, según nuestra política de datos:"
     }
   }
 }
