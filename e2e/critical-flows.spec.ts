@@ -21,6 +21,11 @@ async function login(page: Page, password: string) {
 
 test.describe.configure({ mode: 'serial' });
 
+test.beforeAll(async ({ request }) => {
+  const response = await request.get('/api/setup');
+  expect(await response.json(), 'la E2E necesita una base vacía: el primer paso crea el primer administrador').toEqual({ needed: true });
+});
+
 test('sin administrador, /admin y /login llevan a /setup', async ({ page }) => {
   await page.goto('/admin');
   await expect(page).toHaveURL(/\/setup$/);
@@ -31,17 +36,17 @@ test('sin administrador, /admin y /login llevan a /setup', async ({ page }) => {
 test('/setup crea el primer SuperAdmin y entra al panel', async ({ page }) => {
   await page.goto('/setup');
   await page.getByRole('radio', { name: es.setup.ward }).check();
-  await page.locator('input[name=unitName]').fill('Barrio de Prueba');
-  await page.locator('input[name=contact]').fill('barrio.prueba@example.com');
-  await page.locator('input[name=firstName]').fill('Ana');
-  await page.locator('input[name=lastName]').fill('Prueba');
-  await page.locator('input[name=email]').fill(EMAIL);
-  await page.locator('input[name=password]').fill(PASSWORD);
-  await page.locator('input[name=confirmPassword]').fill(PASSWORD);
-  await page.locator('input[name=bishopApproved]').check();
-  await page.locator('input[name=bishopApprovedBy]').fill('Obispo de prueba');
-  await page.locator('input[name=bishopApprovedOn]').fill('2026-10-01');
-  await page.locator('input[name=privacyConsent]').check();
+  await page.getByLabel(es.setup.unitName).fill('Barrio de Prueba');
+  await page.getByLabel(es.setup.contact).fill('barrio.prueba@example.com');
+  await page.getByLabel(es.setup.firstName).fill('Ana');
+  await page.getByLabel(es.setup.lastName).fill('Prueba');
+  await page.getByLabel(es.setup.email, { exact: true }).fill(EMAIL);
+  await page.getByLabel(es.setup.password, { exact: true }).fill(PASSWORD);
+  await page.getByLabel(es.setup.confirmPassword).fill(PASSWORD);
+  await page.getByLabel(es.setup.bishopApproved.ward).check();
+  await page.getByLabel(es.setup.bishopApprovedBy).fill('Obispo de prueba');
+  await page.getByLabel(es.setup.bishopApprovedOn).fill('2026-10-01');
+  await page.getByLabel(es.setup.privacy.consent).check();
   await page.getByRole('button', { name: es.setup.submit }).click();
   await expect(page).toHaveURL(/\/admin$/);
   await expect(page.getByTestId('unit-name')).toHaveText('Barrio de Prueba');
@@ -77,7 +82,7 @@ test('Configuración: cambiar el nombre se ve en la barra lateral sin recargar',
   await expect(page).toHaveURL(/\/admin$/);
   await page.getByRole('link', { name: es.admin.nav.settings }).click();
   await expect(page).toHaveURL(/\/admin\/settings$/);
-  await page.locator('input[name=unitName]').fill('Barrio Los Pinos');
+  await page.getByLabel(es.settings.general.unitName).fill('Barrio Los Pinos');
   await page.locator('form').first().getByRole('button', { name: es.settings.save }).click();
   await expect(page.getByText(es.settings.saved)).toBeVisible();
   await expect(page.getByTestId('unit-name')).toHaveText('Barrio Los Pinos');
