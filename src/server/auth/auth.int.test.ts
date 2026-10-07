@@ -1,8 +1,8 @@
 import { fileURLToPath } from 'node:url';
 import { eq, sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { Pool } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { PRIVACY_POLICY_VERSION } from '@/lib/privacy';
 import type { Database } from '@/server/db';
@@ -45,7 +45,7 @@ function sessionCookieFrom(response: Response) {
 }
 
 describe.skipIf(!url)('autenticación contra Postgres', () => {
-  const clients: postgres.Sql[] = [];
+  const pools: Pool[] = [];
   let db: Database;
   let db2: Database;
   let routes: {
@@ -85,14 +85,14 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
       throw new Error('TEST_DATABASE_URL debe apuntar a una base cuyo nombre contenga "test": esta prueba la vacía.');
     }
     process.env.DATABASE_URL = url;
-    const admin = postgres(url!, { prepare: false, max: 1, onnotice: () => {} });
-    await admin.unsafe('drop schema if exists drizzle cascade; drop schema public cascade; create schema public;');
+    const admin = new Pool({ connectionString: url, max: 1 });
+    await admin.query('drop schema if exists drizzle cascade; drop schema public cascade; create schema public;');
     await migrate(drizzle(admin), { migrationsFolder: MIGRATIONS });
     await admin.end();
 
-    for (let i = 0; i < 2; i++) clients.push(postgres(url!, { prepare: false, max: 1, onnotice: () => {} }));
-    db = drizzle(clients[0]!, { schema });
-    db2 = drizzle(clients[1]!, { schema });
+    for (let i = 0; i < 2; i++) pools.push(new Pool({ connectionString: url, max: 1 }));
+    db = drizzle(pools[0]!, { schema });
+    db2 = drizzle(pools[1]!, { schema });
 
     routes = {
       setup: await import('@/app/api/setup/route'),
@@ -109,7 +109,7 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
   });
 
   afterAll(async () => {
-    await Promise.all(clients.map((client) => client.end()));
+    await Promise.all(pools.map((pool) => pool.end()));
   });
 
   it('la migración siembra los cuatro roles', async () => {
@@ -150,8 +150,8 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
     expect(rejected).toHaveLength(1);
     expect((rejected[0] as PromiseRejectedResult).reason).toBeInstanceOf(AuthError);
     expect(((rejected[0] as PromiseRejectedResult).reason as AuthError).status).toBe(404);
-    const [{ total }] = (await db.execute(sql`select count(*)::int as total from users`)) as unknown as [{ total: number }];
-    expect(total).toBe(1);
+    const { rows } = await db.execute<{ total: number }>(sql`select count(*)::int as total from users`);
+    expect(rows[0]!.total).toBe(1);
   }, 30_000);
 
   it('/api/setup: crea el SuperAdmin, guarda la aprobación e inicia sesión; después responde 404', async () => {
