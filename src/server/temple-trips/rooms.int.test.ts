@@ -10,7 +10,7 @@ import { hashPassword } from '@/server/auth/crypto';
 import { createSession, sessionCookieName } from '@/server/auth/sessions';
 import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
-import { assignRoom, createRoom, deleteRoom, listRooms } from '@/server/temple-trips/rooms';
+import { assignRoom, createRoom, deleteRoom, listRooms, updateHousingData } from '@/server/temple-trips/rooms';
 import { buildRoomsExcel } from '@/server/temple-trips/rooms-excel';
 
 const url = process.env.TEST_DATABASE_URL;
@@ -142,6 +142,50 @@ describe.skipIf(!url)('habitaciones del viaje al templo contra Postgres', () => 
     expect(await db.select().from(schema.templeRooms)).toHaveLength(0);
   });
 
+  it('desasignar con roomId null deja al ocupante sin habitación ni rol', async () => {
+    const trip = await lodgingTrip();
+    const room = await createRoom(db, trip.id, '206');
+    const roomId = room.ok ? room.id : '';
+    const person = await occupant(trip.id, { idNumber: 'U1' });
+    await assignRoom(db, person.id, roomId, 'leader');
+    expect(await assignRoom(db, person.id, null)).toEqual({ ok: true });
+    const [row] = await db
+      .select({ roomId: schema.templeParticipants.roomId, roomRole: schema.templeParticipants.roomRole })
+      .from(schema.templeParticipants)
+      .where(eq(schema.templeParticipants.id, person.id));
+    expect(row).toEqual({ roomId: null, roomRole: null });
+  });
+
+  it('la lista de habitaciones no devuelve correo, sexo ni fecha de nacimiento', async () => {
+    const trip = await lodgingTrip();
+    const room = await createRoom(db, trip.id, '206');
+    const person = await occupant(trip.id, { idNumber: 'S1' });
+    await assignRoom(db, person.id, room.ok ? room.id : '');
+    const view = await listRooms(db, trip.id);
+    const occ = view!.rooms[0]!.occupants[0]!;
+    expect(Object.keys(occ).sort()).toEqual(['firstNames', 'fullName', 'id', 'lastNames', 'nationality', 'roomRole']);
+  });
+
+  it('updateHousingData rechaza participante pendiente, sin hospedaje o sin habitación', async () => {
+    const trip = await lodgingTrip();
+    const room = await createRoom(db, trip.id, '206');
+    const roomId = room.ok ? room.id : '';
+    const unassigned = await occupant(trip.id, { idNumber: 'H1' });
+    const pending = await occupant(trip.id, { idNumber: 'H2', approved: false });
+    const noLodging = await occupant(trip.id, { idNumber: 'H3', needsLodging: false });
+    expect(await updateHousingData(db, unassigned.id, { lastNames: 'X' })).toBe(false);
+    expect(await updateHousingData(db, pending.id, { lastNames: 'X' })).toBe(false);
+    expect(await updateHousingData(db, noLodging.id, { lastNames: 'X' })).toBe(false);
+    const assigned = await occupant(trip.id, { idNumber: 'H4' });
+    await assignRoom(db, assigned.id, roomId);
+    expect(await updateHousingData(db, assigned.id, { lastNames: 'Pérez', firstNames: 'Ana', nationality: 'Peruana' })).toBe(true);
+    const [row] = await db
+      .select({ lastNames: schema.templeParticipants.lastNames, nationality: schema.templeParticipants.nationality })
+      .from(schema.templeParticipants)
+      .where(eq(schema.templeParticipants.id, assigned.id));
+    expect(row).toEqual({ lastNames: 'Pérez', nationality: 'Peruana' });
+  });
+
   it('las habitaciones se ordenan en orden natural: 2, 10, 206', async () => {
     const trip = await lodgingTrip();
     for (const number of ['206', '2', '10']) await createRoom(db, trip.id, number);
@@ -164,6 +208,8 @@ describe.skipIf(!url)('habitaciones del viaje al templo contra Postgres', () => 
     await workbook.xlsx.load(buffer! as unknown as Parameters<typeof workbook.xlsx.load>[0]);
     const sheet = workbook.getWorksheet('Habitaciones')!;
     expect(sheet).toBeDefined();
+
+    expect([1, 2, 3, 4, 5, 6, 7].map((index) => sheet.getColumn(index).width)).toEqual([24, 28, 22, 20, 8, 14, 22]);
 
     const header = sheet.getRow(1);
     expect(header.getCell(1).value).toBe('Habitación # 206');

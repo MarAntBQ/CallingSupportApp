@@ -6,7 +6,8 @@ import { templeParticipants, templeRegistrations, templeRooms, templeTrips } fro
 
 type Tx = Parameters<Parameters<Database['transaction']>[0]>[0];
 
-export type RoomOccupant = {
+// Campos que necesita el Excel (solo server-side; NO se envían al cliente).
+export type ExcelOccupant = {
   id: string;
   fullName: string;
   email: string;
@@ -18,11 +19,25 @@ export type RoomOccupant = {
   nationality: string | null;
 };
 
+type OccupantRow = ExcelOccupant & { roomId: string | null };
+
+// Lo que ve la interfaz: sin correo, sexo ni fecha de nacimiento (minimización, Manual 33.8).
+export type RoomOccupant = Pick<ExcelOccupant, 'id' | 'fullName' | 'roomRole' | 'lastNames' | 'firstNames' | 'nationality'>;
+
 export type RoomView = { id: string; number: string; leaders: number; occupants: RoomOccupant[] };
 
 export type RoomsView = { includesLodging: boolean; rooms: RoomView[]; unassigned: RoomOccupant[] };
 
-type OccupantRow = RoomOccupant & { roomId: string | null };
+function toRoomOccupant(occupant: ExcelOccupant): RoomOccupant {
+  return {
+    id: occupant.id,
+    fullName: occupant.fullName,
+    roomRole: occupant.roomRole,
+    lastNames: occupant.lastNames,
+    firstNames: occupant.firstNames,
+    nationality: occupant.nationality,
+  };
+}
 
 function occupantsOfTrip(db: Database | Tx, tripId: string): Promise<OccupantRow[]> {
   return db
@@ -45,7 +60,8 @@ function occupantsOfTrip(db: Database | Tx, tripId: string): Promise<OccupantRow
 }
 
 // Ocupantes de una habitación: líderes primero, luego huéspedes, cada grupo por apellidos/nombre.
-function sortOccupants(a: RoomOccupant, b: RoomOccupant): number {
+type Sortable = { roomRole: RoomRole | null; lastNames: string | null; fullName: string };
+function sortOccupants(a: Sortable, b: Sortable): number {
   if (a.roomRole !== b.roomRole) return a.roomRole === 'leader' ? -1 : 1;
   const an = (a.lastNames ?? a.fullName).toLocaleLowerCase();
   const bn = (b.lastNames ?? b.fullName).toLocaleLowerCase();
@@ -62,8 +78,9 @@ export async function listRooms(db: Database, tripId: string): Promise<RoomsView
   const byRoom = new Map<string, RoomOccupant[]>();
   const unassigned: RoomOccupant[] = [];
   for (const { roomId, ...occupant } of occupants) {
-    if (roomId) (byRoom.get(roomId) ?? byRoom.set(roomId, []).get(roomId)!).push(occupant);
-    else unassigned.push(occupant);
+    const slim = toRoomOccupant(occupant);
+    if (roomId) (byRoom.get(roomId) ?? byRoom.set(roomId, []).get(roomId)!).push(slim);
+    else unassigned.push(slim);
   }
   const roomViews = rooms
     .sort((a, b) => compareNatural(a.number, b.number))
@@ -156,21 +173,25 @@ export async function assignRoom(db: Database, participantId: string, roomId: st
   });
 }
 
+// Solo edita los datos del Excel de un ocupante elegible: aprobado, con hospedaje y asignado a
+// una habitación (los mismos que ve el modal). El servidor revalida lo que la interfaz ya filtra.
 export async function updateHousingData(
   db: Database,
   participantId: string,
   patch: { lastNames?: string; firstNames?: string; nationality?: string },
 ): Promise<boolean> {
+  const [row] = await db
+    .select({ approved: templeParticipants.approved, needsLodging: templeParticipants.needsLodging, roomId: templeParticipants.roomId })
+    .from(templeParticipants)
+    .where(eq(templeParticipants.id, participantId))
+    .limit(1);
+  if (!row || !row.approved || !row.needsLodging || !row.roomId) return false;
   const set: Partial<{ lastNames: string; firstNames: string; nationality: string }> = {};
   if (patch.lastNames !== undefined) set.lastNames = patch.lastNames;
   if (patch.firstNames !== undefined) set.firstNames = patch.firstNames;
   if (patch.nationality !== undefined) set.nationality = patch.nationality;
-  if (Object.keys(set).length === 0) {
-    const [row] = await db.select({ id: templeParticipants.id }).from(templeParticipants).where(eq(templeParticipants.id, participantId)).limit(1);
-    return Boolean(row);
-  }
-  const updated = await db.update(templeParticipants).set(set).where(eq(templeParticipants.id, participantId)).returning({ id: templeParticipants.id });
-  return updated.length > 0;
+  if (Object.keys(set).length > 0) await db.update(templeParticipants).set(set).where(eq(templeParticipants.id, participantId));
+  return true;
 }
 
 export { occupantsOfTrip, sortOccupants };

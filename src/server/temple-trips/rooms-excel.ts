@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { compareNatural, splitFullName } from '@/lib/temple-trips/constants';
 import type { Database } from '@/server/db';
 import { templeRooms } from '@/server/db/schema';
-import { occupantsOfTrip, sortOccupants, type RoomOccupant } from './rooms';
+import { occupantsOfTrip, sortOccupants, type ExcelOccupant } from './rooms';
 
 const HEADER_FILL = 'FFF2CEE2';
 const HEADER_FONT = 'FF880E4F';
@@ -16,7 +16,7 @@ function formatBirthDate(value: string): string {
   return `${Number(day)}/${Number(month)}/${year}`;
 }
 
-function occupantCells(occupant: RoomOccupant, defaultNationality: string): [string, string, string, string, string] {
+function occupantCells(occupant: ExcelOccupant, defaultNationality: string): [string, string, string, string, string] {
   const split = splitFullName(occupant.fullName);
   const lastNames = occupant.lastNames ?? split.lastNames;
   const firstNames = occupant.firstNames ?? split.firstNames;
@@ -29,7 +29,7 @@ export async function buildRoomsExcel(db: Database, tripId: string, defaultNatio
   const rooms = await db.select({ id: templeRooms.id, number: templeRooms.number }).from(templeRooms).where(eq(templeRooms.tripId, tripId));
   if (rooms.length === 0) return null;
   const occupants = await occupantsOfTrip(db, tripId);
-  const byRoom = new Map<string, RoomOccupant[]>();
+  const byRoom = new Map<string, ExcelOccupant[]>();
   for (const { roomId, ...occupant } of occupants) {
     if (roomId) (byRoom.get(roomId) ?? byRoom.set(roomId, []).get(roomId)!).push(occupant);
   }
