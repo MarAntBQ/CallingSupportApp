@@ -261,7 +261,9 @@
       },
       "mailErrors": {
         "smtp_not_configured": "O e-mail (SMTP) ainda não está configurado.",
-        "smtp_password_unreadable": "Não foi possível ler a senha salva: escreva-a de novo e salve."
+        "smtp_password_unreadable": "Não foi possível ler a senha salva: escreva-a de novo e salve.",
+        "smtp_host_not_allowed": "O servidor SMTP aponta para um endereço interno ou privado, que não é permitido em produção.",
+        "invalid_message": "O destinatário ou o assunto do e-mail não são válidos."
       }
     }
   },
@@ -401,7 +403,7 @@
   },
   "mailLogs": {
     "title": "E-mails enviados",
-    "intro": "Os últimos {limit} e-mails que o aplicativo tentou enviar. O conteúdo não é guardado, apenas o destinatário, o assunto e o resultado.",
+    "intro": "Os últimos {limit} e-mails que o aplicativo tentou enviar. O conteúdo não é guardado, apenas o destinatário, o assunto e o resultado, e cada registro é apagado após {days} dias.",
     "caption": "Registro de e-mails",
     "columns": {
       "date": "Data",

@@ -45,6 +45,15 @@ describe('los correos avisan y enlazan, sin datos de terceros (Manual General 38
     }
   });
 
+  it('ningún texto de correo trae escrito un correo o un teléfono', () => {
+    const strings = (value: unknown): string[] =>
+      typeof value === 'string' ? [value] : value && typeof value === 'object' ? Object.values(value).flatMap(strings) : [];
+    for (const messages of [es, pt, en]) {
+      const offenders = strings(messages.emails).filter((text) => /[\w.+-]+@[\w-]+\.[\w.]+|\+?\d[\d\s().-]{6,}\d/.test(text));
+      expect(offenders).toEqual([]);
+    }
+  });
+
   it('el detector marca un dato de una persona', () => {
     expect(placeholders({ aviso: 'Nueva inscripción de {firstName} ({phone})' })).toEqual(['firstName', 'phone']);
   });

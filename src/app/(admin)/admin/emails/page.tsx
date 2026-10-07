@@ -5,7 +5,7 @@ import { getSession } from '@/server/auth/session';
 import { isGlobalAdmin } from '@/server/auth/sessions';
 import { currentConfig } from '@/server/config/current';
 import { getDb } from '@/server/db';
-import { listMailLogs, LOG_LIMIT } from '@/server/mail/service';
+import { listMailLogs, LOG_LIMIT, LOG_RETENTION_DAYS } from '@/server/mail/service';
 import { MailLogTable } from './mail-log-table';
 
 export const dynamic = 'force-dynamic';
@@ -35,7 +35,7 @@ export default async function MailLogsPage() {
     <section className="flex min-w-0 flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-semibold text-text">{t('title')}</h1>
-        <p className="text-text-muted">{t('intro', { limit: LOG_LIMIT })}</p>
+        <p className="text-text-muted">{t('intro', { limit: LOG_LIMIT, days: LOG_RETENTION_DAYS })}</p>
       </div>
       <MailLogTable rows={rows} timeZone={config.timezone} />
     </section>

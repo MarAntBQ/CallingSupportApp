@@ -285,6 +285,10 @@ probar el correo:
 3. "Enviar correo de prueba" y ábrelo en `http://localhost:8025`. Nunca uses un SMTP real para
    probar.
 
+Con `npm run dev` funciona tal cual. Con un build de producción (`npm run build` y `npm run start`),
+agrega `SMTP_ALLOW_PRIVATE_HOSTS=true` en `.env`: en producción la app no se conecta a servidores con
+dirección interna, y `localhost` lo es.
+
 **Pruebas de punta a punta (E2E).** Recorren en un navegador real los flujos críticos: `/setup`,
 inicio y cierre de sesión, redirecciones de `/admin`, Configuración, los tres idiomas y el ancho
 de un teléfono. Corren en el job `e2e` de cada PR. Para correrlas en tu máquina necesitas una base

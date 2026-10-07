@@ -1,5 +1,5 @@
 import 'server-only';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, lt } from 'drizzle-orm';
 import { createTranslator } from 'next-intl';
 import nodemailer, { type Transporter } from 'nodemailer';
 import en from '../../../messages/en.json';
@@ -9,6 +9,8 @@ import { isLocale, type Locale } from '@/i18n/config';
 import { decrypt } from '@/server/crypto/aes';
 import { getDb, type Database } from '@/server/db';
 import { appConfig, emailLog } from '@/server/db/schema';
+import { z } from 'zod';
+import { assertPublicSmtpHost, SmtpHostNotAllowedError } from './host-guard';
 import { buildBrandedEmail } from './template';
 
 const MESSAGES = { es, pt, en };
@@ -17,8 +19,11 @@ export const SEND_TIMEOUT_MS = 30_000;
 export const TEST_TIMEOUT_MS = 15_000;
 export const LOG_LIMIT = 200;
 export const MAX_ERROR_LENGTH = 500;
+export const LOG_RETENTION_DAYS = 90;
 
-export const MAIL_ERROR_CODES = ['smtp_not_configured', 'smtp_password_unreadable'] as const;
+const recipient = z.string().trim().toLowerCase().pipe(z.email().max(254));
+
+export { MAIL_ERROR_CODES } from '@/lib/mail-errors';
 
 export type SmtpSettings = { host: string; port: number; secure: boolean; user: string; password: string };
 
@@ -75,6 +80,7 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number) {
 
 async function log(db: Database, entry: { source: string; to: string; subject: string; success: boolean; error: string | null }) {
   try {
+    await db.delete(emailLog).where(lt(emailLog.createdAt, new Date(Date.now() - LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000)));
     await db.insert(emailLog).values({
       source: entry.source.slice(0, 100),
       emailTo: entry.to.slice(0, 254),
@@ -95,6 +101,11 @@ export async function sendMail(
   let db: Database | undefined;
   try {
     db = options.db ?? getDb();
+    const to = recipient.safeParse(message.to);
+    if (!to.success || /[\r\n]/.test(message.subject) || !message.subject.trim()) {
+      await log(db, { source, to: String(message.to ?? '').replace(/[\r\n]/g, ' '), subject: message.subject.replace(/[\r\n]/g, ' '), success: false, error: 'invalid_message' });
+      return { sent: false, error: 'invalid_message' };
+    }
     const timeoutMs = options.timeoutMs ?? SEND_TIMEOUT_MS;
     const row = await loadSmtp(db);
     if (!row?.host || !row.port || !row.user || !row.passwordEnc) {
@@ -107,6 +118,13 @@ export async function sendMail(
     } catch {
       await log(db, { source, to: message.to, subject: message.subject, success: false, error: 'smtp_password_unreadable' });
       return { sent: false, error: 'smtp_password_unreadable' };
+    }
+    try {
+      await assertPublicSmtpHost(row.host);
+    } catch (error) {
+      const code = error instanceof SmtpHostNotAllowedError ? 'smtp_host_not_allowed' : error instanceof Error ? error.message : String(error);
+      await log(db, { source, to: message.to, subject: message.subject, success: false, error: code });
+      return { sent: false, error: code.slice(0, MAX_ERROR_LENGTH) };
     }
     const t = emailTranslator(message.locale);
     const unitName = row.unitName || 'CallingSupportApp';
@@ -122,7 +140,7 @@ export async function sendMail(
     await withTimeout(
       transport.sendMail({
         from: { name: unitName, address: row.user },
-        to: message.to,
+        to: to.data,
         subject: message.subject,
         html,
         text: message.text,

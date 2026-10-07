@@ -136,6 +136,34 @@ describe.skipIf(!url)('correo contra Postgres', () => {
     expect(Object.keys(rows.rows[0]!).sort()).toEqual(['created_at', 'email_subject', 'email_to', 'error_message', 'id', 'source', 'success']);
   });
 
+  it('un destinatario inválido o un asunto con saltos de línea no se envían ni lanzan', async () => {
+    const admin = await cookieFor('super_admin', 'admin@example.com');
+    await configureSmtp(admin);
+    let calls = 0;
+    const transport = () => ({ sendMail: async () => ((calls += 1), {} as never) });
+    for (const message of [
+      { to: 'no-es-correo', subject: 'Asunto' },
+      { to: 'ana@example.com\r\nBcc: otro@example.com', subject: 'Asunto' },
+      { to: 'ana@example.com', subject: 'Asunto\r\nBcc: otro@example.com' },
+    ]) {
+      expect(await mail.sendMail('prueba', message, { db, transport })).toEqual({ sent: false, error: 'invalid_message' });
+    }
+    expect(calls).toBe(0);
+    const rows = await db.select().from(schema.emailLog);
+    expect(rows.every((row) => row.errorMessage === 'invalid_message' && !/[\r\n]/.test(row.emailTo + row.emailSubject))).toBe(true);
+  });
+
+  it('cada registro se borra a los 90 días: al escribir uno nuevo, se borran los vencidos', async () => {
+    const day = 24 * 60 * 60 * 1000;
+    await db.insert(schema.emailLog).values([
+      { source: 'viejo', emailTo: 'a@example.com', emailSubject: 'Viejo', success: true, createdAt: new Date(Date.now() - 91 * day) },
+      { source: 'reciente', emailTo: 'b@example.com', emailSubject: 'Reciente', success: true, createdAt: new Date(Date.now() - 89 * day) },
+    ]);
+    await mail.sendMail('nuevo', { to: 'c@example.com', subject: 'Nuevo' }, { db });
+    const sources = (await db.select().from(schema.emailLog)).map((row) => row.source).sort();
+    expect(sources).toEqual(['nuevo', 'reciente']);
+  });
+
   it('la contraseña SMTP se guarda cifrada y ningún endpoint la devuelve', async () => {
     const admin = await cookieFor('super_admin', 'admin@example.com');
     const saved = await configureSmtp(admin);

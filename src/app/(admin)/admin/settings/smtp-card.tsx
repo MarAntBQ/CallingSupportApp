@@ -7,11 +7,11 @@ import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { postJson, type ErrorCode } from '@/lib/api-client';
+import { knownMailError } from '@/lib/mail-errors';
 import { SMTP_DEFAULT_PORT, smtpSchema, smtpTestSchema, type SmtpSummary } from '@/lib/validation/smtp';
 import { Card } from './card';
 
 const SMTP_QUERY_KEY = ['config', 'smtp'] as const;
-const MAIL_ERRORS = ['smtp_not_configured', 'smtp_password_unreadable'] as const;
 
 async function fetchSmtp(): Promise<SmtpSummary> {
   const response = await fetch('/api/config/smtp', { cache: 'no-store' });
@@ -108,7 +108,7 @@ function SmtpForm({ summary, currentEmail }: { summary: SmtpSummary; currentEmai
       return;
     }
     const body = (await response?.json().catch(() => null)) as { error?: string; message?: string } | null;
-    const known = MAIL_ERRORS.find((code) => code === body?.message);
+    const known = knownMailError(body?.message);
     const message = known
       ? t(`mailErrors.${known}`)
       : body?.error === 'smtp_failed'

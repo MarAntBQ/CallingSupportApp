@@ -7,6 +7,7 @@ import { TablePagination } from '@/components/table/table-pagination';
 import { TableScroll } from '@/components/table/table-scroll';
 import { TableToolbar } from '@/components/table/table-toolbar';
 import { isLocale } from '@/i18n/config';
+import { knownMailError } from '@/lib/mail-errors';
 import { formatDate } from '@/lib/format';
 import type { SortAccessors } from '@/lib/table/table-logic';
 import { useTableControls } from '@/lib/table/use-table-controls';
@@ -20,8 +21,6 @@ export type MailLogRow = {
   success: boolean;
   error: string | null;
 };
-
-const MAIL_ERRORS = ['smtp_not_configured', 'smtp_password_unreadable'] as const;
 
 export function MailLogTable({ rows, timeZone }: { rows: MailLogRow[]; timeZone: string }) {
   const t = useTranslations('mailLogs');
@@ -42,7 +41,7 @@ export function MailLogTable({ rows, timeZone }: { rows: MailLogRow[]; timeZone:
   const search = useCallback((row: MailLogRow) => [row.source, row.to, row.subject, status(row)].join(' '), [status]);
   const table = useTableControls(rows, { search, defaultSortKey: 'createdAt', defaultSortDir: 'desc', sortAccessors, locale });
   const errorText = (error: string | null) => {
-    const known = MAIL_ERRORS.find((code) => code === error);
+    const known = knownMailError(error);
     return known ? tSmtp(`mailErrors.${known}`) : (error ?? '');
   };
 

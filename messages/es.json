@@ -261,7 +261,9 @@
       },
       "mailErrors": {
         "smtp_not_configured": "El correo (SMTP) todavía no está configurado.",
-        "smtp_password_unreadable": "No se pudo leer la contraseña guardada: vuelve a escribirla y guarda."
+        "smtp_password_unreadable": "No se pudo leer la contraseña guardada: vuelve a escribirla y guarda.",
+        "smtp_host_not_allowed": "El servidor SMTP apunta a una dirección interna o privada, que no se permite en producción.",
+        "invalid_message": "El destinatario o el asunto del correo no son válidos."
       }
     }
   },
@@ -401,7 +403,7 @@
   },
   "mailLogs": {
     "title": "Correos enviados",
-    "intro": "Los últimos {limit} correos que intentó enviar la aplicación. No se guarda el contenido, solo a quién, el asunto y el resultado.",
+    "intro": "Los últimos {limit} correos que intentó enviar la aplicación. No se guarda el contenido, solo a quién, el asunto y el resultado, y cada registro se borra a los {days} días.",
     "caption": "Registro de correos",
     "columns": {
       "date": "Fecha",
