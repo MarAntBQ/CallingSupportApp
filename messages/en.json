@@ -9,7 +9,9 @@
     "required": "This field is required.",
     "invalidEmail": "Enter a valid email address.",
     "notOfficial": "This app is not an official app of The Church of Jesus Christ of Latter-day Saints.",
-    "contact": "Installation contact"
+    "contact": "Installation contact",
+    "privacyLink": "Data policy",
+    "madeWith": "Made with <link>CallingSupportApp</link>"
   },
   "errors": {
     "invalid_credentials": "Incorrect email or password.",
@@ -215,7 +217,11 @@
       "retentionMonths": "Retention (months)",
       "policyVersion": "Policy version",
       "policyVersionHint": "When the policy changes, change the version: registrations record which version they accepted.",
-      "websitePlaceholder": "https://"
+      "websitePlaceholder": "https://",
+      "phone": "Phone",
+      "phoneHint": "The unit's, not a personal one. Ecuador's data law (LOPDP, art. 12) requires it in the policy.",
+      "address": "Legal address",
+      "addressHint": "The unit's address (for example, the meetinghouse), not a personal one. The LOPDP (art. 12) requires it in the policy."
     },
     "errors": {
       "officialName": "It can't include the official name of the Church.",
@@ -223,7 +229,8 @@
       "contact": "Enter a unit email or phone number (3 to 200 characters).",
       "website": "Enter an address that starts with http:// or https://.",
       "timezone": "Choose a time zone from the list.",
-      "retentionMonths": "Enter a number of months between 1 and 120."
+      "retentionMonths": "Enter a number of months between 1 and 120.",
+      "phone": "Enter a valid phone number: numbers, spaces and + ( ) - . (up to 30)."
     }
   },
   "profile": {
@@ -260,6 +267,91 @@
       "currentPassword": "The current password is incorrect.",
       "passwordTooShort": "The new password must be at least {min} characters.",
       "passwordMismatch": "The passwords don't match."
+    }
+  },
+  "privacyPolicy": {
+    "title": "Personal data processing policy",
+    "subtitle": "{unitName} · Policy version: {version}",
+    "subtitleNoUnit": "Policy version: {version}",
+    "notOfficial": "This is not an official page of <church>The Church of Jesus Christ of Latter-day Saints</church>. It is a unit tool, approved by its bishop or branch president, that follows the guidelines of the <handbook>General Handbook, 38.8.21.2</handbook>.",
+    "discrepancy": "Faithful translation of the Spanish text. In case of any discrepancy, the Spanish version prevails until the data controller adapts the policy to their country.",
+    "missingController": "This installation hasn't completed the data controller's details yet (name, address, phone and email), which the law requires to be published. Until then, you shouldn't provide data in this app.",
+    "missingControllerAdmin": "Complete the data controller's details in Settings.",
+    "shortNotice": "{controllerName} uses this data only to organize this activity and does not share it for other purposes. It keeps it for {retentionMonths} months from registration or until the activity ends, whichever is later. Full policy: <policy>data policy</policy>.",
+    "sections": {
+      "s1": {
+        "title": "1. Data controller",
+        "body": "<b>{name}</b>. Address: {address}. Phone: {phone}. Email: <mail>{email}</mail>. City and country: {city}.",
+        "website": "Website: <web>{website}</web>.",
+        "notSet": "Not set up yet."
+      },
+      "s2": {
+        "title": "2. Purpose",
+        "body": "To organize the unit's activities each person signs up for: coordinating participants, slots, transportation, lodging, meals and, on temple trips, the ordinances each person wishes to perform; and to contact registrants with information about that activity.",
+        "notices": "Leaders with permission get a notice by email or Telegram when there are new registrations, with no names or data: the details can only be seen inside the app, while signed in. The app's emails and notices never contain confidential or sensitive information."
+      },
+      "s3": {
+        "title": "3. Legal basis",
+        "body": "The data subject's explicit consent (Ecuador's Organic Law on Personal Data Protection, art. 7 and art. 26). The ordinances chosen are sensitive data, because they relate to religious belief."
+      },
+      "s4": {
+        "title": "4. Data collected",
+        "body": "ID card or passport number, date of birth, name, phone, email, gender, services chosen (transportation, lodging, meals) and ordinances; plus the IP address and date of submission, as evidence of consent. Each activity asks only for the data it needs."
+      },
+      "s5": {
+        "title": "5. Retention",
+        "body": "{months, plural, one {# month} other {# months}} from registration or until the activity ends, whichever is later. After that, the data is permanently deleted."
+      },
+      "s6": {
+        "title": "6. Database",
+        "body": "The data is stored in a private database of this installation, hosted on Supabase."
+      },
+      "s7": {
+        "title": "7. Source of the data",
+        "body": "Provided by the data subject or, for minors, by their father, mother or guardian."
+      },
+      "s8": {
+        "title": "8. Further purposes",
+        "body": "None. The data is not used for any other activity or for personal, political or commercial purposes."
+      },
+      "s9": {
+        "title": "9. Data protection officer",
+        "body": "Not applicable."
+      },
+      "s10": {
+        "title": "10. Transfers",
+        "body": "The app is hosted on Vercel and the database on Supabase, outside the country.",
+        "google": "The form is protected by Google's reCAPTCHA, which receives technical data from the browser.",
+        "none": "There are no other transfers."
+      },
+      "s11": {
+        "title": "11. If the data is not provided",
+        "body": "The registration cannot be processed."
+      },
+      "s12": {
+        "title": "12. If the data is wrong",
+        "body": "Coordinating the activity may fail."
+      },
+      "s13": {
+        "title": "13. Withdrawing consent",
+        "body": "It is free and done by email to the data controller: <mail>{email}</mail>."
+      },
+      "s14": {
+        "title": "14. Data subject's rights",
+        "body": "Access, rectification and updating, deletion, objection, annulment and restriction of processing, by email to the data controller: <mail>{email}</mail>."
+      },
+      "s15": {
+        "title": "15. Portability",
+        "body": "You can request a copy of your data by email to the data controller."
+      },
+      "s16": {
+        "title": "16. Where to complain",
+        "body": "To the data controller (item 1) or to Ecuador's Superintendency of Personal Data Protection."
+      },
+      "s17": {
+        "title": "17. Automated decisions",
+        "body": "None. No profiling of people is done."
+      }
     }
   }
 }

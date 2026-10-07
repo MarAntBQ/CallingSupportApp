@@ -14,7 +14,7 @@ const valid = {
   timezone: 'America/Guayaquil',
   defaultLocale: 'es',
   contact: 'barrio.prueba@example.com',
-  controller: { name: 'Obispado de prueba', email: 'Obispado@Example.com', city: 'Quito, Ecuador', website: '' },
+  controller: { name: 'Obispado de prueba', email: 'Obispado@Example.com', phone: '', address: '', city: 'Quito, Ecuador', website: '' },
   retentionMonths: 12,
   policyVersion: '2026-10',
 };
@@ -63,6 +63,13 @@ describe('configuración: validación compartida', () => {
     expect(configSchema.safeParse({ ...valid, controller: { ...valid.controller, email: 'no-es-correo' } }).success).toBe(false);
   });
 
+  it('teléfono y domicilio del responsable (LOPDP art. 12): opcionales, el teléfono solo con números y signos', () => {
+    const parsed = configSchema.parse({ ...valid, controller: { ...valid.controller, phone: ' +593 2 000 0000 ', address: ' Av. de Prueba 123 ' } });
+    expect(parsed.controller).toMatchObject({ phone: '+593 2 000 0000', address: 'Av. de Prueba 123' });
+    expect(configSchema.parse(valid).controller).toMatchObject({ phone: null, address: null });
+    expect(configSchema.safeParse({ ...valid, controller: { ...valid.controller, phone: 'llamar' } }).success).toBe(false);
+  });
+
   it('meses de retención entre 1 y 120, enteros', () => {
     for (const months of [0, 121, 1.5]) expect(configSchema.safeParse({ ...valid, retentionMonths: months }).success).toBe(false);
     expect(configSchema.safeParse({ ...valid, retentionMonths: 120 }).success).toBe(true);
@@ -70,7 +77,7 @@ describe('configuración: validación compartida', () => {
 
   it('PATCH no acepta el logo ni campos desconocidos', () => {
     expect(configSchema.safeParse({ ...valid, logoDataUrl: PNG }).success).toBe(false);
-    expect(configSchema.safeParse({ ...valid, controller: { ...valid.controller, phone: '1' } }).success).toBe(false);
+    expect(configSchema.safeParse({ ...valid, controller: { ...valid.controller, fax: '1' } }).success).toBe(false);
   });
 });
 

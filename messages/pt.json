@@ -9,7 +9,9 @@
     "required": "Este campo é obrigatório.",
     "invalidEmail": "Digite um e-mail válido.",
     "notOfficial": "Este aplicativo não é oficial de A Igreja de Jesus Cristo dos Santos dos Últimos Dias.",
-    "contact": "Contato da instalação"
+    "contact": "Contato da instalação",
+    "privacyLink": "Política de dados",
+    "madeWith": "Feito com <link>CallingSupportApp</link>"
   },
   "errors": {
     "invalid_credentials": "E-mail ou senha incorretos.",
@@ -215,7 +217,11 @@
       "retentionMonths": "Meses de retenção",
       "policyVersion": "Versão da política",
       "policyVersionHint": "Ao mudar a política, mude a versão: as inscrições guardam com qual versão aceitaram.",
-      "websitePlaceholder": "https://"
+      "websitePlaceholder": "https://",
+      "phone": "Telefone",
+      "phoneHint": "Da unidade, não um pessoal. A lei de dados do Equador (LOPDP, art. 12) pede que seja publicado na política.",
+      "address": "Endereço legal",
+      "addressHint": "Endereço da unidade (por exemplo, o da capela), não um pessoal. A LOPDP (art. 12) pede que seja publicado."
     },
     "errors": {
       "officialName": "Não pode incluir o nome oficial da Igreja.",
@@ -223,7 +229,8 @@
       "contact": "Escreva um e-mail ou telefone da unidade (de 3 a 200 caracteres).",
       "website": "Escreva um endereço que comece com http:// ou https://.",
       "timezone": "Escolha um fuso horário da lista.",
-      "retentionMonths": "Escreva um número de meses entre 1 e 120."
+      "retentionMonths": "Escreva um número de meses entre 1 e 120.",
+      "phone": "Escreva um telefone válido: números, espaços e + ( ) - . (máximo 30)."
     }
   },
   "profile": {
@@ -260,6 +267,91 @@
       "currentPassword": "A senha atual está incorreta.",
       "passwordTooShort": "A nova senha deve ter pelo menos {min} caracteres.",
       "passwordMismatch": "As senhas não coincidem."
+    }
+  },
+  "privacyPolicy": {
+    "title": "Política de tratamento de dados pessoais",
+    "subtitle": "{unitName} · Versão da política: {version}",
+    "subtitleNoUnit": "Versão da política: {version}",
+    "notOfficial": "Esta não é uma página oficial de <church>A Igreja de Jesus Cristo dos Santos dos Últimos Dias</church>. É uma ferramenta da unidade, aprovada pelo seu bispo ou presidente de ramo, que segue as diretrizes do <handbook>Manual Geral, 38.8.21.2</handbook>.",
+    "discrepancy": "Tradução fiel do texto em espanhol. Em caso de discrepância, prevalece a versão em espanhol, enquanto o responsável não adaptar a política ao seu país.",
+    "missingController": "Esta instalação ainda não completou os dados do responsável (nome, endereço, telefone e e-mail), que a lei exige publicar. Enquanto isso, você não deveria entregar dados neste aplicativo.",
+    "missingControllerAdmin": "Complete os dados do responsável em Configurações.",
+    "shortNotice": "{controllerName} usa estes dados apenas para organizar esta atividade e não os compartilha para outros fins. Guarda-os por {retentionMonths} meses desde a inscrição ou até o fim da atividade, o que ocorrer por último. Política completa: <policy>política de dados</policy>.",
+    "sections": {
+      "s1": {
+        "title": "1. Responsável pelo tratamento",
+        "body": "<b>{name}</b>. Endereço: {address}. Telefone: {phone}. E-mail: <mail>{email}</mail>. Cidade e país: {city}.",
+        "website": "Site: <web>{website}</web>.",
+        "notSet": "Ainda não configurado."
+      },
+      "s2": {
+        "title": "2. Finalidade",
+        "body": "Organizar as atividades da unidade nas quais cada pessoa se inscreve: coordenar participantes, vagas, transporte, hospedagem, refeições e, nas viagens ao templo, as ordenanças que cada pessoa deseja realizar; e contatar os inscritos com informações dessa atividade.",
+        "notices": "Os líderes com permissão recebem um aviso por e-mail ou Telegram quando há novas inscrições, sem nomes nem dados: o detalhe só é visto dentro do aplicativo, com sessão iniciada. Os e-mails e avisos do aplicativo nunca levam informações confidenciais ou delicadas."
+      },
+      "s3": {
+        "title": "3. Base legal",
+        "body": "O consentimento explícito da pessoa titular (Lei Orgânica de Proteção de Dados Pessoais do Equador, art. 7 e art. 26). As ordenanças escolhidas são dados sensíveis, porque se relacionam com a crença religiosa."
+      },
+      "s4": {
+        "title": "4. Dados coletados",
+        "body": "Documento de identidade ou passaporte, data de nascimento, nome, telefone, e-mail, gênero, serviços escolhidos (transporte, hospedagem, refeições) e ordenanças; além disso, o endereço IP e a data do envio, como evidência do consentimento. Cada atividade pede apenas os dados de que precisa."
+      },
+      "s5": {
+        "title": "5. Conservação",
+        "body": "{months, plural, one {# mês} other {# meses}} desde a inscrição ou até o fim da atividade, o que ocorrer por último. Depois, os dados são eliminados definitivamente."
+      },
+      "s6": {
+        "title": "6. Banco de dados",
+        "body": "Os dados são guardados em um banco de dados privado desta instalação, hospedado no Supabase."
+      },
+      "s7": {
+        "title": "7. Origem dos dados",
+        "body": "São fornecidos pela pessoa titular ou, no caso de menores de idade, por seu pai, mãe ou tutor."
+      },
+      "s8": {
+        "title": "8. Finalidades posteriores",
+        "body": "Nenhuma. Os dados não são usados em outra atividade nem para fins pessoais, políticos ou comerciais."
+      },
+      "s9": {
+        "title": "9. Encarregado de proteção de dados",
+        "body": "Não se aplica."
+      },
+      "s10": {
+        "title": "10. Transferências",
+        "body": "O aplicativo é hospedado na Vercel e o banco de dados no Supabase, fora do país.",
+        "google": "O formulário é protegido pelo reCAPTCHA do Google, que recebe dados técnicos do navegador.",
+        "none": "Não há outras transferências."
+      },
+      "s11": {
+        "title": "11. Se os dados não forem fornecidos",
+        "body": "Não é possível processar a inscrição."
+      },
+      "s12": {
+        "title": "12. Se os dados estiverem errados",
+        "body": "A coordenação da atividade pode falhar."
+      },
+      "s13": {
+        "title": "13. Revogar o consentimento",
+        "body": "É gratuito e se faz por e-mail ao responsável: <mail>{email}</mail>."
+      },
+      "s14": {
+        "title": "14. Direitos da pessoa titular",
+        "body": "Acesso, retificação e atualização, eliminação, oposição, anulação e limitação do tratamento, por e-mail ao responsável: <mail>{email}</mail>."
+      },
+      "s15": {
+        "title": "15. Portabilidade",
+        "body": "Você pode pedir uma cópia dos seus dados por e-mail ao responsável."
+      },
+      "s16": {
+        "title": "16. Onde reclamar",
+        "body": "Perante o responsável (item 1) ou perante a Superintendência de Proteção de Dados Pessoais do Equador."
+      },
+      "s17": {
+        "title": "17. Decisões automatizadas",
+        "body": "Nenhuma. Não são feitos perfis das pessoas."
+      }
     }
   }
 }

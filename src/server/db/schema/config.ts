@@ -13,6 +13,8 @@ export const appConfig = pgTable(
     contact: text('contact'),
     controllerName: text('controller_name'),
     controllerEmail: text('controller_email'),
+    controllerPhone: text('controller_phone'),
+    controllerAddress: text('controller_address'),
     controllerCity: text('controller_city'),
     controllerWebsite: text('controller_website'),
     retentionMonths: integer('retention_months').notNull().default(12),

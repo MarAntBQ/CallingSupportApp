@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { LOCALES } from '@/i18n/config';
 import { containsOfficialChurchName } from '@/lib/church-name';
+import { PHONE_PATTERN } from '@/lib/validation/phone';
 
 export const DEFAULT_TIMEZONE = 'America/Guayaquil';
 
@@ -71,6 +72,14 @@ export const configSchema = z.strictObject({
       .transform((value) => value || null)
       .pipe(z.email().max(254).nullable())
       .nullable(),
+    phone: z
+      .string()
+      .trim()
+      .max(30)
+      .regex(PHONE_PATTERN)
+      .transform((value) => value || null)
+      .nullable(),
+    address: optionalText(200),
     city: optionalText(150),
     website: z
       .string()
@@ -104,7 +113,14 @@ export type PublicConfig = {
   timezone: string;
   defaultLocale: (typeof LOCALES)[number];
   contact: string | null;
-  controller: { name: string | null; email: string | null; city: string | null; website: string | null };
+  controller: {
+    name: string | null;
+    email: string | null;
+    phone: string | null;
+    address: string | null;
+    city: string | null;
+    website: string | null;
+  };
   retentionMonths: number;
   policyVersion: string;
 };
