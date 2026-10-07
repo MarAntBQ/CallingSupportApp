@@ -46,6 +46,8 @@ export async function performSetup(
       .returning({ id: users.id });
 
     await tx.insert(installation).values({
+      unitType: input.unitType,
+      unitName: input.unitName,
       bishopApprovedBy: input.bishopApprovedBy,
       bishopApprovedOn: input.bishopApprovedOn,
     });

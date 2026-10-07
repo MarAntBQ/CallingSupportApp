@@ -23,12 +23,14 @@ const url = process.env.TEST_DATABASE_URL;
 const MIGRATIONS = fileURLToPath(new URL('../../../drizzle', import.meta.url));
 
 const setupBody = {
+  unitType: 'branch',
+  unitName: 'Rama de Prueba',
   firstName: 'Ana',
   lastName: 'Pérez',
   email: 'ana@example.com',
   password: 'contraseña-larga',
   bishopApproved: true,
-  bishopApprovedBy: 'Obispo de prueba',
+  bishopApprovedBy: 'Presidente de rama de prueba',
   bishopApprovedOn: '2026-01-15',
   privacyConsent: true,
   locale: 'pt',
@@ -183,11 +185,34 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
     expect(admin!.locale).toBe('pt');
 
     const [approval] = await db.select().from(schema.installation);
-    expect(approval).toMatchObject({ bishopApprovedBy: 'Obispo de prueba', bishopApprovedOn: '2026-01-15' });
+    expect(approval).toMatchObject({
+      unitType: 'branch',
+      unitName: 'Rama de Prueba',
+      bishopApprovedBy: 'Presidente de rama de prueba',
+      bishopApprovedOn: '2026-01-15',
+    });
 
     expect(await (await routes.setup.GET(getRequest('/api/setup'))).json()).toEqual({ needed: false });
     expect((await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, email: 'otro@example.com' }))).status).toBe(404);
   }, 30_000);
+
+  it('/api/setup sin el tipo o el nombre de la unidad responde 400 y no crea nada', async () => {
+    for (const missing of ['unitType', 'unitName'] as const) {
+      const response = await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, [missing]: undefined }));
+      expect(response.status).toBe(400);
+      expect((await response.json()).fields).toContain(missing);
+    }
+    expect(await db.select().from(schema.users)).toHaveLength(0);
+  });
+
+  it('/api/setup rechaza un nombre de unidad con el nombre oficial de la Iglesia', async () => {
+    const response = await routes.setup.POST(
+      jsonRequest('/api/setup', { ...setupBody, unitName: 'Barrio Iglesia de Jesucristo Centro' }),
+    );
+    expect(response.status).toBe(400);
+    expect((await response.json()).issues).toEqual([{ field: 'unitName', code: 'official_name' }]);
+    expect(await db.select().from(schema.installation)).toHaveLength(0);
+  });
 
   it('/api/setup sin el consentimiento del aviso de privacidad responde 400', async () => {
     const response = await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, privacyConsent: false }));

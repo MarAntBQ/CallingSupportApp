@@ -51,6 +51,15 @@
   "setup": {
     "title": "Poner en marcha la aplicación",
     "intro": "Crea la primera cuenta de administrador de esta instalación. Solo se puede hacer una vez.",
+    "unitSection": "Tu unidad",
+    "unitType": "La unidad es",
+    "ward": "Barrio",
+    "branch": "Rama",
+    "unitName": "Nombre de la unidad",
+    "unitNameHint": "Por ejemplo: Barrio Los Pinos o Rama Santo Domingo Norte.",
+    "unitTypeRequired": "Elige si la unidad es un barrio o una rama.",
+    "unitNameRequired": "Escribe el nombre de la unidad.",
+    "officialName": "El nombre no puede incluir el nombre oficial de la Iglesia.",
     "accountSection": "Tu cuenta",
     "firstName": "Nombres",
     "lastName": "Apellidos",
@@ -60,10 +69,26 @@
     "passwordTooShort": "La contraseña debe tener al menos {min} caracteres.",
     "confirmPassword": "Confirma la contraseña",
     "passwordMismatch": "Las contraseñas no coinciden.",
-    "approvalSection": "Aprobación del obispo",
-    "approvalIntro": "Las pautas de la Iglesia para los recursos en línea piden que el obispo apruebe primero su uso en el barrio.",
-    "bishopApproved": "El obispo aprobó usar esta aplicación en la unidad.",
-    "bishopApprovedRequired": "Sin la aprobación del obispo no se puede terminar.",
+    "approvalSection": {
+      "ward": "Aprobación del obispo",
+      "branch": "Aprobación del presidente de rama",
+      "none": "Aprobación de quien preside la unidad"
+    },
+    "approvalIntro": {
+      "ward": "Las pautas de la Iglesia para los recursos en línea piden que el obispo apruebe primero su uso en el barrio.",
+      "branch": "Las pautas de la Iglesia para los recursos en línea piden que el presidente de rama apruebe primero su uso en la rama.",
+      "none": "Las pautas de la Iglesia para los recursos en línea piden que quien preside la unidad apruebe primero su uso."
+    },
+    "bishopApproved": {
+      "ward": "El obispo aprobó usar esta aplicación en el barrio.",
+      "branch": "El presidente de rama aprobó usar esta aplicación en la rama.",
+      "none": "Quien preside la unidad aprobó usar esta aplicación."
+    },
+    "bishopApprovedRequired": {
+      "ward": "Sin la aprobación del obispo no se puede terminar.",
+      "branch": "Sin la aprobación del presidente de rama no se puede terminar.",
+      "none": "Sin la aprobación de quien preside la unidad no se puede terminar."
+    },
     "bishopApprovedBy": "Nombre de quien aprobó",
     "bishopApprovedOn": "Fecha de la aprobación",
     "futureDate": "La fecha no puede ser futura.",
@@ -71,7 +96,11 @@
     "submitting": "Creando la cuenta…",
     "privacy": {
       "title": "Aviso de privacidad",
-      "controller": "Responsable de los datos: el obispado de esta unidad.",
+      "controller": {
+        "ward": "Responsable de los datos: el obispado de esta unidad.",
+        "branch": "Responsable de los datos: la presidencia de rama de esta unidad.",
+        "none": "Responsable de los datos: quienes presiden esta unidad (el obispado o la presidencia de rama)."
+      },
       "what": "Guardamos tus nombres, tu correo y tu contraseña (guardada de forma que nadie puede leerla, ni los administradores) para tu cuenta de administrador, y el nombre de quien aprobó y la fecha, como constancia de la aprobación (Manual General 38.8.24.2).",
       "who": "Solo los administradores de esta instalación pueden verlos. No se usan para otro fin ni se entregan a nadie.",
       "howLong": "Se guardan mientras tu cuenta exista. Si se elimina, se borran.",

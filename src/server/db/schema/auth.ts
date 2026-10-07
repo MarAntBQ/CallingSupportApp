@@ -58,9 +58,14 @@ export const installation = pgTable(
   'installation',
   {
     id: smallint('id').primaryKey().default(1),
+    unitType: text('unit_type').notNull().default('ward'),
+    unitName: text('unit_name').notNull().default(''),
     bishopApprovedBy: text('bishop_approved_by').notNull(),
     bishopApprovedOn: date('bishop_approved_on').notNull(),
     setupCompletedAt: timestamp('setup_completed_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [check('installation_single_row', sql`${table.id} = 1`)],
+  (table) => [
+    check('installation_single_row', sql`${table.id} = 1`),
+    check('installation_unit_type_valid', sql`${table.unitType} in ('ward', 'branch')`),
+  ],
 );

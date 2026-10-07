@@ -28,7 +28,10 @@ export const POST = publicRoute(
     const parsed = setupSchema.safeParse(await request.json().catch(() => null));
     if (!parsed.success) {
       const fields = [...new Set(parsed.error.issues.map((issue) => String(issue.path[0] ?? '')))].filter(Boolean);
-      return NextResponse.json({ error: 'invalid_input', fields }, { status: 400 });
+      const issues = parsed.error.issues
+        .filter((issue) => issue.code === 'custom')
+        .map((issue) => ({ field: String(issue.path[0] ?? ''), code: issue.message }));
+      return NextResponse.json({ error: 'invalid_input', fields, issues }, { status: 400 });
     }
 
     const { userId } = await performSetup(db, parsed.data);

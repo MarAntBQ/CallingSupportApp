@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { LOCALES } from '@/i18n/config';
+import { containsOfficialChurchName } from '@/lib/church-name';
 
 export const PASSWORD_MIN_LENGTH = 8;
 
@@ -16,7 +17,18 @@ export const loginSchema = z.object({
   rememberMe: z.boolean().optional().default(false),
 });
 
+export const UNIT_TYPES = ['ward', 'branch'] as const;
+
+export type UnitType = (typeof UNIT_TYPES)[number];
+
 export const setupSchema = z.object({
+  unitType: z.enum(UNIT_TYPES),
+  unitName: z
+    .string()
+    .trim()
+    .min(2)
+    .max(100)
+    .refine((value) => !containsOfficialChurchName(value), { message: 'official_name' }),
   firstName: name,
   lastName: name,
   email,

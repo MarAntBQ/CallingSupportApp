@@ -5,6 +5,8 @@ import { generateSessionToken, hashPassword, hashSessionToken, verifyPassword } 
 import { readCookie } from './session';
 
 const validSetup = {
+  unitType: 'ward',
+  unitName: 'Barrio Los Pinos',
   firstName: 'Ana',
   lastName: 'Pérez',
   email: 'ana@example.com',
@@ -57,6 +59,14 @@ describe('validación', () => {
     expect(setupSchema.safeParse({ ...validSetup, bishopApproved: false }).success).toBe(false);
     expect(setupSchema.safeParse({ ...validSetup, privacyConsent: false }).success).toBe(false);
     expect(setupSchema.safeParse({ ...validSetup, locale: 'fr' }).success).toBe(false);
+  });
+
+  it('exige tipo y nombre de la unidad, y rechaza el nombre oficial de la Iglesia', () => {
+    expect(setupSchema.safeParse({ ...validSetup, unitType: 'stake' }).success).toBe(false);
+    expect(setupSchema.safeParse({ ...validSetup, unitName: ' ' }).success).toBe(false);
+    const official = setupSchema.safeParse({ ...validSetup, unitName: 'Rama Iglesia de Jesucristo' });
+    expect(official.success).toBe(false);
+    expect(official.error?.issues[0]).toMatchObject({ path: ['unitName'], message: 'official_name' });
   });
 
   it('rechaza una fecha de aprobación futura y una contraseña corta', () => {

@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { postJson, type ErrorCode } from '@/lib/api-client';
 import { PRIVACY_POLICY_URL } from '@/lib/privacy';
-import { PASSWORD_MIN_LENGTH, setupSchema } from '@/lib/validation/auth';
+import { PASSWORD_MIN_LENGTH, setupSchema, UNIT_TYPES, type UnitType } from '@/lib/validation/auth';
 
 type FieldName =
+  | 'unitType'
+  | 'unitName'
   | 'firstName'
   | 'lastName'
   | 'email'
@@ -22,6 +24,8 @@ type FieldName =
   | 'privacyConsent';
 
 const FIELD_ORDER: FieldName[] = [
+  'unitType',
+  'unitName',
   'firstName',
   'lastName',
   'email',
@@ -47,16 +51,21 @@ export function SetupForm() {
   const router = useRouter();
   const locale = useLocale();
   const formRef = useRef<HTMLFormElement>(null);
+  const unitTypeId = useId();
   const approvalId = useId();
   const consentId = useId();
+  const [unitType, setUnitType] = useState<UnitType | null>(null);
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
   const [formError, setFormError] = useState<ErrorCode | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const leader = unitType ?? 'none';
 
   function messageFor(field: string, code?: string) {
+    if (field === 'unitType') return t('unitTypeRequired');
+    if (field === 'unitName') return code === 'official_name' ? t('officialName') : t('unitNameRequired');
     if (field === 'email') return tCommon('invalidEmail');
     if (field === 'password') return t('passwordTooShort', { min: PASSWORD_MIN_LENGTH });
-    if (field === 'bishopApproved') return t('bishopApprovedRequired');
+    if (field === 'bishopApproved') return t(`bishopApprovedRequired.${leader}`);
     if (field === 'privacyConsent') return t('privacy.consentRequired');
     if (field === 'bishopApprovedOn' && code === 'future_date') return t('futureDate');
     return tCommon('required');
@@ -73,6 +82,8 @@ export function SetupForm() {
     const form = new FormData(event.currentTarget);
     const value = (name: string) => String(form.get(name) ?? '');
     const input = {
+      unitType: value('unitType') || undefined,
+      unitName: value('unitName'),
       firstName: value('firstName'),
       lastName: value('lastName'),
       email: value('email'),
@@ -112,7 +123,8 @@ export function SetupForm() {
       router.replace('/login');
       return;
     }
-    const serverErrors = Object.fromEntries(result.fields.map((field) => [field, messageFor(field)]));
+    const codes = Object.fromEntries(result.issues.map((issue) => [issue.field, issue.code]));
+    const serverErrors = Object.fromEntries(result.fields.map((field) => [field, messageFor(field, codes[field])]));
     setErrors(serverErrors);
     focusFirst(serverErrors);
     setFormError(result.error);
@@ -122,6 +134,45 @@ export function SetupForm() {
   return (
     <form ref={formRef} onSubmit={onSubmit} noValidate className="flex flex-col gap-8">
       {formError && <Alert tone="danger" role="alert" title={tErrors(formError)} />}
+
+      <fieldset className="flex flex-col gap-5">
+        <legend className="mb-4 text-lg font-semibold text-text">{t('unitSection')}</legend>
+        <div
+          role="radiogroup"
+          aria-labelledby={`${unitTypeId}-label`}
+          aria-describedby={errors.unitType ? `${unitTypeId}-error` : undefined}
+          aria-invalid={errors.unitType ? true : undefined}
+          className="flex flex-col gap-1.5"
+        >
+          <p id={`${unitTypeId}-label`} className="text-sm font-medium text-text-muted">
+            {t('unitType')}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {UNIT_TYPES.map((type) => (
+              <label
+                key={type}
+                className="flex min-w-32 items-center gap-2 rounded-sm border border-border-strong bg-surface px-4 py-2 text-base text-text has-checked:border-primary has-checked:text-primary-strong"
+              >
+                <input
+                  type="radio"
+                  name="unitType"
+                  value={type}
+                  checked={unitType === type}
+                  onChange={() => setUnitType(type)}
+                  className="size-4 accent-primary"
+                />
+                {t(type)}
+              </label>
+            ))}
+          </div>
+          {errors.unitType && (
+            <p id={`${unitTypeId}-error`} className="text-sm text-danger-strong">
+              {errors.unitType}
+            </p>
+          )}
+        </div>
+        <Field label={t('unitName')} name="unitName" required hint={t('unitNameHint')} error={errors.unitName} />
+      </fieldset>
 
       <fieldset className="flex flex-col gap-5">
         <legend className="mb-4 text-lg font-semibold text-text">{t('accountSection')}</legend>
@@ -150,8 +201,8 @@ export function SetupForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-5">
-        <legend className="mb-2 text-lg font-semibold text-text">{t('approvalSection')}</legend>
-        <p className="text-sm text-text-muted">{t('approvalIntro')}</p>
+        <legend className="mb-2 text-lg font-semibold text-text">{t(`approvalSection.${leader}`)}</legend>
+        <p className="text-sm text-text-muted">{t(`approvalIntro.${leader}`)}</p>
         <div className="flex flex-col gap-1.5">
           <label htmlFor={approvalId} className="flex items-start gap-2 text-base text-text">
             <input
@@ -163,7 +214,7 @@ export function SetupForm() {
               aria-describedby={errors.bishopApproved ? `${approvalId}-error` : undefined}
               className="mt-1 size-4 accent-primary"
             />
-            {t('bishopApproved')}
+            {t(`bishopApproved.${leader}`)}
           </label>
           {errors.bishopApproved && (
             <p id={`${approvalId}-error`} className="pl-6 text-sm text-danger-strong">
@@ -188,7 +239,7 @@ export function SetupForm() {
           {t('privacy.title')}
         </h2>
         <ul className="flex list-disc flex-col gap-1 pl-5 text-sm text-text-muted">
-          <li>{t('privacy.controller')}</li>
+          <li>{t(`privacy.controller.${leader}`)}</li>
           <li>{t('privacy.what')}</li>
           <li>{t('privacy.who')}</li>
           <li>{t('privacy.howLong')}</li>
