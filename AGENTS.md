@@ -235,6 +235,11 @@ Detalle y checklist en [SECURITY.md](SECURITY.md#cómo-se-protege-la-aplicación
 
 - **Móvil primero:** todo formulario público se prueba en un teléfono, sin zoom ni
   desborde horizontal.
+- **Cursor de mano en todo lo interactivo** (botones, enlaces, selectores, casillas, radios y
+  sus etiquetas) y "no permitido" en lo deshabilitado. Lo pone la regla global de
+  `src/app/globals.css` (`@layer base`), cuidada por `src/app/interaction-cursor.test.ts`. Un
+  elemento interactivo que no sea uno de esos (un `div` clickeable) es un error: usa un
+  `button`.
 
 ## Skills del repositorio
 
