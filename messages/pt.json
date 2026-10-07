@@ -110,7 +110,10 @@
       "policyLink": "Ler a política de dados",
       "consent": "Li o aviso e aceito que estes dados sejam guardados para administrar o aplicativo da unidade.",
       "consentRequired": "Para continuar, aceite o aviso de privacidade."
-    }
+    },
+    "contact": "Contato da instalação",
+    "contactHint": "E-mail ou telefone da unidade, não um pessoal. Aparece no rodapé de todas as páginas.",
+    "contactRequired": "Escreva um e-mail ou telefone da unidade (de 3 a 200 caracteres)."
   },
   "admin": {
     "navLabel": "Menu do painel",

@@ -7,6 +7,7 @@ import { readCookie } from './session';
 const validSetup = {
   unitType: 'ward',
   unitName: 'Barrio Los Pinos',
+  contact: 'barrio.pinos@example.com',
   firstName: 'Ana',
   lastName: 'Pérez',
   email: 'ana@example.com',

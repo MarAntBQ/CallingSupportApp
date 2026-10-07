@@ -25,6 +25,7 @@ const MIGRATIONS = fileURLToPath(new URL('../../../drizzle', import.meta.url));
 const setupBody = {
   unitType: 'branch',
   unitName: 'Rama de Prueba',
+  contact: 'rama.prueba@example.com',
   firstName: 'Ana',
   lastName: 'Pérez',
   email: 'ana@example.com',
@@ -191,14 +192,14 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
       bishopApprovedOn: '2026-01-15',
     });
     const [config] = await db.select().from(schema.appConfig);
-    expect(config).toMatchObject({ unitName: 'Rama de Prueba', defaultLocale: 'pt' });
+    expect(config).toMatchObject({ unitName: 'Rama de Prueba', contact: 'rama.prueba@example.com', defaultLocale: 'pt' });
 
     expect(await (await routes.setup.GET(getRequest('/api/setup'))).json()).toEqual({ needed: false });
     expect((await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, email: 'otro@example.com' }))).status).toBe(404);
   }, 30_000);
 
-  it('/api/setup sin el tipo o el nombre de la unidad responde 400 y no crea nada', async () => {
-    for (const missing of ['unitType', 'unitName'] as const) {
+  it('/api/setup sin el tipo, el nombre o el contacto de la unidad responde 400 y no crea nada', async () => {
+    for (const missing of ['unitType', 'unitName', 'contact'] as const) {
       const response = await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, [missing]: undefined }));
       expect(response.status).toBe(400);
       expect((await response.json()).fields).toContain(missing);
@@ -213,6 +214,9 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
     expect(response.status).toBe(400);
     expect((await response.json()).issues).toEqual([{ field: 'unitName', code: 'official_name' }]);
     expect(await db.select().from(schema.installation)).toHaveLength(0);
+    const contact = await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, contact: 'Church of Jesus Christ' }));
+    expect(contact.status).toBe(400);
+    expect((await contact.json()).issues).toEqual([{ field: 'contact', code: 'official_name' }]);
   });
 
   it('/api/setup sin el consentimiento del aviso de privacidad responde 400', async () => {

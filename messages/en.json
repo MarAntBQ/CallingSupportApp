@@ -110,7 +110,10 @@
       "policyLink": "Read the data policy",
       "consent": "I read the notice and agree that this data is stored to administer the unit's app.",
       "consentRequired": "To continue, accept the privacy notice."
-    }
+    },
+    "contact": "Installation contact",
+    "contactHint": "A unit email or phone number, not a personal one. It appears in the footer of every page.",
+    "contactRequired": "Enter a unit email or phone number (3 to 200 characters)."
   },
   "admin": {
     "navLabel": "Dashboard menu",

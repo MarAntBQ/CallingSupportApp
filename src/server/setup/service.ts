@@ -47,8 +47,11 @@ export async function performSetup(
 
     await tx
       .insert(appConfig)
-      .values({ id: 1, unitName: input.unitName, defaultLocale: input.locale })
-      .onConflictDoUpdate({ target: appConfig.id, set: { unitName: input.unitName, defaultLocale: input.locale } });
+      .values({ id: 1, unitName: input.unitName, contact: input.contact, defaultLocale: input.locale })
+      .onConflictDoUpdate({
+        target: appConfig.id,
+        set: { unitName: input.unitName, contact: input.contact, defaultLocale: input.locale },
+      });
 
     await tx.insert(installation).values({
       unitType: input.unitType,

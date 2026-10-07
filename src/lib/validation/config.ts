@@ -25,6 +25,13 @@ export function timeZoneOptions(): string[] {
   return [...zones.filter((zone) => zone.startsWith('America/')), 'UTC'];
 }
 
+export const installationContact = z
+  .string()
+  .trim()
+  .min(3)
+  .max(200)
+  .refine((value) => !containsOfficialChurchName(value), { message: 'official_name' });
+
 const optionalText = (max: number) =>
   z
     .string()
@@ -54,12 +61,7 @@ export const configSchema = z.strictObject({
       return zone;
     }),
   defaultLocale: z.enum(LOCALES),
-  contact: z
-    .string()
-    .trim()
-    .min(3)
-    .max(200)
-    .refine((value) => !containsOfficialChurchName(value), { message: 'official_name' }),
+  contact: installationContact,
   controller: z.strictObject({
     name: optionalText(150),
     email: z

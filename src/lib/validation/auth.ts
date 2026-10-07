@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { LOCALES } from '@/i18n/config';
 import { containsOfficialChurchName } from '@/lib/church-name';
+import { installationContact } from '@/lib/validation/config';
 
 export const PASSWORD_MIN_LENGTH = 8;
 
@@ -29,6 +30,7 @@ export const setupSchema = z.object({
     .min(2)
     .max(100)
     .refine((value) => !containsOfficialChurchName(value), { message: 'official_name' }),
+  contact: installationContact,
   firstName: name,
   lastName: name,
   email,
