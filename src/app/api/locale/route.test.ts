@@ -5,7 +5,7 @@ function post(body: string) {
   return POST(
     new Request('http://localhost/api/locale', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Origin: 'http://localhost' },
       body,
     }),
   );

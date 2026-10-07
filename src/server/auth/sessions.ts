@@ -1,14 +1,19 @@
 import 'server-only';
-import { and, count, eq, gt, gte, isNull } from 'drizzle-orm';
+import { and, count, eq, gt, gte, isNull, lt } from 'drizzle-orm';
 import { GLOBAL_ADMIN_LEVEL, MODULES, type ModuleKey } from '@/lib/modules';
 import type { Database } from '@/server/db';
 import { roles, sessions, users } from '@/server/db/schema';
 import { generateSessionToken, hashSessionToken } from './crypto';
 import { AuthError } from './errors';
 
-export const SESSION_COOKIE = 'csa_session';
 export const SESSION_TTL_MS = 60 * 60 * 1000;
-export const REMEMBER_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+export const REMEMBER_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+export const IDLE_TIMEOUT_MS = 8 * 60 * 60 * 1000;
+export const TOUCH_INTERVAL_MS = 5 * 60 * 1000;
+
+export function sessionCookieName() {
+  return process.env.NODE_ENV === 'production' ? '__Host-csa_session' : 'csa_session';
+}
 
 export type SessionUser = {
   id: string;
@@ -47,6 +52,7 @@ export async function findSession(db: Database, token: string | null | undefined
     .select({
       id: sessions.id,
       expiresAt: sessions.expiresAt,
+      lastSeenAt: sessions.lastSeenAt,
       userId: users.id,
       firstName: users.firstName,
       lastName: users.lastName,
@@ -65,11 +71,18 @@ export async function findSession(db: Database, token: string | null | undefined
         eq(sessions.tokenHash, hashSessionToken(token)),
         isNull(sessions.revokedAt),
         gt(sessions.expiresAt, now),
+        gt(sessions.lastSeenAt, new Date(now.getTime() - IDLE_TIMEOUT_MS)),
         eq(users.status, 'active'),
       ),
     )
     .limit(1);
   if (!row) return null;
+  if (now.getTime() - row.lastSeenAt.getTime() >= TOUCH_INTERVAL_MS) {
+    await db
+      .update(sessions)
+      .set({ lastSeenAt: now })
+      .where(and(eq(sessions.id, row.id), lt(sessions.lastSeenAt, now)));
+  }
   return {
     id: row.id,
     expiresAt: row.expiresAt,

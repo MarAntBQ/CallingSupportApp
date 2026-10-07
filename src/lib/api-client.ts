@@ -6,6 +6,9 @@ export const ERROR_CODES = [
   'unauthenticated',
   'forbidden',
   'not_found',
+  'rate_limited',
+  'bad_origin',
+  'internal_error',
   'network',
   'unknown',
 ] as const;

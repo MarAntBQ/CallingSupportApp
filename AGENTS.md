@@ -193,6 +193,28 @@ borrado físico (`DELETE`), sin borrado lógico ni papelera. Detalle y lista par
 11. **Commits** con tipo (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`) y en
    español. **Prohibido** agregar líneas de co-autoría de herramientas de IA.
 
+## Seguridad (regla dura)
+
+Una API donde "cualquiera puede hacer peticiones" casi siempre es una ruta nueva que se olvidó de
+verificar la sesión. Por eso la protección se aplica **por defecto** y una prueba lo comprueba:
+
+- **Toda ruta (`route.ts`) exporta sus métodos envueltos:** `export const GET = withAuth(handler, { permission })`
+  o, si es pública a propósito, `publicRoute(handler, { reason: 'por qué es pública' })`. Una función
+  exportada sin envoltorio hace fallar `npm run test` (`src/server/security/routes.test.ts`).
+- **Toda Server Action** se define con `authedAction(schema, { permission }, fn)`: aunque se llame desde
+  un formulario, cualquiera puede invocarla con una petición HTTP.
+- **El `proxy.ts` no es una barrera de seguridad** (ya hubo una forma de saltárselo, CVE-2025-29927): la
+  verificación real ocurre en cada handler, acción y layout del panel.
+- **CSRF:** `withAuth` y `publicRoute` rechazan con 403 todo método que no sea GET/HEAD cuyo `Origin`
+  no sea el del sitio.
+- **Todo `body`, `params` y `searchParams` pasa por Zod** antes de usarse, y cada consulta filtra por el
+  permiso del usuario (nadie lee el registro de otro cambiando un ID en la URL).
+- **Errores:** la API responde `{ error: "internal_error", id }`; nunca trazas ni mensajes de la base.
+  Los logs llevan el `id` y el tipo de error, **nunca datos de personas** (ni correos, ni nombres, ni cuerpos).
+- Límite de intentos con `src/server/security/rate-limit.ts` en todo formulario público o de inicio de sesión.
+
+Detalle y checklist en [SECURITY.md](SECURITY.md#cómo-se-protege-la-aplicación).
+
 ## Reglas de interfaz
 
 - **Tablas de datos:** siempre con ordenamiento, búsqueda y paginación.

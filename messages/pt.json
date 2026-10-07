@@ -18,7 +18,10 @@
     "forbidden": "Você não tem permissão para esta ação.",
     "not_found": "Esta página não está mais disponível.",
     "network": "Não foi possível conectar. Verifique sua conexão e tente novamente.",
-    "unknown": "Algo deu errado. Tente novamente."
+    "unknown": "Algo deu errado. Tente novamente.",
+    "rate_limited": "Muitas tentativas. Aguarde alguns minutos e tente novamente.",
+    "bad_origin": "A solicitação não veio deste aplicativo. Recarregue a página e tente novamente.",
+    "internal_error": "Algo deu errado no servidor. Tente novamente em instantes."
   },
   "roles": {
     "super_admin": "SuperAdmin",

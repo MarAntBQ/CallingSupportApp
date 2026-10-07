@@ -1,22 +1,40 @@
 import { NextResponse } from 'next/server';
 import { isLocale } from '@/i18n/config';
 import { loginSchema } from '@/lib/validation/auth';
-import { errorResponse } from '@/server/auth/errors';
+import { AuthError } from '@/server/auth/errors';
 import { authenticate } from '@/server/auth/login';
 import { setLocaleCookie, setSessionCookie } from '@/server/auth/session';
 import { createSession, findSession, toMe } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
+import { clientIp, privateHash } from '@/server/security/http';
+import { assertNotLimited, clear, hit, LIMITS } from '@/server/security/rate-limit';
+import { publicRoute } from '@/server/security/route';
 
-export async function POST(request: Request) {
-  const parsed = loginSchema.safeParse(await request.json().catch(() => null));
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
-  }
+export const POST = publicRoute(
+  async (request) => {
+    const parsed = loginSchema.safeParse(await request.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
+    }
 
-  try {
     const db = getDb();
     const { email, password, rememberMe } = parsed.data;
-    const user = await authenticate(db, email, password);
+    const emailKey = { key: privateHash('login:email', email), ...LIMITS.loginPerEmail };
+    const ipKey = { key: privateHash('login:ip', clientIp(request)), ...LIMITS.loginPerIp };
+    await assertNotLimited(db, [emailKey, ipKey]);
+
+    let user: Awaited<ReturnType<typeof authenticate>>;
+    try {
+      user = await authenticate(db, email, password);
+    } catch (error) {
+      if (error instanceof AuthError && error.code === 'invalid_credentials') {
+        await hit(db, emailKey);
+        await hit(db, ipKey);
+      }
+      throw error;
+    }
+    await clear(db, emailKey.key);
+
     const { token, expiresAt } = await createSession(db, user.id, {
       rememberMe,
       userAgent: request.headers.get('user-agent'),
@@ -26,7 +44,6 @@ export async function POST(request: Request) {
     setSessionCookie(response, token, { expiresAt, persistent: rememberMe });
     if (isLocale(user.locale)) setLocaleCookie(response, user.locale);
     return response;
-  } catch (error) {
-    return errorResponse(error);
-  }
-}
+  },
+  { reason: 'iniciar sesión: todavía no hay sesión; con límite de intentos por correo e IP' },
+);
