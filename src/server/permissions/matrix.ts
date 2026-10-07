@@ -1,5 +1,5 @@
 import 'server-only';
-import { asc, eq, inArray } from 'drizzle-orm';
+import { asc, eq, inArray, sql } from 'drizzle-orm';
 import { MODULES, type ModuleKey } from '@/lib/modules';
 import { PERMISSION_FLAGS, type MatrixRow, type ModulePermissionsInput, type PermissionMatrix } from '@/lib/validation/module-permissions';
 import type { Database } from '@/server/db';
@@ -50,6 +50,7 @@ export async function setModulePermissions(
 ): Promise<SetMatrixResult> {
   const rows = input.permissions.filter((row) => PERMISSION_FLAGS.some((flag) => row[flag]));
   return db.transaction(async (tx) => {
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext('module-permissions'), hashtext(${module}))`);
     if (rows.length > 0) {
       const ids = rows.map((row) => row.callingId);
       const found = await tx.select({ id: callings.id }).from(callings).where(inArray(callings.id, ids)).for('share');

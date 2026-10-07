@@ -13,6 +13,7 @@ import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
 import type { MailMessage } from '@/server/mail/service';
 import { notifyModuleEvent } from '@/server/notifications/service';
+import { setModulePermissions } from '@/server/permissions/matrix';
 
 const url = process.env.TEST_DATABASE_URL;
 const MIGRATIONS = fileURLToPath(new URL('../../../drizzle', import.meta.url));
@@ -252,6 +253,26 @@ describe.skipIf(!url)('matriz de permisos y avisos por módulo contra Postgres',
       const response = await put('callings', [row(second.callingId, { canRead: true }), row(first.callingId, { canDelete: true })], cookie);
       expect(response.status).toBe(500);
       expect(await storedRows('callings')).toEqual([{ callingId: first.callingId, canRead: true }]);
+    });
+
+    it('dos reemplazos concurrentes del mismo módulo se serializan: queda el de uno, nunca la unión', async () => {
+      const a = await createCalling('Obispado', 'Secretario');
+      const b = await createCalling('Obispado', 'Consejero');
+      const other = new Pool({ connectionString: url!, max: 1 });
+      const db2 = drizzle(other, { schema });
+      try {
+        const [resA, resB] = await Promise.all([
+          setModulePermissions(db, 'callings', { permissions: [row(a.callingId, { canRead: true })] }),
+          setModulePermissions(db2, 'callings', { permissions: [row(b.callingId, { canRead: true })] }),
+        ]);
+        expect(resA).toEqual({ ok: true });
+        expect(resB).toEqual({ ok: true });
+        const ids = (await storedRows('callings')).map((stored) => stored.callingId).sort();
+        expect(ids).not.toEqual([a.callingId, b.callingId].sort());
+        expect([[a.callingId], [b.callingId]]).toContainEqual(ids);
+      } finally {
+        await other.end();
+      }
     });
   });
 
