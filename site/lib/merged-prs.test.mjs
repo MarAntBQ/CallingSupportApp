@@ -65,7 +65,7 @@ describe('toEntry', () => {
   it('usa el texto de cada idioma y la fecha del merge', () => {
     expect(toEntry(pr({ body }))).toMatchObject({
       number: 97,
-      date: '2026-10-07',
+      date: '2026-10-06',
       translated: true,
       text: { es: 'La aplicación muestra su logo.', pt: 'O aplicativo mostra seu logo.', en: 'The app shows its logo.' },
     });

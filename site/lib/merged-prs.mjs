@@ -1,3 +1,5 @@
+import { siteDate } from './site-time.mjs';
+
 export const REPO = 'MarAntBQ/CallingSupportApp';
 export const API = `https://api.github.com/repos/${REPO}`;
 const LOCALES = ['es', 'pt', 'en'];
@@ -76,7 +78,7 @@ export function toEntry(pr) {
   return {
     number: pr.number,
     url: prUrl(pr.number),
-    date: String(pr.merged_at).slice(0, 10),
+    date: siteDate(pr.merged_at),
     mergedAt: String(pr.merged_at),
     text,
     translated: Boolean(novedad && LOCALES.every((l) => novedad[l])),
