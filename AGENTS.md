@@ -192,6 +192,10 @@ borrado físico (`DELETE`), sin borrado lógico ni papelera. Detalle y lista par
    de baja con borrado de datos.
 11. **Commits** con tipo (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`) y en
    español. **Prohibido** agregar líneas de co-autoría de herramientas de IA.
+12. **Nada de estado escrito a mano** en el README ni en el sitio ("ya está", "lo siguiente",
+   "hoy muestra"): se queda viejo con el primer issue que se cierra. El avance lo muestran los
+   badges en vivo (etiquetas `módulo:*` y milestones) y la página de Novedades del sitio, que
+   se arma con los PR mergeados (#99).
 
 ## Seguridad (regla dura)
 

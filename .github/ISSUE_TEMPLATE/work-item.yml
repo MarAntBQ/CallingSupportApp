@@ -16,6 +16,8 @@ body:
           (sin datos de personas). Un enlace a algo que el colaborador no puede abrir no cuenta.
         - Las decisiones ya tomadas van escritas como decisiones, para que no se vuelvan a discutir.
         - Un issue = **un resultado** que cabe en un PR revisable. Si son dos cosas, son dos issues.
+        - Si pertenece a un módulo, quien mantiene el repositorio le pone su etiqueta `módulo:*`:
+          con ella el README cuenta el avance de cada módulo.
 
         Guía completa: skill `escribir-un-issue` en `.claude/skills/`.
   - type: input
