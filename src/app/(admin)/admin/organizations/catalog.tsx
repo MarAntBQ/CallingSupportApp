@@ -178,9 +178,9 @@ function AddForm({
     setError(null);
     const result = await onAdd(normalize(name));
     if (result.ok) {
-      await onAdded();
       setName('');
       setTouched(false);
+      await onAdded();
     } else {
       setError(errorMessage(result));
     }
