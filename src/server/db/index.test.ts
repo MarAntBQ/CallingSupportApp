@@ -25,6 +25,10 @@ describe('cliente de la base', () => {
 
   it('usa el pooler en modo transacción sin sentencias preparadas y una conexión por instancia', () => {
     expect(CLIENT_OPTIONS).toMatchObject({ prepare: false, max: 1 });
+  });
+
+  it('no encola consultas sobre la conexión (el pooler de Supabase corta la conexión si recibe varias seguidas)', () => {
+    expect(CLIENT_OPTIONS.max_pipeline).toBe(1);
     expect(CLIENT_OPTIONS.idle_timeout).toBeLessThanOrEqual(30);
     expect(CLIENT_OPTIONS.connect_timeout).toBeGreaterThan(0);
   });

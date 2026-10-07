@@ -8,10 +8,11 @@ export type Database = PostgresJsDatabase<typeof schema>;
 export const CLIENT_OPTIONS = {
   prepare: false,
   max: 1,
+  max_pipeline: 1,
   idle_timeout: 20,
   connect_timeout: 10,
   max_lifetime: 60 * 30,
-} satisfies postgres.Options<Record<string, never>>;
+};
 
 export const STALE_AFTER_MS = 15_000;
 
@@ -33,7 +34,7 @@ export function getDb(now = Date.now()): Database {
   if (!url) {
     throw new Error('DATABASE_URL no está configurada');
   }
-  const client = postgres(url, CLIENT_OPTIONS);
+  const client = postgres(url, CLIENT_OPTIONS as postgres.Options<Record<string, never>>);
   const db = drizzle(client, { schema });
   globalForDb.callingSupportDb = { db, client, lastUsedAt: now };
   return db;
