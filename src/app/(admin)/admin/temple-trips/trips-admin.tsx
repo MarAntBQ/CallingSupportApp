@@ -21,6 +21,8 @@ async function fetchTrips(): Promise<TempleTripListItem[]> {
 
 type FormState = {
   templeName: string;
+  donationCategoryName: string;
+  donationInstructions: string;
   date: string;
   registrationDeadline: string;
   dateConfirmed: boolean;
@@ -44,6 +46,8 @@ function emptyForm(): FormState {
   ) as Record<QuotaKey, string>;
   return {
     templeName: '',
+    donationCategoryName: '',
+    donationInstructions: '',
     date: '',
     registrationDeadline: '',
     dateConfirmed: true,
@@ -74,6 +78,8 @@ function toForm(trip: TempleTripListItem): FormState {
   ) as Record<QuotaKey, string>;
   return {
     templeName: trip.templeName,
+    donationCategoryName: trip.donationCategoryName ?? '',
+    donationInstructions: trip.donationInstructions ?? '',
     date: trip.date,
     registrationDeadline: trip.registrationDeadline,
     dateConfirmed: trip.dateConfirmed,
@@ -104,6 +110,8 @@ function toPayload(form: FormState) {
   ) as Record<QuotaKey, number>;
   return {
     templeName: form.templeName.trim(),
+    donationCategoryName: form.donationCategoryName.trim(),
+    donationInstructions: form.donationInstructions.trim(),
     date: form.date,
     registrationDeadline: form.registrationDeadline,
     dateConfirmed: form.dateConfirmed,
@@ -337,6 +345,25 @@ function TripModal({
             {error && <Alert tone="danger" role="alert" title={error} />}
 
             <Field label={t('fields.templeName')} value={form.templeName} onChange={(event) => set('templeName', event.target.value)} maxLength={120} required />
+
+            <Field
+              label={t('fields.donationCategoryName')}
+              hint={t('fields.donationCategoryHint')}
+              value={form.donationCategoryName}
+              onChange={(event) => set('donationCategoryName', event.target.value)}
+              maxLength={80}
+            />
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-text-muted">{t('fields.donationInstructions')}</span>
+              <textarea
+                className="w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-base text-text focus:outline-2 focus:outline-offset-1 focus:outline-primary"
+                rows={3}
+                maxLength={600}
+                value={form.donationInstructions}
+                onChange={(event) => set('donationInstructions', event.target.value)}
+              />
+              <span className="text-sm text-text-muted">{t('fields.donationInstructionsHint')}</span>
+            </label>
 
             <Checkbox
               checked={form.inAssignedDistrict}

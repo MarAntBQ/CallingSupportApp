@@ -618,7 +618,11 @@
       "activeHelp": "Só pode haver uma viagem ativa; ativar esta desativa a outra.",
       "templeName": "Templo",
       "inAssignedDistrict": "É o templo do distrito designado",
-      "scheduledWithTemple": "Esta viagem foi programada com o templo"
+      "scheduledWithTemple": "Esta viagem foi programada com o templo",
+      "donationCategoryName": "Categoria de doação (opcional)",
+      "donationCategoryHint": "A que seu bispado tenha autorizado (ex.: «Local — Viagens ao Templo»). O app não cria categorias.",
+      "donationInstructions": "Como contribuir (opcional)",
+      "donationInstructionsHint": "Instruções para encontrar a categoria ao doar on-line."
     },
     "services": {
       "legend": "Serviços",
@@ -709,7 +713,8 @@
         "quota_exceeded": "Não há vagas suficientes para uma das opções que você escolheu.",
         "recaptcha_failed": "Não conseguimos verificar que você não é um robô. Tente novamente."
       },
-      "dataNotice": "Responsável: {unit}. Tratamos estes dados apenas para organizar esta viagem ao templo e os conservamos {months} meses, conforme nossa política de dados:"
+      "dataNotice": "Responsável: {unit}. Tratamos estes dados apenas para organizar esta viagem ao templo e os conservamos {months} meses, conforme nossa política de dados:",
+      "contributionCategory": "Doe para a categoria «{category}»."
     },
     "participants": {
       "tab": "Participantes",
@@ -752,7 +757,8 @@
         "consent": "Consentimento aceito (política {version})",
         "save": "Salvar",
         "saved": "Salvo.",
-        "cancel": "Cancelar"
+        "cancel": "Cancelar",
+        "estimatedCost": "Custo estimado (referencial): {cost}"
       },
       "create": {
         "title": "Nova inscrição",

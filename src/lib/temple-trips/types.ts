@@ -18,6 +18,8 @@ export type TempleTrip = {
   inAssignedDistrict: boolean;
   scheduledWithTemple: boolean;
   active: boolean;
+  donationCategoryName: string | null;
+  donationInstructions: string | null;
   createdAt: string;
   updatedAt: string;
 } & Record<QuotaKey, number>;
