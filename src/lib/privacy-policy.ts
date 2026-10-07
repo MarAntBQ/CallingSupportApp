@@ -20,6 +20,11 @@ export function recaptchaEnabled(env: Record<string, string | undefined> = proce
   return Boolean(env.RECAPTCHA_SECRET_KEY?.trim());
 }
 
-export function controllerConfigured(controller: { name: string | null; email: string | null }) {
-  return Boolean(controller.name && controller.email);
+export function controllerConfigured(controller: {
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+}) {
+  return Boolean(controller.name && controller.email && controller.phone && controller.address);
 }

@@ -275,8 +275,8 @@
     "subtitleNoUnit": "Policy version: {version}",
     "notOfficial": "This is not an official page of <church>The Church of Jesus Christ of Latter-day Saints</church>. It is a unit tool, approved by its bishop or branch president, that follows the guidelines of the <handbook>General Handbook, 38.8.21.2</handbook>.",
     "discrepancy": "Faithful translation of the Spanish text. In case of any discrepancy, the Spanish version prevails until the data controller adapts the policy to their country.",
-    "missingController": "This installation hasn't set up its data controller yet. Until then, you shouldn't provide data in this app.",
-    "missingControllerAdmin": "Set up the data controller in Settings.",
+    "missingController": "This installation hasn't completed the data controller's details yet (name, address, phone and email), which the law requires to be published. Until then, you shouldn't provide data in this app.",
+    "missingControllerAdmin": "Complete the data controller's details in Settings.",
     "shortNotice": "{controllerName} uses this data only to organize this activity and does not share it for other purposes. It keeps it for {retentionMonths} months from registration or until the activity ends, whichever is later. Full policy: <policy>data policy</policy>.",
     "sections": {
       "s1": {

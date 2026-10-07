@@ -33,10 +33,12 @@ describe('política de datos', () => {
     }
   });
 
-  it('el responsable está configurado solo con nombre y correo', () => {
-    expect(controllerConfigured({ name: 'Obispado de prueba', email: 'obispado@example.com' })).toBe(true);
-    expect(controllerConfigured({ name: 'Obispado de prueba', email: null })).toBe(false);
-    expect(controllerConfigured({ name: null, email: 'obispado@example.com' })).toBe(false);
+  it('el responsable solo está configurado con nombre, domicilio, teléfono y correo (LOPDP art. 12, num. 8)', () => {
+    const full = { name: 'Obispado de prueba', email: 'obispado@example.com', phone: '+593 2 000 0000', address: 'Av. de Prueba 123' };
+    expect(controllerConfigured(full)).toBe(true);
+    for (const missing of ['name', 'email', 'phone', 'address'] as const) {
+      expect(controllerConfigured({ ...full, [missing]: null }), missing).toBe(false);
+    }
   });
 
   it('el aviso de no oficial cita el Manual General 38.8.21.2 y enlaza a esa sección', () => {

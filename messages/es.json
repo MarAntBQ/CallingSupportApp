@@ -275,8 +275,8 @@
     "subtitleNoUnit": "Versión de la política: {version}",
     "notOfficial": "Esta no es una página oficial de <church>La Iglesia de Jesucristo de los Santos de los Últimos Días</church>. Es una herramienta de la unidad, aprobada por su obispo o presidente de rama, que sigue las pautas del <handbook>Manual General, 38.8.21.2</handbook>.",
     "discrepancy": "",
-    "missingController": "Esta instalación todavía no configuró al responsable de los datos. Mientras tanto, no deberías entregar datos en esta aplicación.",
-    "missingControllerAdmin": "Configura al responsable de los datos en Configuración.",
+    "missingController": "Esta instalación todavía no completó los datos del responsable (nombre, domicilio, teléfono y correo), que la ley pide publicar. Mientras tanto, no deberías entregar datos en esta aplicación.",
+    "missingControllerAdmin": "Completa los datos del responsable en Configuración.",
     "shortNotice": "{controllerName} usa estos datos solo para organizar esta actividad y no los comparte para otros fines. Los guarda {retentionMonths} meses desde la inscripción o hasta que termine la actividad, lo que ocurra después. Política completa: <policy>política de datos</policy>.",
     "sections": {
       "s1": {
