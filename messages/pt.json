@@ -306,6 +306,14 @@
       "saved": "Senha alterada.",
       "savedBody": "Suas sessões em outros dispositivos foram encerradas; esta continua aberta."
     },
+    "sessions": {
+      "title": "Sessões",
+      "intro": "Encerre suas sessões abertas em outros dispositivos. Esta sessão continua aberta.",
+      "submit": "Encerrar minhas outras sessões",
+      "working": "Encerrando…",
+      "done": "Pronto.",
+      "doneBody": "{n, plural, =0 {Não havia outras sessões abertas.} one {# sessão encerrada.} other {# sessões encerradas.}}"
+    },
     "errors": {
       "name": "Escreva pelo menos 2 caracteres (máximo 100).",
       "phone": "Escreva um telefone válido: números, espaços e + ( ) - . (máximo 30).",
@@ -313,6 +321,22 @@
       "passwordTooShort": "A nova senha deve ter pelo menos {min} caracteres.",
       "passwordMismatch": "As senhas não coincidem."
     }
+  },
+  "sessions": {
+    "title": "Sessões ativas",
+    "intro": "Sessões abertas no sistema. Você pode encerrar qualquer uma; a pessoa sai na próxima ação.",
+    "caption": "Sessões ativas",
+    "empty": "Não há sessões ativas.",
+    "columns": {
+      "user": "Usuário",
+      "email": "E-mail",
+      "createdAt": "Iniciada",
+      "expiresAt": "Expira",
+      "actions": "Ações"
+    },
+    "revoke": "Revogar",
+    "thisSession": "Esta sessão",
+    "revokeError": "Não foi possível revogar a sessão."
   },
   "privacyPolicy": {
     "title": "Política de tratamento de dados pessoais",

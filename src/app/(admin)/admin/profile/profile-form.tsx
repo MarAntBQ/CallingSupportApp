@@ -38,6 +38,17 @@ export function ProfileForm({ initial, locale }: { initial: Data; locale: string
   const [passwordStatus, setPasswordStatus] = useState<Status>(null);
   const [savingPassword, setSavingPassword] = useState(false);
 
+  const [revokingSessions, setRevokingSessions] = useState(false);
+  const [sessionsStatus, setSessionsStatus] = useState<{ ok: true; revoked: number } | { ok: false } | null>(null);
+
+  async function revokeOtherSessions() {
+    setRevokingSessions(true);
+    setSessionsStatus(null);
+    const result = await postJson<{ revoked: number }>('/api/sessions/revoke-mine', {});
+    setRevokingSessions(false);
+    setSessionsStatus(result.ok ? { ok: true, revoked: result.data.revoked } : { ok: false });
+  }
+
   function dataErrors(values: Data) {
     const found: Partial<Record<DataField, string>> = {};
     const parsed = profileSchema.safeParse(values);
@@ -263,6 +274,22 @@ export function ProfileForm({ initial, locale }: { initial: Data; locale: string
             {savingPassword ? t('password.saving') : t('password.submit')}
           </Button>
         </form>
+      </Card>
+
+      <Card title={t('sessions.title')} intro={t('sessions.intro')}>
+        <div className="flex flex-col gap-4">
+          {sessionsStatus &&
+            (sessionsStatus.ok ? (
+              <Alert tone="success" role="status" title={t('sessions.done')}>
+                {t('sessions.doneBody', { n: sessionsStatus.revoked })}
+              </Alert>
+            ) : (
+              <Alert tone="danger" role="alert" title={tErrors('unknown')} />
+            ))}
+          <Button variant="secondary" disabled={revokingSessions} onClick={revokeOtherSessions} className="self-start">
+            {revokingSessions ? t('sessions.working') : t('sessions.submit')}
+          </Button>
+        </div>
       </Card>
     </div>
   );
