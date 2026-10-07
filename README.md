@@ -30,7 +30,7 @@ Las dos usan **datos inventados** y cada una tiene su propia base. **No escribas
 aplicación oficial de la Iglesia. Directorio, calendario, llamamientos y ministración siguen
 viviendo ahí.
 
-El objetivo de este proyecto es **agregar las funcionalidades que hoy no existen**: organizar
+El objetivo de este proyecto es **agregar lo que las herramientas oficiales no ofrecen**: organizar
 una actividad de principio a fin, con sus inscripciones, cupos, costos estimados y listados, sin hojas
 de cálculo sueltas ni grupos de chat.
 
@@ -73,8 +73,7 @@ En la práctica:
 
 ## Estado
 
-**En reescritura.** Esta rama (`main`) arranca desde cero como una aplicación **100%
-Next.js**, pensada para que cualquier barrio la despliegue sin servidor propio:
+La aplicación es **100% Next.js**, pensada para que cualquier barrio la despliegue sin servidor propio:
 
 - **Vercel** para la aplicación (frontend y API en un solo proyecto).
 - **Supabase** (Postgres) para la base de datos.
