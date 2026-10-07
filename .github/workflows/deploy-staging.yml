@@ -1,0 +1,32 @@
+name: Desplegar staging (staging.callingsupportapp.org)
+
+# El trigger `push: branches: [main]` se agrega cuando la llave del VPS (VPS_APP_DEPLOY_KEY)
+# y el forced-command estén cableados y probados por workflow_dispatch. Por ahora, solo manual.
+on:
+  workflow_dispatch: {}
+
+permissions: {}
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Desplegar por SSH (como el usuario cliente callingsupportapp)
+        env:
+          SSH_KEY: ${{ secrets.VPS_APP_DEPLOY_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o BatchMode=yes -o PasswordAuthentication=no \
+            -o ConnectTimeout=20 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 \
+            -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            -p 22593 callingsupportapp@162.35.180.32 deploy-app
