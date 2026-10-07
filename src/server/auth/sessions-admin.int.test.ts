@@ -130,4 +130,50 @@ describe.skipIf(!url)('sesiones activas contra Postgres', () => {
     expect(await response.json()).toEqual({ revoked: 1 });
     expect(await findSession(db, current.token)).not.toBeNull();
   });
+
+  it('POST /api/sessions/:id/revoke: 200 revoca, 404 si no existe, 403 si no es SuperAdmin', async () => {
+    const admin = await createUser('admin@example.com', 'super_admin');
+    const member = await createUser('m@example.com', 'member');
+    const adminCookie = `${sessionCookieName()}=${(await createSession(db, admin.id)).token}`;
+    const memberCookie = `${sessionCookieName()}=${(await createSession(db, member.id)).token}`;
+    const victim = await createSession(db, member.id);
+    const victimId = (await findSession(db, victim.token))!.id;
+
+    const forbidden = await routes.revoke.POST(request('POST', `/api/sessions/${victimId}/revoke`, {}, memberCookie), { params: Promise.resolve({ id: victimId }) });
+    expect(forbidden.status).toBe(403);
+
+    const ok = await routes.revoke.POST(request('POST', `/api/sessions/${victimId}/revoke`, {}, adminCookie), { params: Promise.resolve({ id: victimId }) });
+    expect(ok.status).toBe(200);
+    expect(await findSession(db, victim.token)).toBeNull();
+
+    const missing = randomUUID();
+    const notFound = await routes.revoke.POST(request('POST', `/api/sessions/${missing}/revoke`, {}, adminCookie), { params: Promise.resolve({ id: missing }) });
+    expect(notFound.status).toBe(404);
+  });
+
+  it('GET /api/sessions devuelve las sesiones en orden createdAt descendente', async () => {
+    const admin = await createUser('admin@example.com', 'super_admin');
+    await db.insert(schema.sessions).values([
+      { userId: admin.id, tokenHash: randomBytes(16).toString('hex'), expiresAt: new Date(Date.now() + 3_600_000), createdAt: new Date('2026-01-01T00:00:00Z') },
+      { userId: admin.id, tokenHash: randomBytes(16).toString('hex'), expiresAt: new Date(Date.now() + 3_600_000), createdAt: new Date('2026-03-01T00:00:00Z') },
+      { userId: admin.id, tokenHash: randomBytes(16).toString('hex'), expiresAt: new Date(Date.now() + 3_600_000), createdAt: new Date('2026-02-01T00:00:00Z') },
+    ]);
+    const adminCookie = `${sessionCookieName()}=${(await createSession(db, admin.id)).token}`;
+    const body = (await (await routes.list.GET(request('GET', '/api/sessions', undefined, adminCookie))).json()) as { createdAt: string }[];
+    const dates = body.map((row) => row.createdAt);
+    expect(dates).toEqual([...dates].sort((x, y) => y.localeCompare(x)));
+  });
+
+  it('revoke-mine por ruta no toca las sesiones de otro usuario', async () => {
+    const a = await createUser('a@example.com', 'member');
+    const b = await createUser('b@example.com', 'member');
+    const current = await createSession(db, a.id);
+    await createSession(db, a.id);
+    const bToken = (await createSession(db, b.id)).token;
+    const cookie = `${sessionCookieName()}=${current.token}`;
+    const response = await routes.revokeMine.POST(request('POST', '/api/sessions/revoke-mine', {}, cookie));
+    expect(await response.json()).toEqual({ revoked: 1 });
+    expect(await findSession(db, current.token)).not.toBeNull();
+    expect(await findSession(db, bToken)).not.toBeNull();
+  });
 });
