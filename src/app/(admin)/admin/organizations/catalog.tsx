@@ -310,6 +310,7 @@ function CatalogRow({
             <Button
               variant="link"
               disabled={saving}
+              aria-label={t('renameItem', { name: item.name })}
               onClick={() => {
                 setName(item.name);
                 setError(null);
@@ -318,7 +319,12 @@ function CatalogRow({
             >
               {t('rename')}
             </Button>
-            <Button variant="link" disabled={saving} onClick={() => void send({ active: !item.active })}>
+            <Button
+              variant="link"
+              disabled={saving}
+              aria-label={t(item.active ? 'deactivateItem' : 'activateItem', { name: item.name })}
+              onClick={() => void send({ active: !item.active })}
+            >
               {item.active ? t('deactivate') : t('activate')}
             </Button>
           </div>

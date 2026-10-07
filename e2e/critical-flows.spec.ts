@@ -88,6 +88,36 @@ test('Configuración: cambiar el nombre se ve en la barra lateral sin recargar',
   await expect(page.getByTestId('unit-name')).toHaveText('Barrio Los Pinos');
 });
 
+test('Organizaciones: el catálogo arranca vacío y el SuperAdmin agrega la primera organización y su llamamiento', async ({ page }) => {
+  const t = es.organizations;
+  await login(page, PASSWORD);
+  await expect(page).toHaveURL(/\/admin$/);
+  await page.getByRole('link', { name: es.admin.nav.organizations }).click();
+  await expect(page).toHaveURL(/\/admin\/organizations$/);
+  await expect(page.getByText(t.empty)).toBeVisible();
+
+  await page.getByLabel(t.newOrganization).fill('Presidencia de rama');
+  await page.getByRole('button', { name: t.add, exact: true }).click();
+  await expect(page.getByRole('listitem').filter({ hasText: 'Presidencia de rama' })).toBeVisible();
+  await expect(page.getByText(t.empty)).toHaveCount(0);
+
+  await page.getByLabel(t.newOrganization).fill('presidencia de rama');
+  await page.getByRole('button', { name: t.add, exact: true }).first().click();
+  await expect(page.getByText(t.errors.organizationTaken)).toBeVisible();
+
+  const callingField = page.getByLabel(t.newCalling.replace('{organization}', 'Presidencia de rama'));
+  await callingField.fill('Secretario');
+  await page.locator('form').filter({ has: callingField }).getByRole('button', { name: t.add, exact: true }).click();
+  await expect(page.getByRole('listitem').filter({ hasText: 'Secretario' })).toBeVisible();
+
+  await page.getByRole('button', { name: t.deactivateItem.replace('{name}', 'Presidencia de rama') }).click();
+  await expect(page.getByText(t.callingsEmpty)).toBeVisible();
+  await page.getByRole('button', { name: t.activateItem.replace('{name}', 'Presidencia de rama') }).click();
+  await expect(page.getByRole('heading', { name: 'Presidencia de rama' })).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 900 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);
