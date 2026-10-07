@@ -20,7 +20,14 @@ const validConfig = {
   timezone: 'America/Lima',
   defaultLocale: 'en',
   contact: 'barrio.prueba@example.com',
-  controller: { name: 'Obispado de prueba', email: 'Obispado@Example.com', city: 'Quito, Ecuador', website: 'https://example.com' },
+  controller: {
+    name: 'Obispado de prueba',
+    email: 'Obispado@Example.com',
+    phone: '+593 2 000 0000',
+    address: 'Av. de Prueba 123',
+    city: 'Quito, Ecuador',
+    website: 'https://example.com',
+  },
   retentionMonths: 6,
   policyVersion: '2026-11',
 };
@@ -111,7 +118,7 @@ describe.skipIf(!url)('configuración de la instalación contra Postgres', () =>
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(Object.keys(body).sort()).toEqual(PUBLIC_KEYS);
-    expect(Object.keys(body.controller).sort()).toEqual(['city', 'email', 'name', 'website']);
+    expect(Object.keys(body.controller).sort()).toEqual(['address', 'city', 'email', 'name', 'phone', 'website']);
     expect(body).toMatchObject({ unitName: '', logoDataUrl: null, timezone: 'America/Guayaquil', defaultLocale: 'es', contact: null });
   });
 
@@ -137,7 +144,14 @@ describe.skipIf(!url)('configuración de la instalación contra Postgres', () =>
       timezone: 'America/Lima',
       defaultLocale: 'en',
       contact: 'barrio.prueba@example.com',
-      controller: { name: 'Obispado de prueba', email: 'obispado@example.com', city: 'Quito, Ecuador', website: 'https://example.com' },
+      controller: {
+        name: 'Obispado de prueba',
+        email: 'obispado@example.com',
+        phone: '+593 2 000 0000',
+        address: 'Av. de Prueba 123',
+        city: 'Quito, Ecuador',
+        website: 'https://example.com',
+      },
       retentionMonths: 6,
       policyVersion: '2026-11',
     });

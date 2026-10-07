@@ -217,7 +217,11 @@
       "retentionMonths": "Retention (months)",
       "policyVersion": "Policy version",
       "policyVersionHint": "When the policy changes, change the version: registrations record which version they accepted.",
-      "websitePlaceholder": "https://"
+      "websitePlaceholder": "https://",
+      "phone": "Phone",
+      "phoneHint": "The unit's, not a personal one. Ecuador's data law (LOPDP, art. 12) requires it in the policy.",
+      "address": "Legal address",
+      "addressHint": "The unit's address (for example, the meetinghouse), not a personal one. The LOPDP (art. 12) requires it in the policy."
     },
     "errors": {
       "officialName": "It can't include the official name of the Church.",
@@ -225,7 +229,8 @@
       "contact": "Enter a unit email or phone number (3 to 200 characters).",
       "website": "Enter an address that starts with http:// or https://.",
       "timezone": "Choose a time zone from the list.",
-      "retentionMonths": "Enter a number of months between 1 and 120."
+      "retentionMonths": "Enter a number of months between 1 and 120.",
+      "phone": "Enter a valid phone number: numbers, spaces and + ( ) - . (up to 30)."
     }
   },
   "profile": {
@@ -272,11 +277,11 @@
     "discrepancy": "Faithful translation of the Spanish text. In case of any discrepancy, the Spanish version prevails until the data controller adapts the policy to their country.",
     "missingController": "This installation hasn't set up its data controller yet. Until then, you shouldn't provide data in this app.",
     "missingControllerAdmin": "Set up the data controller in Settings.",
-    "shortNotice": "{controllerName} uses this data only to organize this activity, keeps it for at most {retentionMonths} months and does not share it for other purposes. Full policy: <policy>data policy</policy>.",
+    "shortNotice": "{controllerName} uses this data only to organize this activity and does not share it for other purposes. It keeps it for {retentionMonths} months from registration or until the activity ends, whichever is later. Full policy: <policy>data policy</policy>.",
     "sections": {
       "s1": {
         "title": "1. Data controller",
-        "body": "<b>{name}</b>. Email: <mail>{email}</mail>. City and country: {city}.",
+        "body": "<b>{name}</b>. Address: {address}. Phone: {phone}. Email: <mail>{email}</mail>. City and country: {city}.",
         "website": "Website: <web>{website}</web>.",
         "notSet": "Not set up yet."
       },

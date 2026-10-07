@@ -1,9 +1,8 @@
 import { z } from 'zod';
 import { PASSWORD_MIN_LENGTH } from '@/lib/validation/auth';
+import { PHONE_PATTERN } from '@/lib/validation/phone';
 
 const personName = z.string().trim().min(2).max(100);
-
-export const PHONE_PATTERN = /^[0-9+()\s.-]*$/;
 
 export const profileSchema = z
   .strictObject({

@@ -99,6 +99,8 @@ test('/privacy: sin responsable lo avisa; al configurarlo en Configuración apar
   await page.goto('/admin/settings');
   await page.getByLabel(es.settings.controller.name, { exact: true }).fill('Obispado de prueba');
   await page.getByLabel(es.settings.controller.email, { exact: true }).fill('obispado.prueba@example.com');
+  await page.getByLabel(es.settings.controller.phone, { exact: true }).fill('+593 2 000 0000');
+  await page.getByLabel(es.settings.controller.address).fill('Av. de Prueba 123');
   await page.getByLabel(es.settings.controller.city).fill('Quito, Ecuador');
   await page.getByLabel(es.settings.controller.retentionMonths).fill('6');
   await page.locator('form').nth(1).getByRole('button', { name: es.settings.save }).click();
@@ -108,6 +110,7 @@ test('/privacy: sin responsable lo avisa; al configurarlo en Configuración apar
   await expect(page.getByText(es.privacyPolicy.missingController)).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'obispado.prueba@example.com' }).first()).toHaveAttribute('href', 'mailto:obispado.prueba@example.com');
   await expect(page.getByText('Quito, Ecuador')).toBeVisible();
+  await expect(page.getByText(/Domicilio: Av\. de Prueba 123\. Teléfono: \+593 2 000 0000\./)).toBeVisible();
   await expect(page.getByText(/^6 meses desde la inscripción/)).toBeVisible();
   await expect(page.getByTestId('policy-subtitle')).toContainText('Barrio Los Pinos');
   await page.locator('footer').getByRole('link', { name: es.common.privacyLink }).click();

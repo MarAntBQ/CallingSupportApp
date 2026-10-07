@@ -217,7 +217,11 @@
       "retentionMonths": "Meses de retención",
       "policyVersion": "Versión de la política",
       "policyVersionHint": "Al cambiar la política, cambia la versión: las inscripciones guardan con qué versión aceptaron.",
-      "websitePlaceholder": "https://"
+      "websitePlaceholder": "https://",
+      "phone": "Teléfono",
+      "phoneHint": "De la unidad, no uno personal. La ley de datos de Ecuador (LOPDP, art. 12) pide publicarlo en la política.",
+      "address": "Domicilio legal",
+      "addressHint": "Dirección de la unidad (por ejemplo, la del centro de reuniones), no una personal. La LOPDP (art. 12) pide publicarla."
     },
     "errors": {
       "officialName": "No puede incluir el nombre oficial de la Iglesia.",
@@ -225,7 +229,8 @@
       "contact": "Escribe un correo o teléfono de la unidad (de 3 a 200 caracteres).",
       "website": "Escribe una dirección que empiece con http:// o https://.",
       "timezone": "Elige una zona horaria de la lista.",
-      "retentionMonths": "Escribe un número de meses entre 1 y 120."
+      "retentionMonths": "Escribe un número de meses entre 1 y 120.",
+      "phone": "Escribe un teléfono válido: números, espacios y + ( ) - . (máximo 30)."
     }
   },
   "profile": {
@@ -272,11 +277,11 @@
     "discrepancy": "",
     "missingController": "Esta instalación todavía no configuró al responsable de los datos. Mientras tanto, no deberías entregar datos en esta aplicación.",
     "missingControllerAdmin": "Configura al responsable de los datos en Configuración.",
-    "shortNotice": "{controllerName} usa estos datos solo para organizar esta actividad, los guarda {retentionMonths} meses como máximo y no los comparte para otros fines. Política completa: <policy>política de datos</policy>.",
+    "shortNotice": "{controllerName} usa estos datos solo para organizar esta actividad y no los comparte para otros fines. Los guarda {retentionMonths} meses desde la inscripción o hasta que termine la actividad, lo que ocurra después. Política completa: <policy>política de datos</policy>.",
     "sections": {
       "s1": {
         "title": "1. Responsable del tratamiento",
-        "body": "<b>{name}</b>. Correo: <mail>{email}</mail>. Ciudad y país: {city}.",
+        "body": "<b>{name}</b>. Domicilio: {address}. Teléfono: {phone}. Correo: <mail>{email}</mail>. Ciudad y país: {city}.",
         "website": "Sitio web: <web>{website}</web>.",
         "notSet": "Sin configurar todavía."
       },

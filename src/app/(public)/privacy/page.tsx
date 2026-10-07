@@ -45,6 +45,8 @@ export default async function PrivacyPolicyPage() {
     name: controller.name ?? t('sections.s1.notSet'),
     email: controller.email ?? t('sections.s1.notSet'),
     city: controller.city ?? t('sections.s1.notSet'),
+    phone: controller.phone ?? t('sections.s1.notSet'),
+    address: controller.address ?? t('sections.s1.notSet'),
   };
 
   function body(section: (typeof POLICY_SECTIONS)[number]) {

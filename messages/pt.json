@@ -217,7 +217,11 @@
       "retentionMonths": "Meses de retenção",
       "policyVersion": "Versão da política",
       "policyVersionHint": "Ao mudar a política, mude a versão: as inscrições guardam com qual versão aceitaram.",
-      "websitePlaceholder": "https://"
+      "websitePlaceholder": "https://",
+      "phone": "Telefone",
+      "phoneHint": "Da unidade, não um pessoal. A lei de dados do Equador (LOPDP, art. 12) pede que seja publicado na política.",
+      "address": "Endereço legal",
+      "addressHint": "Endereço da unidade (por exemplo, o da capela), não um pessoal. A LOPDP (art. 12) pede que seja publicado."
     },
     "errors": {
       "officialName": "Não pode incluir o nome oficial da Igreja.",
@@ -225,7 +229,8 @@
       "contact": "Escreva um e-mail ou telefone da unidade (de 3 a 200 caracteres).",
       "website": "Escreva um endereço que comece com http:// ou https://.",
       "timezone": "Escolha um fuso horário da lista.",
-      "retentionMonths": "Escreva um número de meses entre 1 e 120."
+      "retentionMonths": "Escreva um número de meses entre 1 e 120.",
+      "phone": "Escreva um telefone válido: números, espaços e + ( ) - . (máximo 30)."
     }
   },
   "profile": {
@@ -272,11 +277,11 @@
     "discrepancy": "Tradução fiel do texto em espanhol. Em caso de discrepância, prevalece a versão em espanhol, enquanto o responsável não adaptar a política ao seu país.",
     "missingController": "Esta instalação ainda não configurou o responsável pelos dados. Enquanto isso, você não deveria entregar dados neste aplicativo.",
     "missingControllerAdmin": "Configure o responsável pelos dados em Configurações.",
-    "shortNotice": "{controllerName} usa estes dados apenas para organizar esta atividade, guarda-os por no máximo {retentionMonths} meses e não os compartilha para outros fins. Política completa: <policy>política de dados</policy>.",
+    "shortNotice": "{controllerName} usa estes dados apenas para organizar esta atividade e não os compartilha para outros fins. Guarda-os por {retentionMonths} meses desde a inscrição ou até o fim da atividade, o que ocorrer por último. Política completa: <policy>política de dados</policy>.",
     "sections": {
       "s1": {
         "title": "1. Responsável pelo tratamento",
-        "body": "<b>{name}</b>. E-mail: <mail>{email}</mail>. Cidade e país: {city}.",
+        "body": "<b>{name}</b>. Endereço: {address}. Telefone: {phone}. E-mail: <mail>{email}</mail>. Cidade e país: {city}.",
         "website": "Site: <web>{website}</web>.",
         "notSet": "Ainda não configurado."
       },

@@ -21,6 +21,8 @@ type Values = {
   contact: string;
   controllerName: string;
   controllerEmail: string;
+  controllerPhone: string;
+  controllerAddress: string;
   controllerCity: string;
   controllerWebsite: string;
   retentionMonths: string;
@@ -31,7 +33,7 @@ type Section = 'general' | 'controller';
 
 const SECTION_FIELDS: Record<Section, (keyof Values)[]> = {
   general: ['unitName', 'allowRegistration', 'timezone', 'defaultLocale', 'contact'],
-  controller: ['controllerName', 'controllerEmail', 'controllerCity', 'controllerWebsite', 'retentionMonths', 'policyVersion'],
+  controller: ['controllerName', 'controllerEmail', 'controllerPhone', 'controllerAddress', 'controllerCity', 'controllerWebsite', 'retentionMonths', 'policyVersion'],
 };
 
 const PATH_TO_FIELD: Record<string, keyof Values> = {
@@ -42,6 +44,8 @@ const PATH_TO_FIELD: Record<string, keyof Values> = {
   contact: 'contact',
   'controller.name': 'controllerName',
   'controller.email': 'controllerEmail',
+  'controller.phone': 'controllerPhone',
+  'controller.address': 'controllerAddress',
   'controller.city': 'controllerCity',
   'controller.website': 'controllerWebsite',
   retentionMonths: 'retentionMonths',
@@ -57,6 +61,8 @@ function toValues(config: PublicConfig): Values {
     contact: config.contact ?? '',
     controllerName: config.controller.name ?? '',
     controllerEmail: config.controller.email ?? '',
+    controllerPhone: config.controller.phone ?? '',
+    controllerAddress: config.controller.address ?? '',
     controllerCity: config.controller.city ?? '',
     controllerWebsite: config.controller.website ?? '',
     retentionMonths: String(config.retentionMonths),
@@ -74,6 +80,8 @@ function toInput(values: Values) {
     controller: {
       name: values.controllerName,
       email: values.controllerEmail,
+      phone: values.controllerPhone,
+      address: values.controllerAddress,
       city: values.controllerCity,
       website: values.controllerWebsite,
     },
@@ -114,6 +122,7 @@ function SettingsCards({ config, timeZones }: { config: PublicConfig; timeZones:
     if (field === 'contact') return t('errors.contact');
     if (field === 'controllerEmail') return tCommon('invalidEmail');
     if (field === 'controllerWebsite') return t('errors.website');
+    if (field === 'controllerPhone') return t('errors.phone');
     if (field === 'timezone') return t('errors.timezone');
     if (field === 'retentionMonths') return t('errors.retentionMonths');
     return tCommon('required');
@@ -255,6 +264,23 @@ function SettingsCards({ config, timeZones }: { config: PublicConfig; timeZones:
               value={draft.controllerEmail}
               onChange={(event) => update('controllerEmail', event.target.value)}
               error={visibleError('controllerEmail')}
+            />
+            <Field
+              label={t('controller.phone')}
+              name="controllerPhone"
+              type="tel"
+              hint={t('controller.phoneHint')}
+              value={draft.controllerPhone}
+              onChange={(event) => update('controllerPhone', event.target.value)}
+              error={visibleError('controllerPhone')}
+            />
+            <Field
+              label={t('controller.address')}
+              name="controllerAddress"
+              hint={t('controller.addressHint')}
+              value={draft.controllerAddress}
+              onChange={(event) => update('controllerAddress', event.target.value)}
+              error={visibleError('controllerAddress')}
             />
             <Field
               label={t('controller.city')}
