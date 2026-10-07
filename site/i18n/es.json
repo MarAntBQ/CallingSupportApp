@@ -48,7 +48,8 @@
   },
   "updates": {
     "for": "Para",
-    "pr": "Ver el cambio"
+    "pr": "Ver el cambio",
+    "empty": "Todavía no hay novedades."
   },
   "manuals": {
     "open": "Leer el manual",

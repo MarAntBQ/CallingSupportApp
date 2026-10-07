@@ -3,12 +3,6 @@ name: Publicar el sitio (callingsupportapp.org)
 on:
   push:
     branches: [main]
-    paths:
-      - 'site/**'
-      - 'team/**'
-      - 'deploy/**'
-      - '.github/scripts/team-profiles.cjs'
-      - '.github/workflows/deploy-site.yml'
   workflow_dispatch:
 
 permissions:

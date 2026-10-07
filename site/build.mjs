@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Marked } from 'marked';
+import { fetchMergedEntries, prNumberFromUrl } from './lib/merged-prs.mjs';
 
 const require = createRequire(import.meta.url);
 const { parseProfile, validateProfile, profileFiles } = require('../.github/scripts/team-profiles.cjs');
@@ -156,6 +157,20 @@ for (const [coll, folder] of [['updatesList', 'updates'], ['manualsList', 'manua
   }
 }
 
+// ---------- novedades automáticas: una por cada PR mergeado a main
+let autoUpdates = [];
+try {
+  const manualPrs = new Set(content[DEFAULT_LOCALE].updatesList.map((u) => prNumberFromUrl(u.data.pr)).filter(Boolean));
+  autoUpdates = (await fetchMergedEntries()).filter((e) => !manualPrs.has(e.number));
+  console.log(`Novedades automáticas: ${autoUpdates.length} PR mergeado(s).`);
+} catch (err) {
+  console.warn(`AVISO: no se pudieron traer los PR de GitHub (${err.message}). Se publican solo las novedades escritas a mano.`);
+}
+const latestUpdate = [...content[DEFAULT_LOCALE].updatesList.map((u) => String(u.data.date)), ...autoUpdates.map((e) => e.date)]
+  .sort()
+  .at(-1);
+if (latestUpdate) for (const l of LOCALES) content[l].updates.data.updated = latestUpdate;
+
 // ---------- perfiles del equipo
 const teamDir = join(repoRoot, 'team');
 const profiles = existsSync(teamDir)
@@ -235,15 +250,31 @@ const liveBlock = (kind, l, group, link) =>
 
 function updatesBlock(l) {
   const u = ui[l].updates;
-  return content[l].updatesList
-    .map(
-      ({ slug, data, body }) => `<article class="update" id="${inLang(l)}${escapeHtml(slug)}">
-  <p class="update__date">${fmtDate(l, data.date)}</p>
-  <h2>${escapeHtml(data.title)}</h2>
+  const days = new Map();
+  const day = (date) => days.get(date) ?? days.set(date, { manual: [], auto: [] }).get(date);
+  for (const m of content[l].updatesList) day(String(m.data.date)).manual.push(m);
+  for (const a of autoUpdates) day(a.date).auto.push(a);
+  if (!days.size) return `<p class="muted">${escapeHtml(u.empty)}</p>`;
+
+  const manual = ({ slug, data, body }) => `<article class="update" id="${inLang(l)}${escapeHtml(slug)}">
+  <h3>${escapeHtml(data.title)}</h3>
   <p class="update__for"><span class="pill">${escapeHtml(u.for)}: ${escapeHtml(data.audience)}</span></p>
   ${md.parse(body)}
   ${data.pr ? `<p><a href="${escapeHtml(data.pr)}" target="_blank" rel="noopener noreferrer">${escapeHtml(u.pr)}</a></p>` : ''}
-</article>`,
+</article>`;
+  const auto = (e) => {
+    const lang = e.text[l] === e.text.es && l !== 'es' && !e.translated ? ' lang="es"' : '';
+    return `<li class="change"><span${lang}>${escapeHtml(e.text[l])}</span> <a class="change__pr" href="${escapeHtml(e.url)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(u.pr)} #${e.number}">#${e.number}</a></li>`;
+  };
+
+  return [...days.entries()]
+    .sort(([a], [b]) => b.localeCompare(a))
+    .map(
+      ([date, { manual: m, auto: a }]) => `<section class="update-day" aria-labelledby="${inLang(l)}d-${date}">
+  <h2 class="update-day__date" id="${inLang(l)}d-${date}">${fmtDate(l, date)}</h2>
+  ${m.map(manual).join('\n')}
+  ${a.length ? `<ul class="changes">${a.map(auto).join('')}</ul>` : ''}
+</section>`,
     )
     .join('\n');
 }

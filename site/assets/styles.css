@@ -698,19 +698,38 @@ html[data-lang='en'] [data-l='es'] {
 }
 
 /* ---------- Novedades */
-.update {
+.update-day {
   padding: 24px 0;
   border-top: 1px solid var(--hairline);
 }
 
-.update h2 {
+.update-day__date {
+  margin: 0 0 8px;
+  color: var(--color-stone);
+  font-size: 16px;
+}
+
+.update {
+  padding: 8px 0 16px;
+}
+
+.update h3 {
   margin-top: 4px;
 }
 
-.update__date {
+.changes {
   margin: 0;
-  color: var(--color-stone);
+  padding-left: 20px;
+}
+
+.change {
+  margin: 6px 0;
+}
+
+.change__pr {
+  margin-left: 4px;
   font-size: 14px;
+  white-space: nowrap;
 }
 
 /* ---------- Pie */
