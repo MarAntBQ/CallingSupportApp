@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import { isLocale } from '@/i18n/config';
 import { loginSchema } from '@/lib/validation/auth';
-import { AuthError } from '@/server/auth/errors';
 import { authenticate } from '@/server/auth/login';
 import { setLocaleCookie, setSessionCookie } from '@/server/auth/session';
 import { createSession, findSession, toMe } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
 import { clientIp, privateHash } from '@/server/security/http';
-import { assertNotLimited, clear, hit, LIMITS } from '@/server/security/rate-limit';
+import { clear, consume, LIMITS } from '@/server/security/rate-limit';
 import { publicRoute } from '@/server/security/route';
 
 export const POST = publicRoute(
@@ -21,18 +20,8 @@ export const POST = publicRoute(
     const { email, password, rememberMe } = parsed.data;
     const emailKey = { key: privateHash('login:email', email), ...LIMITS.loginPerEmail };
     const ipKey = { key: privateHash('login:ip', clientIp(request)), ...LIMITS.loginPerIp };
-    await assertNotLimited(db, [emailKey, ipKey]);
-
-    let user: Awaited<ReturnType<typeof authenticate>>;
-    try {
-      user = await authenticate(db, email, password);
-    } catch (error) {
-      if (error instanceof AuthError && error.code === 'invalid_credentials') {
-        await hit(db, emailKey);
-        await hit(db, ipKey);
-      }
-      throw error;
-    }
+    await consume(db, [emailKey, ipKey]);
+    const user = await authenticate(db, email, password);
     await clear(db, emailKey.key);
 
     const { token, expiresAt } = await createSession(db, user.id, {

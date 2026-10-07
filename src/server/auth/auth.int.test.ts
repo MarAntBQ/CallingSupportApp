@@ -301,6 +301,14 @@ it('el sexto intento fallido con el mismo correo en 15 minutos responde 429 con 
     expect(JSON.stringify(stored)).not.toContain('limite@');
   }, 60_000);
 
+  it('una ráfaga de 20 intentos simultáneos con el mismo correo solo deja pasar 5', async () => {
+    await createUser('rafaga@example.com');
+    const responses = await Promise.all(Array.from({ length: 20 }, () => login('rafaga@example.com', 'mala')));
+    const statuses = responses.map((response) => response.status);
+    expect(statuses.filter((status) => status === 401)).toHaveLength(5);
+    expect(statuses.filter((status) => status === 429)).toHaveLength(15);
+  }, 60_000);
+
   it('un inicio de sesión correcto limpia el contador de su correo', async () => {
     await createUser('vuelve@example.com');
     for (let i = 0; i < 4; i++) await login('vuelve@example.com', 'mala');

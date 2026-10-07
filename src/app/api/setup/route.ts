@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { setupSchema } from '@/lib/validation/auth';
-import { rateLimited } from '@/server/auth/errors';
 import { setSessionCookie } from '@/server/auth/session';
 import { createSession, findSession, toMe } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
 import { clientIp, privateHash } from '@/server/security/http';
-import { hit, LIMITS } from '@/server/security/rate-limit';
+import { consume, LIMITS } from '@/server/security/rate-limit';
 import { publicRoute } from '@/server/security/route';
 import { isSetupNeeded, performSetup } from '@/server/setup/service';
 
@@ -20,10 +19,7 @@ export const GET = publicRoute(async () => NextResponse.json({ needed: await isS
 export const POST = publicRoute(
   async (request) => {
     const db = getDb();
-    const attempt = await hit(db, { key: privateHash('setup:ip', clientIp(request)), ...LIMITS.setupPerIp });
-    if (attempt.count > LIMITS.setupPerIp.max) {
-      throw rateLimited((attempt.resetAt.getTime() - Date.now()) / 1000);
-    }
+    await consume(db, [{ key: privateHash('setup:ip', clientIp(request)), ...LIMITS.setupPerIp }]);
 
     if (!(await isSetupNeeded(db))) {
       return NextResponse.json({ error: 'not_found' }, { status: 404 });

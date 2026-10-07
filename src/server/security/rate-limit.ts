@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, eq, gt, lt, sql } from 'drizzle-orm';
+import { eq, lt, sql } from 'drizzle-orm';
 import { rateLimited } from '@/server/auth/errors';
 import type { Database } from '@/server/db';
 import { rateLimits } from '@/server/db/schema';
@@ -31,14 +31,10 @@ export async function hit(db: Database, { key, windowMs }: Pick<Limit, 'key' | '
   return row!;
 }
 
-export async function assertNotLimited(db: Database, limits: Pick<Limit, 'key' | 'max'>[], now = new Date()) {
-  for (const { key, max } of limits) {
-    const [row] = await db
-      .select({ count: rateLimits.count, resetAt: rateLimits.resetAt })
-      .from(rateLimits)
-      .where(and(eq(rateLimits.key, key), gt(rateLimits.resetAt, now)))
-      .limit(1);
-    if (row && row.count >= max) throw rateLimited((row.resetAt.getTime() - now.getTime()) / 1000);
+export async function consume(db: Database, limits: Limit[], now = new Date()) {
+  for (const limit of limits) {
+    const row = await hit(db, limit, now);
+    if (row.count > limit.max) throw rateLimited((row.resetAt.getTime() - now.getTime()) / 1000);
   }
 }
 
