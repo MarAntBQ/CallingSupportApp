@@ -413,6 +413,7 @@ function ParticipantModal({ trip, participant, canUpdate, onClose, onSaved }: { 
           {trip.donationCategoryName && (
             <p className="text-sm text-text-muted">{tPublic('contributionCategory', { category: trip.donationCategoryName })}</p>
           )}
+          {trip.donationInstructions && <p className="text-sm text-text-muted">{trip.donationInstructions}</p>}
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">
           <div className="flex flex-col gap-4">

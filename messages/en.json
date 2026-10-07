@@ -697,7 +697,7 @@
         "tooYoung": "Must be at least {age} years old on the trip date.",
         "noQuota": "There are no spots for this ordinance."
       },
-      "participantCost": "Cost for this participant: {cost}",
+      "participantCost": "Estimated cost for this participant (for reference): {cost}",
       "addParticipant": "Add another participant",
       "removeParticipant": "Remove",
       "estimatedTotal": "Estimated trip cost (for reference): {cost}",

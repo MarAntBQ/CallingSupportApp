@@ -697,7 +697,7 @@
         "tooYoung": "Debe tener al menos {age} años a la fecha del viaje.",
         "noQuota": "No hay cupos para esta ordenanza."
       },
-      "participantCost": "Costo de este participante: {cost}",
+      "participantCost": "Costo estimado de este participante (referencial): {cost}",
       "addParticipant": "Agregar otro participante",
       "removeParticipant": "Quitar",
       "estimatedTotal": "Costo estimado del viaje (referencial): {cost}",
