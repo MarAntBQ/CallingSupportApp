@@ -27,7 +27,8 @@
     "bad_origin": "The request did not come from this app. Reload the page and try again.",
     "internal_error": "Something went wrong on the server. Please try again in a moment.",
     "server_misconfigured": "The server's encryption key (ENC_KEY) is missing. Let whoever installed the app know.",
-    "smtp_failed": "The test email couldn't be sent."
+    "smtp_failed": "The test email couldn't be sent.",
+    "registration_closed": "Account sign-up is closed in this installation."
   },
   "roles": {
     "super_admin": "SuperAdmin",
@@ -51,8 +52,12 @@
     "submit": "Sign in",
     "submitting": "Signing in…",
     "messages": {
-      "logged_out": "You signed out."
-    }
+      "logged_out": "You signed out.",
+      "account_verified": "Your account is active. You can sign in now.",
+      "password_reset": "Your password changed. Sign in with the new one."
+    },
+    "forgot": "Forgot your password?",
+    "register": "Create account"
   },
   "setup": {
     "title": "Set up the app",
@@ -399,7 +404,20 @@
       "body": "If you received this email, {unitName}'s SMTP settings work."
     },
     "smtpNotConfigured": "SMTP not configured",
-    "passwordUnreadable": "Could not decrypt the SMTP password (did ENC_KEY change?)"
+    "passwordUnreadable": "Could not decrypt the SMTP password (did ENC_KEY change?)",
+    "auth": {
+      "verifySubject": "Your code to activate your account",
+      "verifyPreheader": "Enter the code in the app to activate your account.",
+      "verifyIntro": "Your verification code is:",
+      "verifyOutro": "Enter it in the app to activate your account. If you didn't create an account, ignore this email.",
+      "resetSubject": "Your code to reset your password",
+      "resetPreheader": "Enter the code in the app to choose a new password.",
+      "resetIntro": "Your password reset code is:",
+      "resetOutro": "It expires {minutes} minutes after you verify it. If you didn't ask for it, ignore this email: your password won't change.",
+      "changedSubject": "Your password changed",
+      "changedPreheader": "Your open sessions were signed out.",
+      "changedBody": "Your account password was changed and all your open sessions were signed out. If it wasn't you, let your unit leaders know right away."
+    }
   },
   "mailLogs": {
     "title": "Sent emails",
@@ -416,5 +434,87 @@
     "failed": "Failed",
     "empty": "No emails have been sent yet.",
     "noRows": "No emails match the search."
+  },
+  "register": {
+    "title": "Create account",
+    "intro": "Create your account to use your unit's app. We'll send you a code to activate it.",
+    "closedTitle": "Sign-up disabled",
+    "closedBody": "This installation doesn't allow creating accounts on your own. Ask an administrator of your unit to create one for you.",
+    "firstName": "First names",
+    "lastName": "Last names",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "password": "Password",
+    "passwordHint": "At least {min} characters.",
+    "confirmPassword": "Confirm the password",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "backToLogin": "I already have an account",
+    "errors": {
+      "name": "Enter at least 2 characters (up to 100).",
+      "phone": "Enter a valid phone number: numbers, spaces and + ( ) - . (up to 30).",
+      "passwordTooShort": "The password must be at least {min} characters.",
+      "passwordMismatch": "The passwords don't match.",
+      "emailTaken": "An account with this email already exists. Sign in or recover your password.",
+      "consentRequired": "You need to accept the notice to create the account."
+    },
+    "privacy": {
+      "title": "Data notice",
+      "what": "We store your names, your email, your phone (if you enter it) and your password (so that nobody can read it) for your account in the unit's app.",
+      "use": "They are used only for your account and the unit activities you sign up for; they aren't shared for other purposes.",
+      "link": "Full data policy",
+      "consent": "I read the notice and agree that this data is stored for my account.",
+      "controller": "Data controller: {name}.",
+      "controllerContact": "Contact: {email}.",
+      "retention": "Your account data is kept while the account exists; to delete it or correct it, write to the data controller."
+    }
+  },
+  "verifyOtp": {
+    "title": "Activate your account",
+    "intro": "Enter the 6-digit code we sent to your email.",
+    "email": "Email",
+    "code": "Code",
+    "codeHint": "6 digits.",
+    "submit": "Activate account",
+    "submitting": "Verifying…",
+    "errors": {
+      "code": "Enter the 6 digits of the code.",
+      "wrong": "The code isn't correct. {remaining, plural, one {# attempt left} other {# attempts left}}.",
+      "renewed": "The previous code expired. We sent you a new one.",
+      "alreadyActive": "This account is already active. Sign in.",
+      "notFound": "There is no pending account with that email."
+    }
+  },
+  "forgotPassword": {
+    "title": "Recover your password",
+    "intro": "Enter your account's email and we'll send you a code to choose a new password.",
+    "email": "Email",
+    "submit": "Send code",
+    "submitting": "Sending…",
+    "sent": "If the email is registered, we sent you a code."
+  },
+  "resetPassword": {
+    "title": "Choose a new password",
+    "codeIntro": "Step 1 of 2: enter the code we sent you.",
+    "passwordIntro": "Step 2 of 2: choose your new password. Saving it signs out all your sessions.",
+    "email": "Email",
+    "code": "Code",
+    "verify": "Verify code",
+    "verifying": "Verifying…",
+    "newPassword": "New password",
+    "newPasswordHint": "At least {min} characters.",
+    "confirmPassword": "Confirm the new password",
+    "submit": "Save password",
+    "submitting": "Saving…",
+    "errors": {
+      "code": "Enter the 6 digits of the code.",
+      "wrong": "The code isn't correct. {remaining, plural, one {# attempt left} other {# attempts left}}.",
+      "tooMany": "Too many attempts. Ask for a new code.",
+      "noPending": "There is no pending code for that email. Ask for a new one.",
+      "expired": "More than {minutes} minutes passed or the code was already used. Ask for a new code.",
+      "passwordTooShort": "The password must be at least {min} characters.",
+      "passwordMismatch": "The passwords don't match."
+    },
+    "requestNew": "Ask for a new code"
   }
 }

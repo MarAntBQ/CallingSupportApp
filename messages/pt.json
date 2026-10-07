@@ -27,7 +27,8 @@
     "bad_origin": "A solicitação não veio deste aplicativo. Recarregue a página e tente novamente.",
     "internal_error": "Algo deu errado no servidor. Tente novamente em instantes.",
     "server_misconfigured": "Falta a chave de criptografia do servidor (ENC_KEY). Avise quem instalou o aplicativo.",
-    "smtp_failed": "Não foi possível enviar o e-mail de teste."
+    "smtp_failed": "Não foi possível enviar o e-mail de teste.",
+    "registration_closed": "O cadastro de contas está fechado nesta instalação."
   },
   "roles": {
     "super_admin": "SuperAdmin",
@@ -51,8 +52,12 @@
     "submit": "Entrar",
     "submitting": "Entrando…",
     "messages": {
-      "logged_out": "Você saiu da sua conta."
-    }
+      "logged_out": "Você saiu da sua conta.",
+      "account_verified": "Sua conta está ativa. Você já pode entrar.",
+      "password_reset": "Sua senha mudou. Entre com a nova."
+    },
+    "forgot": "Esqueceu sua senha?",
+    "register": "Criar conta"
   },
   "setup": {
     "title": "Configurar o aplicativo",
@@ -399,7 +404,20 @@
       "body": "Se você recebeu este e-mail, a configuração SMTP de {unitName} funciona."
     },
     "smtpNotConfigured": "SMTP não configurado",
-    "passwordUnreadable": "Não foi possível descriptografar a senha SMTP (a ENC_KEY mudou?)"
+    "passwordUnreadable": "Não foi possível descriptografar a senha SMTP (a ENC_KEY mudou?)",
+    "auth": {
+      "verifySubject": "Seu código para ativar a conta",
+      "verifyPreheader": "Escreva o código no aplicativo para ativar sua conta.",
+      "verifyIntro": "Seu código de verificação é:",
+      "verifyOutro": "Escreva-o no aplicativo para ativar sua conta. Se você não criou uma conta, ignore este e-mail.",
+      "resetSubject": "Seu código para redefinir a senha",
+      "resetPreheader": "Escreva o código no aplicativo para escolher uma nova senha.",
+      "resetIntro": "Seu código para redefinir a senha é:",
+      "resetOutro": "Ele vence {minutes} minutos depois de verificado. Se você não pediu, ignore este e-mail: sua senha não muda.",
+      "changedSubject": "Sua senha mudou",
+      "changedPreheader": "Suas sessões abertas foram encerradas.",
+      "changedBody": "A senha da sua conta foi alterada e todas as suas sessões abertas foram encerradas. Se não foi você, avise imediatamente os líderes da sua unidade."
+    }
   },
   "mailLogs": {
     "title": "E-mails enviados",
@@ -416,5 +434,87 @@
     "failed": "Falhou",
     "empty": "Ainda não foi enviado nenhum e-mail.",
     "noRows": "Nenhum e-mail corresponde à pesquisa."
+  },
+  "register": {
+    "title": "Criar conta",
+    "intro": "Crie sua conta para usar o aplicativo da sua unidade. Vamos enviar um código para ativá-la.",
+    "closedTitle": "Cadastro desativado",
+    "closedBody": "Esta instalação não permite criar contas por conta própria. Peça a um administrador da sua unidade que crie uma para você.",
+    "firstName": "Nomes",
+    "lastName": "Sobrenomes",
+    "email": "E-mail",
+    "phone": "Telefone (opcional)",
+    "password": "Senha",
+    "passwordHint": "Pelo menos {min} caracteres.",
+    "confirmPassword": "Confirme a senha",
+    "submit": "Criar conta",
+    "submitting": "Criando conta…",
+    "backToLogin": "Já tenho conta",
+    "errors": {
+      "name": "Escreva pelo menos 2 caracteres (máximo 100).",
+      "phone": "Escreva um telefone válido: números, espaços e + ( ) - . (máximo 30).",
+      "passwordTooShort": "A senha deve ter pelo menos {min} caracteres.",
+      "passwordMismatch": "As senhas não coincidem.",
+      "emailTaken": "Já existe uma conta com este e-mail. Entre ou recupere sua senha.",
+      "consentRequired": "Você precisa aceitar o aviso para criar a conta."
+    },
+    "privacy": {
+      "title": "Aviso de dados",
+      "what": "Guardamos seus nomes, seu e-mail, seu telefone (se você o escrever) e sua senha (de forma que ninguém pode lê-la) para sua conta no aplicativo da unidade.",
+      "use": "Eles são usados apenas para sua conta e as atividades da unidade em que você se inscrever; não são compartilhados para outros fins.",
+      "link": "Política de dados completa",
+      "consent": "Li o aviso e aceito que estes dados sejam guardados para minha conta.",
+      "controller": "Responsável pelos dados: {name}.",
+      "controllerContact": "Contato: {email}.",
+      "retention": "Os dados da sua conta são guardados enquanto a conta existir; para apagá-la ou corrigi-los, escreva ao responsável."
+    }
+  },
+  "verifyOtp": {
+    "title": "Ative sua conta",
+    "intro": "Escreva o código de 6 dígitos que enviamos para o seu e-mail.",
+    "email": "E-mail",
+    "code": "Código",
+    "codeHint": "6 dígitos.",
+    "submit": "Ativar conta",
+    "submitting": "Verificando…",
+    "errors": {
+      "code": "Escreva os 6 dígitos do código.",
+      "wrong": "O código não está correto. {remaining, plural, one {Resta # tentativa} other {Restam # tentativas}}.",
+      "renewed": "O código anterior venceu. Enviamos um novo.",
+      "alreadyActive": "Esta conta já está ativa. Entre.",
+      "notFound": "Não há nenhuma conta pendente com esse e-mail."
+    }
+  },
+  "forgotPassword": {
+    "title": "Recuperar a senha",
+    "intro": "Escreva o e-mail da sua conta e enviaremos um código para escolher uma nova senha.",
+    "email": "E-mail",
+    "submit": "Enviar código",
+    "submitting": "Enviando…",
+    "sent": "Se o e-mail estiver cadastrado, enviamos um código."
+  },
+  "resetPassword": {
+    "title": "Escolha uma nova senha",
+    "codeIntro": "Passo 1 de 2: escreva o código que enviamos.",
+    "passwordIntro": "Passo 2 de 2: escolha sua nova senha. Ao salvá-la, todas as suas sessões são encerradas.",
+    "email": "E-mail",
+    "code": "Código",
+    "verify": "Verificar código",
+    "verifying": "Verificando…",
+    "newPassword": "Nova senha",
+    "newPasswordHint": "Pelo menos {min} caracteres.",
+    "confirmPassword": "Confirme a nova senha",
+    "submit": "Salvar senha",
+    "submitting": "Salvando…",
+    "errors": {
+      "code": "Escreva os 6 dígitos do código.",
+      "wrong": "O código não está correto. {remaining, plural, one {Resta # tentativa} other {Restam # tentativas}}.",
+      "tooMany": "Tentativas demais. Peça um novo código.",
+      "noPending": "Não há nenhum código pendente para esse e-mail. Peça um novo.",
+      "expired": "Passaram mais de {minutes} minutos ou o código já foi usado. Peça um novo código.",
+      "passwordTooShort": "A senha deve ter pelo menos {min} caracteres.",
+      "passwordMismatch": "As senhas não coincidem."
+    },
+    "requestNew": "Pedir um novo código"
   }
 }
