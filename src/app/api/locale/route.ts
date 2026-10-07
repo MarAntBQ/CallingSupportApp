@@ -1,6 +1,11 @@
+import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { LOCALE_COOKIE, LOCALE_COOKIE_MAX_AGE, LOCALES } from '@/i18n/config';
+import { LOCALES } from '@/i18n/config';
+import { getSessionFromRequest, readCookie, setLocaleCookie } from '@/server/auth/session';
+import { SESSION_COOKIE } from '@/server/auth/sessions';
+import { getDb } from '@/server/db';
+import { users } from '@/server/db/schema';
 
 const bodySchema = z.object({ locale: z.enum(LOCALES) });
 
@@ -10,13 +15,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'invalid_locale' }, { status: 400 });
   }
 
+  if (readCookie(request, SESSION_COOKIE)) {
+    const session = await getSessionFromRequest(request);
+    if (session) {
+      await getDb().update(users).set({ locale: parsed.data.locale }).where(eq(users.id, session.user.id));
+    }
+  }
+
   const response = new NextResponse(null, { status: 204 });
-  response.cookies.set(LOCALE_COOKIE, parsed.data.locale, {
-    maxAge: LOCALE_COOKIE_MAX_AGE,
-    sameSite: 'lax',
-    path: '/',
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-  });
+  setLocaleCookie(response, parsed.data.locale);
   return response;
 }

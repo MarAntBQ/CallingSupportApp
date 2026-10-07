@@ -1,20 +1,28 @@
 import 'server-only';
-import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+import { attachDatabasePool } from '@vercel/functions';
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { Pool, type PoolConfig } from 'pg';
 import * as schema from './schema';
 
-export type Database = PostgresJsDatabase<typeof schema>;
+export type Database = NodePgDatabase<typeof schema>;
+
+export const POOL_OPTIONS = {
+  max: 3,
+  idleTimeoutMillis: 5_000,
+  connectionTimeoutMillis: 10_000,
+} satisfies PoolConfig;
 
 const globalForDb = globalThis as unknown as { callingSupportDb?: Database };
 
 export function getDb(): Database {
   if (globalForDb.callingSupportDb) return globalForDb.callingSupportDb;
-  const url = process.env.DATABASE_URL;
-  if (!url) {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
     throw new Error('DATABASE_URL no está configurada');
   }
-  const client = postgres(url, { prepare: false, max: 1 });
-  const db = drizzle(client, { schema });
+  const pool = new Pool({ connectionString, ...POOL_OPTIONS });
+  attachDatabasePool(pool);
+  const db = drizzle(pool, { schema });
   globalForDb.callingSupportDb = db;
   return db;
 }

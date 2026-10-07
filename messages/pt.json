@@ -4,10 +4,94 @@
     "localeSwitcher": {
       "label": "Idioma",
       "error": "Não foi possível mudar o idioma. Tente novamente."
-    }
+    },
+    "required": "Este campo é obrigatório.",
+    "invalidEmail": "Digite um e-mail válido.",
+    "notOfficial": "Este aplicativo não é oficial de A Igreja de Jesus Cristo dos Santos dos Últimos Dias."
+  },
+  "errors": {
+    "invalid_credentials": "E-mail ou senha incorretos.",
+    "account_pending": "Sua conta ainda não foi verificada. Confira seu e-mail.",
+    "account_suspended": "Sua conta está suspensa. Fale com os líderes da sua unidade.",
+    "invalid_input": "Revise os campos marcados.",
+    "unauthenticated": "Sua sessão terminou. Entre novamente.",
+    "forbidden": "Você não tem permissão para esta ação.",
+    "not_found": "Esta página não está mais disponível.",
+    "network": "Não foi possível conectar. Verifique sua conexão e tente novamente.",
+    "unknown": "Algo deu errado. Tente novamente."
+  },
+  "roles": {
+    "super_admin": "SuperAdmin",
+    "leader": "Líder",
+    "member": "Membro",
+    "friend": "Amigo da Igreja"
   },
   "home": {
     "underConstruction": "Em construção",
-    "docsLink": "Ver a documentação"
+    "docsLink": "Ver a documentação",
+    "loginLink": "Entrar"
+  },
+  "login": {
+    "title": "Entrar",
+    "email": "E-mail",
+    "password": "Senha",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha",
+    "rememberMe": "Manter conectado",
+    "rememberMeHelp": "Não marque em um computador compartilhado.",
+    "submit": "Entrar",
+    "submitting": "Entrando…",
+    "messages": {
+      "logged_out": "Você saiu da sua conta."
+    }
+  },
+  "setup": {
+    "title": "Configurar o aplicativo",
+    "intro": "Crie a primeira conta de administrador desta instalação. Isso só pode ser feito uma vez.",
+    "accountSection": "Sua conta",
+    "firstName": "Nomes",
+    "lastName": "Sobrenomes",
+    "email": "E-mail",
+    "password": "Senha",
+    "passwordHint": "Pelo menos {min} caracteres.",
+    "passwordTooShort": "A senha deve ter pelo menos {min} caracteres.",
+    "confirmPassword": "Confirme a senha",
+    "passwordMismatch": "As senhas não coincidem.",
+    "approvalSection": "Aprovação do bispo",
+    "approvalIntro": "As orientações da Igreja para recursos on-line pedem que o bispo aprove primeiro o uso na ala.",
+    "bishopApproved": "O bispo aprovou o uso deste aplicativo na unidade.",
+    "bishopApprovedRequired": "Sem a aprovação do bispo não é possível concluir.",
+    "bishopApprovedBy": "Nome de quem aprovou",
+    "bishopApprovedOn": "Data da aprovação",
+    "futureDate": "A data não pode ser futura.",
+    "submit": "Criar conta e entrar",
+    "submitting": "Criando a conta…",
+    "privacy": {
+      "title": "Aviso de privacidade",
+      "controller": "Responsável pelos dados: o bispado desta unidade.",
+      "what": "Guardamos seus nomes, seu e-mail e sua senha (guardada de forma que ninguém pode lê-la, nem os administradores) para sua conta de administrador, e o nome de quem aprovou e a data, como registro da aprovação (Manual Geral 38.8.24.2).",
+      "who": "Somente os administradores desta instalação podem vê-los. Não são usados para outro fim nem entregues a ninguém.",
+      "howLong": "Ficam guardados enquanto sua conta existir. Se ela for excluída, são apagados.",
+      "where": "Ficam hospedados nos serviços onde a unidade instalou o aplicativo.",
+      "policyLink": "Ler a política de dados",
+      "consent": "Li o aviso e aceito que estes dados sejam guardados para administrar o aplicativo da unidade.",
+      "consentRequired": "Para continuar, aceite o aviso de privacidade."
+    }
+  },
+  "admin": {
+    "navLabel": "Menu do painel",
+    "nav": {
+      "home": "Início",
+      "profile": "Meu perfil",
+      "settings": "Configurações",
+      "sessions": "Sessões ativas"
+    },
+    "logout": "Sair",
+    "welcome": "Olá, {name}",
+    "welcomeBody": "Os módulos aparecerão aqui à medida que forem ativados nesta instalação.",
+    "secondAdmin": {
+      "title": "Falta um segundo administrador",
+      "body": "As orientações da Igreja para recursos on-line pedem mais de um administrador. Dê a função SuperAdmin a outro líder da unidade."
+    }
   }
 }

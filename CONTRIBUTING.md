@@ -266,6 +266,15 @@ npm run test
 npm run build
 ```
 
+**Pruebas con base de datos.** Las pruebas que hablan con Postgres (por ejemplo, las del inicio
+de sesión) se saltan si no existe `TEST_DATABASE_URL`. Si copiaste `.env.example` a `.env`, ya
+la tienes: `npm run test` lee `.env` y la base `csa_test` la crea Docker la primera vez que
+levanta el contenedor. (Si tu contenedor es anterior a este cambio, créala una vez con
+`docker compose exec db createdb -U callingsupportapp csa_test`.)
+
+Esa base se **vacía** en cada corrida, por eso su nombre tiene que contener `test`: la prueba se
+niega a correr contra otra base.
+
 El paso a paso con lo que deberías ver y qué hacer si algo falla está en el
 [Manual del desarrollador](https://callingsupportapp.org/developers/).
 
