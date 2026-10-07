@@ -153,6 +153,19 @@ describe.skipIf(!url)('correo contra Postgres', () => {
     expect(rows.every((row) => row.errorMessage === 'invalid_message' && !/[\r\n]/.test(row.emailTo + row.emailSubject))).toBe(true);
   });
 
+  it('al consultar el registro también se borran los vencidos (90 días)', async () => {
+    const admin = await cookieFor('super_admin', 'admin@example.com');
+    await db.insert(schema.emailLog).values({
+      source: 'viejo',
+      emailTo: 'a@example.com',
+      emailSubject: 'Viejo',
+      success: true,
+      createdAt: new Date(Date.now() - 91 * 24 * 60 * 60 * 1000),
+    });
+    expect(await (await routes.logs.GET(request('GET', '/api/mail/logs', undefined, admin))).json()).toEqual([]);
+    expect(await db.select().from(schema.emailLog)).toHaveLength(0);
+  });
+
   it('cada registro se borra a los 90 días: al escribir uno nuevo, se borran los vencidos', async () => {
     const day = 24 * 60 * 60 * 1000;
     await db.insert(schema.emailLog).values([

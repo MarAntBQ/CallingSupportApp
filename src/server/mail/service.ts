@@ -10,7 +10,7 @@ import { decrypt } from '@/server/crypto/aes';
 import { getDb, type Database } from '@/server/db';
 import { appConfig, emailLog } from '@/server/db/schema';
 import { z } from 'zod';
-import { assertPublicSmtpHost, SmtpHostNotAllowedError } from './host-guard';
+import { resolveSmtpTarget, SmtpHostNotAllowedError } from './host-guard';
 import { buildBrandedEmail } from './template';
 
 const MESSAGES = { es, pt, en };
@@ -25,7 +25,7 @@ const recipient = z.string().trim().toLowerCase().pipe(z.email().max(254));
 
 export { MAIL_ERROR_CODES } from '@/lib/mail-errors';
 
-export type SmtpSettings = { host: string; port: number; secure: boolean; user: string; password: string };
+export type SmtpSettings = { host: string; port: number; secure: boolean; user: string; password: string; servername?: string };
 
 export type MailMessage = {
   to: string;
@@ -44,6 +44,7 @@ export const defaultTransport: TransportFactory = (settings, timeoutMs) =>
     port: settings.port,
     secure: settings.secure,
     auth: { user: settings.user, pass: settings.password },
+    ...(settings.servername ? { tls: { servername: settings.servername } } : {}),
     connectionTimeout: timeoutMs,
     greetingTimeout: timeoutMs,
     socketTimeout: timeoutMs,
@@ -78,9 +79,13 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number) {
   return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
+export async function purgeExpiredMailLogs(db: Database, now = new Date()) {
+  await db.delete(emailLog).where(lt(emailLog.createdAt, new Date(now.getTime() - LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000)));
+}
+
 async function log(db: Database, entry: { source: string; to: string; subject: string; success: boolean; error: string | null }) {
   try {
-    await db.delete(emailLog).where(lt(emailLog.createdAt, new Date(Date.now() - LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000)));
+    await purgeExpiredMailLogs(db);
     await db.insert(emailLog).values({
       source: entry.source.slice(0, 100),
       emailTo: entry.to.slice(0, 254),
@@ -119,8 +124,9 @@ export async function sendMail(
       await log(db, { source, to: message.to, subject: message.subject, success: false, error: 'smtp_password_unreadable' });
       return { sent: false, error: 'smtp_password_unreadable' };
     }
+    let target: { connectTo: string; servername?: string };
     try {
-      await assertPublicSmtpHost(row.host);
+      target = await resolveSmtpTarget(row.host);
     } catch (error) {
       const code = error instanceof SmtpHostNotAllowedError ? 'smtp_host_not_allowed' : error instanceof Error ? error.message : String(error);
       await log(db, { source, to: message.to, subject: message.subject, success: false, error: code });
@@ -134,7 +140,7 @@ export async function sendMail(
       notOfficial: MESSAGES[isLocale(message.locale) ? message.locale : 'es'].common.notOfficial,
     });
     const transport = (options.transport ?? defaultTransport)(
-      { host: row.host, port: row.port, secure: Boolean(row.secure), user: row.user, password },
+      { host: target.connectTo, servername: target.servername, port: row.port, secure: Boolean(row.secure), user: row.user, password },
       timeoutMs,
     );
     await withTimeout(
@@ -158,5 +164,6 @@ export async function sendMail(
 }
 
 export async function listMailLogs(db: Database) {
+  await purgeExpiredMailLogs(db);
   return db.select().from(emailLog).orderBy(desc(emailLog.createdAt)).limit(LOG_LIMIT);
 }
