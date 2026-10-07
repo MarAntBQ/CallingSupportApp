@@ -1,0 +1,17 @@
+name: Sincronizar skills
+
+# Copia las skills base oficiales desde MarbustTechnologyCompany/ClaudeSkills.
+# No edites a mano .claude/skills/<base>: se sincroniza desde el directorio oficial.
+# Las skills propias del repo (datos-de-miembros, portar-desde-legacy) no se tocan.
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 6 * * 1'   # lunes 06:00 UTC
+
+jobs:
+  sync:
+    uses: MarbustTechnologyCompany/.github/.github/workflows/sync-skills.yml@main
+    secrets: inherit
+    with:
+      skills: trabajar-un-issue,escribir-un-issue,revisar-codigo
