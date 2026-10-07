@@ -1,5 +1,6 @@
 # CallingSupportApp
 
+[![CI](https://github.com/MarAntBQ/CallingSupportApp/actions/workflows/ci.yml/badge.svg)](https://github.com/MarAntBQ/CallingSupportApp/actions/workflows/ci.yml)
 [![Licencia MIT](https://img.shields.io/badge/licencia-MIT-7C3AED.svg)](LICENSE)
 [![Sitio de documentación](https://github.com/MarAntBQ/CallingSupportApp/actions/workflows/deploy-site.yml/badge.svg)](https://github.com/MarAntBQ/CallingSupportApp/actions/workflows/deploy-site.yml)
 [![Probar la demo](https://img.shields.io/badge/probar-la%20demo-7C3AED.svg)](https://demo.callingsupportapp.org)
