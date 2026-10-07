@@ -267,7 +267,7 @@ function SettingsCards({ config, timeZones }: { config: PublicConfig; timeZones:
               label={t('controller.website')}
               name="controllerWebsite"
               type="url"
-              placeholder="https://"
+              placeholder={t('controller.websitePlaceholder')}
               value={draft.controllerWebsite}
               onChange={(event) => update('controllerWebsite', event.target.value)}
               error={visibleError('controllerWebsite')}

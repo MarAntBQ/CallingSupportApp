@@ -214,7 +214,8 @@
       "website": "Site (opcional)",
       "retentionMonths": "Meses de retenção",
       "policyVersion": "Versão da política",
-      "policyVersionHint": "Ao mudar a política, mude a versão: as inscrições guardam com qual versão aceitaram."
+      "policyVersionHint": "Ao mudar a política, mude a versão: as inscrições guardam com qual versão aceitaram.",
+      "websitePlaceholder": "https://"
     },
     "errors": {
       "officialName": "Não pode incluir o nome oficial da Igreja.",

@@ -1,0 +1,24 @@
+name: Título del PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: El título empieza con un tipo (feat, fix, docs, chore, refactor, test, perf)
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|docs|chore|refactor|test|perf)(\(.+\))?: .+$'
+          if [[ "$PR_TITLE" =~ $pattern ]]; then
+            echo "Título válido."
+          else
+            echo "El título del PR tiene que empezar con un tipo: feat, fix, docs, chore, refactor, test o perf. Ejemplo: \"fix: corrige el orden de la tabla\". El squash usa el título como mensaje del commit en main (AGENTS.md, regla dura 11)." >&2
+            exit 1
+          fi

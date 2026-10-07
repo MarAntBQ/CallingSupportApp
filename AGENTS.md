@@ -44,6 +44,8 @@ trilingüe: español, portugués e inglés.**
 
 - **Ningún texto visible queda escrito en el código.** Textos, mensajes de error, correos y
   avisos de Telegram salen de `messages/es.json`, `messages/pt.json` y `messages/en.json`.
+  `npm run lint` lo verifica en `src/app` y `src/components` (`react/jsx-no-literals`, que solo
+  deja pasar signos como `·` o `:`).
 - **Todo PR que agrega o cambia un texto lo hace en los tres archivos.** El español es el
   idioma de origen. La revisión rechaza claves faltantes y la prueba de idiomas falla si
   falta una.
@@ -191,11 +193,13 @@ borrado físico (`DELETE`), sin borrado lógico ni papelera. Detalle y lista par
    detalle se ve dentro de la aplicación. Sin publicidad. Cuando un barrio deja de usarla, se da
    de baja con borrado de datos.
 11. **Commits** con tipo (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`) y en
-   español. **Prohibido** agregar líneas de co-autoría de herramientas de IA.
+   español. **Prohibido** agregar líneas de co-autoría de herramientas de IA. Como el squash usa
+   el título del PR, el check `pr-title` exige que el título empiece con uno de esos tipos.
 12. **Nada de estado escrito a mano** en el README ni en el sitio ("ya está", "lo siguiente",
    "hoy muestra"): se queda viejo con el primer issue que se cierra. El avance lo muestran los
    badges en vivo (etiquetas `módulo:*` y milestones) y la página de Novedades del sitio, que
-   se arma con los PR mergeados (#99).
+   se arma con los PR mergeados (#99). `src/repository-rules.test.ts` falla si el README o
+   `site/content` dicen "ya está", "lo siguiente", "hoy muestra", "por portar" o "en reescritura".
 
 ## Seguridad (regla dura)
 
@@ -221,7 +225,8 @@ Detalle y checklist en [SECURITY.md](SECURITY.md#cómo-se-protege-la-aplicación
 
 ## Reglas de interfaz
 
-- **Tablas de datos:** siempre con ordenamiento, búsqueda y paginación.
+- **Tablas de datos:** siempre con ordenamiento, búsqueda y paginación (componentes de #7). Una
+  `<table>` en `src/` sin `SortHeader` hace fallar `npm run test`.
 - **Modales:** título fijo arriba, botones fijos abajo y **solo el contenido** con scroll.
   Nunca scroll en todo el contenedor.
 

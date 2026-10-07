@@ -46,6 +46,8 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run i18n:check
+      - name: Pruebas del bot /tomar, de los perfiles del equipo y del título del PR
+        run: node --test ".github/scripts/*.test.cjs"
       - name: Migraciones sobre la base vacía
         run: npm run db:migrate
       - name: Base de pruebas de integración
