@@ -28,12 +28,13 @@ type Values = {
   controllerWebsite: string;
   retentionMonths: string;
   policyVersion: string;
+  defaultNationality: string;
 };
 
 type Section = 'general' | 'controller';
 
 const SECTION_FIELDS: Record<Section, (keyof Values)[]> = {
-  general: ['unitName', 'allowRegistration', 'timezone', 'defaultLocale', 'contact'],
+  general: ['unitName', 'allowRegistration', 'timezone', 'defaultLocale', 'contact', 'defaultNationality'],
   controller: ['controllerName', 'controllerEmail', 'controllerPhone', 'controllerAddress', 'controllerCity', 'controllerWebsite', 'retentionMonths', 'policyVersion'],
 };
 
@@ -51,6 +52,7 @@ const PATH_TO_FIELD: Record<string, keyof Values> = {
   'controller.website': 'controllerWebsite',
   retentionMonths: 'retentionMonths',
   policyVersion: 'policyVersion',
+  defaultNationality: 'defaultNationality',
 };
 
 function toValues(config: PublicConfig): Values {
@@ -68,6 +70,7 @@ function toValues(config: PublicConfig): Values {
     controllerWebsite: config.controller.website ?? '',
     retentionMonths: String(config.retentionMonths),
     policyVersion: config.policyVersion,
+    defaultNationality: config.defaultNationality,
   };
 }
 
@@ -88,6 +91,7 @@ function toInput(values: Values) {
     },
     retentionMonths: /^\d+$/.test(values.retentionMonths.trim()) ? Number(values.retentionMonths) : Number.NaN,
     policyVersion: values.policyVersion,
+    defaultNationality: values.defaultNationality,
   };
 }
 
@@ -243,6 +247,14 @@ function SettingsCards({ config, timeZones }: { config: PublicConfig; timeZones:
             onChange={(event) => update('contact', event.target.value)}
             error={visibleError('contact')}
             required
+          />
+          <Field
+            label={t('general.defaultNationality')}
+            name="defaultNationality"
+            hint={t('general.defaultNationalityHint')}
+            value={draft.defaultNationality}
+            onChange={(event) => update('defaultNationality', event.target.value)}
+            error={visibleError('defaultNationality')}
           />
           {feedback('general')}
           <Button type="submit" disabled={!canSave('general')} className="self-start">

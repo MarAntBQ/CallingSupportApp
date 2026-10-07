@@ -23,6 +23,7 @@ const DEFAULT_ROW: Omit<ConfigRow, 'updatedAt'> = {
   controllerWebsite: null,
   retentionMonths: 12,
   policyVersion: '2026-10',
+  defaultNationality: '',
   smtpHost: null,
   smtpPort: null,
   smtpSecure: null,
@@ -48,6 +49,7 @@ export function toPublicConfig(row: Omit<ConfigRow, 'updatedAt'>): PublicConfig 
     },
     retentionMonths: row.retentionMonths,
     policyVersion: row.policyVersion,
+    defaultNationality: row.defaultNationality,
   };
 }
 
@@ -80,6 +82,7 @@ export function updateConfig(db: Database, input: ConfigInput) {
     controllerWebsite: input.controller.website,
     retentionMonths: input.retentionMonths,
     policyVersion: input.policyVersion,
+    defaultNationality: input.defaultNationality,
   });
 }
 

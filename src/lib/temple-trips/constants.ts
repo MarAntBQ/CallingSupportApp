@@ -27,6 +27,22 @@ export function normalizeIdNumber(value: string): string {
   return value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 }
 
+export const ROOM_ROLES = ['leader', 'guest'] as const;
+export type RoomRole = (typeof ROOM_ROLES)[number];
+
+// Orden natural de números de habitación: "2" antes que "10".
+export function compareNatural(a: string, b: string): number {
+  return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+}
+
+// Prellenado del modal del Excel cuando no hay apellidos/nombres guardados: parte el nombre
+// completo por la mitad (primera mitad = apellidos).
+export function splitFullName(fullName: string): { lastNames: string; firstNames: string } {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  const half = Math.ceil(parts.length / 2);
+  return { lastNames: parts.slice(0, half).join(' '), firstNames: parts.slice(half).join(' ') };
+}
+
 // Edad en años a una fecha dada; ambas fechas en formato 'YYYY-MM-DD'. En UTC para no
 // depender de la zona horaria del navegador o del servidor.
 export function calculateAge(birthDate: string, atDate: string): number {
