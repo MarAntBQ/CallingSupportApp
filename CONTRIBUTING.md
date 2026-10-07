@@ -227,6 +227,21 @@ TypeScript conoce las claves de `es.json`: si escribes una que no existe, `npm r
 falla. Para fechas, números y dinero usa `formatDate`, `formatNumber` y `formatMoney` de
 `src/lib/format.ts`, con el idioma activo (`useLocale()` o `getLocale()`).
 
+## Colores y estilos
+
+El sistema de diseño está en [DESIGN.md](DESIGN.md): qué color usar para qué, la tipografía y
+los patrones de las pantallas (tablas, formularios, avisos). Los valores viven en
+`src/app/globals.css`.
+
+- Usa los tokens con sus clases de Tailwind: `bg-surface`, `text-text-muted`, `text-primary`,
+  `border-border`.
+- Para un texto de color usa la variante `-strong` (`text-danger-strong`): las versiones vivas no
+  alcanzan el contraste mínimo para leer.
+- No escribas colores sueltos (`#…`, `rgb(…)`) en los componentes ni uses la paleta por defecto
+  de Tailwind (`text-red-500`). Si necesitas un color nuevo, agrégalo primero a `globals.css` y a
+  `DESIGN.md`. `npm run test` falla si encuentra un color fuera de `globals.css` o un texto
+  sin el contraste mínimo.
+
 ## Instalación local
 
 Necesitas Node 22 (`.nvmrc`) y Docker. Desde la raíz del repositorio:

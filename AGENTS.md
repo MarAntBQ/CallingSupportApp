@@ -33,6 +33,7 @@ src/lib/                 utilidades compartidas con el cliente
 src/components/          componentes de interfaz compartidos
 src/i18n/                configuración de idiomas (next-intl)
 messages/                textos de la interfaz: es.json, pt.json, en.json
+DESIGN.md                sistema de diseño: colores, tipografía y patrones de pantalla
 drizzle/                 migraciones generadas
 ```
 
