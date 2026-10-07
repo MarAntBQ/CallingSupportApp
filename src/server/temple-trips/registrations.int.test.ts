@@ -79,7 +79,7 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
   }, 60_000);
 
   beforeEach(async () => {
-    await db.execute(sql`truncate table temple_participants, temple_registrations, temple_trips, sessions, users restart identity cascade`);
+    await db.execute(sql`truncate table temple_participants, temple_registrations, temple_trips, sessions, users, rate_limits restart identity cascade`);
     await db.update(schema.appConfig).set({ timezone: 'America/Guayaquil', defaultLocale: 'es', policyVersion: '2026-10', retentionMonths: 12 });
     delete process.env.RECAPTCHA_SECRET_KEY;
   });
@@ -102,6 +102,14 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     const trip = await response.json();
     expect(trip.remainingQuotas.transport).toBe(10);
     expect(trip.remainingQuotas.quotaBaptismMale).toBe(3);
+  });
+
+  it('el formulario público limita a 10 inscripciones por IP por hora (#28)', async () => {
+    await activeTrip();
+    for (let i = 0; i < 10; i += 1) {
+      expect((await post(bodyOf([participant({ idNumber: `RL${i}` })]))).status).toBe(201);
+    }
+    expect((await post(bodyOf([participant({ idNumber: 'RL10' })]))).status).toBe(429);
   });
 
   it('el viaje activo expone la categoría de donativo y las instrucciones (#22)', async () => {
