@@ -1,6 +1,6 @@
 import 'server-only';
 import { and, count, eq, gt, gte, isNull, lt } from 'drizzle-orm';
-import { GLOBAL_ADMIN_LEVEL, MODULES, type ModuleKey } from '@/lib/modules';
+import { GLOBAL_ADMIN_LEVEL, type ModuleKey } from '@/lib/modules';
 import type { Database } from '@/server/db';
 import { roles, sessions, users } from '@/server/db/schema';
 import { generateSessionToken, hashSessionToken } from './crypto';
@@ -139,7 +139,7 @@ export function assertGlobalAdmin(session: Session) {
   return session;
 }
 
-export function toMe(session: Session): Me {
+export function toMe(session: Session, allowedModules: ModuleKey[]): Me {
   const { id, firstName, lastName, email, phone, role } = session.user;
   return {
     id,
@@ -148,7 +148,7 @@ export function toMe(session: Session): Me {
     email,
     phone,
     role: { key: role.key, name: role.name, level: role.level },
-    allowedModules: isGlobalAdmin(session) ? [...MODULES] : [],
+    allowedModules,
   };
 }
 

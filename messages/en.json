@@ -20,6 +20,7 @@
     "invalid_input": "Check the highlighted fields.",
     "unauthenticated": "Your session ended. Please sign in again.",
     "forbidden": "You don't have permission for this action.",
+    "no_admin_calling": "Your calling doesn't include administration permissions.",
     "not_found": "This page is no longer available.",
     "network": "Could not connect. Check your connection and try again.",
     "unknown": "Something went wrong. Please try again.",
@@ -131,7 +132,8 @@
       "profile": "My profile",
       "settings": "Settings",
       "sessions": "Active sessions",
-      "emails": "Sent emails"
+      "emails": "Sent emails",
+      "organizations": "Organizations"
     },
     "logout": "Sign out",
     "welcome": "Hi, {name}",
@@ -143,7 +145,8 @@
     "missingContact": {
       "title": "The installation contact is missing",
       "body": "Add a unit email or phone number in Settings: the guidelines for online resources ask for it to appear on every page."
-    }
+    },
+    "noModules": "You don't have any modules assigned. Talk to the leaders of your unit."
   },
   "table": {
     "pageSize": "Show <select></select> entries",
@@ -516,5 +519,39 @@
       "passwordMismatch": "The passwords don't match."
     },
     "requestNew": "Ask for a new code"
+  },
+  "organizations": {
+    "title": "Organizations",
+    "intro": "Your unit's organizations and callings. Each person's permissions in the app depend on their callings.",
+    "catalogTitle": "Catalog",
+    "organizationsTitle": "Organizations",
+    "organizationsIntro": "Use the names your unit uses, for example “Bishopric” or “Branch Presidency”.",
+    "empty": "There are no organizations yet. Add your unit’s organizations, for example the bishopric or the branch presidency.",
+    "newOrganization": "New organization",
+    "callingsTitle": "Callings",
+    "callingsIntro": "The callings of each active organization.",
+    "callingsEmpty": "Add an active organization to be able to add its callings.",
+    "noCallings": "This organization doesn't have any callings yet.",
+    "newCalling": "New calling in {organization}",
+    "add": "Add",
+    "adding": "Adding…",
+    "rename": "Rename",
+    "renameLabel": "New name for “{name}”",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "inactive": "Inactive",
+    "inactiveCalling": "Inactive",
+    "readOnly": "You can see the catalog, but your calling doesn't allow changing it.",
+    "permissionsPending": "The permissions matrix will be available in an upcoming version.",
+    "errors": {
+      "name": "Enter a name from 2 to 80 characters.",
+      "organizationTaken": "An organization with that name already exists.",
+      "callingTaken": "That calling already exists in this organization.",
+      "organizationInactive": "The organization is inactive. Activate it to add callings.",
+      "organizationMissing": "The organization no longer exists. Reload the page."
+    }
   }
 }

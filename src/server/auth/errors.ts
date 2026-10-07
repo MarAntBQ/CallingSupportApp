@@ -5,6 +5,7 @@ import type { ZodError } from 'zod';
 export type AuthErrorCode =
   | 'unauthenticated'
   | 'forbidden'
+  | 'no_admin_calling'
   | 'bad_origin'
   | 'rate_limited'
   | 'invalid_credentials'

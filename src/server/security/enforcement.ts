@@ -10,7 +10,9 @@ export function findUnprotectedRoutes(source: string) {
   for (const method of METHODS) {
     if (new RegExp(String.raw`export\s+(?:async\s+)?function\s+${method}\b`).test(source)) found.add(method);
     if (new RegExp(String.raw`export\s+(?:let|var)\s+${method}\b`).test(source)) found.add(method);
-    const constant = source.match(new RegExp(String.raw`export\s+const\s+${method}\s*=\s*([A-Za-z_$][\w$]*)?\s*(\()?`));
+    const constant = source.match(
+      new RegExp(String.raw`export\s+const\s+${method}\s*=\s*([A-Za-z_$][\w$]*)?\s*(?:<[^()=;]*>)?\s*(\()?`),
+    );
     if (constant && !(constant[2] && ROUTE_WRAPPERS.includes(constant[1] ?? ''))) found.add(method);
   }
   for (const block of source.matchAll(/export\s*\{([^}]*)\}/g)) {

@@ -11,6 +11,7 @@ import { getSession } from '@/server/auth/session';
 import { countActiveAdmins, isGlobalAdmin } from '@/server/auth/sessions';
 import { currentConfig } from '@/server/config/current';
 import { getDb } from '@/server/db';
+import { allowedModules } from '@/server/permissions/service';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,12 +26,15 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const admin = isGlobalAdmin(session);
   const missingSecondAdmin = admin && (await countActiveAdmins(getDb())) < 2;
   const missingContact = admin && !(await currentConfig()).contact;
+  const modules = await allowedModules(getDb(), session.user);
+  const showOrganizations = modules.includes('callings') || modules.includes('permissions');
   const roleKey = ROLE_KEYS.find((key) => key === session.user.role.key);
   const roleLabel = roleKey ? tRoles(roleKey) : session.user.role.name;
 
   const links = [
     { href: '/admin', label: t('nav.home'), ready: true },
     { href: '/admin/profile', label: t('nav.profile'), ready: true },
+    ...(showOrganizations ? [{ href: '/admin/organizations', label: t('nav.organizations'), ready: true }] : []),
     ...(admin
       ? [
           { href: '/admin/settings', label: t('nav.settings'), ready: true },

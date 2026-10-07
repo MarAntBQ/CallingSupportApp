@@ -1,10 +1,11 @@
 import 'server-only';
 import { AuthError, errorResponse } from '@/server/auth/errors';
 import { requireSessionFromRequest } from '@/server/auth/session';
-import { assertGlobalAdmin, type Session } from '@/server/auth/sessions';
+import type { Session } from '@/server/auth/sessions';
 import { isSameOrigin } from './http';
+import { assertPermission, type Permission } from './permission';
 
-export type Permission = 'global-admin';
+export type { Permission } from './permission';
 
 type RouteContext<P> = { params?: Promise<P> };
 
@@ -23,7 +24,7 @@ export function withAuth<P = Record<string, never>>(
     try {
       if (!isSameOrigin(request)) throw new AuthError(403, 'bad_origin');
       const session = await requireSessionFromRequest(request);
-      if (options.permission === 'global-admin') assertGlobalAdmin(session);
+      await assertPermission(session, options.permission);
       return await handler(request, { session, params: await readParams(context) });
     } catch (error) {
       return errorResponse(error);

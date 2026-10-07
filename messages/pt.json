@@ -20,6 +20,7 @@
     "invalid_input": "Revise os campos marcados.",
     "unauthenticated": "Sua sessão terminou. Entre novamente.",
     "forbidden": "Você não tem permissão para esta ação.",
+    "no_admin_calling": "Seu chamado não inclui permissões de administração.",
     "not_found": "Esta página não está mais disponível.",
     "network": "Não foi possível conectar. Verifique sua conexão e tente novamente.",
     "unknown": "Algo deu errado. Tente novamente.",
@@ -131,7 +132,8 @@
       "profile": "Meu perfil",
       "settings": "Configurações",
       "sessions": "Sessões ativas",
-      "emails": "E-mails enviados"
+      "emails": "E-mails enviados",
+      "organizations": "Organizações"
     },
     "logout": "Sair",
     "welcome": "Olá, {name}",
@@ -143,7 +145,8 @@
     "missingContact": {
       "title": "Falta o contato da instalação",
       "body": "Escreva um e-mail ou telefone da unidade em Configurações: as orientações sobre recursos on-line pedem que ele apareça em todas as páginas."
-    }
+    },
+    "noModules": "Você não tem módulos atribuídos. Fale com os líderes da sua unidade."
   },
   "table": {
     "pageSize": "Mostrar <select></select> registros",
@@ -516,5 +519,39 @@
       "passwordMismatch": "As senhas não coincidem."
     },
     "requestNew": "Pedir um novo código"
+  },
+  "organizations": {
+    "title": "Organizações",
+    "intro": "As organizações e os chamados da sua unidade. As permissões de cada pessoa no aplicativo dependem dos chamados.",
+    "catalogTitle": "Catálogo",
+    "organizationsTitle": "Organizações",
+    "organizationsIntro": "Escreva-as com o nome que sua unidade usa, por exemplo «Bispado» ou «Presidência do ramo».",
+    "empty": "Ainda não há organizações. Adicione as da sua unidade, por exemplo o bispado ou a presidência do ramo.",
+    "newOrganization": "Nova organização",
+    "callingsTitle": "Chamados",
+    "callingsIntro": "Os chamados de cada organização ativa.",
+    "callingsEmpty": "Adicione uma organização ativa para poder adicionar os chamados dela.",
+    "noCallings": "Esta organização ainda não tem chamados.",
+    "newCalling": "Novo chamado em {organization}",
+    "add": "Adicionar",
+    "adding": "Adicionando…",
+    "rename": "Renomear",
+    "renameLabel": "Novo nome de «{name}»",
+    "save": "Salvar",
+    "saving": "Salvando…",
+    "cancel": "Cancelar",
+    "activate": "Ativar",
+    "deactivate": "Desativar",
+    "inactive": "Inativa",
+    "inactiveCalling": "Inativo",
+    "readOnly": "Você pode ver o catálogo, mas seu chamado não permite alterá-lo.",
+    "permissionsPending": "A matriz de permissões estará disponível em uma próxima versão.",
+    "errors": {
+      "name": "Escreva um nome de 2 a 80 caracteres.",
+      "organizationTaken": "Já existe uma organização com esse nome.",
+      "callingTaken": "Esse chamado já existe nesta organização.",
+      "organizationInactive": "A organização está inativa. Ative-a para adicionar chamados.",
+      "organizationMissing": "A organização não existe mais. Recarregue a página."
+    }
   }
 }
