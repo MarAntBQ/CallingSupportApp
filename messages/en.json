@@ -126,5 +126,40 @@
       "title": "A second administrator is missing",
       "body": "The Church's guidelines for online resources ask for more than one administrator. Give the SuperAdmin role to another leader of the unit."
     }
+  },
+  "table": {
+    "pageSize": "Show <select></select> entries",
+    "search": "Search",
+    "searchPlaceholder": "Search…",
+    "range": "Showing {from, number} to {to, number} of {total, number} entries",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "of {count, number}",
+    "currentPage": "Page {page, number} of {count, number}"
+  },
+  "tableDemo": {
+    "title": "Table demo",
+    "body": "Development page with 30 made-up rows to try search, sorting and pagination. It does not exist in production.",
+    "caption": "Sample registrations",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "organization": "Organization",
+      "registeredOn": "Registration date",
+      "slots": "Slots"
+    },
+    "empty": {
+      "organization": "No organization",
+      "registeredOn": "No date",
+      "slots": "Not set"
+    },
+    "noRows": "No entries match the search.",
+    "organizations": {
+      "reliefSociety": "Relief Society",
+      "eldersQuorum": "Elders quorum",
+      "youngWomen": "Young Women",
+      "primary": "Primary"
+    }
   }
 }

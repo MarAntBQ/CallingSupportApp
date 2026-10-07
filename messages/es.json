@@ -126,5 +126,40 @@
       "title": "Falta un segundo administrador",
       "body": "Las pautas de la Iglesia para los recursos en línea piden más de un administrador. Da el rol SuperAdmin a otro líder de la unidad."
     }
+  },
+  "table": {
+    "pageSize": "Mostrar <select></select> registros",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar…",
+    "range": "Mostrando {from, number} a {to, number} de {total, number} registros",
+    "pagination": "Paginación",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "pageOf": "de {count, number}",
+    "currentPage": "Página {page, number} de {count, number}"
+  },
+  "tableDemo": {
+    "title": "Demostración de tablas",
+    "body": "Página de desarrollo con 30 filas inventadas para probar la búsqueda, el orden y la paginación. No existe en producción.",
+    "caption": "Inscripciones de ejemplo",
+    "columns": {
+      "name": "Nombre",
+      "email": "Correo",
+      "organization": "Organización",
+      "registeredOn": "Fecha de inscripción",
+      "slots": "Cupos"
+    },
+    "empty": {
+      "organization": "Sin organización",
+      "registeredOn": "Sin fecha",
+      "slots": "Sin definir"
+    },
+    "noRows": "No hay registros que coincidan con la búsqueda.",
+    "organizations": {
+      "reliefSociety": "Sociedad de Socorro",
+      "eldersQuorum": "Cuórum de élderes",
+      "youngWomen": "Mujeres Jóvenes",
+      "primary": "Primaria"
+    }
   }
 }
