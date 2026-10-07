@@ -14,11 +14,27 @@ export function isPageSize(value: number): value is PageSize {
   return (PAGE_SIZES as readonly number[]).includes(value);
 }
 
-const DATE_LIKE = /\d{4}-\d{2}-\d{2}|\//;
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/;
+const SLASH_DATE = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+
+function parseDateText(text: string, locale: string): number | null {
+  if (ISO_DATE.test(text)) {
+    const time = Date.parse(text);
+    return Number.isNaN(time) ? null : time;
+  }
+  const match = SLASH_DATE.exec(text);
+  if (!match) return null;
+  const [first, second, year] = [Number(match[1]), Number(match[2]), Number(match[3])];
+  const monthFirst = locale.toLowerCase().startsWith('en');
+  const day = monthFirst ? second : first;
+  const month = monthFirst ? first : second;
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCMonth() === month - 1 && date.getUTCDate() === day ? date.getTime() : null;
+}
 
 type Normalized = { kind: 'empty' } | { kind: 'number'; value: number } | { kind: 'text'; value: string };
 
-export function normalizeSortValue(value: SortValue): Normalized {
+export function normalizeSortValue(value: SortValue, locale = 'es'): Normalized {
   if (value === null || value === undefined) return { kind: 'empty' };
   if (value instanceof Date) {
     const time = value.getTime();
@@ -29,16 +45,14 @@ export function normalizeSortValue(value: SortValue): Normalized {
   }
   const text = value.trim();
   if (text === '') return { kind: 'empty' };
-  if (DATE_LIKE.test(text)) {
-    const time = Date.parse(text);
-    if (!Number.isNaN(time)) return { kind: 'number', value: time };
-  }
+  const time = parseDateText(text, locale);
+  if (time !== null) return { kind: 'number', value: time };
   return { kind: 'text', value: text.toLowerCase() };
 }
 
 export function compareSortValues(a: SortValue, b: SortValue, dir: SortDir, locale = 'es'): number {
-  const na = normalizeSortValue(a);
-  const nb = normalizeSortValue(b);
+  const na = normalizeSortValue(a, locale);
+  const nb = normalizeSortValue(b, locale);
   if (na.kind === 'empty' || nb.kind === 'empty') {
     if (na.kind === nb.kind) return 0;
     return na.kind === 'empty' ? 1 : -1;

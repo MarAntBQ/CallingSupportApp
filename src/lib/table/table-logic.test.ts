@@ -38,13 +38,22 @@ describe('orden de las columnas', () => {
     expect(byValue([a, b], 'asc')).toEqual([b, a]);
   });
 
-  it('los textos con forma de fecha se comparan como fecha', () => {
+  it('los textos con forma de fecha ISO se comparan como fecha', () => {
     expect(byValue(['2026-02-01', '2025-12-31', '2026-01-15'], 'asc')).toEqual(['2025-12-31', '2026-01-15', '2026-02-01']);
-    expect(byValue(['3/10/2026', '12/1/2025', '1/2/2026'], 'asc')).toEqual(['12/1/2025', '1/2/2026', '3/10/2026']);
+    expect(byValue(['2026-01-15T10:00:00Z', '2026-01-15T09:00:00Z'], 'asc')).toEqual(['2026-01-15T09:00:00Z', '2026-01-15T10:00:00Z']);
   });
 
-  it('un texto con "/" que no es fecha se compara como texto', () => {
-    expect(byValue(['N/A', 'B/C'], 'asc')).toEqual(['B/C', 'N/A']);
+  it('dd/mm/aaaa en español y portugués, mm/dd/aaaa en inglés', () => {
+    const values = ['15/03/2024', '02/01/2025', '1/12/2024'];
+    expect(sortRows(values, (v) => v, 'asc', 'es')).toEqual(['15/03/2024', '1/12/2024', '02/01/2025']);
+    expect(sortRows(values, (v) => v, 'asc', 'pt')).toEqual(['15/03/2024', '1/12/2024', '02/01/2025']);
+    expect(sortRows(['03/10/2026', '12/01/2025', '01/02/2026'], (v) => v, 'asc', 'en')).toEqual(['12/01/2025', '01/02/2026', '03/10/2026']);
+  });
+
+  it('un texto con "/" o con una fecha imposible se compara como texto', () => {
+    expect(byValue(['N/A', 'Calle 5/6', 'B/C'], 'asc')).toEqual(['B/C', 'Calle 5/6', 'N/A']);
+    expect(compareSortValues('31/02/2026', '2026-01-01', 'asc')).toBeGreaterThan(0);
+    expect(compareSortValues('2026-13-45', '2026-01-01', 'asc')).toBeGreaterThan(0);
   });
 
   it('compara el resto como texto en minúsculas con el orden del español', () => {
