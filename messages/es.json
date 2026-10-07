@@ -224,5 +224,41 @@
       "timezone": "Elige una zona horaria de la lista.",
       "retentionMonths": "Escribe un número de meses entre 1 y 120."
     }
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "email": "Correo",
+    "role": "Rol",
+    "emailHint": "El correo no se puede cambiar desde el perfil.",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "data": {
+      "title": "Datos",
+      "firstName": "Nombres",
+      "lastName": "Apellidos",
+      "phone": "Teléfono (opcional)",
+      "phoneHint": "Solo números, espacios y los signos + ( ) - .",
+      "locale": "Idioma",
+      "saved": "Datos guardados."
+    },
+    "password": {
+      "title": "Contraseña",
+      "intro": "Al cambiarla se cierran tus sesiones abiertas en otros dispositivos.",
+      "current": "Contraseña actual",
+      "new": "Nueva contraseña",
+      "newHint": "Al menos {min} caracteres.",
+      "confirm": "Confirmar la nueva contraseña",
+      "submit": "Cambiar contraseña",
+      "saving": "Cambiando…",
+      "saved": "Contraseña cambiada.",
+      "savedBody": "Se cerraron tus sesiones en otros dispositivos; esta sigue abierta."
+    },
+    "errors": {
+      "name": "Escribe al menos 2 caracteres (máximo 100).",
+      "phone": "Escribe un teléfono válido: números, espacios y + ( ) - . (máximo 30).",
+      "currentPassword": "La contraseña actual es incorrecta.",
+      "passwordTooShort": "La nueva contraseña debe tener al menos {min} caracteres.",
+      "passwordMismatch": "Las contraseñas no coinciden."
+    }
   }
 }

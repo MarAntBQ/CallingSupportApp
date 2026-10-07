@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   const links = [
     { href: '/admin', label: t('nav.home'), ready: true },
-    { href: '/admin/profile', label: t('nav.profile'), ready: false },
+    { href: '/admin/profile', label: t('nav.profile'), ready: true },
     ...(admin
       ? [
           { href: '/admin/settings', label: t('nav.settings'), ready: true },

@@ -224,5 +224,41 @@
       "timezone": "Escolha um fuso horário da lista.",
       "retentionMonths": "Escreva um número de meses entre 1 e 120."
     }
+  },
+  "profile": {
+    "title": "Meu perfil",
+    "email": "E-mail",
+    "role": "Função",
+    "emailHint": "O e-mail não pode ser alterado no perfil.",
+    "save": "Salvar",
+    "saving": "Salvando…",
+    "data": {
+      "title": "Dados",
+      "firstName": "Nomes",
+      "lastName": "Sobrenomes",
+      "phone": "Telefone (opcional)",
+      "phoneHint": "Apenas números, espaços e os sinais + ( ) - .",
+      "locale": "Idioma",
+      "saved": "Dados salvos."
+    },
+    "password": {
+      "title": "Senha",
+      "intro": "Ao alterá-la, suas sessões abertas em outros dispositivos são encerradas.",
+      "current": "Senha atual",
+      "new": "Nova senha",
+      "newHint": "Pelo menos {min} caracteres.",
+      "confirm": "Confirmar a nova senha",
+      "submit": "Alterar senha",
+      "saving": "Alterando…",
+      "saved": "Senha alterada.",
+      "savedBody": "Suas sessões em outros dispositivos foram encerradas; esta continua aberta."
+    },
+    "errors": {
+      "name": "Escreva pelo menos 2 caracteres (máximo 100).",
+      "phone": "Escreva um telefone válido: números, espaços e + ( ) - . (máximo 30).",
+      "currentPassword": "A senha atual está incorreta.",
+      "passwordTooShort": "A nova senha deve ter pelo menos {min} caracteres.",
+      "passwordMismatch": "As senhas não coincidem."
+    }
   }
 }
