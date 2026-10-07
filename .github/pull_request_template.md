@@ -4,6 +4,14 @@
 
 <!-- Qué cambió y por qué. Si el PR hace algo más o distinto de lo que pidió el issue, dilo aquí. -->
 
+## Novedad
+
+<!-- Sale sola en la página Novedades de callingsupportapp.org cuando el PR entra a main. Una línea por idioma, para líderes y miembros: qué cambia para ellos, no cómo se hizo. Si no le cambia nada a quien usa la aplicación o el sitio (CI, dependencias, refactor), escribe "ninguna" en las tres. Sin esta sección se publica el título del PR. -->
+
+- es:
+- pt:
+- en:
+
 ## Issue enlazado
 
 <!-- `Closes #123` si este PR completa el issue, o `Refs #123` si no lo cierra. En inglés: GitHub no reconoce "Cierra". -->
