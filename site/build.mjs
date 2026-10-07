@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Marked } from 'marked';
-import { fetchMergedEntries } from './lib/merged-prs.mjs';
+import { fetchMergedEntries, prNumberFromUrl } from './lib/merged-prs.mjs';
 
 const require = createRequire(import.meta.url);
 const { parseProfile, validateProfile, profileFiles } = require('../.github/scripts/team-profiles.cjs');
@@ -160,8 +160,8 @@ for (const [coll, folder] of [['updatesList', 'updates'], ['manualsList', 'manua
 // ---------- novedades automáticas: una por cada PR mergeado a main
 let autoUpdates = [];
 try {
-  const manualPrs = new Set(content[DEFAULT_LOCALE].updatesList.map((u) => u.data.pr).filter(Boolean));
-  autoUpdates = (await fetchMergedEntries()).filter((e) => !manualPrs.has(e.url));
+  const manualPrs = new Set(content[DEFAULT_LOCALE].updatesList.map((u) => prNumberFromUrl(u.data.pr)).filter(Boolean));
+  autoUpdates = (await fetchMergedEntries()).filter((e) => !manualPrs.has(e.number));
   console.log(`Novedades automáticas: ${autoUpdates.length} PR mergeado(s).`);
 } catch (err) {
   console.warn(`AVISO: no se pudieron traer los PR de GitHub (${err.message}). Se publican solo las novedades escritas a mano.`);

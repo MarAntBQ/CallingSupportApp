@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fetchMergedEntries, parseNovedad, toEntry } from './merged-prs.mjs';
+import { fetchMergedEntries, parseNovedad, prNumberFromUrl, toEntry } from './merged-prs.mjs';
 
 const pr = (over = {}) => ({
   number: 97,
@@ -47,6 +47,18 @@ describe('parseNovedad', () => {
   it('devuelve null si no hay sección y no confunde ### con ##', () => {
     expect(parseNovedad('## Resumen\n### Novedad\n- es: no')).toBeNull();
   });
+
+  it('ignora las líneas dentro de un bloque de código', () => {
+    expect(parseNovedad('## Novedad\n```\n- es: ejemplo de código\n```\n- es: real')).toEqual({ es: 'real' });
+  });
+
+  it('reconoce el encabezado al final del cuerpo, sin salto de línea', () => {
+    expect(parseNovedad('Texto\n\n## Novedad')).toEqual({});
+  });
+
+  it('la plantilla vacía no aporta texto', () => {
+    expect(parseNovedad('## Novedad\n\n- es:\n- pt:\n- en:\n')).toEqual({});
+  });
 });
 
 describe('toEntry', () => {
@@ -78,8 +90,27 @@ describe('toEntry', () => {
     expect(toEntry(pr({ body: '## Novedad\n- es: ninguna\n- pt: nenhuma\n- en: none' }))).toBeNull();
   });
 
-  it('recorta un texto demasiado largo', () => {
+  it('recorta un texto demasiado largo, también cuando sale del título', () => {
     expect(toEntry(pr({ body: `## Novedad\n- es: ${'a'.repeat(400)}` })).text.es).toHaveLength(280);
+    expect(toEntry(pr({ title: 'b'.repeat(400) })).text.en).toHaveLength(280);
+  });
+
+  it('arma la URL del PR con su número y nunca usa la que trae la API', () => {
+    const entry = toEntry(pr({ html_url: 'javascript:alert(1)' }));
+    expect(entry.url).toBe('https://github.com/MarAntBQ/CallingSupportApp/pull/97');
+    expect(toEntry(pr({ number: '97"><script>' }))).toBeNull();
+  });
+
+  it('la etiqueta de dependencias no distingue mayúsculas', () => {
+    expect(toEntry(pr({ labels: [{ name: 'Dependencies' }] }))).toBeNull();
+    expect(toEntry(pr({ user: { login: 'renovate[bot]', type: 'User' } }))).toBeNull();
+  });
+});
+
+describe('prNumberFromUrl', () => {
+  it('saca el número aunque la URL tenga barra final o espacios', () => {
+    expect(prNumberFromUrl(' https://github.com/MarAntBQ/CallingSupportApp/pull/46/ ')).toBe(46);
+    expect(prNumberFromUrl('https://example.com')).toBeNull();
   });
 });
 
@@ -100,6 +131,17 @@ describe('fetchMergedEntries', () => {
     expect(urls).toHaveLength(2);
     expect(entries).toHaveLength(101);
     expect(entries[0].number).toBe(200);
+  });
+
+  it('sigue más allá de 10 páginas hasta una incompleta', async () => {
+    let calls = 0;
+    const full = Array.from({ length: 100 }, (_, i) => pr({ number: i + 1 }));
+    const entries = await fetchMergedEntries({
+      api: 'https://api.test',
+      fetchImpl: async () => ok(++calls <= 12 ? full : [pr({ number: 5000 })]),
+    });
+    expect(calls).toBe(13);
+    expect(entries).toHaveLength(1201);
   });
 
   it('lanza si GitHub responde con error, para que el build use solo las manuales', async () => {
