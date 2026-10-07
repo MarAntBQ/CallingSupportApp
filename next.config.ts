@@ -7,6 +7,8 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Server autónomo para correr la app bajo pm2 en el VPS (node .next/standalone/server.js).
+  output: 'standalone',
   pageExtensions: pageExtensionsFor(process.env),
   reactStrictMode: true,
   async headers() {

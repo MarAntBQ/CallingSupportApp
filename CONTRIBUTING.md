@@ -311,6 +311,20 @@ Para repetirlas, borra y vuelve a crear `csa_e2e` (`dropdb` y `createdb`). Si un
 El paso a paso con lo que deberías ver y qué hacer si algo falla está en el
 [Manual del desarrollador](https://callingsupportapp.org/developers/).
 
+## Ambientes
+
+El proyecto tiene tres ambientes, todos bajo `callingsupportapp.org` y alojados en el VPS del equipo:
+
+| Ambiente | Dominio | Qué publica |
+|---|---|---|
+| Documentación | callingsupportapp.org | El sitio de `site/`. |
+| Staging | staging.callingsupportapp.org | La app tal como está en `main`, en cada merge. |
+| Demo pública | demo.callingsupportapp.org | Solo versiones etiquetadas `v*`. |
+
+La variable `APP_ENV` (`development` | `staging` | `demo` | `production`) distingue el ambiente: en `staging` y `demo` se muestra el banner «los datos son inventados» y el `robots.txt` bloquea el rastreo. **Staging y demo solo llevan datos inventados** (semilla `npm run db:seed:demo`); nunca datos reales de personas. Las credenciales de acceso a staging se comparten por mensaje privado, nunca en el repo ni en un issue.
+
+La app es Next.js SSR: en el VPS corre como un proceso Node (`next build` con `output: 'standalone'`) bajo pm2, detrás de Apache, y se despliega sola por GitHub Actions (staging en cada merge a `main`; demo al etiquetar `v*`).
+
 ## Reportar un problema o proponer una idea
 
 - **Bug:** plantilla *Bug*, con pasos para reproducirlo.

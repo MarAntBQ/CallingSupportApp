@@ -4,6 +4,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Providers } from '@/components/providers';
 import { SiteFooter } from '@/components/site-footer';
+import { TestEnvBanner } from '@/components/test-env-banner';
+import { appEnv } from '@/lib/app-env';
 import { currentConfig } from '@/server/config/current';
 import './globals.css';
 
@@ -26,6 +28,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <NextIntlClientProvider>
           <Providers config={config}>
+            <TestEnvBanner env={appEnv()} />
             <div className="flex flex-1 flex-col">{children}</div>
             <SiteFooter />
           </Providers>

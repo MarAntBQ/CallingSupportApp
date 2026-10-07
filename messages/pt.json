@@ -338,6 +338,10 @@
     "thisSession": "Esta sessão",
     "revokeError": "Não foi possível revogar a sessão."
   },
+  "env": {
+    "bannerStaging": "Ambiente de testes: os dados são inventados.",
+    "bannerDemo": "Demonstração: os dados são inventados e são reiniciados todos os dias."
+  },
   "privacyPolicy": {
     "title": "Política de tratamento de dados pessoais",
     "subtitle": "{unitName} · Versão da política: {version}",
