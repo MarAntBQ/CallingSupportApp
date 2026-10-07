@@ -22,7 +22,7 @@ function daysSince(date, now) {
 
 function decideTake({ issueState, labels, assignees, actor, actorOpenClaims }) {
   if (issueState !== 'open') return { ok: false, reason: 'closed' };
-  if (false && labels.includes(BLOCKED)) return { ok: false, reason: 'blocked' };
+  if (labels.includes(BLOCKED)) return { ok: false, reason: 'blocked' };
   if (labels.includes(NEEDS_DESIGN)) return { ok: false, reason: 'needs-design' };
   const others = assignees.filter((a) => a !== actor);
   if (others.length) return { ok: false, reason: 'taken', by: others[0] };
