@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toEntry } from './merged-prs.mjs';
+import { fetchMergedEntries, toEntry } from './merged-prs.mjs';
 import { SITE_TIME_ZONE, siteDate } from './site-time.mjs';
 
 const pr = (merged_at, number = 104) => ({
@@ -25,11 +25,19 @@ describe('fechas del sitio en la hora de Ecuador', () => {
     expect(siteDate('2026-10-07T04:59:59Z')).toBe('2026-10-06');
   });
 
-  it('dos PR del mismo día en Ecuador quedan en el mismo día y conservan el orden por hora UTC', () => {
-    const early = toEntry(pr('2026-10-06T14:00:00Z', 101));
-    const late = toEntry(pr('2026-10-07T04:30:00Z', 104));
-    expect([early.date, late.date]).toEqual(['2026-10-06', '2026-10-06']);
-    expect(late.mergedAt.localeCompare(early.mergedAt)).toBeGreaterThan(0);
+  it('dos PR del mismo día en Ecuador quedan en ese día, del más reciente al más antiguo', async () => {
+    const entries = await fetchMergedEntries({
+      api: 'https://api.test',
+      fetchImpl: async () => ({
+        ok: true,
+        json: async () => [pr('2026-10-06T14:00:00Z', 101), pr('2026-10-07T04:30:00Z', 104), pr('2026-10-07T05:10:00Z', 105)],
+      }),
+    });
+    expect(entries.map((entry) => [entry.number, entry.date])).toEqual([
+      [105, '2026-10-07'],
+      [104, '2026-10-06'],
+      [101, '2026-10-06'],
+    ]);
   });
 
   it('acepta objetos Date y rechaza fechas inválidas', () => {
