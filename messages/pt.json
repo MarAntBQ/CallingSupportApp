@@ -759,16 +759,18 @@
         "trip": "Viagem",
         "activeTag": "— ativa",
         "toConfirmTag": "(a confirmar)",
-        "consent": "Confirmo que tenho o consentimento das pessoas que inscrevo.",
+        "consent": "Confirmo que tenho o consentimento das pessoas que inscrevo (ou de seus pais ou responsáveis, se forem menores), incluído o tratamento de suas ordenanças, conforme a política de dados.",
         "submit": "Inscrever",
-        "received": "Inscrição registrada."
+        "received": "Inscrição registrada.",
+        "dataNotice": "Estes dados são tratados apenas para organizar esta viagem ao templo, conforme a política de dados:"
       },
       "errors": {
         "no_quota": "Não há vaga para uma das opções.",
         "age_ordinance": "Menor de {age} anos não pode ter ordenanças.",
         "duplicate_existing": "Já existe um participante com esse documento nesta viagem.",
         "empty_id": "O documento não pode ficar vazio."
-      }
+      },
+      "summaryDisapproved": "Foram reprovados {n}."
     }
   }
 }

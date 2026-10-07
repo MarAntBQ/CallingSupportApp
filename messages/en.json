@@ -759,16 +759,18 @@
         "trip": "Trip",
         "activeTag": "— active",
         "toConfirmTag": "(to be confirmed)",
-        "consent": "I confirm I have the consent of the people I am registering.",
+        "consent": "I confirm I have the consent of the people I register (or of their parents or guardians, if minors), including the processing of their ordinances, according to the data policy.",
         "submit": "Register",
-        "received": "Registration recorded."
+        "received": "Registration recorded.",
+        "dataNotice": "This data is processed only to organize this temple trip, according to the data policy:"
       },
       "errors": {
         "no_quota": "There is no spot for one of the options.",
         "age_ordinance": "A person under {age} cannot have ordinances.",
         "duplicate_existing": "A participant with that ID already exists for this trip.",
         "empty_id": "The ID cannot be empty."
-      }
+      },
+      "summaryDisapproved": "{n} disapproved."
     }
   }
 }

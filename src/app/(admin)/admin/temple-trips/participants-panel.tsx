@@ -2,6 +2,7 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { useId, useMemo, useState, type FormEvent } from 'react';
 import { SortHeader } from '@/components/table/sort-header';
 import { TablePagination } from '@/components/table/table-pagination';
@@ -104,7 +105,7 @@ export function ParticipantsPanel({
     const results = await Promise.all(ids.map((id) => postJson(`/api/temple-participants/${id}/approval`, { approved })));
     setBusy(false);
     const failed = results.filter((r) => !r.ok).length;
-    setStatus(t('summary', { approved: results.length - failed, failed }));
+    setStatus(approved ? t('summary', { approved: results.length - failed, failed }) : t('summaryDisapproved', { n: results.length - failed }));
     setSelected(new Set());
     await refresh();
   }
@@ -114,7 +115,16 @@ export function ParticipantsPanel({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap gap-2" role="tablist">
           {(['pending', 'approved', 'all'] as const).map((key) => (
-            <Button key={key} role="tab" aria-selected={subtab === key} variant={subtab === key ? 'secondary' : 'link'} onClick={() => setSubtab(key)}>
+            <Button
+              key={key}
+              role="tab"
+              aria-selected={subtab === key}
+              variant={subtab === key ? 'secondary' : 'link'}
+              onClick={() => {
+                setSubtab(key);
+                setSelected(new Set());
+              }}
+            >
               {t(`subtabs.${key}`)}
             </Button>
           ))}
@@ -217,7 +227,7 @@ export function ParticipantsPanel({
         </div>
       )}
 
-      {editing && <ParticipantModal trip={trip} participant={editing} onClose={() => setEditing(null)} onSaved={async () => { setEditing(null); await refresh(); }} />}
+      {editing && <ParticipantModal trip={trip} participant={editing} canUpdate={canUpdate} onClose={() => setEditing(null)} onSaved={async () => { setEditing(null); await refresh(); }} />}
       {creating && <NewRegistrationModal trips={allTrips} defaultTripId={trip.id} onClose={() => setCreating(false)} onSaved={async () => { setCreating(false); await refresh(); }} />}
     </div>
   );
@@ -266,7 +276,7 @@ function emptyDraft(): Draft {
   return { idNumber: '', birthDate: '', fullName: '', phone: '', email: '', gender: '', wantsTransport: false, needsLodging: false, wantsBreakfast: false, wantsLunch: false, ordinances: [] };
 }
 
-function PersonFields({ trip, draft, onChange }: { trip: TempleTripListItem; draft: Draft; onChange: (patch: Partial<Draft>) => void }) {
+function PersonFields({ trip, draft, onChange, disabled = false }: { trip: TempleTripListItem; draft: Draft; onChange: (patch: Partial<Draft>) => void; disabled?: boolean }) {
   const t = useTranslations('templeTrips.public');
   const tGenders = useTranslations('templeTrips.quotas.genders');
   const tOrdinances = useTranslations('templeTrips.quotas.ordinances');
@@ -283,15 +293,16 @@ function PersonFields({ trip, draft, onChange }: { trip: TempleTripListItem; dra
   return (
     <div className="flex flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={t('fields.idNumber')} value={draft.idNumber} onChange={(event) => onChange({ idNumber: normalizeIdNumber(event.target.value) })} />
-        <Field type="date" label={t('fields.birthDate')} value={draft.birthDate} onChange={(event) => onChange({ birthDate: event.target.value })} />
-        <Field label={t('fields.fullName')} value={draft.fullName} onChange={(event) => onChange({ fullName: event.target.value })} />
-        <Field type="tel" label={t('fields.phone')} value={draft.phone} onChange={(event) => onChange({ phone: event.target.value })} />
-        <Field type="email" label={t('fields.email')} value={draft.email} onChange={(event) => onChange({ email: event.target.value })} />
+        <Field label={t('fields.idNumber')} value={draft.idNumber} disabled={disabled} onChange={(event) => onChange({ idNumber: normalizeIdNumber(event.target.value) })} />
+        <Field type="date" label={t('fields.birthDate')} value={draft.birthDate} disabled={disabled} onChange={(event) => onChange({ birthDate: event.target.value })} />
+        <Field label={t('fields.fullName')} value={draft.fullName} disabled={disabled} onChange={(event) => onChange({ fullName: event.target.value })} />
+        <Field type="tel" label={t('fields.phone')} value={draft.phone} disabled={disabled} onChange={(event) => onChange({ phone: event.target.value })} />
+        <Field type="email" label={t('fields.email')} value={draft.email} disabled={disabled} onChange={(event) => onChange({ email: event.target.value })} />
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-text-muted">{t('fields.gender')}</span>
           <select
             aria-label={t('fields.gender')}
+            disabled={disabled}
             className="w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-base text-text focus:outline-2 focus:outline-offset-1 focus:outline-primary"
             value={draft.gender}
             onChange={(event) => onChange({ gender: event.target.value as Gender, ordinances: [] })}
@@ -311,7 +322,7 @@ function PersonFields({ trip, draft, onChange }: { trip: TempleTripListItem; dra
         <div className="flex flex-col gap-2">
           {services.map((item) => (
             <label key={item.key} className="flex items-center gap-2 text-sm text-text">
-              <input type="checkbox" className="size-4 accent-primary" checked={Boolean(draft[item.key])} onChange={(event) => onChange({ [item.key]: event.target.checked } as Partial<Draft>)} />
+              <input type="checkbox" className="size-4 accent-primary" checked={Boolean(draft[item.key])} disabled={disabled} onChange={(event) => onChange({ [item.key]: event.target.checked } as Partial<Draft>)} />
               {item.label}
             </label>
           ))}
@@ -325,7 +336,7 @@ function PersonFields({ trip, draft, onChange }: { trip: TempleTripListItem; dra
               type="checkbox"
               className="size-4 accent-primary"
               checked={draft.ordinances.includes(ordinance)}
-              disabled={!canOrdinance}
+              disabled={!canOrdinance || disabled}
               onChange={(event) => onChange({ ordinances: event.target.checked ? [...draft.ordinances, ordinance] : draft.ordinances.filter((item) => item !== ordinance) })}
             />
             {tOrdinances(ordinance)}
@@ -352,7 +363,7 @@ function draftPayload(draft: Draft) {
   };
 }
 
-function ParticipantModal({ trip, participant, onClose, onSaved }: { trip: TempleTripListItem; participant: ParticipantListItem; onClose: () => void; onSaved: () => Promise<unknown> }) {
+function ParticipantModal({ trip, participant, canUpdate, onClose, onSaved }: { trip: TempleTripListItem; participant: ParticipantListItem; canUpdate: boolean; onClose: () => void; onSaved: () => Promise<unknown> }) {
   const t = useTranslations('templeTrips.participants');
   const tErrors = useTranslations('errors');
   const locale = useLocale();
@@ -399,12 +410,12 @@ function ParticipantModal({ trip, participant, onClose, onSaved }: { trip: Templ
         <div className="flex-1 overflow-y-auto px-6 py-5">
           <div className="flex flex-col gap-4">
             {error && <Alert tone="danger" role="alert" title={error} />}
-            <PersonFields trip={trip} draft={draft} onChange={(patch) => setDraft((previous) => ({ ...previous, ...patch }))} />
+            <PersonFields trip={trip} draft={draft} disabled={!canUpdate} onChange={(patch) => setDraft((previous) => ({ ...previous, ...patch }))} />
           </div>
         </div>
         <div className="flex shrink-0 items-center justify-end gap-3 border-t border-border px-6 py-4">
           <Button type="button" variant="secondary" onClick={onClose}>{t('modal.cancel')}</Button>
-          <Button type="submit" disabled={saving}>{t('modal.save')}</Button>
+          {canUpdate && <Button type="submit" disabled={saving}>{t('modal.save')}</Button>}
         </div>
       </form>
     </div>
@@ -414,6 +425,7 @@ function ParticipantModal({ trip, participant, onClose, onSaved }: { trip: Templ
 function NewRegistrationModal({ trips, defaultTripId, onClose, onSaved }: { trips: TempleTripListItem[]; defaultTripId: string; onClose: () => void; onSaved: () => Promise<unknown> }) {
   const t = useTranslations('templeTrips.participants');
   const tErrors = useTranslations('errors');
+  const tCommon = useTranslations('common');
   const tPublic = useTranslations('templeTrips.public');
   const titleId = useId();
   const [tripId, setTripId] = useState(defaultTripId);
@@ -477,6 +489,12 @@ function NewRegistrationModal({ trips, defaultTripId, onClose, onSaved }: { trip
             <Button type="button" variant="secondary" className="self-start" disabled={!complete} onClick={() => setPeople((previous) => [...previous, { ...emptyDraft(), phone: previous[0]!.phone, email: previous[0]!.email }])}>
               {tPublic('addParticipant')}
             </Button>
+            <p className="text-sm text-text-muted">
+              {t('create.dataNotice')}{' '}
+              <Link href="/privacy" className="font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">
+                {tCommon('privacyLink')}
+              </Link>
+            </p>
             <label className="flex items-start gap-2 text-sm text-text">
               <input type="checkbox" className="mt-1 size-4 accent-primary" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
               <span>{t('create.consent')}</span>
