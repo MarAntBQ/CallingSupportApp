@@ -118,6 +118,36 @@ test('Organizaciones: el catálogo arranca vacío y el SuperAdmin agrega la prim
   await expectNoHorizontalOverflow(page);
 });
 
+test('Permisos: el SuperAdmin marca "Editar" en un módulo y queda guardado tras recargar', async ({ page }) => {
+  const t = es.organizations.permissions;
+  const label = t.checkbox
+    .replace('{action}', t.columns.canUpdate)
+    .replace('{calling}', 'Secretario')
+    .replace('{organization}', 'Presidencia de rama');
+  await login(page, PASSWORD);
+  await expect(page).toHaveURL(/\/admin$/);
+  await page.getByRole('link', { name: es.admin.nav.organizations }).click();
+  await expect(page).toHaveURL(/\/admin\/organizations$/);
+
+  // la matriz muestra el módulo "Organizaciones y llamamientos" con el llamamiento activo
+  const section = page.locator('details[data-module="callings"]');
+  await expect(section).toBeVisible();
+  await section.locator('summary').click();
+  const editar = page.getByRole('checkbox', { name: label });
+  await expect(editar).not.toBeChecked();
+  await editar.check();
+  await expect(page.getByText(t.saved)).toBeVisible();
+
+  // persiste tras recargar: la verificación real del permiso vive en el servidor
+  await page.reload();
+  await page.locator('details[data-module="callings"] summary').click();
+  await expect(page.getByRole('checkbox', { name: label })).toBeChecked();
+
+  // a 390 px la página no se desborda (la tabla ancha va en su propio scroll)
+  await page.setViewportSize({ width: 390, height: 900 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);
