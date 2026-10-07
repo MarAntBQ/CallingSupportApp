@@ -30,7 +30,7 @@ export type Session = { id: string; expiresAt: Date; user: SessionUser };
 export type Me = Omit<SessionUser, 'locale'> & { allowedModules: ModuleKey[] };
 
 export async function createSession(
-  db: Database,
+  db: Pick<Database, 'insert'>,
   userId: string,
   options: { rememberMe?: boolean; userAgent?: string | null; now?: Date } = {},
 ) {
@@ -44,6 +44,24 @@ export async function createSession(
     userAgent: options.userAgent?.slice(0, 512) ?? null,
   });
   return { token, expiresAt };
+}
+
+export async function createLoginSession(
+  db: Database,
+  userId: string,
+  verifiedCredential: string,
+  options: { rememberMe?: boolean; userAgent?: string | null } = {},
+) {
+  return db.transaction(async (tx) => {
+    const [row] = await tx
+      .select({ passwordHash: users.passwordHash })
+      .from(users)
+      .where(eq(users.id, userId))
+      .for('share')
+      .limit(1);
+    if (!row || row.passwordHash !== verifiedCredential) throw new AuthError(401, 'invalid_credentials');
+    return createSession(tx, userId, options);
+  });
 }
 
 export async function findSession(db: Database, token: string | null | undefined, now = new Date()) {

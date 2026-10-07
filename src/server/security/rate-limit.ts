@@ -12,6 +12,7 @@ export const LIMITS = {
   loginPerEmail: { max: 5, windowMs: 15 * MINUTE },
   loginPerIp: { max: 20, windowMs: 15 * MINUTE },
   setupPerIp: { max: 10, windowMs: 60 * MINUTE },
+  changePasswordPerUser: { max: 5, windowMs: 15 * MINUTE },
 } as const;
 
 export async function hit(db: Database, { key, windowMs }: Pick<Limit, 'key' | 'windowMs'>, now = new Date()) {

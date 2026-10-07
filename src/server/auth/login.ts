@@ -16,5 +16,5 @@ export async function authenticate(db: Database, email: string, password: string
   if (!user || !passwordOk) throw new AuthError(401, 'invalid_credentials');
   if (user.status === 'pending') throw new AuthError(403, 'account_pending');
   if (user.status === 'suspended') throw new AuthError(403, 'account_suspended');
-  return { id: user.id, locale: user.locale };
+  return { id: user.id, locale: user.locale, passwordHash: user.passwordHash };
 }

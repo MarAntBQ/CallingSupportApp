@@ -224,5 +224,41 @@
       "timezone": "Choose a time zone from the list.",
       "retentionMonths": "Enter a number of months between 1 and 120."
     }
+  },
+  "profile": {
+    "title": "My profile",
+    "email": "Email",
+    "role": "Role",
+    "emailHint": "Your email can't be changed from your profile.",
+    "save": "Save",
+    "saving": "Saving…",
+    "data": {
+      "title": "Details",
+      "firstName": "First names",
+      "lastName": "Last names",
+      "phone": "Phone (optional)",
+      "phoneHint": "Only numbers, spaces and + ( ) - .",
+      "locale": "Language",
+      "saved": "Details saved."
+    },
+    "password": {
+      "title": "Password",
+      "intro": "Changing it signs you out on your other devices.",
+      "current": "Current password",
+      "new": "New password",
+      "newHint": "At least {min} characters.",
+      "confirm": "Confirm the new password",
+      "submit": "Change password",
+      "saving": "Changing…",
+      "saved": "Password changed.",
+      "savedBody": "You were signed out on your other devices; this session stays open."
+    },
+    "errors": {
+      "name": "Enter at least 2 characters (up to 100).",
+      "phone": "Enter a valid phone number: numbers, spaces and + ( ) - . (up to 30).",
+      "currentPassword": "The current password is incorrect.",
+      "passwordTooShort": "The new password must be at least {min} characters.",
+      "passwordMismatch": "The passwords don't match."
+    }
   }
 }
