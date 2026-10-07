@@ -1,100 +1,73 @@
 ---
 name: escribir-un-issue
-description: Cómo escribir un issue AUTOCONTENIDO para CallingSupportApp — que alguien que no estuvo en ninguna conversación pueda tomarlo y entregarlo sin preguntar. Incluye la regla, la lista de comprobación, los antipatrones, el tamaño correcto, etiquetas, milestones y dependencias. Úsala al crear un issue nuevo, al dividir una propuesta de módulo en tareas, o cuando alguien pregunta algo en un issue que el issue debió responder (entonces se corrige el issue).
+description: Cómo escribir un issue AUTOCONTENIDO para cualquier repo de Marbust — que alguien que no estuvo en ninguna conversación pueda tomarlo y entregarlo sin preguntar. Incluye la regla, qué debe llevar, la comprobación final, los antipatrones, el tamaño correcto y las etiquetas. Úsala al crear un issue nuevo, al dividir una propuesta de módulo o una sección del plan en tareas, o cuando alguien pregunta algo en un issue que el issue debió responder (entonces se corrige el issue).
 ---
 
 # Escribir un issue
 
+> **Fuente oficial** (directorio `MarbustTechnologyCompany/ClaudeSkills`). La copia dentro de cada repo se **sincroniza desde aquí** por el Action `sync-skills`; no se edita a mano en el repo.
+
 ## La regla
 
-> **El issue se autocontiene.** Quien lo tome tiene que poder terminarlo leyendo solo el
-> issue y los archivos que enlaza, sin preguntar nada a nadie.
+> **El issue se autocontiene.** Quien lo tome tiene que poder terminarlo leyendo solo el issue, la referencia que enlaza y los archivos que menciona, sin preguntar nada a nadie.
 
-El colaborador no estuvo en la llamada, no ve tableros privados y no leyó el chat. Lo que
-no está escrito en el issue, para él no existe.
+Quien lo toma no estuvo en la conversación, puede no ver el tablero de Trello y no leyó el chat. Lo que no está escrito en el issue, para esa persona no existe.
+
+## Antes de escribirlo
+
+1. **Tarjeta en Trello** (el tablero del repo, con marca + severidad + rol + ejecutor).
+2. El issue lo abre la cuenta **`MarbustTechnologyCompany`**, con una plantilla: *Work item*, *Reporte de bug* o *Propuesta de módulo*.
 
 ## Qué tiene que llevar
 
-Usa la plantilla **Tarea** (`gh issue create --template work-item.yml` o desde "New issue").
-Cada sección responde una pregunta:
-
 | Sección | Pregunta que responde |
 |---|---|
-| Resultado | ¿Qué cambia cuando esté terminado, y para quién? |
-| Contexto y decisiones | ¿Por qué se hace? ¿Qué ya está decidido y no se discute? |
-| Referencia en la v1 | Si es un port: ¿qué archivos y funciones de la rama `legacy` mirar? |
+| Resultado | ¿Qué cambia cuando esté terminado, y para quién (qué rol/usuario)? |
 | Alcance | ¿Qué entra? |
 | Exclusiones | ¿Qué parece que entra pero no? |
-| Especificación | ¿Qué datos, campos, reglas, pantallas, rutas y permisos? |
+| Especificación (dentro de *Alcance*) | Datos, campos, reglas de negocio con sus números y casos borde, pantallas, rutas, **permisos por rol** y comportamiento en las condiciones del negocio |
+| Datos sensibles | ¿Cuáles toca, quién los ve, cómo se protegen? ("No aplica" si no toca) |
 | Criterios de aceptación | ¿Qué se puede observar para decir "listo"? |
-| Verificación | ¿Con qué comandos o pasos se demuestra? |
-| Dependencias | ¿Qué tiene que estar cerrado antes? ¿Qué desbloquea? |
+| Verificación | ¿Con qué comandos o pasos se demuestra? Para trabajo sensible (dinero, impuestos, identidad, proveedores), lista los **gates externos por separado**: un PR mergeado no prueba un deploy, una migración, un smoke autenticado ni un UAT |
+| Contexto y referencias | Sección del plan/ADR, decisiones tomadas, dependencias, la tarjeta de Trello |
 
-**Textos de la interfaz:** escríbelos en español dentro del issue (es el idioma de origen).
-Quien lo implemente agrega el portugués y el inglés; no hace falta escribirlos en el issue.
+**Textos de la interfaz:** escríbelos en el issue, en el idioma del producto (en Marbust, español con tuteo).
 
 ## Comprobación final
 
-Antes de publicarlo, léelo como si no supieras nada del proyecto:
+Léelo como si no supieras nada del proyecto:
 
-- [ ] ¿Está de acuerdo con el [Manual General](https://www.churchofjesuschrist.org/study/manual/general-handbook?lang=spa)? Si es un módulo, ¿cita las secciones que lo rigen, textuales y con número?
+- [ ] ¿Está de acuerdo con el plan/ADR? Si lo contradice, primero se cambia el plan (con su PR).
 - [ ] ¿Podría empezar a programar ahora mismo, sin preguntar?
 - [ ] ¿Cada regla de negocio está escrita con sus números y casos borde?
-- [ ] ¿Las rutas de la v1 son exactas (`backend/src/...`), no "como en la v1"?
+- [ ] ¿Dice qué puede hacer cada rol, y qué pasa en las condiciones del negocio (suspendido, vencido, sin permiso)?
 - [ ] ¿Cada criterio de aceptación se puede comprobar mirando algo?
-- [ ] ¿No hay enlaces a cosas privadas como única fuente (Trello privado, chats, repos privados)?
-- [ ] ¿No hay datos de personas reales ni secretos?
+- [ ] ¿No depende de algo privado como única fuente (un chat, una llamada, una tarjeta)?
+- [ ] ¿No hay datos reales de clientes/personas ni secretos?
 - [ ] ¿Cabe en un solo PR que alguien pueda revisar en una sentada?
 
 ## Antipatrones
 
 | Así no | Así sí |
 |---|---|
-| "Como lo hablamos" | La decisión escrita en *Contexto y decisiones* |
-| "Igual que en la v1" | `backend/src/templo/templo.service.ts` → `aprobarParticipante()`, y la regla copiada |
-| "Mejorar la pantalla de viajes" | Qué cambia exactamente y cómo se ve terminado |
-| "Arreglar los cupos" | El caso que falla, el esperado y el real |
-| Un issue con el módulo completo | Un issue por resultado: modelo de datos, formulario público, aprobación... |
-| Criterio "funciona bien" | "Al aprobar el participante 21 con 20 cupos, la API responde 409 y el cupo no cambia" |
+| "Como lo hablamos" | La decisión escrita en el issue o en el plan, con su sección |
+| "Hacer la agenda" | Un issue por resultado: tipos, horario, agendar, cancelar, recordatorios |
+| "Arreglar el cálculo" | El caso que falla, el esperado y el real |
+| Criterio "funciona bien" | "Con 3 ítems de 19.50, el total muestra 58.50 y el IVA 8.78" |
+| "El usuario X puede ver lo necesario" | "El rol recepcionista ve nombre, cédula y citas; `GET /records/:id` le responde 403" |
 
 ## Tamaño
 
-Un issue = **un resultado** que se entrega y se revisa solo. Señales de que hay que dividirlo:
-la especificación pasa de una pantalla, tiene más de un "y además", o mezcla modelo de datos,
-API e interfaz de dos funcionalidades distintas.
+Un issue = **un resultado** que se entrega y se revisa solo. Señales de que hay que dividirlo: la especificación pasa de una pantalla, tiene más de un "y además", o mezcla modelo de datos, API e interfaz de dos funcionalidades distintas.
 
 ## Ideas que todavía no se pueden especificar
 
-Si faltan decisiones (por ejemplo, un módulo nuevo como el campamento), **no** es una Tarea:
-usa la plantilla **Propuesta de módulo**. Cuando sus preguntas abiertas se responden, se
-divide en Tareas autocontenidas y la propuesta las enlaza.
+Si faltan decisiones, **no** es un *Work item*: usa **Propuesta de módulo** (etiquetas `módulo-nuevo` y `necesita-diseño`). Cuando sus preguntas se responden, se agrega al plan y se divide en work items autocontenidos que la propuesta enlaza.
 
 ## Etiquetas
 
-| Etiqueta | Cuándo |
-|---|---|
-| `bug` | Defecto reproducible (lo pone la plantilla Bug) |
-| `enhancement` | Tarea nueva o mejora (lo pone la plantilla Tarea) |
-| `documentation` | Solo documentación |
-| `port-v1` | Lleva a la versión nueva algo que ya existe en la rama `legacy` |
-| `módulo-nuevo` | Funcionalidad que no existe en la v1 |
-| `infraestructura` | Esqueleto, CI, despliegue, configuración del proyecto |
-| `datos-sensibles` | Recoge, guarda, muestra o exporta datos de personas |
-| `bloqueado` | Tiene dependencias abiertas. Se quita cuando se cierran |
-| `necesita-diseño` | Faltan decisiones; todavía no se puede tomar |
-| `good first issue` | Acotado y con poco contexto previo, ideal para empezar |
-| `help wanted` | Disponible para cualquier colaborador |
-
-## Milestones
-
-| Milestone | Contenido |
-|---|---|
-| 1 · Base | Esqueleto, autenticación, usuarios, permisos, configuración, correo |
-| 2 · Viaje al Templo | Port completo del módulo de la v1 |
-| 3 · Listo para otros barrios | Guía de despliegue, política de datos configurable, purga |
-| 4 · Módulos nuevos | Campamento, EnglishConnect |
+Las plantillas ponen solas `bug`, `enhancement` o `módulo-nuevo` + `necesita-diseño`. El resto las agrega quien crea o mantiene el issue: `documentation`, `datos-sensibles`, `infraestructura`, `bloqueado`, `en-progreso`, y las del dominio del repo.
 
 ## Cuando alguien pregunta en un issue
 
-Responde **y corrige el cuerpo del issue** con la respuesta. Si solo contestas en un
-comentario, el siguiente que lo lea vuelve a tener la misma duda.
+Responde **y corrige el cuerpo del issue** con la respuesta. Si solo contestas en un comentario, el siguiente que lo lea vuelve a tener la misma duda.
