@@ -62,6 +62,9 @@ describe('orden de las columnas', () => {
     expect(byValue(['N/A', 'Calle 5/6', 'B/C'], 'asc')).toEqual(['B/C', 'Calle 5/6', 'N/A']);
     expect(compareSortValues('31/02/2026', '2026-01-01', 'asc')).toBeGreaterThan(0);
     expect(compareSortValues('2026-13-45', '2026-01-01', 'asc')).toBeGreaterThan(0);
+    expect(compareSortValues('2026-02-30', '2026-12-31', 'asc')).toBeGreaterThan(0);
+    expect(compareSortValues('2026-02-29T10:00:00Z', '2026-12-31', 'asc')).toBeGreaterThan(0);
+    expect(compareSortValues('2028-02-29', '2028-03-01', 'asc')).toBeLessThan(0);
   });
 
   it('compara el resto como texto en minúsculas con el orden del español, en cualquier idioma', () => {
