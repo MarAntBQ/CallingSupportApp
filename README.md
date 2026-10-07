@@ -21,7 +21,7 @@ organizaciones, llamamientos con permisos por módulo, y módulos de actividades
 | [**Demo**](https://demo.callingsupportapp.org) | La última versión publicada, para conocer la aplicación | Al publicar una versión (`v*`, [#51](../../issues/51)) |
 | [**Staging**](https://staging.callingsupportapp.org) | Lo último de `main`, para probar los cambios | Solo, en cada merge |
 
-Las dos usan **datos inventados** y cada una tiene su propia base. Hoy muestran la portada provisional mientras se construyen el inicio de sesión ([#8](../../issues/8)) y los módulos. **No escribas datos reales en ellas.**
+Las dos usan **datos inventados** y cada una tiene su propia base. **No escribas datos reales en ellas.**
 
 ## Qué es y qué no es
 
@@ -30,18 +30,21 @@ Las dos usan **datos inventados** y cada una tiene su propia base. Hoy muestran 
 aplicación oficial de la Iglesia. Directorio, calendario, llamamientos y ministración siguen
 viviendo ahí.
 
-El objetivo de este proyecto es **agregar las funcionalidades que hoy no existen**: organizar
+El objetivo de este proyecto es **agregar lo que las herramientas oficiales no ofrecen**: organizar
 una actividad de principio a fin, con sus inscripciones, cupos, costos estimados y listados, sin hojas
 de cálculo sueltas ni grupos de chat.
 
 ## Módulos
 
-| Módulo | Qué resuelve | Estado |
+| Módulo | Qué resuelve | Avance |
 |---|---|---|
-| Usuarios, organizaciones y llamamientos | Quién entra a la aplicación y qué puede ver o hacer en cada módulo, según su llamamiento | Por portar de la v1: [#8](../../issues/8), [#14](../../issues/14)–[#17](../../issues/17) |
-| Viaje para Adorar en el Templo | Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, costo estimado y cómo contribuir (la app no maneja dinero), habitaciones, listados imprimibles | Por portar de la v1: [#19](../../issues/19)–[#25](../../issues/25) |
-| Campamento | Inscripción de jóvenes y líderes, aporte sugerido si el obispado lo autoriza (sin manejar dinero), formulario oficial de permiso, lista personal de qué llevar y reparto del equipo del barrio | Especificado: [#30](../../issues/30) |
-| EnglishConnect | Ciclos y grupos por nivel, con sede, día, hora y enlaces. Cada estudiante se inscribe y ve su grupo; cada maestro ve solo a sus estudiantes | Especificado: [#31](../../issues/31) |
+| Usuarios, organizaciones y llamamientos | Quién entra a la aplicación y qué puede ver o hacer en cada módulo, según su llamamiento | [![Usuarios, organizaciones y llamamientos: issues listos](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Ausuarios%22&label=listos&color=15803d)](../../issues?q=is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Ausuarios%22) [![Usuarios, organizaciones y llamamientos: issues pendientes](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Ausuarios%22&label=pendientes&color=b45309)](../../issues?q=is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Ausuarios%22) |
+| Viaje para Adorar en el Templo | Inscripción pública, cupos por ordenanza y género, transporte y hospedaje, costo estimado y cómo contribuir (la app no maneja dinero), habitaciones, listados imprimibles | [![Viaje para Adorar en el Templo: issues listos](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Aviaje-templo%22&label=listos&color=15803d)](../../issues?q=is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Aviaje-templo%22) [![Viaje para Adorar en el Templo: issues pendientes](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Aviaje-templo%22&label=pendientes&color=b45309)](../../issues?q=is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Aviaje-templo%22) |
+| Campamento | Inscripción de jóvenes y líderes, aporte sugerido si el obispado lo autoriza (sin manejar dinero), formulario oficial de permiso, lista personal de qué llevar y reparto del equipo del barrio | [![Campamento: issues listos](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Acampamento%22&label=listos&color=15803d)](../../issues?q=is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Acampamento%22) [![Campamento: issues pendientes](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Acampamento%22&label=pendientes&color=b45309)](../../issues?q=is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Acampamento%22) |
+| EnglishConnect | Ciclos y grupos por nivel, con sede, día, hora y enlaces. Cada estudiante se inscribe y ve su grupo; cada maestro ve solo a sus estudiantes | [![EnglishConnect: issues listos](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Aenglishconnect%22&label=listos&color=15803d)](../../issues?q=is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Aenglishconnect%22) [![EnglishConnect: issues pendientes](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Aenglishconnect%22&label=pendientes&color=b45309)](../../issues?q=is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Aenglishconnect%22) |
+| Autosuficiencia | Portal de recursos públicos y gratuitos de autosuficiencia, sin datos de las personas | [![Autosuficiencia: issues listos](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Aautosuficiencia%22&label=listos&color=15803d)](../../issues?q=is%3Aissue%20is%3Aclosed%20label%3A%22m%C3%B3dulo%3Aautosuficiencia%22) [![Autosuficiencia: issues pendientes](https://img.shields.io/github/issues-search?query=repo%3AMarAntBQ%2FCallingSupportApp%20is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Aautosuficiencia%22&label=pendientes&color=b45309)](../../issues?q=is%3Aissue%20is%3Aopen%20label%3A%22m%C3%B3dulo%3Aautosuficiencia%22) |
+
+Los números salen en vivo de los issues de cada módulo (etiquetas `módulo:*`): se actualizan solos cuando un issue se cierra.
 
 ## Cuidado de los datos de los miembros
 
@@ -70,14 +73,20 @@ En la práctica:
 
 ## Estado
 
-**En reescritura.** Esta rama (`main`) arranca desde cero como una aplicación **100%
-Next.js**, pensada para que cualquier barrio la despliegue sin servidor propio:
+La aplicación es **100% Next.js**, pensada para que cualquier barrio la despliegue sin servidor propio:
 
 - **Vercel** para la aplicación (frontend y API en un solo proyecto).
 - **Supabase** (Postgres) para la base de datos.
 - Ambos con plan gratuito, sin VPS ni configuración de servidor.
 
-**Ya está en `main`:** el esqueleto Next.js + Drizzle + Postgres ([#4](../../issues/4)), los tres idiomas con selector ([#5](../../issues/5)) y el sistema de diseño ([#77](../../issues/77), [DESIGN.md](DESIGN.md)). **Lo siguiente:** inicio de sesión y `/setup` ([#8](../../issues/8)) y la seguridad base ([#79](../../issues/79)).
+**Avance por etapa**, en vivo desde los [milestones](../../milestones):
+
+- [![1 · Base: porcentaje de issues cerrados](https://img.shields.io/github/milestones/progress-percent/MarAntBQ/CallingSupportApp/1)](../../milestone/1)
+- [![2 · Viaje al Templo: porcentaje de issues cerrados](https://img.shields.io/github/milestones/progress-percent/MarAntBQ/CallingSupportApp/2)](../../milestone/2)
+- [![3 · Listo para otros barrios: porcentaje de issues cerrados](https://img.shields.io/github/milestones/progress-percent/MarAntBQ/CallingSupportApp/3)](../../milestone/3)
+- [![4 · Módulos nuevos: porcentaje de issues cerrados](https://img.shields.io/github/milestones/progress-percent/MarAntBQ/CallingSupportApp/4)](../../milestone/4)
+
+[![Último cambio en main](https://img.shields.io/github/last-commit/MarAntBQ/CallingSupportApp/main?label=%C3%BAltimo%20cambio%20en%20main)](../../commits/main) · Qué cambió y para quién: [Novedades](https://callingsupportapp.org/updates/).
 
 La primera versión del proyecto (NestJS + React/Vite + MySQL, autoalojada) se conserva
 completa en la rama [`legacy`](../../tree/legacy) como referencia funcional para el port.
