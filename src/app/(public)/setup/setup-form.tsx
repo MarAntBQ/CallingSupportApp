@@ -1,12 +1,13 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useId, useState, type FormEvent } from 'react';
+import { useId, useRef, useState, type FormEvent } from 'react';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { postJson, type ErrorCode } from '@/lib/api-client';
+import { PRIVACY_POLICY_URL } from '@/lib/privacy';
 import { PASSWORD_MIN_LENGTH, setupSchema } from '@/lib/validation/auth';
 
 type FieldName =
@@ -17,14 +18,30 @@ type FieldName =
   | 'confirmPassword'
   | 'bishopApproved'
   | 'bishopApprovedBy'
-  | 'bishopApprovedOn';
+  | 'bishopApprovedOn'
+  | 'privacyConsent';
+
+const FIELD_ORDER: FieldName[] = [
+  'firstName',
+  'lastName',
+  'email',
+  'password',
+  'confirmPassword',
+  'bishopApproved',
+  'bishopApprovedBy',
+  'bishopApprovedOn',
+  'privacyConsent',
+];
 
 export function SetupForm({ today }: { today: string }) {
   const t = useTranslations('setup');
   const tCommon = useTranslations('common');
   const tErrors = useTranslations('errors');
   const router = useRouter();
+  const locale = useLocale();
+  const formRef = useRef<HTMLFormElement>(null);
   const approvalId = useId();
+  const consentId = useId();
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
   const [formError, setFormError] = useState<ErrorCode | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -33,8 +50,15 @@ export function SetupForm({ today }: { today: string }) {
     if (field === 'email') return tCommon('invalidEmail');
     if (field === 'password') return t('passwordTooShort', { min: PASSWORD_MIN_LENGTH });
     if (field === 'bishopApproved') return t('bishopApprovedRequired');
+    if (field === 'privacyConsent') return t('privacy.consentRequired');
     if (field === 'bishopApprovedOn' && code === 'future_date') return t('futureDate');
     return tCommon('required');
+  }
+
+  function focusFirst(found: Partial<Record<FieldName, string>>) {
+    const first = FIELD_ORDER.find((field) => found[field]);
+    if (!first) return;
+    requestAnimationFrame(() => formRef.current?.querySelector<HTMLInputElement>(`[name="${first}"]`)?.focus());
   }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -49,6 +73,8 @@ export function SetupForm({ today }: { today: string }) {
       bishopApproved: form.get('bishopApproved') === 'on',
       bishopApprovedBy: value('bishopApprovedBy'),
       bishopApprovedOn: value('bishopApprovedOn'),
+      privacyConsent: form.get('privacyConsent') === 'on',
+      locale,
     };
 
     const next: Partial<Record<FieldName, string>> = {};
@@ -62,7 +88,10 @@ export function SetupForm({ today }: { today: string }) {
     if (value('confirmPassword') !== input.password) next.confirmPassword = t('passwordMismatch');
     setErrors(next);
     setFormError(null);
-    if (Object.keys(next).length > 0) return;
+    if (Object.keys(next).length > 0) {
+      focusFirst(next);
+      return;
+    }
 
     setSubmitting(true);
     const result = await postJson('/api/setup', input);
@@ -75,13 +104,15 @@ export function SetupForm({ today }: { today: string }) {
       router.replace('/login');
       return;
     }
-    setErrors(Object.fromEntries(result.fields.map((field) => [field, messageFor(field)])));
+    const serverErrors = Object.fromEntries(result.fields.map((field) => [field, messageFor(field)]));
+    setErrors(serverErrors);
+    focusFirst(serverErrors);
     setFormError(result.error);
     setSubmitting(false);
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-8">
+    <form ref={formRef} onSubmit={onSubmit} noValidate className="flex flex-col gap-8">
       {formError && <Alert tone="danger" role="alert" title={tErrors(formError)} />}
 
       <fieldset className="flex flex-col gap-5">
@@ -144,6 +175,41 @@ export function SetupForm({ today }: { today: string }) {
           />
         </div>
       </fieldset>
+
+      <section aria-labelledby={`${consentId}-title`} className="flex flex-col gap-3 rounded-md border border-border bg-surface-muted p-4">
+        <h2 id={`${consentId}-title`} className="text-base font-semibold text-text">
+          {t('privacy.title')}
+        </h2>
+        <ul className="flex list-disc flex-col gap-1 pl-5 text-sm text-text-muted">
+          <li>{t('privacy.controller')}</li>
+          <li>{t('privacy.what')}</li>
+          <li>{t('privacy.who')}</li>
+          <li>{t('privacy.howLong')}</li>
+          <li>{t('privacy.where')}</li>
+        </ul>
+        <a href={PRIVACY_POLICY_URL} target="_blank" rel="noreferrer" className="text-sm font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">
+          {t('privacy.policyLink')}
+        </a>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor={consentId} className="flex items-start gap-2 text-base text-text">
+            <input
+              id={consentId}
+              type="checkbox"
+              name="privacyConsent"
+              required
+              aria-invalid={errors.privacyConsent ? true : undefined}
+              aria-describedby={errors.privacyConsent ? `${consentId}-error` : undefined}
+              className="mt-1 size-4 accent-primary"
+            />
+            {t('privacy.consent')}
+          </label>
+          {errors.privacyConsent && (
+            <p id={`${consentId}-error`} className="pl-6 text-sm text-danger-strong">
+              {errors.privacyConsent}
+            </p>
+          )}
+        </div>
+      </section>
 
       <Button type="submit" disabled={submitting}>
         {submitting ? t('submitting') : t('submit')}

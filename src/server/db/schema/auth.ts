@@ -25,6 +25,9 @@ export const users = pgTable(
     callingLabel: text('calling_label'),
     status: userStatus('status').notNull().default('pending'),
     locale: text('locale'),
+    consentAt: timestamp('consent_at', { withTimezone: true }),
+    consentPolicyVersion: text('consent_policy_version'),
+    consentLocale: text('consent_locale'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

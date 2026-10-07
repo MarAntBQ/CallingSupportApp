@@ -1,5 +1,6 @@
 import 'server-only';
 import { count, eq, sql } from 'drizzle-orm';
+import { PRIVACY_POLICY_VERSION } from '@/lib/privacy';
 import type { SetupInput } from '@/lib/validation/auth';
 import { hashPassword } from '@/server/auth/crypto';
 import { AuthError } from '@/server/auth/errors';
@@ -37,6 +38,10 @@ export async function performSetup(
         passwordHash,
         roleId: role.id,
         status: 'active',
+        locale: input.locale,
+        consentAt: sql`now()`,
+        consentPolicyVersion: PRIVACY_POLICY_VERSION,
+        consentLocale: input.locale,
       })
       .returning({ id: users.id });
 

@@ -4,6 +4,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { PRIVACY_POLICY_VERSION } from '@/lib/privacy';
 import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
 import { hashPassword, hashSessionToken } from './crypto';
@@ -21,6 +22,8 @@ const setupBody = {
   bishopApproved: true,
   bishopApprovedBy: 'Obispo de prueba',
   bishopApprovedOn: '2026-01-15',
+  privacyConsent: true,
+  locale: 'pt',
 } as const;
 
 function jsonRequest(path: string, body: unknown, cookie?: string) {
@@ -165,12 +168,25 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
     expect(cookie).toBeDefined();
     expect((await routes.me.GET(getRequest('/api/auth/me', cookie))).status).toBe(200);
 
+    const [admin] = await db.select().from(schema.users);
+    expect(admin!.consentAt).toBeInstanceOf(Date);
+    expect(admin!.consentPolicyVersion).toBe(PRIVACY_POLICY_VERSION);
+    expect(admin!.consentLocale).toBe('pt');
+    expect(admin!.locale).toBe('pt');
+
     const [approval] = await db.select().from(schema.installation);
     expect(approval).toMatchObject({ bishopApprovedBy: 'Obispo de prueba', bishopApprovedOn: '2026-01-15' });
 
     expect(await (await routes.setup.GET()).json()).toEqual({ needed: false });
     expect((await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, email: 'otro@example.com' }))).status).toBe(404);
   }, 30_000);
+
+  it('/api/setup sin el consentimiento del aviso de privacidad responde 400', async () => {
+    const response = await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, privacyConsent: false }));
+    expect(response.status).toBe(400);
+    expect((await response.json()).fields).toContain('privacyConsent');
+    expect(await db.select().from(schema.users)).toHaveLength(0);
+  });
 
   it('/api/setup sin la aprobación del obispo responde 400 y no crea nada', async () => {
     const response = await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, bishopApproved: false }));

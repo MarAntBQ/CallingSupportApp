@@ -65,7 +65,18 @@
     "bishopApprovedOn": "Approval date",
     "futureDate": "The date can't be in the future.",
     "submit": "Create account and sign in",
-    "submitting": "Creating the account…"
+    "submitting": "Creating the account…",
+    "privacy": {
+      "title": "Privacy notice",
+      "controller": "Data controller: the bishopric of this unit.",
+      "what": "We store your names, your email and your password (stored so that nobody can read it, not even administrators) for your administrator account, plus the name of the person who approved and the date, as a record of the approval (General Handbook 38.8.24.2).",
+      "who": "Only the administrators of this installation can see them. They are not used for anything else or shared with anyone.",
+      "howLong": "They are kept while your account exists. If it is deleted, they are erased.",
+      "where": "They are hosted on the services where the unit installed the app.",
+      "policyLink": "Read the data policy",
+      "consent": "I read the notice and agree that this data is stored to administer the unit's app.",
+      "consentRequired": "To continue, accept the privacy notice."
+    }
   },
   "admin": {
     "navLabel": "Dashboard menu",

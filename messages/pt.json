@@ -65,7 +65,18 @@
     "bishopApprovedOn": "Data da aprovação",
     "futureDate": "A data não pode ser futura.",
     "submit": "Criar conta e entrar",
-    "submitting": "Criando a conta…"
+    "submitting": "Criando a conta…",
+    "privacy": {
+      "title": "Aviso de privacidade",
+      "controller": "Responsável pelos dados: o bispado desta unidade.",
+      "what": "Guardamos seus nomes, seu e-mail e sua senha (guardada de forma que ninguém pode lê-la, nem os administradores) para sua conta de administrador, e o nome de quem aprovou e a data, como registro da aprovação (Manual Geral 38.8.24.2).",
+      "who": "Somente os administradores desta instalação podem vê-los. Não são usados para outro fim nem entregues a ninguém.",
+      "howLong": "Ficam guardados enquanto sua conta existir. Se ela for excluída, são apagados.",
+      "where": "Ficam hospedados nos serviços onde a unidade instalou o aplicativo.",
+      "policyLink": "Ler a política de dados",
+      "consent": "Li o aviso e aceito que estes dados sejam guardados para administrar o aplicativo da unidade.",
+      "consentRequired": "Para continuar, aceite o aviso de privacidade."
+    }
   },
   "admin": {
     "navLabel": "Menu do painel",

@@ -12,6 +12,8 @@ const validSetup = {
   bishopApproved: true,
   bishopApprovedBy: 'Obispo de prueba',
   bishopApprovedOn: '2026-01-15',
+  privacyConsent: true,
+  locale: 'es',
 };
 
 describe('tokens de sesión', () => {
@@ -46,13 +48,15 @@ describe('validación', () => {
 
   it('el setup exige la aprobación del obispo, quién aprobó y la fecha', () => {
     expect(setupSchema.safeParse(validSetup).success).toBe(true);
-    for (const missing of ['bishopApproved', 'bishopApprovedBy', 'bishopApprovedOn'] as const) {
+    for (const missing of ['bishopApproved', 'bishopApprovedBy', 'bishopApprovedOn', 'privacyConsent', 'locale'] as const) {
       const input = { ...validSetup, [missing]: undefined };
       const result = setupSchema.safeParse(input);
       expect(result.success).toBe(false);
       expect(result.error?.issues.map((issue) => issue.path[0])).toContain(missing);
     }
     expect(setupSchema.safeParse({ ...validSetup, bishopApproved: false }).success).toBe(false);
+    expect(setupSchema.safeParse({ ...validSetup, privacyConsent: false }).success).toBe(false);
+    expect(setupSchema.safeParse({ ...validSetup, locale: 'fr' }).success).toBe(false);
   });
 
   it('rechaza una fecha de aprobación futura y una contraseña corta', () => {
@@ -66,6 +70,11 @@ describe('readCookie', () => {
 
   it('lee la cookie pedida entre varias', () => {
     expect(readCookie(request('a=1; csa_session=abc; b=2'), 'csa_session')).toBe('abc');
+  });
+
+  it('ignora una cookie malformada en vez de fallar', () => {
+    expect(readCookie(request('csa_session=%'), 'csa_session')).toBeNull();
+    expect(readCookie(request('csa_session=%E0%A4%A'), 'csa_session')).toBeNull();
   });
 
   it('devuelve null si no está o no hay cabecera', () => {

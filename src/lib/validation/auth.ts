@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { LOCALES } from '@/i18n/config';
 
 export const PASSWORD_MIN_LENGTH = 8;
 
@@ -23,6 +24,8 @@ export const setupSchema = z.object({
   bishopApproved: z.literal(true),
   bishopApprovedBy: z.string().trim().min(2).max(150),
   bishopApprovedOn: z.iso.date().refine((value) => value <= todayPlusOne(), { message: 'future_date' }),
+  privacyConsent: z.literal(true),
+  locale: z.enum(LOCALES),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
