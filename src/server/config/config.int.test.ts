@@ -38,6 +38,7 @@ const PUBLIC_KEYS = [
   'contact',
   'controller',
   'defaultLocale',
+  'defaultNationality',
   'logoDataUrl',
   'policyVersion',
   'retentionMonths',
