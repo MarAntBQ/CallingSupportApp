@@ -28,6 +28,12 @@ export const users = pgTable(
     consentAt: timestamp('consent_at', { withTimezone: true }),
     consentPolicyVersion: text('consent_policy_version'),
     consentLocale: text('consent_locale'),
+    otpHash: text('otp_hash'),
+    otpTries: integer('otp_tries').notNull().default(0),
+    resetOtpHash: text('reset_otp_hash'),
+    resetOtpTries: integer('reset_otp_tries').notNull().default(0),
+    resetVerifiedAt: timestamp('reset_verified_at', { withTimezone: true }),
+    resetTokenHash: text('reset_token_hash'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

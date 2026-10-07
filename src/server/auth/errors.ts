@@ -12,7 +12,8 @@ export type AuthErrorCode =
   | 'account_suspended'
   | 'invalid_input'
   | 'not_found'
-  | 'server_misconfigured';
+  | 'server_misconfigured'
+  | 'registration_closed';
 
 export class AuthError extends Error {
   constructor(

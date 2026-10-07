@@ -11,6 +11,7 @@ export const ERROR_CODES = [
   'internal_error',
   'server_misconfigured',
   'smtp_failed',
+  'registration_closed',
   'network',
   'unknown',
 ] as const;
