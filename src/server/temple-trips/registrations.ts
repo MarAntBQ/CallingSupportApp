@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, ne, sql } from 'drizzle-orm';
 import {
   GENDERS,
   MIN_AGE_ORDINANCES,
@@ -9,11 +9,13 @@ import {
   normalizeIdNumber,
   participantPrices,
   quotaKey,
+  totalFromFrozen,
   type Gender,
+  type Ordinance,
   type QuotaKey,
 } from '@/lib/temple-trips/constants';
 import { todayInZone } from '@/lib/time';
-import type { RegistrationInput } from '@/lib/validation/registrations';
+import type { ParticipantPatch, RegistrationInput } from '@/lib/validation/registrations';
 import type { Database } from '@/server/db';
 import { templeParticipants, templeRegistrations, templeTrips } from '@/server/db/schema';
 
@@ -108,22 +110,17 @@ export type RegistrationResult =
       resource?: string;
     };
 
-export async function createRegistration(
-  db: Database,
-  input: RegistrationInput,
-  context: RegistrationContext,
-  timeZone: string,
-): Promise<RegistrationResult> {
-  return db.transaction(async (tx) => {
-    const [trip] = await tx.select().from(templeTrips).where(eq(templeTrips.active, true)).limit(1);
-    if (!trip) return { ok: false, status: 404, code: 'no_active_trip' } as const;
+type Tx = Parameters<Parameters<Database['transaction']>[0]>[0];
+type TripRow = typeof templeTrips.$inferSelect;
 
-    // Serializa las inscripciones del mismo viaje: evita que dos envíos simultáneos pasen el
-    // chequeo de cupos/duplicados a la vez y lo excedan.
-    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`temple-registrations:${trip.id}`}))`);
+// Serializa las inscripciones del mismo viaje para que dos envios no superen el cupo.
+function lockTrip(tx: Tx, tripId: string) {
+  return tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`temple-registrations:${tripId}`}))`);
+}
 
-    if (todayInZone(timeZone) > trip.registrationDeadline) return { ok: false, status: 400, code: 'registration_closed' } as const;
-
+// Nucleo compartido por el formulario publico y la inscripcion desde el panel: valida,
+// revalida cupos (aprobados + pedidos) e inserta. El llamador ya tomo el lock del viaje.
+async function registerInto(tx: Tx, trip: TripRow, input: RegistrationInput, context: RegistrationContext): Promise<RegistrationResult> {
     const prepared = [];
     const seen = new Set<string>();
     for (const person of input.participants) {
@@ -211,6 +208,36 @@ export async function createRegistration(
       })),
     );
     return { ok: true, count: prepared.length } as const;
+}
+
+// Formulario público: inscribe en el viaje ACTIVO, con plazo.
+export async function createRegistration(
+  db: Database,
+  input: RegistrationInput,
+  context: RegistrationContext,
+  timeZone: string,
+): Promise<RegistrationResult> {
+  return db.transaction(async (tx) => {
+    const [trip] = await tx.select().from(templeTrips).where(eq(templeTrips.active, true)).limit(1);
+    if (!trip) return { ok: false, status: 404, code: 'no_active_trip' } as const;
+    await lockTrip(tx, trip.id);
+    if (todayInZone(timeZone) > trip.registrationDeadline) return { ok: false, status: 400, code: 'registration_closed' } as const;
+    return registerInto(tx, trip, input, context);
+  });
+}
+
+// Inscripción desde el panel: cualquier viaje, sin plazo ni reCAPTCHA, con created_by_user_id.
+export async function adminRegister(
+  db: Database,
+  tripId: string,
+  input: RegistrationInput,
+  context: RegistrationContext,
+): Promise<RegistrationResult> {
+  return db.transaction(async (tx) => {
+    const [trip] = await tx.select().from(templeTrips).where(eq(templeTrips.id, tripId)).limit(1);
+    if (!trip) return { ok: false, status: 404, code: 'no_active_trip' } as const;
+    await lockTrip(tx, trip.id);
+    return registerInto(tx, trip, input, context);
   });
 }
 
@@ -240,5 +267,216 @@ export async function purgeExpiredRegistrations(
       .where(inArray(templeParticipants.registrationId, ids));
     await tx.delete(templeRegistrations).where(inArray(templeRegistrations.id, ids));
     return { purgedRegistrations: ids.length, purgedParticipants: participants.length };
+  });
+}
+
+// --- #21: panel de participantes ---
+
+export type ParticipantListItem = {
+  id: string;
+  idNumber: string;
+  birthDate: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  gender: string;
+  wantsTransport: boolean;
+  needsLodging: boolean;
+  wantsBreakfast: boolean;
+  wantsLunch: boolean;
+  ordinances: string[];
+  approved: boolean;
+  priceTransport: string;
+  priceBreakfast: string;
+  priceLunch: string;
+  totalCost: string;
+  registrationId: string;
+  registrationDate: string;
+  consent: boolean;
+  policyVersion: string;
+  ip: string | null;
+};
+
+// La IP solo va a SuperAdmin (includeIp); el resto la recibe en null.
+export async function listTripParticipants(db: Database, tripId: string, { includeIp }: { includeIp: boolean }): Promise<ParticipantListItem[]> {
+  const rows = await db
+    .select({
+      id: templeParticipants.id,
+      idNumber: templeParticipants.idNumber,
+      birthDate: templeParticipants.birthDate,
+      fullName: templeParticipants.fullName,
+      phone: templeParticipants.phone,
+      email: templeParticipants.email,
+      gender: templeParticipants.gender,
+      wantsTransport: templeParticipants.wantsTransport,
+      needsLodging: templeParticipants.needsLodging,
+      wantsBreakfast: templeParticipants.wantsBreakfast,
+      wantsLunch: templeParticipants.wantsLunch,
+      ordinances: templeParticipants.ordinances,
+      approved: templeParticipants.approved,
+      priceTransport: templeParticipants.priceTransport,
+      priceBreakfast: templeParticipants.priceBreakfast,
+      priceLunch: templeParticipants.priceLunch,
+      totalCost: templeParticipants.totalCost,
+      registrationId: templeRegistrations.id,
+      registrationDate: templeRegistrations.createdAt,
+      consent: templeRegistrations.consent,
+      policyVersion: templeRegistrations.policyVersion,
+      ip: templeRegistrations.ip,
+    })
+    .from(templeParticipants)
+    .innerJoin(templeRegistrations, eq(templeParticipants.registrationId, templeRegistrations.id))
+    .where(eq(templeRegistrations.tripId, tripId))
+    .orderBy(asc(templeParticipants.fullName));
+  return rows.map((row) => ({ ...row, registrationDate: row.registrationDate.toISOString(), ip: includeIp ? row.ip : null }));
+}
+
+type ParticipantUsage = { wantsTransport: boolean; needsLodging: boolean; gender: string; ordinances: string[] };
+
+// Recurso cuyo cupo se superaría al sumar `delta`, o null si hay cupo.
+function quotaBlocker(trip: TripRow, used: Quotas, person: ParticipantUsage, delta: number): string | null {
+  if (person.wantsTransport && trip.includesTransport && used.transport + delta > trip.quotaTransport) return 'transport';
+  if (person.needsLodging && trip.includesLodging && used.lodging + delta > trip.quotaLodging) return 'lodging';
+  if ((GENDERS as readonly string[]).includes(person.gender)) {
+    for (const ordinance of person.ordinances) {
+      if ((ORDINANCES as readonly string[]).includes(ordinance)) {
+        const key = quotaKey(ordinance as Ordinance, person.gender as Gender);
+        if (used[key] + delta > trip[key]) return key;
+      }
+    }
+  }
+  return null;
+}
+
+async function participantWithTrip(tx: Tx, participantId: string) {
+  const [row] = await tx
+    .select({
+      id: templeParticipants.id,
+      fullName: templeParticipants.fullName,
+      gender: templeParticipants.gender,
+      ordinances: templeParticipants.ordinances,
+      wantsTransport: templeParticipants.wantsTransport,
+      needsLodging: templeParticipants.needsLodging,
+      wantsBreakfast: templeParticipants.wantsBreakfast,
+      wantsLunch: templeParticipants.wantsLunch,
+      approved: templeParticipants.approved,
+      idNumber: templeParticipants.idNumber,
+      birthDate: templeParticipants.birthDate,
+      priceTransport: templeParticipants.priceTransport,
+      priceBreakfast: templeParticipants.priceBreakfast,
+      priceLunch: templeParticipants.priceLunch,
+      tripId: templeRegistrations.tripId,
+    })
+    .from(templeParticipants)
+    .innerJoin(templeRegistrations, eq(templeParticipants.registrationId, templeRegistrations.id))
+    .where(eq(templeParticipants.id, participantId))
+    .limit(1);
+  return row;
+}
+
+async function approvedUsage(tx: Tx, tripId: string, exceptId?: string): Promise<Quotas> {
+  const rows = await tx
+    .select({
+      wantsTransport: templeParticipants.wantsTransport,
+      needsLodging: templeParticipants.needsLodging,
+      gender: templeParticipants.gender,
+      ordinances: templeParticipants.ordinances,
+    })
+    .from(templeParticipants)
+    .innerJoin(templeRegistrations, eq(templeParticipants.registrationId, templeRegistrations.id))
+    .where(and(eq(templeRegistrations.tripId, tripId), eq(templeParticipants.approved, true), ...(exceptId ? [ne(templeParticipants.id, exceptId)] : [])));
+  return usedQuotas(rows);
+}
+
+export type ApprovalResult = { ok: true } | { ok: false; status: 404 } | { ok: false; status: 409; resource: string; name: string };
+
+// Aprobar revalida el cupo en una transacción con SELECT ... FOR UPDATE del viaje, para que dos
+// aprobaciones simultáneas no superen el cupo. Desaprobar no valida.
+export async function setApproval(db: Database, participantId: string, approved: boolean): Promise<ApprovalResult> {
+  if (!approved) {
+    const updated = await db.update(templeParticipants).set({ approved: false }).where(eq(templeParticipants.id, participantId)).returning({ id: templeParticipants.id });
+    return updated.length > 0 ? { ok: true } : { ok: false, status: 404 };
+  }
+  return db.transaction(async (tx) => {
+    const person = await participantWithTrip(tx, participantId);
+    if (!person) return { ok: false, status: 404 } as const;
+    const [trip] = await tx.select().from(templeTrips).where(eq(templeTrips.id, person.tripId)).limit(1).for('update');
+    if (!trip) return { ok: false, status: 404 } as const;
+    const used = await approvedUsage(tx, person.tripId, participantId);
+    const blocker = quotaBlocker(trip, used, person, 1);
+    if (blocker) return { ok: false, status: 409, resource: blocker, name: person.fullName } as const;
+    await tx.update(templeParticipants).set({ approved: true }).where(eq(templeParticipants.id, participantId));
+    return { ok: true } as const;
+  });
+}
+
+export type UpdateParticipantResult =
+  | { ok: true }
+  | { ok: false; status: 404 }
+  | { ok: false; status: 400; code: 'empty_id' | 'age_ordinance' | 'duplicate_existing' }
+  | { ok: false; status: 409; resource: string; name: string };
+
+// Editar no cambia los precios congelados; el total se recalcula con ellos. Si ya está aprobado,
+// revalida el cupo excluyéndolo a él.
+export async function updateParticipant(db: Database, participantId: string, patch: ParticipantPatch): Promise<UpdateParticipantResult> {
+  return db.transaction(async (tx) => {
+    const current = await participantWithTrip(tx, participantId);
+    if (!current) return { ok: false, status: 404 } as const;
+    const [trip] = await tx.select().from(templeTrips).where(eq(templeTrips.id, current.tripId)).limit(1).for('update');
+    if (!trip) return { ok: false, status: 404 } as const;
+
+    const gender = patch.gender ?? current.gender;
+    const birthDate = patch.birthDate ?? current.birthDate;
+    const ordinances = patch.ordinances ? [...new Set(patch.ordinances)] : (current.ordinances as Ordinance[]);
+    const wantsTransport = trip.includesTransport && (patch.wantsTransport ?? current.wantsTransport);
+    const needsLodging = trip.includesLodging && (patch.needsLodging ?? current.needsLodging);
+    const wantsBreakfast = trip.includesBreakfast && (patch.wantsBreakfast ?? current.wantsBreakfast);
+    const wantsLunch = trip.includesLunch && (patch.wantsLunch ?? current.wantsLunch);
+
+    let idNumber = current.idNumber;
+    if (patch.idNumber !== undefined) {
+      idNumber = normalizeIdNumber(patch.idNumber);
+      if (!idNumber) return { ok: false, status: 400, code: 'empty_id' } as const;
+      const clash = await tx
+        .select({ id: templeParticipants.id })
+        .from(templeParticipants)
+        .innerJoin(templeRegistrations, eq(templeParticipants.registrationId, templeRegistrations.id))
+        .where(and(eq(templeRegistrations.tripId, current.tripId), eq(templeParticipants.idNumber, idNumber), ne(templeParticipants.id, participantId)));
+      if (clash.length > 0) return { ok: false, status: 400, code: 'duplicate_existing' } as const;
+    }
+
+    if (ordinances.length > 0 && calculateAge(birthDate, trip.date) < MIN_AGE_ORDINANCES) {
+      return { ok: false, status: 400, code: 'age_ordinance' } as const;
+    }
+
+    if (current.approved) {
+      const used = await approvedUsage(tx, current.tripId, participantId);
+      const blocker = quotaBlocker(trip, used, { wantsTransport, needsLodging, gender, ordinances }, 1);
+      if (blocker) return { ok: false, status: 409, resource: blocker, name: patch.fullName ?? current.fullName } as const;
+    }
+
+    const totalCost = totalFromFrozen(
+      { priceTransport: Number(current.priceTransport), priceBreakfast: Number(current.priceBreakfast), priceLunch: Number(current.priceLunch) },
+      { wantsTransport, wantsBreakfast, wantsLunch },
+    );
+
+    await tx
+      .update(templeParticipants)
+      .set({
+        idNumber,
+        birthDate,
+        gender,
+        ordinances,
+        wantsTransport,
+        needsLodging,
+        wantsBreakfast,
+        wantsLunch,
+        totalCost: totalCost.toFixed(2),
+        ...(patch.fullName !== undefined ? { fullName: patch.fullName } : {}),
+        ...(patch.phone !== undefined ? { phone: patch.phone } : {}),
+        ...(patch.email !== undefined ? { email: patch.email } : {}),
+      })
+      .where(eq(templeParticipants.id, participantId));
+    return { ok: true } as const;
   });
 }

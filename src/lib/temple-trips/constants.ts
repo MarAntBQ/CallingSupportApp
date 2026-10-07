@@ -52,12 +52,32 @@ type ParticipantWants = { wantsTransport: boolean; wantsBreakfast: boolean; want
 const round2 = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 
 // Fuente única del costo de un participante (cliente para el estimado en vivo, servidor para
-// congelar los precios). El hospedaje no cuesta. Solo se cobra lo que el viaje incluye y la
-// persona pide.
+// congelar los precios). `priceX` es el precio UNITARIO congelado del servicio que ofrece el
+// viaje (0 si no lo ofrece), independiente de si la persona lo pidió; así, al editar los
+// servicios desde el panel, el total se recalcula con esos precios congelados y no con los
+// actuales del viaje. El hospedaje no cuesta. `totalCost` suma solo lo que la persona pide.
 export function participantPrices(trip: TripCosts, wants: ParticipantWants) {
-  const money = (on: boolean, cost: string | number) => (on ? round2(Number(cost) || 0) : 0);
-  const priceTransport = money(trip.includesTransport && wants.wantsTransport, trip.costTransport);
-  const priceBreakfast = money(trip.includesBreakfast && wants.wantsBreakfast, trip.costBreakfast);
-  const priceLunch = money(trip.includesLunch && wants.wantsLunch, trip.costLunch);
-  return { priceTransport, priceBreakfast, priceLunch, totalCost: round2(priceTransport + priceBreakfast + priceLunch) };
+  const unit = (offered: boolean, cost: string | number) => (offered ? round2(Number(cost) || 0) : 0);
+  const priceTransport = unit(trip.includesTransport, trip.costTransport);
+  const priceBreakfast = unit(trip.includesBreakfast, trip.costBreakfast);
+  const priceLunch = unit(trip.includesLunch, trip.costLunch);
+  return {
+    priceTransport,
+    priceBreakfast,
+    priceLunch,
+    totalCost: totalFromFrozen({ priceTransport, priceBreakfast, priceLunch }, wants),
+  };
+}
+
+// Total a partir de los precios unitarios congelados y lo que la persona pide. Lo usa tanto la
+// inscripción (con los precios recién congelados) como la edición desde el panel (#21).
+export function totalFromFrozen(
+  prices: { priceTransport: number; priceBreakfast: number; priceLunch: number },
+  wants: ParticipantWants,
+): number {
+  return round2(
+    (wants.wantsTransport ? prices.priceTransport : 0) +
+      (wants.wantsBreakfast ? prices.priceBreakfast : 0) +
+      (wants.wantsLunch ? prices.priceLunch : 0),
+  );
 }
