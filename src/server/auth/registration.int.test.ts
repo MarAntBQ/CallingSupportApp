@@ -198,6 +198,29 @@ describe.skipIf(!url)('registro y recuperación de contraseña contra Postgres',
     expect((await user()).resetOtpHash).toBeTruthy();
   });
 
+  it('"olvidé mi contraseña" ejecuta la misma única sentencia exista o no la cuenta (sin oráculo de tiempo)', async () => {
+    await registeredAndActive();
+    const statements: string[] = [];
+    const spy = new Proxy(db, {
+      get(target, prop, receiver) {
+        const value = Reflect.get(target, prop, receiver);
+        if (typeof value !== 'function') return value;
+        return (...args: unknown[]) => {
+          statements.push(String(prop));
+          return value.apply(target, args);
+        };
+      },
+    }) as Database;
+    const calls: string[] = [];
+    await svc.forgotPassword(spy, { email: EMAIL }, { mailer: async (source) => void calls.push(source) });
+    const existing = [...statements];
+    statements.length = 0;
+    await svc.forgotPassword(spy, { email: 'nadie@example.com' }, { mailer: async (source) => void calls.push(source) });
+    expect(statements).toEqual(existing);
+    expect(existing).toEqual(['update']);
+    expect(calls).toEqual(['auth-forgot-password']);
+  });
+
   it('restablecer: código → token → contraseña nueva; las sesiones abiertas dejan de servir', async () => {
     await registeredAndActive();
     const { token: sessionToken } = await createSession(db, (await user()).id);

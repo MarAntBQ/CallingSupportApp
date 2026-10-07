@@ -463,7 +463,10 @@
       "what": "We store your names, your email, your phone (if you enter it) and your password (so that nobody can read it) for your account in the unit's app.",
       "use": "They are used only for your account and the unit activities you sign up for; they aren't shared for other purposes.",
       "link": "Full data policy",
-      "consent": "I read the notice and agree that this data is stored for my account."
+      "consent": "I read the notice and agree that this data is stored for my account.",
+      "controller": "Data controller: {name}.",
+      "controllerContact": "Contact: {email}.",
+      "retention": "Your account data is kept while the account exists; to delete it or correct it, write to the data controller."
     }
   },
   "verifyOtp": {

@@ -463,7 +463,10 @@
       "what": "Guardamos tus nombres, tu correo, tu teléfono (si lo escribes) y tu contraseña (de forma que nadie puede leerla) para tu cuenta en la aplicación de la unidad.",
       "use": "Se usan solo para tu cuenta y las actividades de la unidad en las que te inscribas; no se comparten para otros fines.",
       "link": "Política de datos completa",
-      "consent": "Leí el aviso y acepto que se guarden estos datos para mi cuenta."
+      "consent": "Leí el aviso y acepto que se guarden estos datos para mi cuenta.",
+      "controller": "Responsable de los datos: {name}.",
+      "controllerContact": "Contacto: {email}.",
+      "retention": "Los datos de tu cuenta se guardan mientras la cuenta exista; para borrarla o corregirlos, escribe al responsable."
     }
   },
   "verifyOtp": {

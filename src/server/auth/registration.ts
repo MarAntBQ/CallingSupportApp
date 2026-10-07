@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import { MAX_OTP_TRIES, RESET_WINDOW_MINUTES, type RegisterInput } from '@/lib/validation/registration';
 import type { Database } from '@/server/db';
 import { appConfig, roles, sessions, users } from '@/server/db/schema';
@@ -98,16 +98,16 @@ export async function forgotPassword(db: Database, input: { email: string }, opt
   const mailer = options.mailer ?? defaultMailer;
   const code = generateOtpCode();
   const [user] = await db
-    .select({ id: users.id, locale: users.locale })
-    .from(users)
-    .where(and(eq(users.email, input.email), eq(users.status, 'active')))
-    .limit(1);
-  if (!user) return;
-  await db
     .update(users)
-    .set({ resetOtpHash: hashOtp(user.id, code), resetOtpTries: 0, resetVerifiedAt: null, resetTokenHash: null })
-    .where(eq(users.id, user.id));
-  await mailer('auth-forgot-password', resetCodeEmail(input.email, code, user.locale));
+    .set({
+      resetOtpHash: sql`encode(sha256(convert_to(${users.id}::text || ':' || ${code}, 'UTF8')), 'hex')`,
+      resetOtpTries: 0,
+      resetVerifiedAt: null,
+      resetTokenHash: null,
+    })
+    .where(and(eq(users.email, input.email), eq(users.status, 'active')))
+    .returning({ locale: users.locale });
+  if (user) await mailer('auth-forgot-password', resetCodeEmail(input.email, code, user.locale));
 }
 
 export type VerifyResetResult =

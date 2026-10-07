@@ -18,12 +18,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RegisterPage() {
   if (await getSession()) redirect('/admin');
   const t = await getTranslations('register');
-  const { allowRegistration } = await currentConfig();
+  const { allowRegistration, controller, unitName, contact } = await currentConfig();
 
   return (
     <AuthShell title={allowRegistration ? t('title') : t('closedTitle')} intro={allowRegistration ? t('intro') : undefined} showUnit>
       {allowRegistration ? (
-        <RegisterForm />
+        <RegisterForm controllerName={controller.name || unitName} controllerEmail={controller.email ?? contact} />
       ) : (
         <Alert tone="info" role="status" title={t('closedTitle')}>
           {t('closedBody')}

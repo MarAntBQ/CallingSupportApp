@@ -15,7 +15,7 @@ type FieldName = 'firstName' | 'lastName' | 'email' | 'phone' | 'password' | 'co
 const ORDER: FieldName[] = ['firstName', 'lastName', 'email', 'phone', 'password', 'confirmPassword', 'privacyConsent'];
 const LINK = 'font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline';
 
-export function RegisterForm() {
+export function RegisterForm({ controllerName, controllerEmail }: { controllerName: string; controllerEmail: string | null }) {
   const t = useTranslations('register');
   const tCommon = useTranslations('common');
   const tErrors = useTranslations('errors');
@@ -103,8 +103,13 @@ export function RegisterForm() {
           {t('privacy.title')}
         </h2>
         <ul className="flex list-disc flex-col gap-1 pl-5 text-sm text-text-muted">
+          <li>
+            {t('privacy.controller', { name: controllerName })}
+            {controllerEmail && <> {t('privacy.controllerContact', { email: controllerEmail })}</>}
+          </li>
           <li>{t('privacy.what')}</li>
           <li>{t('privacy.use')}</li>
+          <li>{t('privacy.retention')}</li>
         </ul>
         <Link href="/privacy" target="_blank" className={`${LINK} text-sm`}>
           {t('privacy.link')}
