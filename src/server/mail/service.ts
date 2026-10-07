@@ -19,7 +19,7 @@ export const SEND_TIMEOUT_MS = 30_000;
 export const TEST_TIMEOUT_MS = 15_000;
 export const LOG_LIMIT = 200;
 export const MAX_ERROR_LENGTH = 500;
-export const LOG_RETENTION_DAYS = 90;
+export const LOG_RETENTION_DAYS = 180;
 
 const recipient = z.string().trim().toLowerCase().pipe(z.email().max(254));
 
@@ -80,7 +80,11 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number) {
 }
 
 export async function purgeExpiredMailLogs(db: Database, now = new Date()) {
-  await db.delete(emailLog).where(lt(emailLog.createdAt, new Date(now.getTime() - LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000)));
+  const deleted = await db
+    .delete(emailLog)
+    .where(lt(emailLog.createdAt, new Date(now.getTime() - LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000)))
+    .returning({ id: emailLog.id });
+  return deleted.length;
 }
 
 async function log(db: Database, entry: { source: string; to: string; subject: string; success: boolean; error: string | null }) {

@@ -35,6 +35,7 @@ describe.skipIf(!url)('correo contra Postgres', () => {
     smtp: typeof import('@/app/api/config/smtp/route');
     test: typeof import('@/app/api/config/smtp/test/route');
     logs: typeof import('@/app/api/mail/logs/route');
+    cron: typeof import('@/app/api/cron/daily/route');
   };
 
   async function cookieFor(roleKey: string, email: string) {
@@ -70,6 +71,7 @@ describe.skipIf(!url)('correo contra Postgres', () => {
       smtp: await import('@/app/api/config/smtp/route'),
       test: await import('@/app/api/config/smtp/test/route'),
       logs: await import('@/app/api/mail/logs/route'),
+      cron: await import('@/app/api/cron/daily/route'),
     };
   }, 60_000);
 
@@ -153,24 +155,47 @@ describe.skipIf(!url)('correo contra Postgres', () => {
     expect(rows.every((row) => row.errorMessage === 'invalid_message' && !/[\r\n]/.test(row.emailTo + row.emailSubject))).toBe(true);
   });
 
-  it('al consultar el registro también se borran los vencidos (90 días)', async () => {
+  it('GET /api/cron/daily: sin CRON_SECRET o con un secreto equivocado responde 401 y no purga; con el correcto purga los vencidos', async () => {
+    const day = 24 * 60 * 60 * 1000;
+    await db.insert(schema.emailLog).values([
+      { source: 'viejo', emailTo: 'a@example.com', emailSubject: 'Viejo', success: true, createdAt: new Date(Date.now() - 181 * day) },
+      { source: 'reciente', emailTo: 'b@example.com', emailSubject: 'Reciente', success: true, createdAt: new Date(Date.now() - 179 * day) },
+    ]);
+    const cron = (authorization?: string) =>
+      routes.cron.GET(new Request('http://localhost/api/cron/daily', { headers: authorization ? { authorization } : {} }));
+    const secret = randomBytes(32).toString('hex');
+    delete process.env.CRON_SECRET;
+    expect((await cron(`Bearer ${secret}`)).status).toBe(401);
+    expect((await cron('Bearer ')).status).toBe(401);
+    process.env.CRON_SECRET = secret;
+    expect((await cron()).status).toBe(401);
+    expect((await cron(`Bearer ${secret}x`)).status).toBe(401);
+    expect((await cron(secret)).status).toBe(401);
+    expect(await db.select().from(schema.emailLog)).toHaveLength(2);
+    const response = await cron(`Bearer ${secret}`);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ deletedEmailLogs: 1 });
+    expect((await db.select().from(schema.emailLog)).map((row) => row.source)).toEqual(['reciente']);
+  });
+
+  it('al consultar el registro también se borran los vencidos (180 días)', async () => {
     const admin = await cookieFor('super_admin', 'admin@example.com');
     await db.insert(schema.emailLog).values({
       source: 'viejo',
       emailTo: 'a@example.com',
       emailSubject: 'Viejo',
       success: true,
-      createdAt: new Date(Date.now() - 91 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(Date.now() - 181 * 24 * 60 * 60 * 1000),
     });
     expect(await (await routes.logs.GET(request('GET', '/api/mail/logs', undefined, admin))).json()).toEqual([]);
     expect(await db.select().from(schema.emailLog)).toHaveLength(0);
   });
 
-  it('cada registro se borra a los 90 días: al escribir uno nuevo, se borran los vencidos', async () => {
+  it('cada registro se borra a los 180 días: al escribir uno nuevo, se borran los vencidos', async () => {
     const day = 24 * 60 * 60 * 1000;
     await db.insert(schema.emailLog).values([
-      { source: 'viejo', emailTo: 'a@example.com', emailSubject: 'Viejo', success: true, createdAt: new Date(Date.now() - 91 * day) },
-      { source: 'reciente', emailTo: 'b@example.com', emailSubject: 'Reciente', success: true, createdAt: new Date(Date.now() - 89 * day) },
+      { source: 'viejo', emailTo: 'a@example.com', emailSubject: 'Viejo', success: true, createdAt: new Date(Date.now() - 181 * day) },
+      { source: 'reciente', emailTo: 'b@example.com', emailSubject: 'Reciente', success: true, createdAt: new Date(Date.now() - 179 * day) },
     ]);
     await mail.sendMail('nuevo', { to: 'c@example.com', subject: 'Nuevo' }, { db });
     const sources = (await db.select().from(schema.emailLog)).map((row) => row.source).sort();
