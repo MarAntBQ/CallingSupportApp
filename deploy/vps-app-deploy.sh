@@ -20,10 +20,9 @@ case "$APP" in
   csa-staging | csa-demo) ;;
   *) fallo "APP no permitido: $APP" ;;
 esac
-case "$REF" in
-  origin/main | v[0-9]*.[0-9]*.[0-9]*) ;;
-  *) fallo "REF no permitido: $REF" ;;
-esac
+if [[ "$REF" != "origin/main" && ! "$REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  fallo "REF no permitido: $REF"
+fi
 REAL_CLONE="$(realpath -m "$CLONE_DIR")"
 case "$REAL_CLONE/" in
   "$HOME"/*) ;;
@@ -41,7 +40,13 @@ cd "$REAL_CLONE"
 [ "$(git remote get-url origin)" = "$ORIGEN" ] || fallo "el clon no viene de $ORIGEN"
 [ "$(stat -c '%U' "$REAL_CLONE")" = "$(id -un)" ] || fallo "el clon no es tuyo"
 
-git fetch --prune -q origin --tags
+git fetch --prune -q origin --tags main
+# Para un tag (ref != origin/main), re-verificar contra el main recién traído que el commit del
+# tag sea ancestro de origin/main. Cierra la ventana TOCTOU: aunque el tag se haya movido entre
+# el check de CI y este deploy, aquí solo desplegamos algo que esté en main.
+if [ "$REF" != "origin/main" ]; then
+  git merge-base --is-ancestor "$REF" origin/main || fallo "$REF no es ancestro de origin/main"
+fi
 git reset --hard -q "$REF"
 # Quita lo no rastreado (builds viejos, basura) PERO conserva el .env (secretos, gitignored).
 # node_modules y .next se eliminan aquí y los regeneran npm ci y build.

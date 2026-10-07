@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
       - name: El tag debe apuntar a un commit de main
         env:
-          REF: ${{ github.ref_name || inputs.tag }}
+          REF: ${{ inputs.tag || github.ref_name }}
         run: |
           set -euo pipefail
           git fetch -q origin main
@@ -39,7 +39,7 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.VPS_DEMO_DEPLOY_KEY }}
           KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
-          REF: ${{ github.ref_name || inputs.tag }}
+          REF: ${{ inputs.tag || github.ref_name }}
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh
