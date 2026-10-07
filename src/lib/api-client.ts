@@ -39,13 +39,16 @@ export function putJson<T>(url: string, body: unknown) {
   return sendJson<T>('PUT', url, body);
 }
 
-async function sendJson<T>(method: 'POST' | 'PATCH' | 'PUT', url: string, body: unknown): Promise<ApiResult<T>> {
+export function deleteJson<T>(url: string) {
+  return sendJson<T>('DELETE', url);
+}
+
+async function sendJson<T>(method: 'POST' | 'PATCH' | 'PUT' | 'DELETE', url: string, body?: unknown): Promise<ApiResult<T>> {
   let response: Response;
   try {
     response = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      ...(body === undefined ? {} : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }),
     });
   } catch {
     return { ok: false, status: 0, error: 'network', fields: [], issues: [] };

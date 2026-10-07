@@ -21,5 +21,5 @@ export default async function TempleTripsPage() {
   const actions = await moduleActionsOf(db, session.user, 'temple-trips');
   if (!actions.read) redirect('/admin');
   const trips = await listTempleTrips(db);
-  return <TempleTripsAdmin initialTrips={trips} canCreate={actions.create} canUpdate={actions.update} />;
+  return <TempleTripsAdmin initialTrips={trips} canCreate={actions.create} canUpdate={actions.update} canDelete={actions.delete} />;
 }

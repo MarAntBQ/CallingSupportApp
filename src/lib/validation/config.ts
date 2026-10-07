@@ -90,6 +90,7 @@ export const configSchema = z.strictObject({
   }),
   retentionMonths: z.number().int().min(1).max(120),
   policyVersion: z.string().trim().min(1).max(40),
+  defaultNationality: z.string().trim().max(60),
 });
 
 export const logoSchema = z
@@ -123,6 +124,7 @@ export type PublicConfig = {
   };
   retentionMonths: number;
   policyVersion: string;
+  defaultNationality: string;
 };
 
 export function unitInitials(name: string) {

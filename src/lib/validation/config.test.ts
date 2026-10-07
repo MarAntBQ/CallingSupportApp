@@ -17,6 +17,7 @@ const valid = {
   controller: { name: 'Obispado de prueba', email: 'Obispado@Example.com', phone: '', address: '', city: 'Quito, Ecuador', website: '' },
   retentionMonths: 12,
   policyVersion: '2026-10',
+  defaultNationality: 'Ecuatoriana',
 };
 
 const PNG = 'data:image/png;base64,iVBORw0KGgo=';

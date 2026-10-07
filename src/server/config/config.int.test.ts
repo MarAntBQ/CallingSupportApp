@@ -30,6 +30,7 @@ const validConfig = {
   },
   retentionMonths: 6,
   policyVersion: '2026-11',
+  defaultNationality: 'Ecuatoriana',
 };
 
 const PUBLIC_KEYS = [
@@ -37,6 +38,7 @@ const PUBLIC_KEYS = [
   'contact',
   'controller',
   'defaultLocale',
+  'defaultNationality',
   'logoDataUrl',
   'policyVersion',
   'retentionMonths',

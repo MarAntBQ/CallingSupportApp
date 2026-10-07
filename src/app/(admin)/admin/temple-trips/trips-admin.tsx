@@ -10,6 +10,7 @@ import { postJson, patchJson, type ApiResult } from '@/lib/api-client';
 import { GENDERS, ORDINANCES, quotaKey, type QuotaKey } from '@/lib/temple-trips/constants';
 import type { TempleTripListItem } from '@/lib/temple-trips/types';
 import { ParticipantsPanel } from './participants-panel';
+import { RoomsPanel } from './rooms-panel';
 
 const TRIPS_KEY = ['temple-trips'] as const;
 
@@ -135,10 +136,12 @@ export function TempleTripsAdmin({
   initialTrips,
   canCreate,
   canUpdate,
+  canDelete,
 }: {
   initialTrips: TempleTripListItem[];
   canCreate: boolean;
   canUpdate: boolean;
+  canDelete: boolean;
 }) {
   const t = useTranslations('templeTrips');
   const { data: trips = initialTrips } = useQuery({ queryKey: TRIPS_KEY, queryFn: fetchTrips, initialData: initialTrips });
@@ -177,7 +180,7 @@ export function TempleTripsAdmin({
         </ul>
       )}
 
-      {selected && <TripTabs trip={selected} allTrips={trips} canCreate={canCreate} canUpdate={canUpdate} />}
+      {selected && <TripTabs trip={selected} allTrips={trips} canCreate={canCreate} canUpdate={canUpdate} canDelete={canDelete} />}
 
       {editing && (
         <TripModal
@@ -240,7 +243,19 @@ function TripCard({
   );
 }
 
-function TripTabs({ trip, allTrips, canCreate, canUpdate }: { trip: TempleTripListItem; allTrips: TempleTripListItem[]; canCreate: boolean; canUpdate: boolean }) {
+function TripTabs({
+  trip,
+  allTrips,
+  canCreate,
+  canUpdate,
+  canDelete,
+}: {
+  trip: TempleTripListItem;
+  allTrips: TempleTripListItem[];
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
+}) {
   const t = useTranslations('templeTrips');
   const tabs = ['participants', 'rooms', 'reports'] as const;
   const [active, setActive] = useState<(typeof tabs)[number]>('participants');
@@ -261,6 +276,8 @@ function TripTabs({ trip, allTrips, canCreate, canUpdate }: { trip: TempleTripLi
       </div>
       {active === 'participants' ? (
         <ParticipantsPanel trip={trip} allTrips={allTrips} canCreate={canCreate} canUpdate={canUpdate} />
+      ) : active === 'rooms' ? (
+        <RoomsPanel trip={trip} canCreate={canCreate} canUpdate={canUpdate} canDelete={canDelete} />
       ) : (
         <p className="text-sm text-text-muted">{t('tabs.soon')}</p>
       )}

@@ -19,6 +19,7 @@ export const appConfig = pgTable(
     controllerWebsite: text('controller_website'),
     retentionMonths: integer('retention_months').notNull().default(12),
     policyVersion: text('policy_version').notNull().default('2026-10'),
+    defaultNationality: text('default_nationality').notNull().default(''),
     smtpHost: text('smtp_host'),
     smtpPort: integer('smtp_port'),
     smtpSecure: boolean('smtp_secure'),
