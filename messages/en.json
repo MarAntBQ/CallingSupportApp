@@ -338,6 +338,10 @@
     "thisSession": "This session",
     "revokeError": "The session could not be revoked."
   },
+  "env": {
+    "bannerStaging": "Test environment: the data is made up.",
+    "bannerDemo": "Demo: the data is made up and resets every day."
+  },
   "privacyPolicy": {
     "title": "Personal data processing policy",
     "subtitle": "{unitName} · Policy version: {version}",
