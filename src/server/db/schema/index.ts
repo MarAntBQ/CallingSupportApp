@@ -3,3 +3,4 @@ export * from './security';
 export * from './config';
 export * from './mail';
 export * from './organizations';
+export * from './temple-trips';
