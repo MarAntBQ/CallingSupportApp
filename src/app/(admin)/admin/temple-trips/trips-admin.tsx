@@ -204,14 +204,9 @@ function TripCard({
     : t('unconfirmedDate');
 
   return (
-    <li>
-      <button
-        type="button"
-        onClick={onSelect}
-        aria-pressed={selected}
-        className={`flex w-full flex-col gap-2 rounded-md border bg-surface p-4 text-left shadow-sm ${selected ? 'border-primary' : 'border-border'}`}
-      >
-        <div className="flex flex-wrap items-center gap-2">
+    <li className={`flex flex-col gap-2 rounded-md border bg-surface p-4 shadow-sm ${selected ? 'border-primary' : 'border-border'}`}>
+      <button type="button" onClick={onSelect} aria-pressed={selected} className="flex flex-col gap-2 text-left">
+        <span className="flex flex-wrap items-center gap-2">
           <span className="text-base font-semibold text-text">{trip.templeName}</span>
           {trip.active && (
             <span className="rounded-full bg-success-surface px-2 py-0.5 text-xs font-semibold text-success-strong">{t('badges.active')}</span>
@@ -219,27 +214,19 @@ function TripCard({
           {!trip.dateConfirmed && (
             <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold text-text-muted">{t('badges.unconfirmed')}</span>
           )}
-        </div>
+        </span>
         <span className="text-sm text-text-muted">{dateLabel}</span>
         <span className="flex flex-wrap gap-4 text-sm text-text-muted">
           <span>{t('counts.registered', { n: trip.registeredCount })}</span>
           <span>{t('counts.approved', { n: trip.approvedCount })}</span>
           <span>{t('counts.pending', { n: trip.pendingCount })}</span>
         </span>
-        {canUpdate && (
-          <span className="pt-1">
-            <Button
-              variant="link"
-              onClick={(event) => {
-                event.stopPropagation();
-                onEdit();
-              }}
-            >
-              {t('editTrip')}
-            </Button>
-          </span>
-        )}
       </button>
+      {canUpdate && (
+        <Button variant="link" className="self-start" onClick={onEdit}>
+          {t('editTrip')}
+        </Button>
+      )}
     </li>
   );
 }
@@ -310,7 +297,6 @@ function TripModal({
     const codes = new Set(result.issues.map((issue) => issue.code));
     if (codes.has('schedule_with_temple_required')) return t('errors.schedule_with_temple_required');
     if (codes.has('deadline_after_date')) return t('errors.deadline_after_date');
-    if (result.error === 'invalid_input') return t('errors.deadline_after_date');
     return tErrors(result.error);
   }
 
@@ -347,7 +333,14 @@ function TripModal({
 
             <Field label={t('fields.templeName')} value={form.templeName} onChange={(event) => set('templeName', event.target.value)} maxLength={120} required />
 
-            <Checkbox checked={form.inAssignedDistrict} onChange={(value) => set('inAssignedDistrict', value)} label={t('fields.inAssignedDistrict')} />
+            <Checkbox
+              checked={form.inAssignedDistrict}
+              onChange={(value) => {
+                set('inAssignedDistrict', value);
+                setConfirmedOutside(false);
+              }}
+              label={t('fields.inAssignedDistrict')}
+            />
             {!form.inAssignedDistrict && (
               <Alert tone="warning" role="status" title={t('districtWarning')}>
                 <Checkbox checked={confirmedOutside} onChange={setConfirmedOutside} label={t('confirmOutsideDistrict')} />
@@ -386,43 +379,34 @@ function TripModal({
 
             <fieldset className="flex flex-col gap-2 rounded-md border border-border p-3">
               <legend className="px-1 text-sm font-medium text-text-muted">{t('quotas.legend')}</legend>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[360px] border-collapse text-sm">
-                  <thead>
-                    <tr>
-                      <th scope="col" className="px-2 py-1 text-left font-medium text-text-muted">{t('quotas.legend')}</th>
-                      {GENDERS.map((gender) => (
-                        <th key={gender} scope="col" className="px-2 py-1 text-center font-medium text-text-muted">
-                          {t(`quotas.genders.${gender}`)}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ORDINANCES.map((ordinance) => (
-                      <tr key={ordinance}>
-                        <th scope="row" className="px-2 py-1 text-left font-normal text-text">{t(`quotas.ordinances.${ordinance}`)}</th>
-                        {GENDERS.map((gender) => {
-                          const key = quotaKey(ordinance, gender);
-                          return (
-                            <td key={gender} className="px-2 py-1">
-                              <input
-                                type="number"
-                                min={0}
-                                step="1"
-                                inputMode="numeric"
-                                aria-label={t('quotas.cell', { ordinance: t(`quotas.ordinances.${ordinance}`), gender: t(`quotas.genders.${gender}`) })}
-                                value={form[key]}
-                                onChange={(event) => set(key, event.target.value)}
-                                className="w-full rounded-sm border border-border-strong bg-surface px-2 py-1 text-base text-text focus:outline-2 focus:outline-offset-1 focus:outline-primary"
-                              />
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="grid grid-cols-[minmax(0,1fr)_4.5rem_4.5rem] items-center gap-2">
+                <span aria-hidden="true" />
+                {GENDERS.map((gender) => (
+                  <span key={gender} className="text-center text-sm font-medium text-text-muted">
+                    {t(`quotas.genders.${gender}`)}
+                  </span>
+                ))}
+                {ORDINANCES.map((ordinance) => [
+                  <span key={`${ordinance}-label`} className="text-sm text-text">
+                    {t(`quotas.ordinances.${ordinance}`)}
+                  </span>,
+                  ...GENDERS.map((gender) => {
+                    const key = quotaKey(ordinance, gender);
+                    return (
+                      <input
+                        key={key}
+                        type="number"
+                        min={0}
+                        step="1"
+                        inputMode="numeric"
+                        aria-label={t('quotas.cell', { ordinance: t(`quotas.ordinances.${ordinance}`), gender: t(`quotas.genders.${gender}`) })}
+                        value={form[key]}
+                        onChange={(event) => set(key, event.target.value)}
+                        className="w-full rounded-sm border border-border-strong bg-surface px-2 py-1 text-base text-text focus:outline-2 focus:outline-offset-1 focus:outline-primary"
+                      />
+                    );
+                  }),
+                ])}
               </div>
             </fieldset>
           </div>

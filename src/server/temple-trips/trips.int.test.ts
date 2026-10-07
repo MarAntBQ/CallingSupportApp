@@ -5,10 +5,12 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Pool } from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { templeTripSchema } from '@/lib/validation/temple-trips';
 import { hashPassword } from '@/server/auth/crypto';
 import { createSession, sessionCookieName } from '@/server/auth/sessions';
 import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
+import { createTempleTrip } from '@/server/temple-trips/trips';
 
 const url = process.env.TEST_DATABASE_URL;
 const MIGRATIONS = fileURLToPath(new URL('../../../drizzle', import.meta.url));
@@ -156,5 +158,22 @@ describe.skipIf(!url)('viajes al templo contra Postgres', () => {
   it('PATCH a un viaje inexistente responde 404', async () => {
     const cookie = await cookieFor((await createUser('admin@example.com', 'super_admin')).id);
     expect((await patch('00000000-0000-4000-8000-000000000000', tripInput(), cookie)).status).toBe(404);
+  });
+
+  it('dos viajes activos creados a la vez se serializan: queda uno solo activo, sin error', async () => {
+    const other = new Pool({ connectionString: url!, max: 1 });
+    const db2 = drizzle(other, { schema });
+    try {
+      const [a, b] = await Promise.all([
+        createTempleTrip(db, templeTripSchema.parse(tripInput({ active: true, scheduledWithTemple: true, templeName: 'Templo A' }))),
+        createTempleTrip(db2, templeTripSchema.parse(tripInput({ active: true, scheduledWithTemple: true, templeName: 'Templo B' }))),
+      ]);
+      expect(a.id).toBeTruthy();
+      expect(b.id).toBeTruthy();
+      const active = await db.select({ name: schema.templeTrips.templeName }).from(schema.templeTrips).where(eq(schema.templeTrips.active, true));
+      expect(active).toHaveLength(1);
+    } finally {
+      await other.end();
+    }
   });
 });

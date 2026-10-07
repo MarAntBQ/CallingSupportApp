@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, desc, eq, ne } from 'drizzle-orm';
+import { and, desc, eq, ne, sql } from 'drizzle-orm';
 import type { TempleTripListItem } from '@/lib/temple-trips/types';
 import type { TempleTripInput } from '@/lib/validation/temple-trips';
 import type { Database } from '@/server/db';
@@ -21,8 +21,14 @@ export async function listTempleTrips(db: Database): Promise<TempleTripListItem[
   }));
 }
 
+// Serializa las mutaciones que tocan el viaje activo: sin esto, dos creaciones activas
+// concurrentes chocan contra el índice único parcial y una termina en 500 en vez de
+// que una desactive a la otra limpiamente (misma lección que la matriz de permisos).
+const ACTIVE_TRIP_LOCK = sql`select pg_advisory_xact_lock(hashtext('temple-trips-active'))`;
+
 export async function createTempleTrip(db: Database, input: TempleTripInput): Promise<TempleTripRow> {
   return db.transaction(async (tx) => {
+    await tx.execute(ACTIVE_TRIP_LOCK);
     if (input.active) {
       await tx.update(templeTrips).set({ active: false }).where(eq(templeTrips.active, true));
     }
@@ -35,6 +41,7 @@ export type UpdateTripResult = { ok: true; trip: TempleTripRow } | { ok: false; 
 
 export async function updateTempleTrip(db: Database, id: string, input: TempleTripInput): Promise<UpdateTripResult> {
   return db.transaction(async (tx) => {
+    await tx.execute(ACTIVE_TRIP_LOCK);
     const [existing] = await tx.select({ id: templeTrips.id }).from(templeTrips).where(eq(templeTrips.id, id)).for('update');
     if (!existing) return { ok: false, reason: 'not_found' } as const;
     if (input.active) {
