@@ -5,7 +5,8 @@ import { invalidInputResponse } from '@/server/auth/errors';
 import { getConfig } from '@/server/config/service';
 import { getDb } from '@/server/db';
 import { notifyModuleEvent } from '@/server/notifications/service';
-import { clientIp } from '@/server/security/http';
+import { clientIp, privateHash } from '@/server/security/http';
+import { consume, LIMITS } from '@/server/security/rate-limit';
 import { verifyRecaptcha } from '@/server/security/recaptcha';
 import { publicRoute } from '@/server/security/route';
 import { registrationNotice } from '@/server/temple-trips/registration-notice';
@@ -32,6 +33,9 @@ export const GET = publicRoute(
 
 export const POST = publicRoute(
   async (request) => {
+    const db = getDb();
+    // Límite por IP (#28) para que nadie inunde el formulario con inscripciones automáticas.
+    await consume(db, [{ key: privateHash('temple-trip:ip', clientIp(request)), ...LIMITS.templeRegistrationPerIp }]);
     const parsed = registrationSchema.safeParse(await request.json().catch(() => null));
     if (!parsed.success) return invalidInputResponse(parsed.error);
     if (!(await verifyRecaptcha(parsed.data.recaptchaToken))) {
@@ -40,7 +44,6 @@ export const POST = publicRoute(
         { status: 400 },
       );
     }
-    const db = getDb();
     const config = await getConfig(db);
     const fallback: Locale = isLocale(config.defaultLocale) ? config.defaultLocale : 'es';
     const locale = localeFromRequest(request, fallback);
