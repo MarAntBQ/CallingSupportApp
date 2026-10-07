@@ -275,6 +275,23 @@ levanta el contenedor. (Si tu contenedor es anterior a este cambio, créala una 
 Esa base se **vacía** en cada corrida, por eso su nombre tiene que contener `test`: la prueba se
 niega a correr contra otra base.
 
+**Pruebas de punta a punta (E2E).** Recorren en un navegador real los flujos críticos: `/setup`,
+inicio y cierre de sesión, redirecciones de `/admin`, Configuración, los tres idiomas y el ancho
+de un teléfono. Corren en el job `e2e` de cada PR. Para correrlas en tu máquina necesitas una base
+**vacía** (el primer paso crea el primer administrador) y el build de producción:
+
+```sh
+docker compose exec db createdb -U callingsupportapp csa_e2e
+export DATABASE_URL=postgres://callingsupportapp:callingsupportapp@localhost:5432/csa_e2e
+DIRECT_DATABASE_URL=$DATABASE_URL npm run db:migrate
+npm run build
+npx playwright install chromium
+npm run test:e2e
+```
+
+Para repetirlas, borra y vuelve a crear `csa_e2e` (`dropdb` y `createdb`). Si una falla, el
+*trace* queda en `test-results/` (`npx playwright show-trace …/trace.zip`).
+
 El paso a paso con lo que deberías ver y qué hacer si algo falla está en el
 [Manual del desarrollador](https://callingsupportapp.org/developers/).
 
