@@ -12,11 +12,25 @@ describe('containsOfficialChurchName', () => {
     'The Church of Jesus Christ of Latter-day Saints Ward',
     'church-of-jesus-christ branch',
     'Iglesia de Jesucristo, Rama Sur',
+    'Barrio Santos de los Últimos Días',
+    'Ala dos Santos dos Últimos Dias',
+    'Latter-day Saints Ward',
+    'SUD Central',
+    'Rama LDS Norte',
   ])('rechaza "%s"', (name) => {
     expect(containsOfficialChurchName(name)).toBe(true);
   });
 
-  it.each(['Barrio Los Laureles', 'Rama Santo Domingo Norte', 'Ala Central', 'Second Ward', 'Barrio Jesucristo Vive'])(
+  it.each([
+    ['con un espacio de ancho cero', 'Iglesia de Jesu​cristo Centro'],
+    ['con una c cirílica', 'Iglesia de Jesuсristo Centro'],
+    ['con una o griega', 'Iglesia de Jesucristο Centro'],
+    ['con letras de ancho completo', 'Ｉglesia de Ｊesucristo'],
+  ])('rechaza el nombre oficial disfrazado %s', (_case, name) => {
+    expect(containsOfficialChurchName(name)).toBe(true);
+  });
+
+  it.each(['Barrio Los Laureles', 'Rama Santo Domingo Norte', 'Ala Central', 'Second Ward', 'Barrio Jesucristo Vive', 'Rama Sudamérica'])(
     'acepta "%s"',
     (name) => {
       expect(containsOfficialChurchName(name)).toBe(false);

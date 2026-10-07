@@ -30,7 +30,7 @@ const setupBody = {
   email: 'ana@example.com',
   password: 'contraseña-larga',
   bishopApproved: true,
-  bishopApprovedBy: 'Obispo de prueba',
+  bishopApprovedBy: 'Presidente de rama de prueba',
   bishopApprovedOn: '2026-01-15',
   privacyConsent: true,
   locale: 'pt',
@@ -188,7 +188,7 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
     expect(approval).toMatchObject({
       unitType: 'branch',
       unitName: 'Rama de Prueba',
-      bishopApprovedBy: 'Obispo de prueba',
+      bishopApprovedBy: 'Presidente de rama de prueba',
       bishopApprovedOn: '2026-01-15',
     });
 
