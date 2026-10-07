@@ -71,7 +71,9 @@ el organizador necesita, y para eso se usa. Nada más.
   directorios, informes, cédulas de miembro). Esos datos se quedan donde están. Ningún issue,
   script ni seed los incorpora.
 - **Subir datos reales al repositorio:** ni seeds, ni pruebas, ni capturas, ni exportaciones,
-  ni logs. Los datos de prueba son inventados (`Persona Prueba`, `prueba@example.com`).
+  ni logs. Los datos de prueba son inventados (`Persona Prueba`, `prueba@example.com`);
+  `src/repository-rules.test.ts` falla si una prueba, una migración o la demo usan un correo que
+  no sea `@example.com` o `@ejemplo.com`.
 - **Usar un dato para algo distinto** de la actividad para la que se entregó (por ejemplo,
   usar los teléfonos del viaje para avisos de otra cosa).
 - **Casillas de consentimiento premarcadas** o un solo "acepto" para varias finalidades.

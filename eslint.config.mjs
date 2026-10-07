@@ -10,6 +10,15 @@ const config = [
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
   {
+    files: ['src/app/**/*.tsx', 'src/components/**/*.tsx'],
+    rules: {
+      'react/jsx-no-literals': [
+        'error',
+        { noStrings: true, ignoreProps: true, allowedStrings: ['·', ':', '▲', '▼', '⇅', '(', ')', '/', '-', '—'] },
+      ],
+    },
+  },
+  {
     ignores: ['.next/**', 'node_modules/**', 'drizzle/**', 'site/**', '_site/**', 'next-env.d.ts'],
   },
 ];

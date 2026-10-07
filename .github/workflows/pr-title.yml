@@ -1,0 +1,21 @@
+name: Título del PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: .github/scripts
+      - name: El título empieza con un tipo (feat, fix, docs, chore, refactor, test, perf)
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node .github/scripts/pr-title.cjs
