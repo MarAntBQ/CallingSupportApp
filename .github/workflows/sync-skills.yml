@@ -6,6 +6,7 @@ on:
 jobs:
   sync:
     uses: MarbustTechnologyCompany/.github/.github/workflows/sync-skills.yml@main
-    secrets: inherit
+    secrets:
+      SKILLS_DEPLOY_KEY: ${{ secrets.SKILLS_DEPLOY_KEY }}
     with:
       skills: trabajar-un-issue,escribir-un-issue,revisar-codigo
