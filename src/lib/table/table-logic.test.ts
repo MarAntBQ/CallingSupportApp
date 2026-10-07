@@ -64,8 +64,10 @@ describe('orden de las columnas', () => {
     expect(compareSortValues('2026-13-45', '2026-01-01', 'asc')).toBeGreaterThan(0);
   });
 
-  it('compara el resto como texto en minúsculas con el orden del español', () => {
-    expect(byValue(['ñandú', 'Oso', 'nube', 'Zorro', 'árbol'], 'asc')).toEqual(['árbol', 'nube', 'ñandú', 'Oso', 'Zorro']);
+  it('compara el resto como texto en minúsculas con el orden del español, en cualquier idioma', () => {
+    const values = ['ñandú', 'Oso', 'nube', 'Zorro', 'árbol'];
+    const expected = ['árbol', 'nube', 'ñandú', 'Oso', 'Zorro'];
+    for (const locale of ['es', 'pt', 'en']) expect(sortRows(values, (v) => v, 'asc', locale)).toEqual(expected);
   });
 
   it('con tipos mezclados, los números y fechas van antes que el texto', () => {

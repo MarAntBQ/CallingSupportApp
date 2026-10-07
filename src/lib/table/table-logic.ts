@@ -61,7 +61,7 @@ export function compareSortValues(a: SortValue, b: SortValue, dir: SortDir, loca
   if (na.kind === 'number' && nb.kind === 'number') {
     result = na.value === nb.value ? 0 : na.value < nb.value ? -1 : 1;
   } else if (na.kind === 'text' && nb.kind === 'text') {
-    result = na.value.localeCompare(nb.value, locale);
+    result = na.value.localeCompare(nb.value, 'es');
   } else {
     result = na.kind === 'number' ? -1 : 1;
   }
