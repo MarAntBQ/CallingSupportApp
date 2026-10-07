@@ -124,8 +124,8 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     await activeTrip({ includesTransport: true, quotaTransport: 1 });
     const response = await post(
       bodyOf([
-        participant({ idNumber: 'A1', wantsTransport: true }),
-        participant({ idNumber: 'A2', email: 'b@example.com', wantsTransport: true }),
+        participant({ idNumber: 'A10', wantsTransport: true }),
+        participant({ idNumber: 'A20', email: 'b@example.com', wantsTransport: true }),
       ]),
     );
     expect(response.status).toBe(400);
@@ -141,7 +141,7 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
   });
 
   it('cambiar los precios del viaje después de inscribirse no cambia el total guardado', async () => {
-    const trip = await activeTrip({ includesTransport: true, costTransport: '5.00' });
+    const trip = await activeTrip({ includesTransport: true, quotaTransport: 10, costTransport: '5.00' });
     expect((await post(bodyOf([participant({ wantsTransport: true })]))).status).toBe(201);
     await db.update(schema.templeTrips).set({ costTransport: '99.00' }).where(eq(schema.templeTrips.id, trip.id));
     const [row] = await db.select({ total: schema.templeParticipants.totalCost, price: schema.templeParticipants.priceTransport }).from(schema.templeParticipants);
@@ -164,17 +164,17 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     await activeTrip();
     process.env.RECAPTCHA_SECRET_KEY = 'una-clave-de-prueba';
     vi.stubGlobal('fetch', async () => new Response(JSON.stringify({ success: false }), { status: 200 }));
-    const bad = await post(bodyOf([participant({ idNumber: 'R1' })], { recaptchaToken: 'malo' }));
+    const bad = await post(bodyOf([participant({ idNumber: 'R100' })], { recaptchaToken: 'malo' }));
     expect(bad.status).toBe(400);
     expect((await bad.json()).issues).toContainEqual({ field: 'recaptchaToken', code: 'recaptcha_failed' });
     vi.unstubAllGlobals();
     delete process.env.RECAPTCHA_SECRET_KEY;
-    expect((await post(bodyOf([participant({ idNumber: 'R2' })]))).status).toBe(201);
+    expect((await post(bodyOf([participant({ idNumber: 'R200' })]))).status).toBe(201);
   });
 
   it('sin consentimiento, el servidor rechaza el envío', async () => {
     await activeTrip();
-    const response = await post({ participants: [participant({ idNumber: 'C1' })], consent: false });
+    const response = await post({ participants: [participant({ idNumber: 'C100' })], consent: false });
     expect(response.status).toBe(400);
     expect((await response.json()).fields).toContain('consent');
   });
