@@ -1,108 +1,110 @@
 ---
 name: trabajar-un-issue
-description: Flujo completo para tomar un issue de CallingSupportApp y entregarlo — elegir uno disponible, confirmar que se autocontiene, crear la rama, implementar solo el alcance, verificar ejecutando, revisar con la skill revisar-codigo, abrir el PR con la plantilla y responder la revisión hasta el squash. Úsala cuando digan "toma el issue #N", "trabaja el issue", "quiero colaborar, ¿por dónde empiezo?", o al empezar cualquier cambio en el repo.
+description: Flujo completo para tomar un issue de cualquier repo de Marbust y entregarlo — elegir uno disponible, confirmar que se autocontiene, tomarlo, crear la rama, implementar solo el alcance, verificar ejecutando, revisar con la skill revisar-codigo, pasar el QA, abrir el PR con la plantilla y responder la revisión hasta el squash. Úsala cuando digan "toma el issue #N", "trabaja el issue", "soy nuevo, ¿por dónde empiezo?", o al empezar cualquier cambio en el repo.
 ---
 
 # Trabajar un issue
 
-Si la persona nunca colaboró en el proyecto, empieza por el [Manual del desarrollador](https://callingsupportapp.org/developers/) (herramientas, fork, sitio local y primer PR guiado) y vuelve aquí para el flujo de cada issue.
+> **Fuente oficial** (directorio `MarbustTechnologyCompany/ClaudeSkills`). La copia dentro de cada repo se **sincroniza desde aquí** por el Action `sync-skills`; no se edita a mano en el repo.
+
+Si es tu primer día en el proyecto, lee antes `docs/ONBOARDING.md` del repo y vuelve aquí para el flujo de cada issue. Los detalles del stack, los comandos y las reglas del dominio salen del `AGENTS.md`/`CONTRIBUTING.md` del repo.
 
 ## 1. Elegir
 
 ```sh
-gh issue list --state open --search "no:assignee -label:bloqueado"
+gh issue list --state open --search "no:assignee -label:bloqueado -label:necesita-diseño"
 gh issue view <n>
 ```
 
-Un issue está disponible si **no tiene a nadie asignado**, **no tiene la etiqueta
-`en-progreso`**, **no tiene `bloqueado` ni `necesita-diseño`**, y todos los issues de su
-sección *Dependencias* están cerrados. Si es tu primera vez, busca `good first issue`. Un issue
-a la vez por persona.
+Un issue está disponible si **no tiene a nadie asignado**, **no tiene `en-progreso`**, **no tiene `bloqueado` ni `necesita-diseño`**, y todo lo que dice en sus dependencias está cerrado. **Un issue a la vez por persona**, y nunca se trabaja un issue asignado a otra.
 
 ## 2. Confirmar que se autocontiene
 
-Lee el issue completo y los archivos que enlaza (si es un port, ver skill `portar-desde-legacy`).
-Antes de escribir código, responde:
+Lee el issue completo, la referencia que enlaza (plan/ADR/contrato) y los archivos que menciona. Antes de escribir código, responde:
 
 - ¿Sé qué tengo que entregar y cómo se comprueba?
 - ¿Sé qué **no** entra?
+- ¿Sé qué roles pueden hacer qué, y qué datos sensibles toca?
 - ¿Hay alguna decisión que tendría que adivinar?
 
-Si algo falta, **pregunta en el issue**, no por chat, y espera a que el issue se corrija. Así
-la respuesta queda para el siguiente.
+Si algo falta, **pregunta en el issue**, no por chat, y espera a que el issue se corrija. Así la respuesta queda para el siguiente.
 
-## 3. Tomarlo con `/tomar`
+## 3. Tomarlo
 
 ```sh
-gh issue comment <n> --body "/tomar"
+gh issue comment <n> --body "Lo tomo."
 ```
 
-Un bot te asigna el issue, le pone `en-progreso` y responde con los pasos. **Espera su
-confirmación antes de programar.** Si responde que ya lo tiene alguien o que está bloqueado,
-elige otro. Después:
+Quien mantiene el repo te lo asigna y le pone `en-progreso`. **Espera la asignación antes de programar.** Mueve la tarjeta de Trello del issue a *In Progress*, comenta tus avances en el issue, y si no puedes seguir, dilo para que lo liberen.
 
-- Abre un **PR en borrador** con `Refs #<n>` dentro de las 48 horas (`gh pr create --draft`).
-- Comenta tus avances. Con 7 días sin actividad llega un recordatorio; a los 14 días se libera.
-- Si no puedes seguir: `gh issue comment <n> --body "/soltar"`.
+## 4. Rama y PR en borrador
 
-## 4. Rama
-
-Siempre desde `main` actualizado, con el tipo y el número del issue. Si no eres colaborador
-del repositorio, trabaja desde tu fork y usa `upstream` en lugar de `origin` (ver la sección
-3 de [CONTRIBUTING](../../../CONTRIBUTING.md)).
+Rama siempre desde `main` actualizado, con el tipo y el número del issue; y dentro de las 48 horas el **PR en borrador** (que necesita la rama ya empujada):
 
 ```sh
-git switch main && git pull
-git switch -c feat/<n>-titulo-corto     # o fix/, docs/, chore/, refactor/, test/
+git fetch origin
+git switch -c feat/<n>-titulo-corto origin/main     # o fix/, docs/, chore/, refactor/, test/, perf/
+git push -u origin feat/<n>-titulo-corto
+gh pr create --draft --body "..."                    # con Refs #<n> y la plantilla completa
 ```
 
 ## 5. Implementar
 
-- **Solo el alcance del issue.** Si encuentras otro problema, abre un issue nuevo (skill
-  `escribir-un-issue`) y sigue con el tuyo.
-- Respeta las reglas de [AGENTS.md](../../../AGENTS.md): stack, idiomas, glosario, interfaz.
-- Todo texto visible va en `messages/es.json`, `pt.json` y `en.json`, nunca escrito en el
-  componente. El issue trae los textos en español; tú agregas el portugués y el inglés
-  usando el glosario de AGENTS.md.
-- Si tocas datos de personas, aplica la skill `datos-de-miembros` mientras diseñas, no al final.
-- Commits pequeños con tipo y en español: `feat: inscripción pública con cupos`.
-  Sin líneas de co-autoría de herramientas de IA.
+- **Solo el alcance del issue.** Si encuentras otro problema, abre una tarjeta y un issue nuevos (skill `escribir-un-issue`) y sigue con el tuyo.
+- Respeta el `AGENTS.md`: stack, idiomas, glosario, reglas del producto, seguridad e interfaz.
+- Si tocas datos sensibles, aplica la skill de datos del repo (p. ej. `datos-de-pacientes`) **mientras diseñas**, no al final.
+- Si cambias el esquema, la migración tiene que servir para una base vacía **y** para una con datos reales de forma.
+- Commits pequeños, con tipo y en español: `feat: agenda por doctor con tipos de cita`. **Sin líneas de co-autoría de herramientas de IA.**
 
 ## 6. Verificar ejecutando
 
-Corre typecheck, lint, build y las pruebas, y recorre el flujo real en el navegador
-(escritorio y móvil si toca la interfaz). Guarda el output: va pegado en el PR.
+Corre el compilador, el lint y los tests del repo, y recorre el flujo real con **datos ficticios** (escritorio, y teléfono si tocaste algo móvil). Si el cambio depende de una condición del negocio (licencia, estado, permiso), pruébalo en sus variantes. **Guarda el output: va pegado en el PR.** Verificar es ejecutar, no leer.
 
 ## 7. Revisar antes del PR
 
-Corre la skill `revisar-codigo` sobre tu diff y resuelve lo que encuentre. Es obligatorio.
+Corre la skill `revisar-codigo` sobre tu diff y resuelve lo que encuentre. **Es obligatorio.**
 
-## 8. Abrir el PR
+## 8. QA
+
+**Codex participa siempre:** si tú (o Claude) implementaste, el QA lo hace Codex; si implementó Codex, lo hace Claude. El QA corre las pruebas sobre el HEAD del PR y **publica su revisión con la cuenta de la empresa**, con el formato de `revisar-codigo`:
+
+```sh
+GH_TOKEN=<token de MarbustTechnologyCompany> gh pr review <n> --request-changes --body-file hallazgos.md
+# o, sin hallazgos:
+GH_TOKEN=<token de MarbustTechnologyCompany> gh pr review <n> --approve --body "<qué verificó y cómo>"
+```
+
+## 9. Abrir el PR para revisión
 
 ```sh
 git push -u origin <rama>
-gh pr create --base main
+gh pr ready <n>
 ```
 
-Llena la plantilla completa:
+La plantilla completa:
 - `Closes #<n>` (en inglés, para que GitHub cierre el issue).
-- **Cómo probar**, paso a paso.
-- Verificación con el output pegado. Marca solo lo que corriste; lo que no aplica, N/A con
-  el motivo.
+- **Cómo probar**, paso a paso, con el rol y el entorno.
+- **Novedad:** línea interna siempre; en repos de clase `producto` además la línea pública (para el usuario; nada de vulnerabilidades ni datos internos) e hito. `ninguna` si no aplica. El check `Checks del PR` la exige según la clase.
+- Verificación con el output pegado. Marca solo lo que corriste; lo que no aplica, N/A con el motivo.
 - Si hiciste algo más o distinto de lo que pedía el issue, dilo en el resumen.
 
-## 9. Responder la revisión
+## 10. Responder la revisión
 
-Cada hallazgo se contesta con `CORREGIDO` (y el commit) o con la evidencia `archivo:línea`
-de por qué no aplica. Resuelve las conversaciones: `main` no acepta el merge con
-conversaciones abiertas.
+Cada hallazgo se contesta en el PR con `CORREGIDO` (y el commit) o con la evidencia `archivo:línea` de por qué no aplica. Nada de "tienes razón" sin cambio. Cuando terminas:
 
-## 10. Cierre
+```sh
+gh pr comment <n> --body-file respuesta.md   # termina con "Listo para revisar"
+```
 
-El merge lo hace alguien que mantiene el repositorio, siempre por **squash**. La rama se borra
-sola. Después:
+El QA vuelve a revisar y publica otra vez *Request changes* o *Approve*. El ciclo se repite hasta el *Approve*. **Un commit después del *Approve* lo invalida:** vuelves a comentar «Listo para revisar».
+
+## 11. Cierre
+
+Con el *Approve* de `MarbustTechnologyCompany` sobre el último commit, el merge es **squash**; la rama se borra sola. Sin ese *Approve* no se mergea. Después:
 
 ```sh
 git switch main && git pull
 git branch -d <rama>
 ```
+
+La tarjeta de Trello pasa a *Pending Marco Antonio Testing* con el "cómo probar". **Solo Marco Antonio la cierra.** El despliegue sigue las reglas del repo (auto-deploy al mergear, o con el OK de Marco).
