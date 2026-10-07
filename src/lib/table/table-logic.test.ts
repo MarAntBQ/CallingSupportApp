@@ -65,6 +65,8 @@ describe('orden de las columnas', () => {
     expect(compareSortValues('2026-02-30', '2026-12-31', 'asc')).toBeGreaterThan(0);
     expect(compareSortValues('2026-02-29T10:00:00Z', '2026-12-31', 'asc')).toBeGreaterThan(0);
     expect(compareSortValues('2028-02-29', '2028-03-01', 'asc')).toBeLessThan(0);
+    expect(byValue(['texto', '0050-06-15', '1999-01-01'], 'asc')).toEqual(['0050-06-15', '1999-01-01', 'texto']);
+    expect(sortRows(['texto', '15/06/0050', '01/01/1999'], (v) => v, 'asc', 'es')).toEqual(['15/06/0050', '01/01/1999', 'texto']);
   });
 
   it('compara el resto como texto en minúsculas con el orden del español, en cualquier idioma', () => {

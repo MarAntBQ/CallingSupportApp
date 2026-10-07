@@ -17,8 +17,14 @@ export function isPageSize(value: number): value is PageSize {
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/;
 const SLASH_DATE = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
 
+function utcDate(year: number, month: number, day: number) {
+  const date = new Date(Date.UTC(2000, month - 1, day));
+  date.setUTCFullYear(year, month - 1, day);
+  return date;
+}
+
 function isRealDate(year: number, month: number, day: number) {
-  const date = new Date(Date.UTC(year, month - 1, day));
+  const date = utcDate(year, month, day);
   return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
 }
 
@@ -34,7 +40,7 @@ function parseDateText(text: string, locale: string): number | null {
   const monthFirst = locale.toLowerCase().startsWith('en');
   const day = monthFirst ? second : first;
   const month = monthFirst ? first : second;
-  return isRealDate(year, month, day) ? Date.UTC(year, month - 1, day) : null;
+  return isRealDate(year, month, day) ? utcDate(year, month, day).getTime() : null;
 }
 
 type Normalized = { kind: 'empty' } | { kind: 'number'; value: number } | { kind: 'text'; value: string };
