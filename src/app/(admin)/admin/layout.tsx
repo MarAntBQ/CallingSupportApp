@@ -28,12 +28,14 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const missingContact = admin && !(await currentConfig()).contact;
   const modules = await allowedModules(getDb(), session.user);
   const showOrganizations = modules.includes('callings') || modules.includes('permissions');
+  const showTempleTrips = modules.includes('temple-trips');
   const roleKey = ROLE_KEYS.find((key) => key === session.user.role.key);
   const roleLabel = roleKey ? tRoles(roleKey) : session.user.role.name;
 
   const links = [
     { href: '/admin', label: t('nav.home'), ready: true },
     { href: '/admin/profile', label: t('nav.profile'), ready: true },
+    ...(showTempleTrips ? [{ href: '/admin/temple-trips', label: t('nav.templeTrips'), ready: true }] : []),
     ...(showOrganizations ? [{ href: '/admin/organizations', label: t('nav.organizations'), ready: true }] : []),
     ...(admin
       ? [

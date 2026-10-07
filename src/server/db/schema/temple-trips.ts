@@ -5,8 +5,8 @@ export const templeTrips = pgTable(
   'temple_trips',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    date: date('date').notNull(),
-    registrationDeadline: date('registration_deadline').notNull(),
+    date: date('date', { mode: 'string' }).notNull(),
+    registrationDeadline: date('registration_deadline', { mode: 'string' }).notNull(),
     dateConfirmed: boolean('date_confirmed').notNull().default(true),
 
     includesTransport: boolean('includes_transport').notNull().default(false),

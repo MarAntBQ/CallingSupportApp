@@ -133,7 +133,8 @@
       "settings": "Settings",
       "sessions": "Active sessions",
       "emails": "Sent emails",
-      "organizations": "Organizations"
+      "organizations": "Organizations",
+      "templeTrips": "Temple Trip"
     },
     "logout": "Sign out",
     "welcome": "Hi, {name}",
@@ -584,6 +585,73 @@
       "readOnly": "You can see the permissions, but your calling doesn't allow changing them.",
       "noRows": "No calling matches the search.",
       "unknownCalling": "A calling no longer exists. Reload the page."
+    }
+  },
+  "templeTrips": {
+    "title": "Temple Trip",
+    "intro": "Create and edit temple trips: date, registration deadline, services, costs and quotas.",
+    "newTrip": "New trip",
+    "editTrip": "Edit trip",
+    "empty": "No trips yet. Create the first one with \"New trip\".",
+    "unconfirmedDate": "Date to be confirmed",
+    "badges": {
+      "active": "ACTIVE",
+      "unconfirmed": "TO BE CONFIRMED"
+    },
+    "counts": {
+      "registered": "Registered: {n}",
+      "approved": "Approved: {n}",
+      "pending": "Pending: {n}"
+    },
+    "tabs": {
+      "participants": "Participants",
+      "rooms": "Rooms",
+      "reports": "Reports",
+      "soon": "Coming soon"
+    },
+    "fields": {
+      "date": "Trip date",
+      "registrationDeadline": "Registration deadline",
+      "dateConfirmed": "Date confirmed",
+      "dateConfirmedHelp": "If not confirmed, the trip shows as \"to be confirmed\", but the date is still used to compute quotas and ages.",
+      "active": "Active trip",
+      "activeHelp": "Only one trip can be active; activating this one deactivates the other.",
+      "templeName": "Temple",
+      "inAssignedDistrict": "It is the temple of the assigned district",
+      "scheduledWithTemple": "This trip was scheduled with the temple"
+    },
+    "services": {
+      "legend": "Services",
+      "transport": "Transport",
+      "lodging": "Lodging",
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "includes": "Includes {service}",
+      "cost": "Cost",
+      "quota": "Quota"
+    },
+    "quotas": {
+      "legend": "Quotas by ordinance and gender",
+      "ordinances": {
+        "baptism": "Baptism",
+        "initiatory": "Initiatory",
+        "endowment": "Endowment",
+        "sealing": "Sealing"
+      },
+      "genders": {
+        "male": "Male",
+        "female": "Female"
+      },
+      "cell": "{ordinance}, {gender}"
+    },
+    "districtWarning": "General Handbook 25.1.2 does not recommend organized trips to temples outside the assigned district. Confirm that you want to continue.",
+    "confirmOutsideDistrict": "I understand and want to continue",
+    "save": "Save trip",
+    "cancel": "Cancel",
+    "saved": "Trip saved.",
+    "errors": {
+      "schedule_with_temple_required": "To activate the trip, first schedule it with the temple (General Handbook 25.1.2).",
+      "deadline_after_date": "The registration deadline cannot be later than the trip date."
     }
   }
 }

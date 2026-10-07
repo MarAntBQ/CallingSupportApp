@@ -1,22 +1,24 @@
 import 'server-only';
 import { and, desc, eq, ne } from 'drizzle-orm';
+import type { TempleTripListItem } from '@/lib/temple-trips/types';
 import type { TempleTripInput } from '@/lib/validation/temple-trips';
 import type { Database } from '@/server/db';
 import { templeTrips } from '@/server/db/schema';
 
 export type TempleTripRow = typeof templeTrips.$inferSelect;
 
-export type TempleTripListItem = TempleTripRow & {
-  registeredCount: number;
-  approvedCount: number;
-  pendingCount: number;
-};
-
 export async function listTempleTrips(db: Database): Promise<TempleTripListItem[]> {
   const trips = await db.select().from(templeTrips).orderBy(desc(templeTrips.date), desc(templeTrips.createdAt));
   // Los conteos salen en 0 hasta #20 (inscripciones): la lista nace de la tabla de viajes,
   // así los viajes sin inscripciones también aparecen.
-  return trips.map((trip) => ({ ...trip, registeredCount: 0, approvedCount: 0, pendingCount: 0 }));
+  return trips.map(({ createdAt, updatedAt, ...trip }) => ({
+    ...trip,
+    createdAt: createdAt.toISOString(),
+    updatedAt: updatedAt.toISOString(),
+    registeredCount: 0,
+    approvedCount: 0,
+    pendingCount: 0,
+  }));
 }
 
 export async function createTempleTrip(db: Database, input: TempleTripInput): Promise<TempleTripRow> {

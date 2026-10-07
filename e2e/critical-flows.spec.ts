@@ -151,6 +151,29 @@ test('Permisos: el SuperAdmin marca "Editar" en un módulo y queda guardado tras
   await expectNoHorizontalOverflow(page);
 });
 
+test('Viaje al Templo: el SuperAdmin crea un viaje y aparece en el panel', async ({ page }) => {
+  const tt = es.templeTrips;
+  await login(page, PASSWORD);
+  await expect(page).toHaveURL(/\/admin$/);
+  await page.getByRole('link', { name: es.admin.nav.templeTrips }).click();
+  await expect(page).toHaveURL(/\/admin\/temple-trips$/);
+  await expect(page.getByText(tt.empty)).toBeVisible();
+
+  await page.getByRole('button', { name: tt.newTrip }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel(tt.fields.templeName, { exact: true }).fill('Templo de Guayaquil Ecuador');
+  await dialog.getByLabel(tt.fields.date, { exact: true }).fill('2026-12-20');
+  await dialog.getByLabel(tt.fields.registrationDeadline, { exact: true }).fill('2026-12-01');
+  await dialog.getByRole('button', { name: tt.save }).click();
+
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByText('Templo de Guayaquil Ecuador')).toBeVisible();
+  await expect(page.getByText(tt.empty)).toHaveCount(0);
+
+  await page.setViewportSize({ width: 390, height: 900 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);
