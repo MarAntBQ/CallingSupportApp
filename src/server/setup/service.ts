@@ -5,7 +5,7 @@ import type { SetupInput } from '@/lib/validation/auth';
 import { hashPassword } from '@/server/auth/crypto';
 import { AuthError } from '@/server/auth/errors';
 import type { Database } from '@/server/db';
-import { installation, roles, users } from '@/server/db/schema';
+import { appConfig, installation, roles, users } from '@/server/db/schema';
 
 export async function isSetupNeeded(db: Database) {
   const [row] = await db.select({ total: count() }).from(users);
@@ -45,9 +45,13 @@ export async function performSetup(
       })
       .returning({ id: users.id });
 
+    await tx
+      .insert(appConfig)
+      .values({ id: 1, unitName: input.unitName, defaultLocale: input.locale })
+      .onConflictDoUpdate({ target: appConfig.id, set: { unitName: input.unitName, defaultLocale: input.locale } });
+
     await tx.insert(installation).values({
       unitType: input.unitType,
-      unitName: input.unitName,
       bishopApprovedBy: input.bishopApprovedBy,
       bishopApprovedOn: input.bishopApprovedOn,
     });

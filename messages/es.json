@@ -8,7 +8,8 @@
     },
     "required": "Este campo es obligatorio.",
     "invalidEmail": "Escribe un correo válido.",
-    "notOfficial": "Esta aplicación no es oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días."
+    "notOfficial": "Esta aplicación no es oficial de La Iglesia de Jesucristo de los Santos de los Últimos Días.",
+    "contact": "Contacto de la instalación"
   },
   "errors": {
     "invalid_credentials": "Correo o contraseña incorrectos.",
@@ -125,6 +126,10 @@
     "secondAdmin": {
       "title": "Falta un segundo administrador",
       "body": "Las pautas de la Iglesia para los recursos en línea piden más de un administrador. Da el rol SuperAdmin a otro líder de la unidad."
+    },
+    "missingContact": {
+      "title": "Falta el contacto de la instalación",
+      "body": "Escribe un correo o teléfono de la unidad en Configuración: las pautas de los recursos en línea piden que se vea en todas las páginas."
     }
   },
   "table": {
@@ -160,6 +165,61 @@
       "eldersQuorum": "Cuórum de élderes",
       "youngWomen": "Mujeres Jóvenes",
       "primary": "Primaria"
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "intro": "Datos de esta instalación. Se muestran en el panel, en el inicio de sesión y en el pie de todas las páginas.",
+    "save": "Guardar cambios",
+    "saving": "Guardando…",
+    "saved": "Cambios guardados.",
+    "general": {
+      "title": "General",
+      "unitName": "Nombre de la unidad",
+      "allowRegistration": "Permitir que las personas se registren solas",
+      "timezone": "Zona horaria",
+      "defaultLocale": "Idioma por defecto de la aplicación",
+      "contact": "Contacto de la instalación",
+      "contactHint": "Correo o teléfono de la unidad, no uno personal. Se muestra en el pie de todas las páginas."
+    },
+    "logo": {
+      "title": "Logo",
+      "intro": "Si no subes uno, se muestran las iniciales de la unidad.",
+      "alt": "Logo de {name}",
+      "file": "Archivo PNG, JPEG, WebP o SVG",
+      "fileHint": "Hasta 2 MB.",
+      "notOfficial": "Confirmo que este logo no es el logotipo ni el símbolo de la Iglesia, ni los imita.",
+      "save": "Guardar logo",
+      "saving": "Guardando…",
+      "saved": "Logo guardado.",
+      "removed": "Logo quitado: se muestran las iniciales.",
+      "remove": "Quitar logo",
+      "tooLarge": "El archivo pesa más de 2 MB. Elige uno más liviano.",
+      "badType": "El archivo no es una imagen PNG, JPEG, WebP o SVG válida.",
+      "previewPending": "Vista previa (sin guardar)",
+      "previewCurrent": "Logo actual",
+      "previewInitials": "Iniciales de la unidad",
+      "choose": "Elegir archivo",
+      "noFile": "Ningún archivo elegido"
+    },
+    "controller": {
+      "title": "Responsable de los datos",
+      "intro": "Quién responde por los datos de los miembros en esta instalación. Aparece en la política de datos.",
+      "name": "Nombre",
+      "email": "Correo",
+      "city": "Ciudad y país",
+      "website": "Sitio web (opcional)",
+      "retentionMonths": "Meses de retención",
+      "policyVersion": "Versión de la política",
+      "policyVersionHint": "Al cambiar la política, cambia la versión: las inscripciones guardan con qué versión aceptaron."
+    },
+    "errors": {
+      "officialName": "No puede incluir el nombre oficial de la Iglesia.",
+      "unitName": "Escribe el nombre de la unidad (de 2 a 100 caracteres).",
+      "contact": "Escribe un correo o teléfono de la unidad (de 3 a 200 caracteres).",
+      "website": "Escribe una dirección que empiece con http:// o https://.",
+      "timezone": "Elige una zona horaria de la lista.",
+      "retentionMonths": "Escribe un número de meses entre 1 y 120."
     }
   }
 }

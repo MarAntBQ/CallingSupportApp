@@ -115,7 +115,7 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
   }, 60_000);
 
   beforeEach(async () => {
-    await db.execute(sql`truncate table sessions, users, installation, rate_limits restart identity cascade`);
+    await db.execute(sql`truncate table sessions, users, installation, app_config, rate_limits restart identity cascade`);
   });
 
   afterAll(async () => {
@@ -187,10 +187,11 @@ describe.skipIf(!url)('autenticación contra Postgres', () => {
     const [approval] = await db.select().from(schema.installation);
     expect(approval).toMatchObject({
       unitType: 'branch',
-      unitName: 'Rama de Prueba',
       bishopApprovedBy: 'Presidente de rama de prueba',
       bishopApprovedOn: '2026-01-15',
     });
+    const [config] = await db.select().from(schema.appConfig);
+    expect(config).toMatchObject({ unitName: 'Rama de Prueba', defaultLocale: 'pt' });
 
     expect(await (await routes.setup.GET(getRequest('/api/setup'))).json()).toEqual({ needed: false });
     expect((await routes.setup.POST(jsonRequest('/api/setup', { ...setupBody, email: 'otro@example.com' }))).status).toBe(404);

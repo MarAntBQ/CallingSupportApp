@@ -8,7 +8,8 @@
     },
     "required": "This field is required.",
     "invalidEmail": "Enter a valid email address.",
-    "notOfficial": "This app is not an official app of The Church of Jesus Christ of Latter-day Saints."
+    "notOfficial": "This app is not an official app of The Church of Jesus Christ of Latter-day Saints.",
+    "contact": "Installation contact"
   },
   "errors": {
     "invalid_credentials": "Incorrect email or password.",
@@ -125,6 +126,10 @@
     "secondAdmin": {
       "title": "A second administrator is missing",
       "body": "The Church's guidelines for online resources ask for more than one administrator. Give the SuperAdmin role to another leader of the unit."
+    },
+    "missingContact": {
+      "title": "The installation contact is missing",
+      "body": "Add a unit email or phone number in Settings: the guidelines for online resources ask for it to appear on every page."
     }
   },
   "table": {
@@ -160,6 +165,61 @@
       "eldersQuorum": "Elders quorum",
       "youngWomen": "Young Women",
       "primary": "Primary"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "intro": "Details of this installation. They appear in the panel, on the sign-in page and in the footer of every page.",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "saved": "Changes saved.",
+    "general": {
+      "title": "General",
+      "unitName": "Unit name",
+      "allowRegistration": "Let people register on their own",
+      "timezone": "Time zone",
+      "defaultLocale": "Default app language",
+      "contact": "Installation contact",
+      "contactHint": "A unit email or phone number, not a personal one. It appears in the footer of every page."
+    },
+    "logo": {
+      "title": "Logo",
+      "intro": "If you don't upload one, the unit's initials are shown.",
+      "alt": "{name} logo",
+      "file": "PNG, JPEG, WebP or SVG file",
+      "fileHint": "Up to 2 MB.",
+      "notOfficial": "I confirm this logo is not the Church's logo or symbol and does not imitate them.",
+      "save": "Save logo",
+      "saving": "Saving…",
+      "saved": "Logo saved.",
+      "removed": "Logo removed: the initials are shown.",
+      "remove": "Remove logo",
+      "tooLarge": "The file is larger than 2 MB. Choose a smaller one.",
+      "badType": "The file is not a valid PNG, JPEG, WebP or SVG image.",
+      "previewPending": "Preview (not saved)",
+      "previewCurrent": "Current logo",
+      "previewInitials": "Unit initials",
+      "choose": "Choose file",
+      "noFile": "No file chosen"
+    },
+    "controller": {
+      "title": "Data controller",
+      "intro": "Who is responsible for members' data in this installation. It appears in the data policy.",
+      "name": "Name",
+      "email": "Email",
+      "city": "City and country",
+      "website": "Website (optional)",
+      "retentionMonths": "Retention (months)",
+      "policyVersion": "Policy version",
+      "policyVersionHint": "When the policy changes, change the version: registrations record which version they accepted."
+    },
+    "errors": {
+      "officialName": "It can't include the official name of the Church.",
+      "unitName": "Enter the unit name (2 to 100 characters).",
+      "contact": "Enter a unit email or phone number (3 to 200 characters).",
+      "website": "Enter an address that starts with http:// or https://.",
+      "timezone": "Choose a time zone from the list.",
+      "retentionMonths": "Enter a number of months between 1 and 120."
     }
   }
 }

@@ -23,11 +23,19 @@ function toErrorCode(value: unknown): ErrorCode {
   return (ERROR_CODES as readonly unknown[]).includes(value) ? (value as ErrorCode) : 'unknown';
 }
 
-export async function postJson<T>(url: string, body: unknown): Promise<ApiResult<T>> {
+export function postJson<T>(url: string, body: unknown) {
+  return sendJson<T>('POST', url, body);
+}
+
+export function patchJson<T>(url: string, body: unknown) {
+  return sendJson<T>('PATCH', url, body);
+}
+
+async function sendJson<T>(method: 'POST' | 'PATCH', url: string, body: unknown): Promise<ApiResult<T>> {
   let response: Response;
   try {
     response = await fetch(url, {
-      method: 'POST',
+      method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });

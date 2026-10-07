@@ -25,7 +25,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const known = MESSAGES.find((key) => key === message);
 
   return (
-    <AuthShell title={t('title')}>
+    <AuthShell title={t('title')} showUnit>
       <LoginForm message={known ? t(`messages.${known}`) : undefined} />
     </AuthShell>
   );

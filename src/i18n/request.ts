@@ -1,15 +1,14 @@
 import { cookies } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
-import { LOCALE_COOKIE, pickLocale } from './config';
+import { isLocale, LOCALE_COOKIE, pickLocale } from './config';
 import { getInstallationLocale, getUserLocale } from './preferences';
 
 export async function resolveLocale() {
-  const cookieStore = await cookies();
-  return pickLocale([
-    await getUserLocale(),
-    cookieStore.get(LOCALE_COOKIE)?.value,
-    await getInstallationLocale(),
-  ]);
+  const user = await getUserLocale();
+  if (isLocale(user)) return user;
+  const cookie = (await cookies()).get(LOCALE_COOKIE)?.value;
+  if (isLocale(cookie)) return cookie;
+  return pickLocale([await getInstallationLocale()]);
 }
 
 export default getRequestConfig(async () => {
