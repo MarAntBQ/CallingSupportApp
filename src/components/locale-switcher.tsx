@@ -44,7 +44,7 @@ export function LocaleSwitcher() {
         value={selected}
         disabled={saving || pending}
         onChange={(event) => void change(event.target.value)}
-        className="rounded-md border border-border bg-surface px-3 py-1.5 text-text"
+        className="rounded-sm border border-border-strong bg-surface px-3 py-1.5 text-base text-text focus:outline-2 focus:outline-offset-2 focus:outline-primary disabled:bg-surface-muted disabled:text-text-muted"
       >
         {LOCALES.map((option) => (
           <option key={option} value={option} lang={option}>
@@ -53,7 +53,7 @@ export function LocaleSwitcher() {
         ))}
       </select>
       {failed && (
-        <p role="alert" className="text-danger">
+        <p role="alert" className="text-danger-strong">
           {t('error')}
         </p>
       )}
