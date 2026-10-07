@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Marked } from 'marked';
 import { fetchMergedEntries, prNumberFromUrl } from './lib/merged-prs.mjs';
+import { siteDate } from './lib/site-time.mjs';
 
 const require = createRequire(import.meta.url);
 const { parseProfile, validateProfile, profileFiles } = require('../.github/scripts/team-profiles.cjs');
@@ -557,7 +558,7 @@ writeFileSync(
 );
 if (existsSync(join(here, 'static'))) cpSync(join(here, 'static'), out, { recursive: true });
 
-const today = new Date().toISOString().slice(0, 10);
+const today = siteDate(new Date());
 const urls = written.map((rel) => `  <url>\n    <loc>${SITE_URL}/${rel}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`);
 writeFileSync(
   join(out, 'sitemap.xml'),
