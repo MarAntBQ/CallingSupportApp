@@ -159,7 +159,7 @@ function SettingsCards({ config, timeZones }: { config: PublicConfig; timeZones:
       setTouched({});
       setServerErrors({});
       setStatus({ section, ok: true });
-      if (section === 'general') router.refresh();
+      router.refresh();
       return;
     }
     const codes = Object.fromEntries(result.issues.map((issue) => [issue.field, issue.code]));
