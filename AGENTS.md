@@ -30,6 +30,9 @@ src/app/api/<módulo>/    Route Handlers
 src/server/db/schema/    tablas de Drizzle, un archivo por módulo
 src/server/<módulo>/     lógica de negocio y permisos del módulo
 src/lib/                 utilidades compartidas con el cliente
+src/components/          componentes de interfaz compartidos
+src/i18n/                configuración de idiomas (next-intl)
+messages/                textos de la interfaz: es.json, pt.json, en.json
 drizzle/                 migraciones generadas
 ```
 
