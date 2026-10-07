@@ -16,6 +16,13 @@ const config = [
         'error',
         { noStrings: true, ignoreProps: true, allowedStrings: ['·', ':', '▲', '▼', '⇅', '(', ')', '/', '-', '—'] },
       ],
+      'no-restricted-syntax': [
+        'error',
+        ...['Literal', 'JSXExpressionContainer > Literal', 'JSXExpressionContainer > TemplateLiteral'].map((node) => ({
+          selector: `JSXAttribute[name.name=/^(aria-label|aria-description|placeholder|alt|title)$/] > ${node}`,
+          message: 'Texto visible o accesible escrito en el código: va en messages/es.json, pt.json y en.json.',
+        })),
+      ],
     },
   },
   {

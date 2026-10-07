@@ -214,7 +214,8 @@
       "website": "Website (optional)",
       "retentionMonths": "Retention (months)",
       "policyVersion": "Policy version",
-      "policyVersionHint": "When the policy changes, change the version: registrations record which version they accepted."
+      "policyVersionHint": "When the policy changes, change the version: registrations record which version they accepted.",
+      "websitePlaceholder": "https://"
     },
     "errors": {
       "officialName": "It can't include the official name of the Church.",
