@@ -1,5 +1,10 @@
 # CallingSupportApp
 
+[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-7C3AED.svg)](LICENSE)
+[![Sitio de documentación](https://github.com/MarAntBQ/CallingSupportApp/actions/workflows/deploy-site.yml/badge.svg)](https://github.com/MarAntBQ/CallingSupportApp/actions/workflows/deploy-site.yml)
+[![Probar la demo](https://img.shields.io/badge/probar-la%20demo-7C3AED.svg)](https://demo.callingsupportapp.org)
+[![Documentación](https://img.shields.io/badge/docs-callingsupportapp.org-57534E.svg)](https://callingsupportapp.org)
+
 Aplicación open source para apoyar la administración de un barrio o rama: usuarios,
 organizaciones, llamamientos con permisos por módulo, y módulos de actividades como el
 **Viaje para Adorar en el Templo**, el **campamento** o las clases de **EnglishConnect**.
@@ -7,6 +12,15 @@ organizaciones, llamamientos con permisos por módulo, y módulos de actividades
 > **No es un sitio oficial** de La Iglesia de Jesucristo de los Santos de los Últimos Días.
 > Es una herramienta comunitaria. La información oficial está en
 > [churchofjesuschrist.org](https://www.churchofjesuschrist.org).
+
+## Pruébala
+
+| Ambiente | Qué muestra | Se actualiza |
+|---|---|---|
+| [**Demo**](https://demo.callingsupportapp.org) | La última versión publicada, para conocer la aplicación | Al publicar una versión (`v*`, [#51](../../issues/51)) |
+| [**Staging**](https://staging.callingsupportapp.org) | Lo último de `main`, para probar los cambios | Solo, en cada merge |
+
+Las dos usan **datos inventados** y cada una tiene su propia base. Hoy muestran la portada provisional mientras se construyen el inicio de sesión ([#8](../../issues/8)) y los módulos. **No escribas datos reales en ellas.**
 
 ## Qué es y qué no es
 
@@ -62,6 +76,8 @@ Next.js**, pensada para que cualquier barrio la despliegue sin servidor propio:
 - **Supabase** (Postgres) para la base de datos.
 - Ambos con plan gratuito, sin VPS ni configuración de servidor.
 
+**Ya está en `main`:** el esqueleto Next.js + Drizzle + Postgres ([#4](../../issues/4)), los tres idiomas con selector ([#5](../../issues/5)) y el sistema de diseño ([#77](../../issues/77), [DESIGN.md](DESIGN.md)). **Lo siguiente:** inicio de sesión y `/setup` ([#8](../../issues/8)) y la seguridad base ([#79](../../issues/79)).
+
 La primera versión del proyecto (NestJS + React/Vite + MySQL, autoalojada) se conserva
 completa en la rama [`legacy`](../../tree/legacy) como referencia funcional para el port.
 
@@ -111,6 +127,13 @@ se puede seguir; con 14 días sin actividad se libera solo.
 - **Para empezar:** issues con
   [`good first issue`](../../issues?q=is%3Aopen+no%3Aassignee+label%3A%22good+first+issue%22+-label%3Abloqueado) sin asignar que no
   estén `bloqueado`.
+
+## Documentación
+
+- [Wiki técnica](../../wiki): arquitectura, ambientes, ramas y versiones, decisiones y seguridad.
+- [Sitio de documentación](https://callingsupportapp.org): manuales, normas, privacidad y el Manual del desarrollador.
+- [DESIGN.md](DESIGN.md): colores, tipografía y patrones de pantalla.
+- [CONTRIBUTING](CONTRIBUTING.md) · [Código de conducta](CODE_OF_CONDUCT.md) · [Ayuda](SUPPORT.md) · [Seguridad](SECURITY.md) · [AGENTS.md](AGENTS.md)
 
 ## Licencia
 
