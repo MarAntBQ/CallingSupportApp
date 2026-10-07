@@ -135,7 +135,10 @@ test('Permisos: el SuperAdmin marca "Editar" en un módulo y queda guardado tras
   await section.locator('summary').click();
   const editar = page.getByRole('checkbox', { name: label });
   await expect(editar).not.toBeChecked();
-  await editar.check();
+  // el checkbox es controlado y optimista: click + aserción web-first en vez de check()
+  // (check() exige el cambio de estado síncrono y pelea con el re-render de React)
+  await editar.click();
+  await expect(editar).toBeChecked();
   await expect(page.getByText(t.saved)).toBeVisible();
 
   // persiste tras recargar: la verificación real del permiso vive en el servidor
