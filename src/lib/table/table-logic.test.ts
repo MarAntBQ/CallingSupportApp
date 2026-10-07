@@ -3,6 +3,7 @@ import {
   compareSortValues,
   filterRows,
   isPageSize,
+  normalizeSortValue,
   paginate,
   sortRows,
   tableReducer,
@@ -24,7 +25,14 @@ describe('orden de las columnas', () => {
   });
 
   it('una fecha inválida o NaN cuenta como vacío', () => {
-    expect(byValue([new Date('nada'), 2, Number.NaN, 1], 'desc')).toEqual([2, 1, expect.anything(), expect.anything()]);
+    const invalid = new Date('nada');
+    for (const dir of ['asc', 'desc'] as const) {
+      const sorted = byValue([invalid, 2, Number.NaN, 1], dir);
+      expect(sorted.slice(0, 2)).toEqual(dir === 'asc' ? [1, 2] : [2, 1]);
+      expect(sorted.slice(2)).toEqual(expect.arrayContaining([invalid, Number.NaN]));
+    }
+    expect(normalizeSortValue(invalid)).toEqual({ kind: 'empty' });
+    expect(normalizeSortValue(Number.NaN)).toEqual({ kind: 'empty' });
   });
 
   it('compara los números como números, no como texto', () => {
