@@ -9,7 +9,7 @@ order: 1
 
 ## Antes de começar
 
-Antes de instalar, confira esta lista. Ela vem das [diretrizes oficiais para recursos on-line nos chamados](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=por) (Manual Geral 38.8.24.2):
+Antes de instalar, confira esta lista. Ela vem das [diretrizes oficiais para recursos on-line nos chamados](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=por) ([Manual Geral 38.8.21.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=por#title_number158)):
 
 - [ ] **A aprovação do seu bispo** para usar o aplicativo na unidade.
 - [ ] **Pelo menos dois administradores**, para que o aplicativo continue funcionando quando um chamado mudar.

@@ -35,12 +35,12 @@ O aplicativo **não administra dinheiro**. Segundo o [capítulo 34](https://www.
 O aplicativo **não tem diretório de empreendimentos nem anúncios de negócios**. Isso foi considerado e descartado porque o Manual Geral não permite:
 
 - o [38.8.5](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=por) proíbe usar os sites e canais da Igreja para promover negócios ou entidades que não pertençam à Igreja;
-- as [diretrizes para recursos on-line nos chamados](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=por) (38.8.24.2) dizem: «Nenhuma propaganda comercial deve aparecer no site».
+- as [diretrizes para recursos on-line nos chamados](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=por) (Manual Geral 38.8.21.2) dizem: «Nenhuma propaganda comercial deve aparecer no site».
 
 O módulo de Autossuficiência é apenas um portal de recursos públicos e gratuitos, começando pelos oficiais da Igreja.
-## Recursos on-line nos chamados (Manual Geral 38.8.24.2)
+## Recursos on-line nos chamados (Manual Geral 38.8.21.2)
 
-A Igreja tem diretrizes oficiais para usar sites, aplicativos e outras ferramentas on-line nos chamados: [Utilização de recursos on-line em chamados da Igreja](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=por), que aplica o [Manual Geral, 38.8.24.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=por). O CallingSupportApp as cumpre, e cada ala que o instalar também:
+A Igreja tem diretrizes oficiais para usar sites, aplicativos e outras ferramentas on-line nos chamados: [Utilização de recursos on-line em chamados da Igreja](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=por), que aplica o [Manual Geral, 38.8.21.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=por#title_number158). A página de diretrizes ainda cita a numeração anterior do Manual (38.8.24.2); no Manual Geral vigente é a 38.8.21.2. O CallingSupportApp as cumpre, e cada ala que o instalar também:
 
 - **Aprovação prévia.** «A criação de um site, blog ou de uma conta de mídia social precisa primeiro ser aprovada pelo presidente da estaca (para recursos da estaca) ou pelo bispo (para recursos da ala).» Nenhuma ala instala o aplicativo sem a aprovação do seu bispo.
 - **Sem logotipo nem nome oficial.** «O logotipo ou símbolo da Igreja não pode ser usado ou imitado.» O nome do recurso não pode incluir o nome oficial da Igreja.

@@ -35,6 +35,19 @@ export function findRealLookingEmails(files: { path: string; text: string }[]) {
   );
 }
 
+const PREVIOUS_HANDBOOK_NUMBER = /38\.8\.24\.2/g;
+const PREVIOUS_NUMBERING_NOTE = /numeración anterior|numeração anterior|previous Handbook numbering/i;
+
+export function findOutdatedHandbookCitations(files: { path: string; text: string }[]) {
+  return files.flatMap(({ path, text }) =>
+    text
+      .split('\n')
+      .map((line, index) => ({ line, number: index + 1 }))
+      .filter(({ line }) => (line.match(PREVIOUS_HANDBOOK_NUMBER) ?? []).length > (PREVIOUS_NUMBERING_NOTE.test(line) ? 1 : 0))
+      .map(({ number }) => `${path}:${number}`),
+  );
+}
+
 const asFiles = (paths: string[]) => paths.map((path) => ({ path: rel(path), text: read(path) }));
 
 describe('reglas del repositorio que se verifican solas', () => {
@@ -55,6 +68,32 @@ describe('reglas del repositorio que se verifican solas', () => {
       ...walk(join(ROOT, 'src/app/dev')),
     ]);
     expect(findRealLookingEmails(files)).toEqual([]);
+  });
+});
+
+describe('citas del Manual General', () => {
+  it('los recursos en línea se citan como 38.8.21.2 (Manual vigente), no con la numeración anterior 38.8.24.2', () => {
+    const files = asFiles([
+      ...['AGENTS.md', 'DESIGN.md', 'README.md', 'CONTRIBUTING.md', 'SECURITY.md'].map((name) => join(ROOT, name)),
+      ...walk(join(ROOT, '.claude/skills')),
+      ...walk(join(ROOT, 'messages')),
+      ...walk(join(ROOT, 'site/content')),
+      ...walk(join(ROOT, 'site/i18n')),
+      ...walk(join(ROOT, 'src')).filter((path) => !path.endsWith('repository-rules.test.ts')),
+    ].filter((path) => existsSync(path)));
+    expect(findOutdatedHandbookCitations(files)).toEqual([]);
+  });
+
+  it('el detector marca la numeración anterior salvo en la aclaración', () => {
+    expect(findOutdatedHandbookCitations([{ path: 'a.md', text: 'línea\n(Manual General 38.8.24.2)' }])).toEqual(['a.md:2']);
+    expect(
+      findOutdatedHandbookCitations([{ path: 'b.md', text: 'La página de pautas todavía cita la numeración anterior del Manual (38.8.24.2).' }]),
+    ).toEqual([]);
+    expect(
+      findOutdatedHandbookCitations([
+        { path: 'c.md', text: 'Ver Manual General 38.8.24.2. La página de pautas todavía cita la numeración anterior del Manual (38.8.24.2).' },
+      ]),
+    ).toEqual(['c.md:1']);
   });
 });
 

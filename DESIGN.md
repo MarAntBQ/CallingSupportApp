@@ -39,7 +39,7 @@ Los valores viven en [`src/app/globals.css`](src/app/globals.css) (`@theme` de T
 
 ## Principios
 
-1. **No parece una herramienta oficial.** La app no es de la Iglesia y no debe confundirse con una (Manual General 38.8.24.2). No usamos la tipografía, los colores, los íconos, el logotipo ni el nombre de ningún sitio o aplicación de la Iglesia.
+1. **No parece una herramienta oficial.** La app no es de la Iglesia y no debe confundirse con una (Manual General 38.8.21.2). No usamos la tipografía, los colores, los íconos, el logotipo ni el nombre de ningún sitio o aplicación de la Iglesia.
 2. **Familiar para quien ya trabaja con registros.** Tablas densas, edición en la misma fila, avisos discretos: patrones de trabajo administrativo comunes, para que un secretario se sienta en casa desde el primer día.
 3. **Legible para todos.** Todo texto cumple WCAG AA (4.5:1). El color nunca es la única señal: siempre va con texto o un ícono.
 4. **Las personas al centro.** Nombres y avatares cerca de lo que cada uno hace.
