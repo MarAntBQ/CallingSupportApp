@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useId, useRef, useState, type ChangeEvent } from 'react';
 import { UnitLogo } from '@/components/unit-brand';
 import { Alert } from '@/components/ui/alert';
@@ -25,6 +26,7 @@ export function LogoCard({ config }: { config: PublicConfig }) {
   const t = useTranslations('settings.logo');
   const tErrors = useTranslations('errors');
   const setConfig = useSetConfig();
+  const router = useRouter();
   const fileId = useId();
   const confirmId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -72,6 +74,7 @@ export function LogoCard({ config }: { config: PublicConfig }) {
       return;
     }
     await setConfig(result.data);
+    router.refresh();
     setPending(null);
     setConfirmed(false);
     if (inputRef.current) inputRef.current.value = '';

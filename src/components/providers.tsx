@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { CONFIG_QUERY_KEY } from '@/lib/config/use-config';
 import type { PublicConfig } from '@/lib/validation/config';
 
@@ -11,5 +11,10 @@ export function Providers({ config, children }: { config: PublicConfig; children
     client.setQueryData(CONFIG_QUERY_KEY, config);
     return client;
   });
+
+  useEffect(() => {
+    queryClient.setQueryData(CONFIG_QUERY_KEY, config);
+  }, [config, queryClient]);
+
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
