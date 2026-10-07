@@ -26,12 +26,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const roleLabel = roleKey ? tRoles(roleKey) : session.user.role.name;
 
   const links = [
-    { href: '/admin', label: t('nav.home') },
-    { href: '/admin/profile', label: t('nav.profile') },
+    { href: '/admin', label: t('nav.home'), ready: true },
+    { href: '/admin/profile', label: t('nav.profile'), ready: false },
     ...(admin
       ? [
-          { href: '/admin/settings', label: t('nav.settings') },
-          { href: '/admin/sessions', label: t('nav.sessions') },
+          { href: '/admin/settings', label: t('nav.settings'), ready: false },
+          { href: '/admin/sessions', label: t('nav.sessions'), ready: false },
         ]
       : []),
   ];
@@ -46,6 +46,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               <li key={link.href}>
                 <Link
                   href={link.href}
+                  prefetch={link.ready ? undefined : false}
                   className="block rounded-sm px-3 py-2 text-sm whitespace-nowrap text-text hover:bg-surface-muted hover:text-primary-strong"
                 >
                   {link.label}
