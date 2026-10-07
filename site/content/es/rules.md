@@ -33,12 +33,12 @@ La aplicación **no maneja dinero**. Según el [capítulo 34](https://www.church
 La aplicación **no tiene directorio de emprendimientos ni anuncios de negocios**. Se consideró y se descartó porque el Manual General no lo permite:
 
 - el [38.8.5](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=spa) dice: «Los centros de reuniones y otras propiedades de la Iglesia, las reuniones y las clases de la Iglesia, así como los sitios web y los canales en las redes sociales de la Iglesia no se deben utilizar para promocionar negocios ni entidades que no pertenezcan a la Iglesia»;
-- las [pautas para recursos en línea en los llamamientos](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa) (38.8.24.2) dicen: «No debe aparecer publicidad comercial en el sitio».
+- las [pautas para recursos en línea en los llamamientos](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa) (Manual General 38.8.21.2) dicen: «No debe aparecer publicidad comercial en el sitio».
 
 El módulo de Autosuficiencia es solo un portal de recursos públicos y gratuitos, empezando por los oficiales de la Iglesia.
-## Recursos en línea en los llamamientos (Manual General 38.8.24.2)
+## Recursos en línea en los llamamientos (Manual General 38.8.21.2)
 
-La Iglesia tiene pautas oficiales para usar sitios, aplicaciones y otras herramientas en línea en los llamamientos: [Uso de recursos en línea en los llamamientos de la Iglesia](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa), que aplica el [Manual General, 38.8.24.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=spa). CallingSupportApp las cumple, y cada barrio que la instale también:
+La Iglesia tiene pautas oficiales para usar sitios, aplicaciones y otras herramientas en línea en los llamamientos: [Uso de recursos en línea en los llamamientos de la Iglesia](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa), que aplica el [Manual General, 38.8.21.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=spa#title_number158). La página de pautas todavía cita la numeración anterior del Manual (38.8.24.2); en el Manual General vigente es la 38.8.21.2. CallingSupportApp las cumple, y cada barrio que la instale también:
 
 - **Aprobación previa.** «La creación de un sitio web, un blog o una cuenta de redes sociales debe ser aprobada primero por el presidente de estaca (para los recursos de estaca) o el obispo (para los recursos del barrio).» Ningún barrio instala la aplicación sin la aprobación de su obispo.
 - **Sin logotipo ni nombre oficial.** «No se debe emplear ni imitar el logotipo de la Iglesia.» El nombre «podría incluir el nombre de un barrio o una estaca. Sin embargo, no puede incluir el nombre oficial de la Iglesia.»

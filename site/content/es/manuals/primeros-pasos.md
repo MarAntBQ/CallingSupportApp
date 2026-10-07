@@ -9,7 +9,7 @@ order: 1
 
 ## Antes de empezar
 
-Antes de instalar, revisa esta lista. Sale de las [pautas oficiales para recursos en línea en los llamamientos](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa) (Manual General 38.8.24.2):
+Antes de instalar, revisa esta lista. Sale de las [pautas oficiales para recursos en línea en los llamamientos](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=spa) ([Manual General 38.8.21.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=spa#title_number158)):
 
 - [ ] **La aprobación de tu obispo** para usar la aplicación en la unidad.
 - [ ] **Al menos dos administradores**, para que la aplicación siga funcionando cuando cambie un llamamiento.

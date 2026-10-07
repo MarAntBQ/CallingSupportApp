@@ -9,7 +9,7 @@ order: 1
 
 ## Before you start
 
-Before installing, go through this list. It comes from the [official guidelines for online resources in Church callings](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=eng) (General Handbook 38.8.24.2):
+Before installing, go through this list. It comes from the [official guidelines for online resources in Church callings](https://www.churchofjesuschrist.org/tools/help/use-of-online-resources-in-church-callings?lang=eng) ([General Handbook 38.8.21.2](https://www.churchofjesuschrist.org/study/manual/general-handbook/38-church-policies-and-guidelines?lang=eng#title_number158)):
 
 - [ ] **Your bishop's approval** to use the application in the unit.
 - [ ] **At least two administrators**, so the application keeps working when a calling changes.

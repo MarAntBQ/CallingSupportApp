@@ -29,7 +29,7 @@ encuestas».
 | Se limite a lo que se requiere | Cada campo tiene un uso concreto en la actividad. Nada "por si acaso", nada "puede servir después" |
 | Solo para los propósitos aprobados | Un dato vive y se usa solo en el módulo y la actividad donde se entregó. Prohibido cruzar módulos (por ejemplo, usar los teléfonos del viaje para el directorio o para avisos de otra cosa) |
 | Solo a personas autorizadas | Permiso del módulo en el servidor para leer, exportar, imprimir y avisar. Ocultar un botón no autoriza ni desautoriza |
-| Ni personales, ni políticos, ni comerciales | Ningún dato de miembros alimenta promociones, campañas ni negocios. No hay directorio de emprendimientos: el Manual no permite promocionar negocios ni publicidad comercial (38.8.5 y 38.8.24.2) |
+| Ni personales, ni políticos, ni comerciales | Ningún dato de miembros alimenta promociones, campañas ni negocios. No hay directorio de emprendimientos: el Manual no permite promocionar negocios ni publicidad comercial (38.8.5 y 38.8.21.2) |
 | Ni estudios ni encuestas | Sin analítica que envíe datos de personas, sin integraciones con terceros que reciban datos, sin exportaciones "para un estudio" |
 
 **Si una funcionalidad choca con el 33.8, no se construye**, aunque técnicamente sea posible
