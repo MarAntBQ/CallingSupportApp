@@ -555,6 +555,8 @@
       "callingTaken": "That calling already exists in this organization.",
       "organizationInactive": "The organization is inactive. Activate it to add callings.",
       "organizationMissing": "The organization no longer exists. Reload the page."
-    }
+    },
+    "loadFailed": "The catalog couldn't be updated.",
+    "retry": "Try again"
   }
 }

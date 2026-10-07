@@ -555,6 +555,8 @@
       "callingTaken": "Ya existe ese llamamiento en esta organización.",
       "organizationInactive": "La organización está inactiva. Actívala para agregar llamamientos.",
       "organizationMissing": "La organización ya no existe. Recarga la página."
-    }
+    },
+    "loadFailed": "No se pudo actualizar el catálogo.",
+    "retry": "Reintentar"
   }
 }

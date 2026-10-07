@@ -58,16 +58,20 @@ export function Catalog({
 }) {
   const t = useTranslations('organizations');
   const queryClient = useQueryClient();
-  const { data: organizations = initialOrganizations } = useQuery({
+  const tErrors = useTranslations('errors');
+  const organizationsQuery = useQuery({
     queryKey: ORGANIZATIONS_KEY,
     queryFn: () => fetchList<OrganizationItem>('/api/organizations'),
     initialData: initialOrganizations,
   });
-  const { data: callings = initialCallings } = useQuery({
+  const callingsQuery = useQuery({
     queryKey: CALLINGS_KEY,
     queryFn: () => fetchList<CallingItem>('/api/callings'),
     initialData: initialCallings,
   });
+  const organizations = organizationsQuery.data ?? initialOrganizations;
+  const callings = callingsQuery.data ?? initialCallings;
+  const loadFailed = organizationsQuery.isError || callingsQuery.isError;
   const refresh = () =>
     Promise.all([
       queryClient.invalidateQueries({ queryKey: ORGANIZATIONS_KEY }),
@@ -77,6 +81,16 @@ export function Catalog({
 
   return (
     <div className="flex flex-col gap-6">
+      {loadFailed && (
+        <Alert tone="danger" role="alert" title={t('loadFailed')}>
+          <span className="flex flex-wrap items-center gap-2">
+            {tErrors('network')}
+            <Button variant="link" onClick={() => void refresh()}>
+              {t('retry')}
+            </Button>
+          </span>
+        </Alert>
+      )}
       {!canCreate && !canUpdate && <Alert tone="info" role="status" title={t('readOnly')} />}
       <Card title={t('organizationsTitle')} intro={t('organizationsIntro')}>
         {organizations.length === 0 ? (
