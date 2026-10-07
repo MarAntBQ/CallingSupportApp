@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { LocaleSwitcher } from '@/components/locale-switcher';
+import { Logo } from '@/components/logo';
 
 export default async function HomePage() {
   const t = await getTranslations();
@@ -8,7 +9,9 @@ export default async function HomePage() {
   return (
     <div className="mx-auto flex min-h-screen max-w-xl flex-col px-4 text-center">
       <main className="flex flex-1 flex-col items-center justify-center gap-4">
-        <h1 className="text-3xl font-semibold text-text">{t('common.appName')}</h1>
+        <h1>
+          <Logo priority className="h-14 w-auto sm:h-16" />
+        </h1>
         <p className="text-text-muted">{t('home.underConstruction')}</p>
         <Link
           href="/login"

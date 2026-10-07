@@ -2,9 +2,11 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import manifest from './manifest';
 
 const SRC = fileURLToPath(new URL('..', import.meta.url));
 const GLOBALS = fileURLToPath(new URL('./globals.css', import.meta.url));
+const MANIFEST = fileURLToPath(new URL('./manifest.ts', import.meta.url));
 
 function readTokens(css: string) {
   const tokens: Record<string, string> = {};
@@ -82,7 +84,7 @@ describe('tokens de diseño', () => {
 
   it('ningún archivo de src/ escribe colores fuera de globals.css', () => {
     const offenders = sourceFiles(SRC)
-      .filter((file) => file !== GLOBALS)
+      .filter((file) => file !== GLOBALS && file !== MANIFEST)
       .flatMap((file) =>
         readFileSync(file, 'utf8')
           .split('\n')
@@ -91,5 +93,11 @@ describe('tokens de diseño', () => {
           .map(({ at, line }) => `${at}  ${line.trim()}`),
       );
     expect(offenders).toEqual([]);
+  });
+
+  it('el manifest usa los mismos colores que globals.css', () => {
+    const app = manifest();
+    expect(app.theme_color).toBe(tokens.primary);
+    expect(app.background_color).toBe(tokens.bg);
   });
 });

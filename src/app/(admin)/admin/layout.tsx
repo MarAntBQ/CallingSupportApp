@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { LocaleSwitcher } from '@/components/locale-switcher';
+import { Logo } from '@/components/logo';
 import { LogoutButton } from '@/components/logout-button';
 import { Alert } from '@/components/ui/alert';
 import { getSession } from '@/server/auth/session';
@@ -19,7 +20,6 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   const t = await getTranslations('admin');
   const tRoles = await getTranslations('roles');
-  const tCommon = await getTranslations('common');
   const admin = isGlobalAdmin(session);
   const missingSecondAdmin = admin && (await countActiveAdmins(getDb())) < 2;
   const roleKey = ROLE_KEYS.find((key) => key === session.user.role.key);
@@ -39,7 +39,12 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
       <aside className="border-b border-border bg-surface md:w-60 md:shrink-0 md:border-r md:border-b-0">
-        <p className="px-5 py-4 text-lg font-semibold text-primary">{tCommon('appName')}</p>
+        <Link
+          href="/admin"
+          className="block w-fit px-5 py-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
+        >
+          <Logo className="h-8 w-auto" />
+        </Link>
         <nav aria-label={t('navLabel')}>
           <ul className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col md:pb-0">
             {links.map((link) => (
