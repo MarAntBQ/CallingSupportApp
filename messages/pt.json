@@ -652,6 +652,12 @@
     "errors": {
       "schedule_with_temple_required": "Para ativar a viagem, programe-a primeiro com o templo (Manual Geral 25.1.2).",
       "deadline_after_date": "O prazo de inscrição não pode ser posterior à data da viagem."
+    },
+    "notice": {
+      "subject": "Nova inscrição — Viagem ao Templo",
+      "body": "{n, plural, one {# inscrição nova} other {# inscrições novas}} para revisar.",
+      "openPanel": "Abrir o painel",
+      "telegram": "Viagem ao Templo: {n, plural, one {# inscrição nova} other {# inscrições novas}} para revisar."
     }
   }
 }

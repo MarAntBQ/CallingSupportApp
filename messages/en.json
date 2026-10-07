@@ -652,6 +652,12 @@
     "errors": {
       "schedule_with_temple_required": "To activate the trip, first schedule it with the temple (General Handbook 25.1.2).",
       "deadline_after_date": "The registration deadline cannot be later than the trip date."
+    },
+    "notice": {
+      "subject": "New registration — Temple Trip",
+      "body": "{n, plural, one {# new registration} other {# new registrations}} to review.",
+      "openPanel": "Open the panel",
+      "telegram": "Temple Trip: {n, plural, one {# new registration} other {# new registrations}} to review."
     }
   }
 }
