@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
-import { Alert } from '@/components/ui/alert';
 import { getSession } from '@/server/auth/session';
 import { getDb } from '@/server/db';
 import { listCallings, listOrganizations } from '@/server/organizations/catalog';
+import { getPermissionMatrix } from '@/server/permissions/matrix';
 import { moduleActionsOf } from '@/server/permissions/service';
 import { Catalog } from './catalog';
+import { PermissionsSection } from './permissions-section';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +28,11 @@ export default async function OrganizationsPage() {
   ]);
   if (!hasAny(catalog) && !hasAny(permissions)) redirect('/admin');
   const t = await getTranslations('organizations');
-  const [organizations, callings] = hasAny(catalog) ? await Promise.all([listOrganizations(db), listCallings(db)]) : [[], []];
+  const [organizations, callings, matrix] = await Promise.all([
+    hasAny(catalog) ? listOrganizations(db) : [],
+    hasAny(catalog) ? listCallings(db) : [],
+    permissions.read ? getPermissionMatrix(db) : null,
+  ]);
 
   return (
     <section className="flex max-w-3xl flex-col gap-6">
@@ -35,16 +40,15 @@ export default async function OrganizationsPage() {
         <h1 className="text-3xl font-semibold text-text">{t('title')}</h1>
         <p className="text-text-muted">{t('intro')}</p>
       </div>
-      {hasAny(catalog) ? (
+      {hasAny(catalog) && (
         <Catalog
           initialOrganizations={organizations}
           initialCallings={callings}
           canCreate={catalog.create}
           canUpdate={catalog.update}
         />
-      ) : (
-        <Alert tone="info" role="status" title={t('permissionsPending')} />
       )}
+      {matrix && <PermissionsSection initialMatrix={matrix} canUpdate={permissions.update} />}
     </section>
   );
 }

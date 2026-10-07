@@ -35,7 +35,11 @@ export function patchJson<T>(url: string, body: unknown) {
   return sendJson<T>('PATCH', url, body);
 }
 
-async function sendJson<T>(method: 'POST' | 'PATCH', url: string, body: unknown): Promise<ApiResult<T>> {
+export function putJson<T>(url: string, body: unknown) {
+  return sendJson<T>('PUT', url, body);
+}
+
+async function sendJson<T>(method: 'POST' | 'PATCH' | 'PUT', url: string, body: unknown): Promise<ApiResult<T>> {
   let response: Response;
   try {
     response = await fetch(url, {

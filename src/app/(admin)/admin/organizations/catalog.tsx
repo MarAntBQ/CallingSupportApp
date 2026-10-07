@@ -14,6 +14,7 @@ import {
   type OrganizationItem,
 } from '@/lib/validation/organizations';
 import { Card } from '../settings/card';
+import { MATRIX_KEY } from './permissions-section';
 
 const ORGANIZATIONS_KEY = ['organizations'] as const;
 const CALLINGS_KEY = ['callings'] as const;
@@ -76,6 +77,7 @@ export function Catalog({
     Promise.all([
       queryClient.invalidateQueries({ queryKey: ORGANIZATIONS_KEY }),
       queryClient.invalidateQueries({ queryKey: CALLINGS_KEY }),
+      queryClient.invalidateQueries({ queryKey: MATRIX_KEY }),
     ]);
   const activeOrganizations = organizations.filter((organization) => organization.active);
 

@@ -548,7 +548,6 @@
     "inactive": "Inativa",
     "inactiveCalling": "Inativo",
     "readOnly": "Você pode ver o catálogo, mas seu chamado não permite alterá-lo.",
-    "permissionsPending": "A matriz de permissões estará disponível em uma próxima versão.",
     "errors": {
       "name": "Escreva um nome de 2 a 80 caracteres.",
       "organizationTaken": "Já existe uma organização com esse nome.",
@@ -557,6 +556,34 @@
       "organizationMissing": "A organização não existe mais. Recarregue a página."
     },
     "loadFailed": "Não foi possível atualizar o catálogo.",
-    "retry": "Tentar novamente"
+    "retry": "Tentar novamente",
+    "permissions": {
+      "title": "Permissões",
+      "intro": "O que cada chamado pode fazer em cada módulo e quem recebe os avisos. As permissões só valem para quem tem a função Líder ou superior.",
+      "empty": "Adicione organizações e chamados ativos para atribuir permissões.",
+      "summary": "{granted} de {total} chamados",
+      "modules": {
+        "temple-trips": "Viagem ao Templo",
+        "users": "Usuários",
+        "callings": "Organizações e chamados",
+        "permissions": "Permissões"
+      },
+      "columns": {
+        "organization": "Organização",
+        "calling": "Chamado",
+        "canRead": "Ler",
+        "canCreate": "Criar",
+        "canUpdate": "Editar",
+        "canDelete": "Excluir",
+        "canNotify": "Notificar"
+      },
+      "caption": "Permissões de {module}",
+      "checkbox": "{action}: {calling} ({organization})",
+      "saved": "Salvo.",
+      "saving": "Salvando…",
+      "readOnly": "Você pode ver as permissões, mas seu chamado não permite alterá-las.",
+      "noRows": "Nenhum chamado corresponde à busca.",
+      "unknownCalling": "Um chamado não existe mais. Recarregue a página."
+    }
   }
 }

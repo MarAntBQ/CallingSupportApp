@@ -548,7 +548,6 @@
     "inactive": "Inactiva",
     "inactiveCalling": "Inactivo",
     "readOnly": "Puedes ver el catálogo, pero tu llamamiento no permite cambiarlo.",
-    "permissionsPending": "La matriz de permisos estará disponible en una próxima versión.",
     "errors": {
       "name": "Escribe un nombre de 2 a 80 caracteres.",
       "organizationTaken": "Ya existe una organización con ese nombre.",
@@ -557,6 +556,34 @@
       "organizationMissing": "La organización ya no existe. Recarga la página."
     },
     "loadFailed": "No se pudo actualizar el catálogo.",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "permissions": {
+      "title": "Permisos",
+      "intro": "Qué puede hacer cada llamamiento en cada módulo y quién recibe los avisos. Los permisos solo se aplican a quienes tienen el rol Líder o superior.",
+      "empty": "Agrega organizaciones y llamamientos activos para asignarles permisos.",
+      "summary": "{granted} de {total} llamamientos",
+      "modules": {
+        "temple-trips": "Viaje al Templo",
+        "users": "Usuarios",
+        "callings": "Organizaciones y llamamientos",
+        "permissions": "Permisos"
+      },
+      "columns": {
+        "organization": "Organización",
+        "calling": "Llamamiento",
+        "canRead": "Leer",
+        "canCreate": "Crear",
+        "canUpdate": "Editar",
+        "canDelete": "Eliminar",
+        "canNotify": "Notificar"
+      },
+      "caption": "Permisos de {module}",
+      "checkbox": "{action}: {calling} ({organization})",
+      "saved": "Guardado.",
+      "saving": "Guardando…",
+      "readOnly": "Puedes ver los permisos, pero tu llamamiento no permite cambiarlos.",
+      "noRows": "Ningún llamamiento coincide con la búsqueda.",
+      "unknownCalling": "Un llamamiento ya no existe. Recarga la página."
+    }
   }
 }

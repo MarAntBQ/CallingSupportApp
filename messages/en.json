@@ -548,7 +548,6 @@
     "inactive": "Inactive",
     "inactiveCalling": "Inactive",
     "readOnly": "You can see the catalog, but your calling doesn't allow changing it.",
-    "permissionsPending": "The permissions matrix will be available in an upcoming version.",
     "errors": {
       "name": "Enter a name from 2 to 80 characters.",
       "organizationTaken": "An organization with that name already exists.",
@@ -557,6 +556,34 @@
       "organizationMissing": "The organization no longer exists. Reload the page."
     },
     "loadFailed": "The catalog couldn't be updated.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "permissions": {
+      "title": "Permissions",
+      "intro": "What each calling can do in each module and who receives the notices. Permissions only apply to people with the Leader role or higher.",
+      "empty": "Add active organizations and callings to assign them permissions.",
+      "summary": "{granted} of {total} callings",
+      "modules": {
+        "temple-trips": "Temple Trip",
+        "users": "Users",
+        "callings": "Organizations and callings",
+        "permissions": "Permissions"
+      },
+      "columns": {
+        "organization": "Organization",
+        "calling": "Calling",
+        "canRead": "Read",
+        "canCreate": "Create",
+        "canUpdate": "Edit",
+        "canDelete": "Delete",
+        "canNotify": "Notify"
+      },
+      "caption": "{module} permissions",
+      "checkbox": "{action}: {calling} ({organization})",
+      "saved": "Saved.",
+      "saving": "Saving…",
+      "readOnly": "You can see the permissions, but your calling doesn't allow changing them.",
+      "noRows": "No calling matches the search.",
+      "unknownCalling": "A calling no longer exists. Reload the page."
+    }
   }
 }
