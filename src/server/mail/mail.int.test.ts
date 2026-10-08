@@ -174,7 +174,7 @@ describe.skipIf(!url)('correo contra Postgres', () => {
     expect(await db.select().from(schema.emailLog)).toHaveLength(2);
     const response = await cron(`Bearer ${secret}`);
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ deletedEmailLogs: 1, purgedRegistrations: 0, purgedParticipants: 0 });
+    expect(await response.json()).toEqual({ purgedRegistrations: 0, purgedParticipants: 0, deletedSessions: 0, deletedEmailLogs: 1 });
     expect((await db.select().from(schema.emailLog)).map((row) => row.source)).toEqual(['reciente']);
   });
 
