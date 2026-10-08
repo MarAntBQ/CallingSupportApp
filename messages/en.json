@@ -134,7 +134,9 @@
       "sessions": "Active sessions",
       "emails": "Sent emails",
       "organizations": "Organizations",
-      "templeTrips": "Temple Trip"
+      "templeTrips": "Temple Trip",
+      "users": "Users",
+      "wardCouncil": "Ward council"
     },
     "logout": "Sign out",
     "welcome": "Hi, {name}",
@@ -936,6 +938,82 @@
       "date": "Date",
       "dateUnconfirmed": "{date} (to be confirmed)",
       "deadline": "Registration deadline"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "newUser": "Create user",
+    "empty": "No users yet.",
+    "noRows": "No results.",
+    "none": "—",
+    "tabs": {
+      "leaders": "Leaders",
+      "all": "All"
+    },
+    "columns": {
+      "name": "Name",
+      "calling": "Calling",
+      "email": "Email",
+      "role": "Role",
+      "organizations": "Organizations",
+      "status": "Status",
+      "telegram": "Telegram"
+    },
+    "status": {
+      "pending": "Pending",
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "telegram": {
+      "linked": "Linked",
+      "no": "—"
+    },
+    "modal": {
+      "createTitle": "Create user",
+      "editTitle": "Edit user",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "rolePlaceholder": "Choose a role",
+      "callingLabel": "Position description",
+      "callings": "Callings",
+      "callingsDisabled": "This role has no callings.",
+      "locale": "Language",
+      "localePlaceholder": "Unit language",
+      "status": "Status",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create"
+    },
+    "resetPassword": {
+      "button": "Reset password",
+      "note": "Hand it over in person. Shown only once.",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "errors": {
+      "email_taken": "A user with that email already exists.",
+      "role_not_found": "The role does not exist.",
+      "invalid_calling": "One of the callings is not valid."
+    },
+    "locales": {
+      "es": "Español",
+      "pt": "Português",
+      "en": "English"
+    }
+  },
+  "wardCouncil": {
+    "title": "Ward council",
+    "empty": "No active organizations.",
+    "noRows": "No results.",
+    "noLeader": "No leader assigned.",
+    "columns": {
+      "organization": "Organization",
+      "calling": "Calling",
+      "name": "Name",
+      "email": "Email"
     }
   }
 }

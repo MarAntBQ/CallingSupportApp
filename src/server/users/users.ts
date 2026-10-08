@@ -1,5 +1,6 @@
 import 'server-only';
 import { and, asc, eq, inArray } from 'drizzle-orm';
+import { LEADER_LEVEL } from '@/lib/modules';
 import type { CreateUserInput, UpdateUserInput } from '@/lib/validation/users';
 import { hashPassword } from '@/server/auth/crypto';
 import { revokeAllUserSessions } from '@/server/auth/sessions';
@@ -9,8 +10,7 @@ import { sendMail, type MailMessage } from '@/server/mail/service';
 import { inviteEmail } from './invite-email';
 import { generateTempPassword } from './password';
 
-// Un llamamiento solo lo llevan los roles de líder (nivel >= 50). Miembro (10) y Amigo (5) no.
-const LEADER_LEVEL = 50;
+// Un llamamiento solo lo llevan los roles de líder (LEADER_LEVEL, 50). Miembro (10) y Amigo (5) no.
 
 type Mailer = (source: string, message: MailMessage) => Promise<unknown>;
 const defaultMailer: Mailer = (source, message) => sendMail(source, message);

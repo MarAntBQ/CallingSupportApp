@@ -134,7 +134,9 @@
       "sessions": "Sessões ativas",
       "emails": "E-mails enviados",
       "organizations": "Organizações",
-      "templeTrips": "Viagem ao Templo"
+      "templeTrips": "Viagem ao Templo",
+      "users": "Usuários",
+      "wardCouncil": "Conselho da ala"
     },
     "logout": "Sair",
     "welcome": "Olá, {name}",
@@ -936,6 +938,82 @@
       "date": "Data",
       "dateUnconfirmed": "{date} (a confirmar)",
       "deadline": "Prazo de inscrição"
+    }
+  },
+  "users": {
+    "title": "Usuários",
+    "newUser": "Criar usuário",
+    "empty": "Ainda não há usuários.",
+    "noRows": "Sem resultados.",
+    "none": "—",
+    "tabs": {
+      "leaders": "Líderes",
+      "all": "Todos"
+    },
+    "columns": {
+      "name": "Nome",
+      "calling": "Chamado",
+      "email": "E-mail",
+      "role": "Função",
+      "organizations": "Organizações",
+      "status": "Situação",
+      "telegram": "Telegram"
+    },
+    "status": {
+      "pending": "Pendente",
+      "active": "Ativo",
+      "suspended": "Suspenso"
+    },
+    "telegram": {
+      "linked": "Vinculado",
+      "no": "—"
+    },
+    "modal": {
+      "createTitle": "Criar usuário",
+      "editTitle": "Editar usuário",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "email": "E-mail",
+      "phone": "Telefone",
+      "role": "Função",
+      "rolePlaceholder": "Escolha uma função",
+      "callingLabel": "Descrição do cargo",
+      "callings": "Chamados",
+      "callingsDisabled": "Esta função não tem chamados.",
+      "locale": "Idioma",
+      "localePlaceholder": "Idioma da unidade",
+      "status": "Situação",
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "create": "Criar"
+    },
+    "resetPassword": {
+      "button": "Redefinir senha",
+      "note": "Entregue em pessoa. Só aparece uma vez.",
+      "copy": "Copiar",
+      "copied": "Copiado"
+    },
+    "errors": {
+      "email_taken": "Já existe um usuário com esse e-mail.",
+      "role_not_found": "A função não existe.",
+      "invalid_calling": "Algum dos chamados não é válido."
+    },
+    "locales": {
+      "es": "Español",
+      "pt": "Português",
+      "en": "English"
+    }
+  },
+  "wardCouncil": {
+    "title": "Conselho da ala",
+    "empty": "Não há organizações ativas.",
+    "noRows": "Sem resultados.",
+    "noLeader": "Sem líder designado.",
+    "columns": {
+      "organization": "Organização",
+      "calling": "Chamado",
+      "name": "Nome",
+      "email": "E-mail"
     }
   }
 }

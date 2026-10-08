@@ -134,7 +134,9 @@
       "sessions": "Sesiones activas",
       "emails": "Correos enviados",
       "organizations": "Organizaciones",
-      "templeTrips": "Viaje al Templo"
+      "templeTrips": "Viaje al Templo",
+      "users": "Usuarios",
+      "wardCouncil": "Consejo de barrio"
     },
     "logout": "Cerrar sesión",
     "welcome": "Hola, {name}",
@@ -936,6 +938,82 @@
       "date": "Fecha",
       "dateUnconfirmed": "{date} (por confirmar)",
       "deadline": "Fecha límite de inscripción"
+    }
+  },
+  "users": {
+    "title": "Usuarios",
+    "newUser": "Crear usuario",
+    "empty": "Todavía no hay usuarios.",
+    "noRows": "Sin resultados.",
+    "none": "—",
+    "tabs": {
+      "leaders": "Líderes",
+      "all": "Todos"
+    },
+    "columns": {
+      "name": "Nombre",
+      "calling": "Llamamiento",
+      "email": "Correo",
+      "role": "Rol",
+      "organizations": "Organizaciones",
+      "status": "Estado",
+      "telegram": "Telegram"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "active": "Activo",
+      "suspended": "Suspendido"
+    },
+    "telegram": {
+      "linked": "Vinculado",
+      "no": "—"
+    },
+    "modal": {
+      "createTitle": "Crear usuario",
+      "editTitle": "Editar usuario",
+      "firstName": "Nombres",
+      "lastName": "Apellidos",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "role": "Rol",
+      "rolePlaceholder": "Elige un rol",
+      "callingLabel": "Descripción del cargo",
+      "callings": "Llamamientos",
+      "callingsDisabled": "Este rol no lleva llamamientos.",
+      "locale": "Idioma",
+      "localePlaceholder": "Idioma de la unidad",
+      "status": "Estado",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "create": "Crear"
+    },
+    "resetPassword": {
+      "button": "Restablecer contraseña",
+      "note": "Entrégala en persona. Solo se muestra una vez.",
+      "copy": "Copiar",
+      "copied": "Copiado"
+    },
+    "errors": {
+      "email_taken": "Ya existe un usuario con ese correo.",
+      "role_not_found": "El rol no existe.",
+      "invalid_calling": "Alguno de los llamamientos no es válido."
+    },
+    "locales": {
+      "es": "Español",
+      "pt": "Português",
+      "en": "English"
+    }
+  },
+  "wardCouncil": {
+    "title": "Consejo de barrio",
+    "empty": "No hay organizaciones activas.",
+    "noRows": "Sin resultados.",
+    "noLeader": "Sin líder asignado.",
+    "columns": {
+      "organization": "Organización",
+      "calling": "Llamamiento",
+      "name": "Nombre",
+      "email": "Correo"
     }
   }
 }
