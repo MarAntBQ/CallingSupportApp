@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "users_telegram_link_code_unique" ON "users" USING btree ("telegram_link_code") WHERE "users"."telegram_link_code" is not null;

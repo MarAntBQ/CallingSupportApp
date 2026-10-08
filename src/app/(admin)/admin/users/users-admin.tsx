@@ -188,6 +188,18 @@ function UserModal({
   const [saving, setSaving] = useState(false);
   const [tempPassword, setTempPassword] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [telegramLinked, setTelegramLinked] = useState(Boolean(user?.telegramLinked));
+
+  async function unlinkTelegram() {
+    if (!user) return;
+    setError(null);
+    const result = await postJson(`/api/users/${user.id}/telegram/unlink`, {});
+    if (!result.ok) {
+      setError(tErrors(result.error));
+      return;
+    }
+    setTelegramLinked(false);
+  }
 
   const selectedRole = roles.find((role) => role.id === draft.roleId);
   const callingsEnabled = (selectedRole?.level ?? 0) >= LEADER_LEVEL;
@@ -345,6 +357,12 @@ function UserModal({
                     )}
                   </div>
                 )}
+                <div className="flex items-center justify-between gap-3 rounded-md border border-border p-3">
+                  <span className="text-sm text-text-muted">{telegramLinked ? t('telegram.linkedStatus') : t('telegram.notLinked')}</span>
+                  {canUpdate && telegramLinked && (
+                    <Button type="button" variant="secondary" onClick={() => void unlinkTelegram()}>{t('telegram.unlink')}</Button>
+                  )}
+                </div>
               </>
             )}
           </div>

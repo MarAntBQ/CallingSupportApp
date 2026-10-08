@@ -25,6 +25,10 @@ export const appConfig = pgTable(
     smtpSecure: boolean('smtp_secure'),
     smtpUser: text('smtp_user'),
     smtpPasswordEnc: text('smtp_password_enc'),
+    // Bot de Telegram (#17): token y secreto del webhook cifrados (AES, utilidad de #10).
+    telegramBotTokenEnc: text('telegram_bot_token_enc'),
+    telegramBotUsername: text('telegram_bot_username'),
+    telegramWebhookSecretEnc: text('telegram_webhook_secret_enc'),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

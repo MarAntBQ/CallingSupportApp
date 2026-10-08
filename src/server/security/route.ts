@@ -32,11 +32,13 @@ export function withAuth<P = Record<string, never>>(
   };
 }
 
-export function publicRoute<P = Record<string, never>>(handler: PublicHandler<P>, options: { reason: string }) {
+export function publicRoute<P = Record<string, never>>(handler: PublicHandler<P>, options: { reason: string; allowCrossOrigin?: boolean }) {
   if (!options.reason?.trim()) throw new Error('publicRoute exige un motivo (reason).');
   return async (request: Request, context?: RouteContext<P>) => {
     try {
-      if (!isSameOrigin(request)) throw new AuthError(403, 'bad_origin');
+      // allowCrossOrigin: solo para webhooks servidor-a-servidor (p. ej. Telegram), que se
+      // autentican con un secreto propio y NO envían Origin. El handler DEBE validar ese secreto.
+      if (!options.allowCrossOrigin && !isSameOrigin(request)) throw new AuthError(403, 'bad_origin');
       return await handler(request, { params: await readParams(context) });
     } catch (error) {
       return errorResponse(error);

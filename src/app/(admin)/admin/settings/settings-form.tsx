@@ -13,6 +13,7 @@ import { configSchema, type PublicConfig } from '@/lib/validation/config';
 import { Card } from './card';
 import { LogoCard } from './logo-card';
 import { SmtpCard } from './smtp-card';
+import { TelegramCard } from './telegram-card';
 
 type Values = {
   unitName: string;
@@ -108,6 +109,7 @@ export function SettingsForm({ timeZones, currentEmail }: { timeZones: string[];
     <>
       <SettingsCards config={config} timeZones={timeZones} />
       <SmtpCard currentEmail={currentEmail} />
+      <TelegramCard />
     </>
   );
 }

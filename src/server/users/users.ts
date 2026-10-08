@@ -44,6 +44,7 @@ export async function listUsers(db: Database): Promise<UserListItem[]> {
       status: users.status,
       locale: users.locale,
       callingLabel: users.callingLabel,
+      telegramChatId: users.telegramChatId,
       roleId: roles.id,
       roleKey: roles.key,
       roleName: roles.name,
@@ -80,7 +81,7 @@ export async function listUsers(db: Database): Promise<UserListItem[]> {
       locale: row.locale,
       callingLabel: row.callingLabel,
       role: { id: row.roleId, key: row.roleKey, name: row.roleName, level: row.roleLevel },
-      telegramLinked: false,
+      telegramLinked: Boolean(row.telegramChatId),
       callings: userCallingList,
       organizations: [...orgs.values()],
     };
