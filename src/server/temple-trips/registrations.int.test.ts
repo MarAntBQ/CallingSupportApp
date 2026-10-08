@@ -236,6 +236,9 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     expect(second).toEqual({ purgedRegistrations: 0, purgedParticipants: 0 });
     const left = await db.select({ id: schema.templeRegistrations.id }).from(schema.templeRegistrations);
     expect(left).toEqual([{ id: regFuture!.id }]);
+    // Borrado físico en cascada: el participante del viaje pasado desaparece; solo queda el futuro.
+    const participantsLeft = await db.select({ idNumber: schema.templeParticipants.idNumber }).from(schema.templeParticipants);
+    expect(participantsLeft).toEqual([{ idNumber: 'F1' }]);
 
     // #26: el viaje pasado queda con el registro de lo purgado; el futuro, intacto.
     const pastRow = (await db.select({ purgedAt: schema.templeTrips.purgedAt, purgedParticipants: schema.templeTrips.purgedParticipants }).from(schema.templeTrips).where(eq(schema.templeTrips.id, past.id)))[0];
@@ -251,17 +254,21 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     const [user] = await db.insert(schema.users).values({ firstName: 'Ana', lastName: 'Prueba', email: 'sesiones@example.com', passwordHash: 'x', roleId: role!.id, status: 'active' }).returning();
     const now = new Date();
     const old = new Date(now.getTime() - 40 * 24 * 60 * 60 * 1000);
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const soon = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    // viva (no se toca), vencida hace 40 d (se borra), revocada hace 40 d (se borra)
+    // viva (se conserva); vencida AYER (se borra: "vencida" es inmediato, no a los 30 d);
+    // vencida hace 40 d (se borra); revocada ayer (se conserva: <30 d); revocada hace 40 d (se borra)
     await db.insert(schema.sessions).values([
       { userId: user!.id, tokenHash: 't-live', expiresAt: soon },
-      { userId: user!.id, tokenHash: 't-expired', expiresAt: old },
-      { userId: user!.id, tokenHash: 't-revoked', expiresAt: soon, revokedAt: old },
+      { userId: user!.id, tokenHash: 't-expired-recent', expiresAt: yesterday },
+      { userId: user!.id, tokenHash: 't-expired-old', expiresAt: old },
+      { userId: user!.id, tokenHash: 't-revoked-recent', expiresAt: soon, revokedAt: yesterday },
+      { userId: user!.id, tokenHash: 't-revoked-old', expiresAt: soon, revokedAt: old },
     ]);
     const deleted = await purgeStaleSessions(db, now);
-    expect(deleted).toBe(2);
-    const left = await db.select({ tokenHash: schema.sessions.tokenHash }).from(schema.sessions);
-    expect(left).toEqual([{ tokenHash: 't-live' }]);
+    expect(deleted).toBe(3);
+    const left = (await db.select({ tokenHash: schema.sessions.tokenHash }).from(schema.sessions)).map((row) => row.tokenHash).sort();
+    expect(left).toEqual(['t-live', 't-revoked-recent']);
   });
 
   it('GET /api/cron/daily: sin el Bearer correcto responde 401 y no borra; con él, solo números', async () => {

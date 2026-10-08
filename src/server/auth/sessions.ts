@@ -197,13 +197,14 @@ export async function revokeAllUserSessions(db: Database, userId: string, now = 
   return revoked.length;
 }
 
-// Limpieza técnica (#26): borra las sesiones vencidas o revocadas hace más de 30 días. Las filas
-// recién revocadas se conservan un tiempo por si hace falta auditar; pasado el umbral, se van.
+// Limpieza técnica (#26): borra las sesiones vencidas (ya no sirven) o revocadas hace más de 30
+// días. Las revocadas se conservan un tiempo por si hace falta auditar; pasado el umbral, se van.
+// Una sesión viva (no vencida y no revocada) nunca se toca; revokedAt NULL no entra por el < .
 export async function purgeStaleSessions(db: Database, now = new Date()): Promise<number> {
-  const cutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const revokedCutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const deleted = await db
     .delete(sessions)
-    .where(or(lt(sessions.expiresAt, cutoff), lt(sessions.revokedAt, cutoff)))
+    .where(or(lt(sessions.expiresAt, now), lt(sessions.revokedAt, revokedCutoff)))
     .returning({ id: sessions.id });
   return deleted.length;
 }

@@ -252,7 +252,7 @@ export async function purgeExpiredRegistrations(
   db: Database,
   { timeZone, retentionMonths, now = new Date() }: { timeZone: string; retentionMonths: number; now?: Date },
 ): Promise<{ purgedRegistrations: number; purgedParticipants: number }> {
-  const today = todayInZone(timeZone);
+  const today = todayInZone(timeZone, now);
   // Inscripciones vencidas con su viaje. Vence cuando max(created_at + retención, fecha del viaje)
   // < hoy, lo que ocurra después (política/Manual 33.9). Se agrupan por viaje para registrar en
   // cada uno cuántos se purgaron, en una transacción por viaje (#26).
