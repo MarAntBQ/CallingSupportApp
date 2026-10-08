@@ -109,6 +109,8 @@ CREATE TABLE "camps" (
 	CONSTRAINT "camps_dates" CHECK ("camps"."end_date" >= "camps"."start_date" and "camps"."registration_deadline" <= "camps"."end_date"),
 	CONSTRAINT "camps_non_negative" CHECK ("camps"."fee_youth" >= 0 and "camps"."fee_leader" >= 0 and "camps"."quota_youth_male" >= 0 and "camps"."quota_youth_female" >= 0),
 	CONSTRAINT "camps_fee_needs_authorization" CHECK (("camps"."fee_youth" = 0 and "camps"."fee_leader" = 0) or "camps"."fee_authorized"),
+	CONSTRAINT "camps_fee_authorization_dated" CHECK ("camps"."fee_authorized" = ("camps"."fee_authorized_at" is not null)),
+	CONSTRAINT "camps_fee_authorizer_only_when_authorized" CHECK ("camps"."fee_authorized" or "camps"."fee_authorized_by" is null),
 	CONSTRAINT "camps_donation_category_length" CHECK ("camps"."donation_category_name" is null or char_length("camps"."donation_category_name") <= 80),
 	CONSTRAINT "camps_donation_instructions_length" CHECK ("camps"."donation_instructions" is null or char_length("camps"."donation_instructions") <= 600)
 );

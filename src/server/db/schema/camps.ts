@@ -41,6 +41,9 @@ export const camps = pgTable(
     check('camps_non_negative', sql`${table.feeYouth} >= 0 and ${table.feeLeader} >= 0 and ${table.quotaYouthMale} >= 0 and ${table.quotaYouthFemale} >= 0`),
     // Manual General 20.6.2: pedir un aporte exige que el obispado lo haya autorizado.
     check('camps_fee_needs_authorization', sql`(${table.feeYouth} = 0 and ${table.feeLeader} = 0) or ${table.feeAuthorized}`),
+    // La autorización siempre lleva su fecha. El autor puede quedar nulo si se borra su usuario.
+    check('camps_fee_authorization_dated', sql`${table.feeAuthorized} = (${table.feeAuthorizedAt} is not null)`),
+    check('camps_fee_authorizer_only_when_authorized', sql`${table.feeAuthorized} or ${table.feeAuthorizedBy} is null`),
     check('camps_donation_category_length', sql`${table.donationCategoryName} is null or char_length(${table.donationCategoryName}) <= 80`),
     check('camps_donation_instructions_length', sql`${table.donationInstructions} is null or char_length(${table.donationInstructions}) <= 600`),
   ],

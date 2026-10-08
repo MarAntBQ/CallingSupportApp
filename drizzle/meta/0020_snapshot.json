@@ -1,5 +1,5 @@
 {
-  "id": "c804d447-8bfc-44d4-8893-45692f0de875",
+  "id": "86d2fa26-468b-492b-9096-958237c00e12",
   "prevId": "26e8c339-0d68-49fb-a8c3-95d0aec1da4c",
   "version": "7",
   "dialect": "postgresql",
@@ -2990,6 +2990,14 @@
         "camps_fee_needs_authorization": {
           "name": "camps_fee_needs_authorization",
           "value": "(\"camps\".\"fee_youth\" = 0 and \"camps\".\"fee_leader\" = 0) or \"camps\".\"fee_authorized\""
+        },
+        "camps_fee_authorization_dated": {
+          "name": "camps_fee_authorization_dated",
+          "value": "\"camps\".\"fee_authorized\" = (\"camps\".\"fee_authorized_at\" is not null)"
+        },
+        "camps_fee_authorizer_only_when_authorized": {
+          "name": "camps_fee_authorizer_only_when_authorized",
+          "value": "\"camps\".\"fee_authorized\" or \"camps\".\"fee_authorized_by\" is null"
         },
         "camps_donation_category_length": {
           "name": "camps_donation_category_length",

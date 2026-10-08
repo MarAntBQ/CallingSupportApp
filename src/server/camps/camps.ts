@@ -69,11 +69,15 @@ async function getCamp(db: Database, id: string): Promise<CampItem> {
   return toItem(row!);
 }
 
-// Quién y cuándo autorizó el aporte (Manual General 20.6.2): se fija la primera vez que se marca
-// y se borra si se desmarca. Cambiar los montos con la casilla ya marcada no cambia el registro.
-function authorization(input: CampInput, previous: { feeAuthorized: boolean } | null, userId: string, now: Date) {
+// Quién y cuándo autorizó el aporte (Manual General 20.6.2). Se registra al marcar la casilla y
+// también cada vez que cambia un monto con la casilla marcada: quien guarda el monto nuevo es quien
+// confirma que el obispado lo autorizó. Desmarcarla borra el registro.
+type PreviousFee = { feeAuthorized: boolean; feeYouth: string; feeLeader: string };
+
+function authorization(input: CampInput, previous: PreviousFee | null, userId: string, now: Date) {
   if (!input.feeAuthorized) return { feeAuthorized: false, feeAuthorizedBy: null, feeAuthorizedAt: null };
-  if (previous?.feeAuthorized) return { feeAuthorized: true };
+  const sameAmounts = previous?.feeAuthorized && Number(previous.feeYouth) === Number(input.feeYouth) && Number(previous.feeLeader) === Number(input.feeLeader);
+  if (sameAmounts) return { feeAuthorized: true };
   return { feeAuthorized: true, feeAuthorizedBy: userId, feeAuthorizedAt: now };
 }
 
@@ -98,7 +102,9 @@ export async function createCamp(db: Database, input: CampInput, userId: string,
 // El slug no cambia al renombrar: el enlace público ya pudo compartirse.
 export async function updateCamp(db: Database, id: string, input: CampInput, userId: string, now = new Date()): Promise<CampItem | null> {
   const updated = await db.transaction(async (tx) => {
-    const [previous] = await tx.select({ feeAuthorized: camps.feeAuthorized }).from(camps).where(eq(camps.id, id)).for('update');
+    const [previous] = await tx
+      .select({ feeAuthorized: camps.feeAuthorized, feeYouth: camps.feeYouth, feeLeader: camps.feeLeader })
+      .from(camps).where(eq(camps.id, id)).for('update');
     if (!previous) return false;
     await tx
       .update(camps)

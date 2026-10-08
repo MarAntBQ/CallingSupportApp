@@ -132,11 +132,31 @@ describe.skipIf(!url)('campamentos contra Postgres', () => {
     expect(created.feeAuthorizedAt).toBeTruthy();
     expect(created).not.toHaveProperty('feeAuthorizedBy');
 
-    const changed = await (await update(created.id, campInput({ feeYouth: 25, feeAuthorized: true }), cookie)).json();
-    expect(changed.feeAuthorizedAt).toBe(created.feeAuthorizedAt);
+    const same = await (await update(created.id, campInput({ feeYouth: 30, feeAuthorized: true, name: 'Renombrado' }), cookie)).json();
+    expect(same.feeAuthorizedAt).toBe(created.feeAuthorizedAt);
+
+    // Otro organizador cambia el monto: queda registrado él, con la fecha nueva.
+    const other = await leaderCookie({ canUpdate: true });
+    const changed = await (await update(created.id, campInput({ feeYouth: 25, feeAuthorized: true }), other)).json();
+    expect(changed.feeAuthorizedByName).toBe('Ana Prueba');
+    expect(new Date(changed.feeAuthorizedAt).getTime()).toBeGreaterThan(new Date(created.feeAuthorizedAt).getTime());
 
     const cleared = await (await update(created.id, campInput({ feeYouth: 0, feeAuthorized: false }), cookie)).json();
     expect(cleared).toMatchObject({ feeAuthorized: false, feeAuthorizedAt: null, feeAuthorizedByName: null });
+  });
+
+  it('la base exige la fecha de la autorización y no guarda autor sin autorización', async () => {
+    const user = await createUser('obispo@example.com', 'super_admin');
+    const base = { name: 'Directo', location: 'Lugar', startDate: '2026-12-10', endDate: '2026-12-12', registrationDeadline: '2026-12-01' };
+    await expect(db.insert(schema.camps).values({ ...base, slug: 'sin-fecha', feeAuthorized: true })).rejects.toThrow();
+    await expect(db.insert(schema.camps).values({ ...base, slug: 'fecha-sin-marca', feeAuthorizedAt: new Date() })).rejects.toThrow();
+    await expect(db.insert(schema.camps).values({ ...base, slug: 'autor-sin-marca', feeAuthorizedBy: user.id })).rejects.toThrow();
+    await db.insert(schema.camps).values({ ...base, slug: 'completa', feeAuthorized: true, feeAuthorizedAt: new Date(), feeAuthorizedBy: user.id, feeYouth: '30.00' });
+    // Borrar a quien autorizó deja el autor en nulo, sin romper el check.
+    await db.delete(schema.users).where(eq(schema.users.id, user.id));
+    const [camp] = await db.select({ by: schema.camps.feeAuthorizedBy, at: schema.camps.feeAuthorizedAt }).from(schema.camps);
+    expect(camp).toMatchObject({ by: null });
+    expect(camp!.at).toBeTruthy();
   });
 
   it('valida las fechas: fin antes de inicio y fecha límite después del fin responden 400', async () => {
