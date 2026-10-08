@@ -323,6 +323,8 @@ El proyecto tiene tres ambientes, todos bajo `callingsupportapp.org` y alojados 
 
 La variable `APP_ENV` (`development` | `staging` | `demo` | `production`) distingue el ambiente: en `staging` y `demo` se muestra el banner «los datos son inventados» y el `robots.txt` bloquea el rastreo. **Staging y demo solo llevan datos inventados** (semilla `npm run db:seed:demo`); nunca datos reales de personas. Las credenciales de acceso a staging se comparten por mensaje privado, nunca en el repo ni en un issue.
 
+Detrás de un proxy que no pasa el host público (staging y demo en el VPS), el `.env` de la app necesita `APP_ORIGINS` con su dirección pública (`https://staging.callingsupportapp.org`, `https://demo.callingsupportapp.org`). Sin esa variable, la app rechaza todo `POST` del navegador, incluido el inicio de sesión, con `403 bad_origin` (#157).
+
 La app es Next.js SSR: en el VPS corre como un proceso Node (`next build` + un `server.js` propio que escucha en el socket que asigna MBHostCloud) bajo pm2, detrás de Apache, y se despliega sola por GitHub Actions (staging en cada merge a `main`; demo al etiquetar `v*`).
 
 ## Reportar un problema o proponer una idea
