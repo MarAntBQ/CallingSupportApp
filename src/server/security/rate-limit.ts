@@ -21,6 +21,7 @@ export const LIMITS = {
   forgotPerIp: { max: 20, windowMs: 60 * MINUTE },
   templeRegistrationPerIp: { max: 10, windowMs: 60 * MINUTE },
   publicResourcesPerIp: { max: 120, windowMs: 15 * MINUTE },
+  campRegistrationPerIp: { max: 10, windowMs: 60 * MINUTE },
   mfaVerifyPerIp: { max: 30, windowMs: 15 * MINUTE },
   mfaCodePerUser: { max: 10, windowMs: 15 * MINUTE },
   // Fallos del segundo paso por cuenta, sumando todos sus retos (no se reinicia con un login nuevo).

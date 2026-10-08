@@ -33,6 +33,10 @@ async function nextTotp() {
   }
 }
 
+function daysFromToday(days: number) {
+  return new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
+}
+
 async function login(page: Page, password: string) {
   await page.goto('/login');
   await page.getByLabel(es.login.email).fill(EMAIL);
@@ -386,9 +390,10 @@ test('Campamentos: un aporte sin la autorización del obispado no se guarda; con
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel(c.modal.name, { exact: true }).fill('Campamento de Mujeres Jóvenes');
   await dialog.getByLabel(c.modal.location, { exact: true }).fill('Bosque de prueba');
-  await dialog.getByLabel(c.modal.startDate, { exact: true }).fill('2026-12-10');
-  await dialog.getByLabel(c.modal.endDate, { exact: true }).fill('2026-12-12');
-  await dialog.getByLabel(c.modal.registrationDeadline, { exact: true }).fill('2026-12-01');
+  // Fechas relativas a hoy: la inscripción pública de la prueba siguiente tiene que estar abierta.
+  await dialog.getByLabel(c.modal.startDate, { exact: true }).fill(daysFromToday(60));
+  await dialog.getByLabel(c.modal.endDate, { exact: true }).fill(daysFromToday(62));
+  await dialog.getByLabel(c.modal.registrationDeadline, { exact: true }).fill(daysFromToday(50));
   await dialog.getByLabel(c.modal.open, { exact: true }).check();
   await dialog.getByLabel(c.modal.feeYouth, { exact: true }).fill('30');
   await dialog.getByRole('button', { name: c.modal.create }).click();
@@ -404,6 +409,42 @@ test('Campamentos: un aporte sin la autorización del obispado no se guarda; con
 
   await page.setViewportSize({ width: 390, height: 900 });
   await expectNoHorizontalOverflow(page);
+});
+
+test('Campamentos (público): un padre inscribe a 2 hijos con el aviso del formulario médico oficial y el aporte autorizado', async ({ page }) => {
+  const p = es.camps.public;
+  await page.goto('/camps/campamento-de-mujeres-jovenes');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Campamento de Mujeres Jóvenes');
+  await expect(page.getByText(p.medicalForm.title)).toBeVisible();
+  await expect(page.getByRole('link', { name: /formulario oficial/ })).toHaveAttribute('href', /^https:\/\/www\.churchofjesuschrist\.org\//);
+  await expect(page.getByTestId('camp-contribution')).toBeVisible();
+
+  await page.getByLabel(p.fields.guardianName, { exact: true }).fill('Mamá Prueba');
+  await page.getByLabel(p.fields.guardianPhone, { exact: true }).fill('0990000001');
+  await page.getByLabel(p.fields.guardianEmail, { exact: true }).fill('mama.prueba@example.com');
+  const fillYouth = async (index: number, name: string) => {
+    const card = page.getByTestId('camp-youth').nth(index);
+    await card.getByLabel(p.fields.fullName).fill(name);
+    await card.getByLabel(p.fields.birthDate).fill('2011-05-01');
+    await card.getByLabel(p.fields.gender).selectOption('female');
+    await card.getByLabel(p.fields.emergencyContactName).fill('Tía Prueba');
+    await card.getByLabel(p.fields.emergencyContactPhone).fill('0990000002');
+  };
+  await fillYouth(0, 'Joven Uno');
+  await page.getByRole('button', { name: p.addYouth }).click();
+  await fillYouth(1, 'Joven Dos');
+  await page.getByLabel(p.consent).check();
+
+  await page.setViewportSize({ width: 360, height: 800 });
+  await expectNoHorizontalOverflow(page);
+  await page.getByRole('button', { name: p.submit }).click();
+  await expect(page.getByText('¡Inscripción recibida!', { exact: false })).toBeVisible();
+
+  await login(page, PASSWORD);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
+  await page.goto('/admin/camps');
+  await expect(page.getByTestId('camp-card')).toContainText('2 jóvenes');
+  await expect(page.getByTestId('camp-card')).toContainText('2 pendientes');
 });
 
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {

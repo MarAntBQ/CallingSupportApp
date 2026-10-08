@@ -87,7 +87,19 @@ export async function purgeExpiredMailLogs(db: Database, now = new Date()) {
   return deleted.length;
 }
 
-async function log(db: Database, entry: { source: string; to: string; subject: string; success: boolean; error: string | null }) {
+// "maria.perez@example.com" → "m***@example.com": se ve el dominio para revisar el SMTP, no la persona.
+export function maskEmail(address: string) {
+  const at = address.lastIndexOf('@');
+  if (at < 1) return '***';
+  return `${address.slice(0, 1)}***${address.slice(at)}`;
+}
+
+async function log(
+  db: Database,
+  mask: boolean | undefined,
+  entry: { source: string; to: string; subject: string; success: boolean; error: string | null },
+) {
+  if (mask) entry = { ...entry, to: maskEmail(entry.to) };
   try {
     await purgeExpiredMailLogs(db);
     await db.insert(emailLog).values({
@@ -105,27 +117,29 @@ async function log(db: Database, entry: { source: string; to: string; subject: s
 export async function sendMail(
   source: string,
   message: MailMessage,
-  options: { db?: Database; timeoutMs?: number; transport?: TransportFactory } = {},
+  // maskRecipient: el registro de envíos guarda el destinatario enmascarado (p. ej. a los
+  // tutores del campamento, que no son usuarios: su correo ya está en su inscripción).
+  options: { db?: Database; timeoutMs?: number; transport?: TransportFactory; maskRecipient?: boolean } = {},
 ): Promise<{ sent: boolean; error?: string }> {
   let db: Database | undefined;
   try {
     db = options.db ?? getDb();
     const to = recipient.safeParse(message.to);
     if (!to.success || /[\r\n]/.test(message.subject) || !message.subject.trim()) {
-      await log(db, { source, to: String(message.to ?? '').replace(/[\r\n]/g, ' '), subject: message.subject.replace(/[\r\n]/g, ' '), success: false, error: 'invalid_message' });
+      await log(db, options.maskRecipient, { source, to: String(message.to ?? '').replace(/[\r\n]/g, ' '), subject: message.subject.replace(/[\r\n]/g, ' '), success: false, error: 'invalid_message' });
       return { sent: false, error: 'invalid_message' };
     }
     const timeoutMs = options.timeoutMs ?? SEND_TIMEOUT_MS;
     const row = await loadSmtp(db);
     if (!row?.host || !row.port || !row.user || !row.passwordEnc) {
-      await log(db, { source, to: message.to, subject: message.subject, success: false, error: 'smtp_not_configured' });
+      await log(db, options.maskRecipient, { source, to: message.to, subject: message.subject, success: false, error: 'smtp_not_configured' });
       return { sent: false, error: 'smtp_not_configured' };
     }
     let password: string;
     try {
       password = decrypt(row.passwordEnc);
     } catch {
-      await log(db, { source, to: message.to, subject: message.subject, success: false, error: 'smtp_password_unreadable' });
+      await log(db, options.maskRecipient, { source, to: message.to, subject: message.subject, success: false, error: 'smtp_password_unreadable' });
       return { sent: false, error: 'smtp_password_unreadable' };
     }
     let target: { connectTo: string; servername?: string };
@@ -133,7 +147,7 @@ export async function sendMail(
       target = await resolveSmtpTarget(row.host);
     } catch (error) {
       const code = error instanceof SmtpHostNotAllowedError ? 'smtp_host_not_allowed' : error instanceof Error ? error.message : String(error);
-      await log(db, { source, to: message.to, subject: message.subject, success: false, error: code });
+      await log(db, options.maskRecipient, { source, to: message.to, subject: message.subject, success: false, error: code });
       return { sent: false, error: code.slice(0, MAX_ERROR_LENGTH) };
     }
     const t = emailTranslator(message.locale);
@@ -157,11 +171,11 @@ export async function sendMail(
       }),
       timeoutMs,
     );
-    await log(db, { source, to: message.to, subject: message.subject, success: true, error: null });
+    await log(db, options.maskRecipient, { source, to: message.to, subject: message.subject, success: true, error: null });
     return { sent: true };
   } catch (error) {
     const text = error instanceof Error ? error.message : String(error);
-    if (db) await log(db, { source, to: message.to, subject: message.subject, success: false, error: text });
+    if (db) await log(db, options.maskRecipient, { source, to: message.to, subject: message.subject, success: false, error: text });
     else console.error(JSON.stringify({ event: 'send_mail_failed', name: (error as Error | null)?.name }));
     return { sent: false, error: text.slice(0, MAX_ERROR_LENGTH) };
   }

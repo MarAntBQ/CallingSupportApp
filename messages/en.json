@@ -1310,6 +1310,73 @@
       "end_before_start": "The end date can't be before the start date.",
       "deadline_after_end": "The deadline can't be after the end of the camp.",
       "fields": "Check the highlighted fields."
+    },
+    "public": {
+      "title": "Camp registration",
+      "dates": "{start} to {end}",
+      "deadline": "Registration until {date}",
+      "closed": "Registration for this camp is closed.",
+      "medicalForm": {
+        "title": "Official medical release form",
+        "body": "For this camp, a parent must sign the Church's official “Parental or Guardian Permission and Medical Release” form (<form>download the official form</form>; it's available in other languages at churchofjesuschrist.org) and give it to the leader in charge (General Handbook 20.7.4). This registration doesn't replace it and doesn't store any medical information."
+      },
+      "packingTitle": "What to bring",
+      "guardianLegend": "Parent or guardian",
+      "youthLegend": "Youth {n}",
+      "fields": {
+        "guardianName": "Full name",
+        "guardianPhone": "Phone",
+        "guardianEmail": "Email",
+        "guardianEmailHint": "Each youth's personal link is sent here.",
+        "fullName": "Youth's full name",
+        "birthDate": "Date of birth",
+        "gender": "Gender",
+        "genderPlaceholder": "Choose",
+        "emergencyContactName": "Emergency contact",
+        "emergencyContactPhone": "Emergency phone"
+      },
+      "genders": {
+        "male": "Young man",
+        "female": "Young woman"
+      },
+      "addYouth": "+ Add another youth",
+      "removeYouth": "Remove this youth",
+      "contribution": "Suggested contribution per youth: {amount}",
+      "contributionNote": "Taking part doesn't depend on paying. If you can, contribute with a donation to the category the bishopric specifies, online or with a Tithing and Other Offerings form given to the bishopric. Leaders don't receive money.",
+      "contributionCategory": "Category: {category}",
+      "dataNotice": "Controller: {unit}. We use this data only to organize this camp and keep it for {months} months after the camp ends, according to our data policy:",
+      "consent": "I am the parent or legal guardian of the youth I am registering, and I authorize their participation and the processing of their data according to the data policy.",
+      "submit": "Register",
+      "success": "Registration received! We emailed you the personal link for {n, plural, one {your youth} other {each youth}}.",
+      "errors": {
+        "registration_closed": "Registration for this camp is closed.",
+        "recaptcha_failed": "We couldn't verify that you're not a robot. Please try again.",
+        "future_date": "The date of birth can't be in the future.",
+        "fields": "Check the form details."
+      }
+    },
+    "me": {
+      "title": "My camp",
+      "dates": "{start} to {end}",
+      "approved": "Registration approved",
+      "approvedBody": "The organizers approved your registration.",
+      "pending": "Registration pending",
+      "pendingBody": "The organizers haven't approved your registration yet. This link will show the change.",
+      "invalid": "This link isn't valid or is no longer available."
+    },
+    "email": {
+      "subject": "Camp registration: {camp}",
+      "preheader": "{name}'s personal link",
+      "intro": "We received {name}'s registration for the camp “{camp}.” With this personal link you can see the status and, later on, the list of what to bring.",
+      "open": "Open the personal link",
+      "medicalForm": "Remember to sign the Church's official “Parental or Guardian Permission and Medical Release” form and give it to the leader in charge.",
+      "keep": "Don't share this link: it's personal."
+    },
+    "notice": {
+      "subject": "New registration for the camp {camp}",
+      "body": "There {n, plural, one {is # new registration} other {are # new registrations}} for the camp “{camp}.”",
+      "openPanel": "Open the panel",
+      "telegram": "Camp “{camp}”: {n, plural, one {# new registration} other {# new registrations}}. Review them in the panel."
     }
   }
 }
