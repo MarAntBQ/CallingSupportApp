@@ -5,3 +5,4 @@ export * from './mail';
 export * from './organizations';
 export * from './temple-trips';
 export * from './temple-registrations';
+export * from './self-reliance';

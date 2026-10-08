@@ -153,7 +153,8 @@
       "organizations": "Organizações",
       "templeTrips": "Viagem ao Templo",
       "users": "Usuários",
-      "wardCouncil": "Conselho da ala"
+      "wardCouncil": "Conselho da ala",
+      "selfReliance": "Autossuficiência"
     },
     "logout": "Sair",
     "welcome": "Olá, {name}",
@@ -684,7 +685,8 @@
         "temple-trips": "Viagem ao Templo",
         "users": "Usuários",
         "callings": "Organizações e chamados",
-        "permissions": "Permissões"
+        "permissions": "Permissões",
+        "self-reliance": "Autossuficiência"
       },
       "columns": {
         "organization": "Organização",
@@ -1162,6 +1164,68 @@
       "incorrect": "O código não está correto.",
       "passwordIncorrect": "A senha não está correta.",
       "notStarted": "Comece a ativação novamente."
+    }
+  },
+  "selfReliance": {
+    "title": "Autossuficiência",
+    "intro": "Recursos públicos e gratuitos para o portal da unidade, começando pelos oficiais da Igreja.",
+    "resourcesTitle": "Recursos",
+    "newResource": "Novo recurso",
+    "empty": "Ainda não há recursos.",
+    "noRows": "Nenhum recurso corresponde à busca.",
+    "official": "Oficial da Igreja",
+    "published": "Publicado",
+    "hidden": "Oculto",
+    "up": "Subir",
+    "down": "Descer",
+    "moveUp": "Subir «{title}»",
+    "moveDown": "Descer «{title}»",
+    "confirmDelete": "Excluir «{title}»? Esta ação não pode ser desfeita.",
+    "columns": {
+      "position": "Ordem",
+      "title": "Título",
+      "category": "Categoria",
+      "locale": "Idioma",
+      "status": "Situação",
+      "order": "Mover"
+    },
+    "categories": {
+      "courses": "Cursos",
+      "employment": "Emprego",
+      "education": "Educação",
+      "personal_finances": "Finanças pessoais",
+      "business": "Empreendedorismo",
+      "emotional_resilience": "Resiliência emocional",
+      "languages": "Idiomas",
+      "life_skills": "Habilidades para a vida",
+      "other": "Outros"
+    },
+    "locales": {
+      "all": "Todos os idiomas",
+      "es": "Espanhol",
+      "pt": "Português",
+      "en": "Inglês"
+    },
+    "modal": {
+      "createTitle": "Novo recurso",
+      "editTitle": "Editar recurso",
+      "title": "Título",
+      "url": "Link",
+      "urlHint": "Somente links que começam com https://",
+      "description": "Descrição (opcional)",
+      "category": "Categoria",
+      "locale": "Idioma do recurso",
+      "published": "Publicado no portal",
+      "freeOnly": "Somente recursos públicos e gratuitos: sem cursos pagos nem publicidade de negócios (Manual Geral 38.8.5 e 38.8.21.2).",
+      "cancel": "Cancelar",
+      "create": "Criar",
+      "save": "Salvar",
+      "delete": "Excluir"
+    },
+    "errors": {
+      "url": "O link deve começar com https:// e apontar para um site válido.",
+      "title": "O título deve ter entre 2 e 120 caracteres.",
+      "stale": "A lista mudou enquanto você a ordenava. Ela foi recarregada; tente de novo."
     }
   }
 }

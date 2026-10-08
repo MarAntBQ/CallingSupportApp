@@ -139,7 +139,7 @@ describe.skipIf(!url)('matriz de permisos y avisos por módulo contra Postgres',
   });
 
   describe('GET /api/module-permissions', () => {
-    it('sin el módulo permissions responde 403; el SuperAdmin recibe los 4 módulos con los llamamientos', async () => {
+    it('sin el módulo permissions responde 403; el SuperAdmin recibe los 5 módulos con los llamamientos', async () => {
       const leader = await createUser('lider@example.com', 'leader');
       expect((await routes.matrix.GET(request('GET', '/api/module-permissions', undefined, await cookieFor(leader.id)))).status).toBe(403);
 
@@ -149,7 +149,7 @@ describe.skipIf(!url)('matriz de permisos y avisos por módulo contra Postgres',
       const response = await routes.matrix.GET(request('GET', '/api/module-permissions', undefined, await cookieFor(admin.id)));
       expect(response.status).toBe(200);
       const matrix = await response.json();
-      expect(Object.keys(matrix)).toEqual(['temple-trips', 'users', 'callings', 'permissions']);
+      expect(Object.keys(matrix)).toEqual(['temple-trips', 'users', 'callings', 'permissions', 'self-reliance']);
       expect(matrix.callings).toEqual([
         {
           callingId,

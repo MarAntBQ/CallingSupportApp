@@ -202,7 +202,7 @@ describe.skipIf(!url)('organizaciones, llamamientos y permisos por módulo contr
     it('SuperAdmin recibe todos los módulos', async () => {
       const user = await createUser('admin@example.com', 'super_admin');
       const { cookie } = await sessionFor(user.id);
-      expect(await meModules(cookie)).toEqual(['temple-trips', 'users', 'callings', 'permissions']);
+      expect(await meModules(cookie)).toEqual(['temple-trips', 'users', 'callings', 'permissions', 'self-reliance']);
     });
 
     it('nivel menor que 50 recibe [] aunque tenga llamamientos con permiso', async () => {
