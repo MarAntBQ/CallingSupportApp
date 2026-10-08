@@ -11,10 +11,11 @@ export async function listTempleTrips(db: Database): Promise<TempleTripListItem[
   const trips = await db.select().from(templeTrips).orderBy(desc(templeTrips.date), desc(templeTrips.createdAt));
   // Los conteos salen en 0 hasta #20 (inscripciones): la lista nace de la tabla de viajes,
   // así los viajes sin inscripciones también aparecen.
-  return trips.map(({ createdAt, updatedAt, ...trip }) => ({
+  return trips.map(({ createdAt, updatedAt, purgedAt, ...trip }) => ({
     ...trip,
     createdAt: createdAt.toISOString(),
     updatedAt: updatedAt.toISOString(),
+    purgedAt: purgedAt ? purgedAt.toISOString() : null,
     registeredCount: 0,
     approvedCount: 0,
     pendingCount: 0,

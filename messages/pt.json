@@ -633,7 +633,8 @@
     "unconfirmedDate": "Data a confirmar",
     "badges": {
       "active": "ATIVA",
-      "unconfirmed": "A CONFIRMAR"
+      "unconfirmed": "A CONFIRMAR",
+      "purged": "Dados removidos por retenção ({date})"
     },
     "counts": {
       "registered": "Inscritos: {n}",

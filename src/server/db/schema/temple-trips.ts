@@ -45,6 +45,10 @@ export const templeTrips = pgTable(
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
+    // Retención (#26): cuándo se purgaron inscripciones vencidas de este viaje y cuántos
+    // participantes se borraron en total. El viaje permanece; los datos de personas no.
+    purgedAt: timestamp('purged_at', { withTimezone: true }),
+    purgedParticipants: integer('purged_participants').notNull().default(0),
   },
   (table) => [
     uniqueIndex('temple_trips_one_active').on(table.active).where(sql`${table.active}`),

@@ -22,6 +22,8 @@ export type TempleTrip = {
   donationInstructions: string | null;
   createdAt: string;
   updatedAt: string;
+  purgedAt: string | null;
+  purgedParticipants: number;
 } & Record<QuotaKey, number>;
 
 export type TempleTripListItem = TempleTrip & {
