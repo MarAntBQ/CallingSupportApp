@@ -129,22 +129,25 @@ export type PersonalLinkView = {
   contribution: { suggested: string; categoryName: string | null; instructions: string | null } | null;
 };
 
-const optionalPhone = z
+// Vacío → null (se borra). Envueltos en .optional() por fuera: si el campo no llega, queda
+// undefined y un PATCH parcial no lo toca.
+const nullablePhone = z
   .string()
   .trim()
   .max(40)
-  .optional()
   .transform((value) => value || null)
   .pipe(z.string().min(6).nullable());
 
-const optionalEmail = z
+const nullableEmail = z
   .string()
   .trim()
   .toLowerCase()
   .max(254)
-  .optional()
   .transform((value) => value || null)
   .pipe(z.email().nullable());
+
+const optionalPhone = nullablePhone.optional().transform((value) => value ?? null);
+const optionalEmail = nullableEmail.optional().transform((value) => value ?? null);
 
 // Inscripción desde el panel (también líderes). Quien inscribe confirma que la persona, o su padre,
 // madre o tutor si es menor, dio su consentimiento por el medio que la unidad haya definido.
@@ -182,8 +185,8 @@ export const participantPatchSchema = z
     fullName: z.string().trim().min(3).max(160).optional(),
     birthDate: z.iso.date().refine(notFuture, { message: 'future_date' }).optional(),
     gender: z.enum(GENDERS).optional(),
-    phone: optionalPhone,
-    email: optionalEmail,
+    phone: nullablePhone.optional(),
+    email: nullableEmail.optional(),
     emergencyContactName: z.string().trim().min(3).max(150).optional(),
     emergencyContactPhone: z.string().trim().min(6).max(40).optional(),
     permissionFormReceived: z.boolean().optional(),

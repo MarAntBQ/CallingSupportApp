@@ -50,27 +50,37 @@ export async function listParticipants(db: Database, campId: string): Promise<Ca
   }));
 }
 
-async function participantCamp(tx: Tx, participantId: string) {
+async function campOfParticipant(tx: Tx, participantId: string) {
   const [row] = await tx
-    .select({ campId: campRegistrations.campId, type: campParticipants.type, gender: campParticipants.gender, approved: campParticipants.approved })
+    .select({ campId: campRegistrations.campId })
     .from(campParticipants)
     .innerJoin(campRegistrations, eq(campParticipants.registrationId, campRegistrations.id))
     .where(eq(campParticipants.id, participantId))
     .limit(1);
-  return row ?? null;
+  return row?.campId ?? null;
 }
 
-// Cupo por género de jóvenes (0 = sin límite). Solo cuentan los aprobados. El campamento se
-// bloquea FOR UPDATE: dos aprobaciones a la vez no pasan el cupo.
-async function quotaFull(tx: Tx, campId: string, gender: string, excludeId: string) {
+// Bloquea el campamento FOR UPDATE y, ya con el bloqueo, relee al participante: aprobar, editar el
+// género y cambiar el cupo del campamento se serializan, y cada uno decide con el estado vigente.
+async function lockForParticipant(tx: Tx, participantId: string) {
+  const campId = await campOfParticipant(tx, participantId);
+  if (!campId) return null;
   const [camp] = await tx
     .select({ male: camps.quotaYouthMale, female: camps.quotaYouthFemale })
     .from(camps)
     .where(eq(camps.id, campId))
     .for('update')
     .limit(1);
-  const quota = gender === 'male' ? camp!.male : camp!.female;
-  if (quota <= 0) return false;
+  const [person] = await tx
+    .select({ type: campParticipants.type, gender: campParticipants.gender, approved: campParticipants.approved })
+    .from(campParticipants)
+    .where(eq(campParticipants.id, participantId))
+    .limit(1);
+  if (!camp || !person) return null;
+  return { campId, quotas: camp, person };
+}
+
+export async function approvedYouthByGender(tx: Tx | Database, campId: string, gender: string, excludeId?: string) {
   const [used] = await tx
     .select({ n: count() })
     .from(campParticipants)
@@ -81,19 +91,26 @@ async function quotaFull(tx: Tx, campId: string, gender: string, excludeId: stri
         eq(campParticipants.type, 'youth'),
         eq(campParticipants.gender, gender),
         eq(campParticipants.approved, true),
-        ne(campParticipants.id, excludeId),
+        ...(excludeId ? [ne(campParticipants.id, excludeId)] : []),
       ),
     );
-  return Number(used!.n) >= quota;
+  return Number(used!.n);
+}
+
+// Cupo por género de jóvenes (0 = sin límite). Solo cuentan los aprobados.
+async function quotaFull(tx: Tx, locked: NonNullable<Awaited<ReturnType<typeof lockForParticipant>>>, gender: string, participantId: string) {
+  const quota = gender === 'male' ? locked.quotas.male : locked.quotas.female;
+  if (quota <= 0) return false;
+  return (await approvedYouthByGender(tx, locked.campId, gender, participantId)) >= quota;
 }
 
 export type ParticipantResult = { ok: true } | { ok: false; status: 404 } | { ok: false; status: 409; code: 'quota_full' };
 
 export async function setApproval(db: Database, participantId: string, approved: boolean): Promise<ParticipantResult> {
   return db.transaction(async (tx) => {
-    const person = await participantCamp(tx, participantId);
-    if (!person) return { ok: false, status: 404 } as const;
-    if (approved && person.type === 'youth' && (await quotaFull(tx, person.campId, person.gender, participantId))) {
+    const locked = await lockForParticipant(tx, participantId);
+    if (!locked) return { ok: false, status: 404 } as const;
+    if (approved && locked.person.type === 'youth' && (await quotaFull(tx, locked, locked.person.gender, participantId))) {
       return { ok: false, status: 409, code: 'quota_full' } as const;
     }
     await tx.update(campParticipants).set({ approved }).where(eq(campParticipants.id, participantId));
@@ -104,10 +121,11 @@ export async function setApproval(db: Database, participantId: string, approved:
 // Editar a un joven aprobado y cambiarle el género revalida el cupo del género nuevo.
 export async function updateParticipant(db: Database, participantId: string, patch: ParticipantPatch, userId: string, now = new Date()): Promise<ParticipantResult> {
   return db.transaction(async (tx) => {
-    const person = await participantCamp(tx, participantId);
-    if (!person) return { ok: false, status: 404 } as const;
+    const locked = await lockForParticipant(tx, participantId);
+    if (!locked) return { ok: false, status: 404 } as const;
+    const { person } = locked;
     const gender = patch.gender ?? person.gender;
-    if (person.approved && person.type === 'youth' && gender !== person.gender && (await quotaFull(tx, person.campId, gender, participantId))) {
+    if (person.approved && person.type === 'youth' && gender !== person.gender && (await quotaFull(tx, locked, gender, participantId))) {
       return { ok: false, status: 409, code: 'quota_full' } as const;
     }
     const { permissionFormReceived, ...fields } = patch;

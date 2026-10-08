@@ -10,7 +10,7 @@ import { hashPassword } from '@/server/auth/crypto';
 import { createSession, sessionCookieName } from '@/server/auth/sessions';
 import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
-import { setApproval } from './participants';
+import { setApproval, updateParticipant } from './participants';
 import { createPublicRegistration, getPersonalLink } from './registrations';
 
 const url = process.env.TEST_DATABASE_URL;
@@ -177,6 +177,38 @@ describe.skipIf(!url)('participantes del campamento contra Postgres', () => {
     } finally {
       await other.end();
     }
+  });
+
+  it('aprobar a una joven y, a la vez, aprobar a otra que cambia a ese género no exceden el cupo', async () => {
+    await createCamp({ quotaYouthFemale: 1 });
+    await registerYouth([['Joven Uno'], ['Joven Dos', 'male']]);
+    const admin = await createUser('admin@example.com', 'super_admin');
+    await setApproval(db, await idOf('Joven Dos'), true);
+    const other = new Pool({ connectionString: url!, max: 1 });
+    const db2 = drizzle(other, { schema });
+    try {
+      await Promise.all([setApproval(db, await idOf('Joven Uno'), true), updateParticipant(db2, await idOf('Joven Dos'), { gender: 'female' }, admin.id)]);
+      const approvedFemale = await db
+        .select()
+        .from(schema.campParticipants)
+        .where(sql`${schema.campParticipants.approved} and ${schema.campParticipants.gender} = 'female'`);
+      expect(approvedFemale).toHaveLength(1);
+    } finally {
+      await other.end();
+    }
+  });
+
+  it('un PATCH parcial no borra el teléfono ni el correo; mandarlos vacíos sí los borra', async () => {
+    const camp = await createCamp();
+    const cookie = await cookieFor((await createUser('admin@example.com', 'super_admin')).id);
+    await adminRegister(camp.id, { participants: [{ type: 'leader', fullName: 'Líder Prueba', gender: 'male', phone: '0990000009', email: 'lider@example.com' }], consentConfirmed: true }, cookie);
+    const id = await idOf('Líder Prueba');
+    expect((await patch(id, { fullName: 'Líder Renombrado' }, cookie)).status).toBe(200);
+    const [kept] = await db.select().from(schema.campParticipants).where(eq(schema.campParticipants.id, id));
+    expect(kept).toMatchObject({ fullName: 'Líder Renombrado', phone: '0990000009', email: 'lider@example.com' });
+    expect((await patch(id, { phone: '', email: '' }, cookie)).status).toBe(200);
+    const [cleared] = await db.select().from(schema.campParticipants).where(eq(schema.campParticipants.id, id));
+    expect(cleared).toMatchObject({ phone: null, email: null });
   });
 
   it('cambiar el género de un joven aprobado revalida el cupo; el formulario médico recibido registra quién y cuándo', async () => {

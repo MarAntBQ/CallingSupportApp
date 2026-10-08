@@ -1309,7 +1309,8 @@
       "fee_authorization_required": "Para pedir uma contribuição maior que 0, marque que o bispado a autorizou.",
       "end_before_start": "A data de término não pode ser anterior à de início.",
       "deadline_after_end": "O prazo não pode ser posterior ao fim do acampamento.",
-      "fields": "Revise os campos marcados."
+      "fields": "Revise os campos marcados.",
+      "quota_below_approved": "As vagas não podem ficar abaixo dos jovens desse gênero que já estão aprovados. Retire aprovações primeiro."
     },
     "public": {
       "title": "Inscrição no acampamento",

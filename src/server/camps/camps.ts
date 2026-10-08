@@ -5,6 +5,7 @@ import { nextFreeSlug, slugify } from '@/lib/camps/constants';
 import type { CampInput, CampItem } from '@/lib/validation/camps';
 import type { Database } from '@/server/db';
 import { campParticipants, campRegistrations, camps, users } from '@/server/db/schema';
+import { approvedYouthByGender } from './participants';
 
 const authorizer = alias(users, 'fee_authorizer');
 
@@ -99,18 +100,29 @@ export async function createCamp(db: Database, input: CampInput, userId: string,
   return getCamp(db, id);
 }
 
-// El slug no cambia al renombrar: el enlace público ya pudo compartirse.
-export async function updateCamp(db: Database, id: string, input: CampInput, userId: string, now = new Date()): Promise<CampItem | null> {
-  const updated = await db.transaction(async (tx) => {
+export type UpdateCampResult = { ok: true; camp: CampItem } | { ok: false; status: 404 } | { ok: false; status: 409; field: 'quotaYouthMale' | 'quotaYouthFemale' };
+
+// El slug no cambia al renombrar: el enlace público ya pudo compartirse. Con el campamento
+// bloqueado, no se puede bajar un cupo por debajo de los jóvenes de ese género ya aprobados.
+export async function updateCamp(db: Database, id: string, input: CampInput, userId: string, now = new Date()): Promise<UpdateCampResult> {
+  const result = await db.transaction(async (tx) => {
     const [previous] = await tx
       .select({ feeAuthorized: camps.feeAuthorized, feeYouth: camps.feeYouth, feeLeader: camps.feeLeader })
-      .from(camps).where(eq(camps.id, id)).for('update');
-    if (!previous) return false;
+      .from(camps)
+      .where(eq(camps.id, id))
+      .for('update');
+    if (!previous) return { ok: false, status: 404 } as const;
+    for (const [gender, field, quota] of [
+      ['male', 'quotaYouthMale', input.quotaYouthMale],
+      ['female', 'quotaYouthFemale', input.quotaYouthFemale],
+    ] as const) {
+      if (quota > 0 && (await approvedYouthByGender(tx, id, gender)) > quota) return { ok: false, status: 409, field } as const;
+    }
     await tx
       .update(camps)
       .set({ ...input, ...authorization(input, previous, userId, now) })
       .where(eq(camps.id, id));
-    return true;
+    return { ok: true } as const;
   });
-  return updated ? getCamp(db, id) : null;
+  return result.ok ? { ok: true, camp: await getCamp(db, id) } : result;
 }

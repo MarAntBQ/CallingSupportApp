@@ -1309,7 +1309,8 @@
       "fee_authorization_required": "To ask for a contribution above 0, check that the bishopric authorized it.",
       "end_before_start": "The end date can't be before the start date.",
       "deadline_after_end": "The deadline can't be after the end of the camp.",
-      "fields": "Check the highlighted fields."
+      "fields": "Check the highlighted fields.",
+      "quota_below_approved": "The spots can't go below the youth of that gender who are already approved. Remove approvals first."
     },
     "public": {
       "title": "Camp registration",

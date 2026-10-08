@@ -1309,7 +1309,8 @@
       "fee_authorization_required": "Para pedir un aporte mayor que 0, marca que el obispado lo autorizó.",
       "end_before_start": "La fecha de fin no puede ser anterior a la de inicio.",
       "deadline_after_end": "La fecha límite no puede ser posterior al fin del campamento.",
-      "fields": "Revisa los campos marcados."
+      "fields": "Revisa los campos marcados.",
+      "quota_below_approved": "El cupo no puede quedar por debajo de los jóvenes de ese género que ya están aprobados. Quita aprobaciones primero."
     },
     "public": {
       "title": "Inscripción al campamento",
