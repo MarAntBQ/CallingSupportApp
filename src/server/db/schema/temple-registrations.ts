@@ -58,6 +58,11 @@ export const templeParticipants = pgTable(
     lastNames: text('last_names'),
     firstNames: text('first_names'),
     nationality: text('nationality'),
+    // Logística del día del viaje (#24): el líder las marca en las listas imprimibles.
+    boardedOutbound: boolean('boarded_outbound').notNull().default(false),
+    boardedReturn: boolean('boarded_return').notNull().default(false),
+    breakfastDelivered: boolean('breakfast_delivered').notNull().default(false),
+    lunchDelivered: boolean('lunch_delivered').notNull().default(false),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

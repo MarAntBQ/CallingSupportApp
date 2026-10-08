@@ -15,7 +15,7 @@ import {
   type QuotaKey,
 } from '@/lib/temple-trips/constants';
 import { todayInZone } from '@/lib/time';
-import type { ParticipantPatch, RegistrationInput } from '@/lib/validation/registrations';
+import type { LogisticsPatch, ParticipantPatch, RegistrationInput } from '@/lib/validation/registrations';
 import type { Database } from '@/server/db';
 import { templeParticipants, templeRegistrations, templeTrips } from '@/server/db/schema';
 
@@ -294,6 +294,10 @@ export type ParticipantListItem = {
   priceBreakfast: string;
   priceLunch: string;
   totalCost: string;
+  boardedOutbound: boolean;
+  boardedReturn: boolean;
+  breakfastDelivered: boolean;
+  lunchDelivered: boolean;
   registrationId: string;
   registrationDate: string;
   consent: boolean;
@@ -322,6 +326,10 @@ export async function listTripParticipants(db: Database, tripId: string, { inclu
       priceBreakfast: templeParticipants.priceBreakfast,
       priceLunch: templeParticipants.priceLunch,
       totalCost: templeParticipants.totalCost,
+      boardedOutbound: templeParticipants.boardedOutbound,
+      boardedReturn: templeParticipants.boardedReturn,
+      breakfastDelivered: templeParticipants.breakfastDelivered,
+      lunchDelivered: templeParticipants.lunchDelivered,
       registrationId: templeRegistrations.id,
       registrationDate: templeRegistrations.createdAt,
       consent: templeRegistrations.consent,
@@ -483,4 +491,22 @@ export async function updateParticipant(db: Database, participantId: string, pat
       .where(eq(templeParticipants.id, participantId));
     return { ok: true } as const;
   });
+}
+
+export type LogisticsResult = { ok: true } | { ok: false; status: 404 };
+
+// Logística del día (#24): guarda las casillas tal cual, sin validar cupos (son del viaje en curso,
+// no cambian la elegibilidad). Solo los campos presentes en el patch se escriben.
+export async function updateLogistics(db: Database, participantId: string, patch: LogisticsPatch): Promise<LogisticsResult> {
+  const updated = await db
+    .update(templeParticipants)
+    .set({
+      ...(patch.boardedOutbound !== undefined ? { boardedOutbound: patch.boardedOutbound } : {}),
+      ...(patch.boardedReturn !== undefined ? { boardedReturn: patch.boardedReturn } : {}),
+      ...(patch.breakfastDelivered !== undefined ? { breakfastDelivered: patch.breakfastDelivered } : {}),
+      ...(patch.lunchDelivered !== undefined ? { lunchDelivered: patch.lunchDelivered } : {}),
+    })
+    .where(eq(templeParticipants.id, participantId))
+    .returning({ id: templeParticipants.id });
+  return updated.length > 0 ? { ok: true } : { ok: false, status: 404 };
 }

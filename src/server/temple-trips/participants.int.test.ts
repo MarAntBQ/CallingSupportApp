@@ -9,7 +9,7 @@ import { hashPassword } from '@/server/auth/crypto';
 import { createSession, sessionCookieName } from '@/server/auth/sessions';
 import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
-import { listTripParticipants, setApproval, updateParticipant } from '@/server/temple-trips/registrations';
+import { listTripParticipants, setApproval, updateLogistics, updateParticipant } from '@/server/temple-trips/registrations';
 
 const url = process.env.TEST_DATABASE_URL;
 const MIGRATIONS = fileURLToPath(new URL('../../../drizzle', import.meta.url));
@@ -152,6 +152,27 @@ describe.skipIf(!url)('panel de participantes contra Postgres', () => {
       params: Promise.resolve({ id: participant.id }),
     });
     expect(approve.status).toBe(403);
+  });
+
+  it('marcar una casilla de logística persiste y el patch parcial no pisa las demás', async () => {
+    const trip = await activeTrip({ includesTransport: true, quotaTransport: 5 });
+    const p = await addParticipant(trip.id, { wantsTransport: true });
+    expect((await updateLogistics(db, p.id, { boardedOutbound: true })).ok).toBe(true);
+    let [row] = await listTripParticipants(db, trip.id, { includeIp: false });
+    expect(row!.boardedOutbound).toBe(true);
+    expect(row!.boardedReturn).toBe(false);
+    // Un segundo patch solo del desayuno NO debe apagar el "ida" ya marcado.
+    expect((await updateLogistics(db, p.id, { breakfastDelivered: true })).ok).toBe(true);
+    [row] = await listTripParticipants(db, trip.id, { includeIp: false });
+    expect(row!.boardedOutbound).toBe(true);
+    expect(row!.breakfastDelivered).toBe(true);
+    expect(row!.lunchDelivered).toBe(false);
+  });
+
+  it('logística de un participante inexistente devuelve 404', async () => {
+    const result = await updateLogistics(db, '00000000-0000-0000-0000-000000000000', { boardedReturn: true });
+    expect(result.ok).toBe(false);
+    expect(result.ok === false && result.status).toBe(404);
   });
 
   it('rendimiento: con 2000 participantes la lista usa índice y responde rápido', async () => {
