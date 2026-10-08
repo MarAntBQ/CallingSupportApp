@@ -7,6 +7,7 @@ import { Pool } from 'pg';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
+import { purgeStaleSessions } from '@/server/auth/sessions';
 import { registrationNotice } from '@/server/temple-trips/registration-notice';
 import { purgeExpiredRegistrations } from '@/server/temple-trips/registrations';
 
@@ -43,7 +44,7 @@ const bodyOf = (participants: unknown[], over: Record<string, unknown> = {}) => 
 describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres', () => {
   let pool: Pool;
   let db: Database;
-  let routes: { public: typeof import('@/app/api/public/temple-trip/route') };
+  let routes: { public: typeof import('@/app/api/public/temple-trip/route'); cron: typeof import('@/app/api/cron/daily/route') };
 
   async function activeTrip(over: Record<string, unknown> = {}) {
     const [trip] = await db
@@ -75,7 +76,7 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     await admin.end();
     pool = new Pool({ connectionString: url, max: 2 });
     db = drizzle(pool, { schema });
-    routes = { public: await import('@/app/api/public/temple-trip/route') };
+    routes = { public: await import('@/app/api/public/temple-trip/route'), cron: await import('@/app/api/cron/daily/route') };
   }, 60_000);
 
   beforeEach(async () => {
@@ -235,5 +236,54 @@ describe.skipIf(!url)('inscripción pública al viaje al templo contra Postgres'
     expect(second).toEqual({ purgedRegistrations: 0, purgedParticipants: 0 });
     const left = await db.select({ id: schema.templeRegistrations.id }).from(schema.templeRegistrations);
     expect(left).toEqual([{ id: regFuture!.id }]);
+    // Borrado físico en cascada: el participante del viaje pasado desaparece; solo queda el futuro.
+    const participantsLeft = await db.select({ idNumber: schema.templeParticipants.idNumber }).from(schema.templeParticipants);
+    expect(participantsLeft).toEqual([{ idNumber: 'F1' }]);
+
+    // #26: el viaje pasado queda con el registro de lo purgado; el futuro, intacto.
+    const pastRow = (await db.select({ purgedAt: schema.templeTrips.purgedAt, purgedParticipants: schema.templeTrips.purgedParticipants }).from(schema.templeTrips).where(eq(schema.templeTrips.id, past.id)))[0];
+    expect(pastRow!.purgedAt).not.toBeNull();
+    expect(pastRow!.purgedParticipants).toBe(1);
+    const futureRow = (await db.select({ purgedAt: schema.templeTrips.purgedAt, purgedParticipants: schema.templeTrips.purgedParticipants }).from(schema.templeTrips).where(eq(schema.templeTrips.id, future.id)))[0];
+    expect(futureRow!.purgedAt).toBeNull();
+    expect(futureRow!.purgedParticipants).toBe(0);
+  });
+
+  it('purgeStaleSessions borra sesiones vencidas o revocadas hace más de 30 días y conserva las vivas', async () => {
+    const [role] = await db.select({ id: schema.roles.id }).from(schema.roles).where(eq(schema.roles.key, 'member'));
+    const [user] = await db.insert(schema.users).values({ firstName: 'Ana', lastName: 'Prueba', email: 'sesiones@example.com', passwordHash: 'x', roleId: role!.id, status: 'active' }).returning();
+    const now = new Date();
+    const old = new Date(now.getTime() - 40 * 24 * 60 * 60 * 1000);
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const soon = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    // viva (se conserva); vencida AYER (se borra: "vencida" es inmediato, no a los 30 d);
+    // vencida hace 40 d (se borra); revocada ayer (se conserva: <30 d); revocada hace 40 d (se borra)
+    await db.insert(schema.sessions).values([
+      { userId: user!.id, tokenHash: 't-live', expiresAt: soon },
+      { userId: user!.id, tokenHash: 't-expired-recent', expiresAt: yesterday },
+      { userId: user!.id, tokenHash: 't-expired-old', expiresAt: old },
+      { userId: user!.id, tokenHash: 't-revoked-recent', expiresAt: soon, revokedAt: yesterday },
+      { userId: user!.id, tokenHash: 't-revoked-old', expiresAt: soon, revokedAt: old },
+    ]);
+    const deleted = await purgeStaleSessions(db, now);
+    expect(deleted).toBe(3);
+    const left = (await db.select({ tokenHash: schema.sessions.tokenHash }).from(schema.sessions)).map((row) => row.tokenHash).sort();
+    expect(left).toEqual(['t-live', 't-revoked-recent']);
+  });
+
+  it('GET /api/cron/daily: sin el Bearer correcto responde 401 y no borra; con él, solo números', async () => {
+    const original = process.env.CRON_SECRET;
+    process.env.CRON_SECRET = 'secreto-de-prueba';
+    try {
+      const unauth = await routes.cron.GET(request('GET', '/api/cron/daily'), { params: Promise.resolve({}) });
+      expect(unauth.status).toBe(401);
+      const ok = await routes.cron.GET(new Request('http://localhost/api/cron/daily', { headers: { Origin: 'http://localhost', Authorization: 'Bearer secreto-de-prueba' } }), { params: Promise.resolve({}) });
+      expect(ok.status).toBe(200);
+      const body = await ok.json();
+      expect(Object.keys(body).sort()).toEqual(['deletedEmailLogs', 'deletedSessions', 'purgedParticipants', 'purgedRegistrations']);
+      expect(Object.values(body).every((value) => typeof value === 'number')).toBe(true);
+    } finally {
+      process.env.CRON_SECRET = original;
+    }
   });
 });

@@ -227,6 +227,11 @@ function TripCard({
           {!trip.dateConfirmed && (
             <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold text-text-muted">{t('badges.unconfirmed')}</span>
           )}
+          {trip.purgedAt && (
+            <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-semibold text-text-muted">
+              {t('badges.purged', { date: new Date(trip.purgedAt).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' }) })}
+            </span>
+          )}
         </span>
         <span className="text-sm text-text-muted">{dateLabel}</span>
         <span className="flex flex-wrap gap-4 text-sm text-text-muted">

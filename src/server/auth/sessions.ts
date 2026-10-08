@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, count, desc, eq, gt, gte, isNull, lt, ne } from 'drizzle-orm';
+import { and, count, desc, eq, gt, gte, isNull, lt, ne, or } from 'drizzle-orm';
 import { GLOBAL_ADMIN_LEVEL, type ModuleKey } from '@/lib/modules';
 import type { Database } from '@/server/db';
 import { roles, sessions, users } from '@/server/db/schema';
@@ -195,6 +195,18 @@ export async function revokeAllUserSessions(db: Database, userId: string, now = 
     .where(and(eq(sessions.userId, userId), isNull(sessions.revokedAt)))
     .returning({ id: sessions.id });
   return revoked.length;
+}
+
+// Limpieza técnica (#26): borra las sesiones vencidas (ya no sirven) o revocadas hace más de 30
+// días. Las revocadas se conservan un tiempo por si hace falta auditar; pasado el umbral, se van.
+// Una sesión viva (no vencida y no revocada) nunca se toca; revokedAt NULL no entra por el < .
+export async function purgeStaleSessions(db: Database, now = new Date()): Promise<number> {
+  const revokedCutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const deleted = await db
+    .delete(sessions)
+    .where(or(lt(sessions.expiresAt, now), lt(sessions.revokedAt, revokedCutoff)))
+    .returning({ id: sessions.id });
+  return deleted.length;
 }
 
 export function isGlobalAdmin(session: Session) {

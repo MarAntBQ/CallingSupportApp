@@ -250,28 +250,44 @@ export async function adminRegister(
 // Los participantes caen en cascada. El viaje no se borra. Idempotente.
 export async function purgeExpiredRegistrations(
   db: Database,
-  { timeZone, retentionMonths }: { timeZone: string; retentionMonths: number },
+  { timeZone, retentionMonths, now = new Date() }: { timeZone: string; retentionMonths: number; now?: Date },
 ): Promise<{ purgedRegistrations: number; purgedParticipants: number }> {
-  const today = todayInZone(timeZone);
-  return db.transaction(async (tx) => {
-    const expired = await tx.execute<{ id: string }>(sql`
-      select r.id
-      from temple_registrations r
-      join temple_trips t on t.id = r.trip_id
-      where greatest(
-        ((r.created_at at time zone ${timeZone})::date + (${retentionMonths} * interval '1 month'))::date,
-        t.date
-      ) < ${today}::date
-    `);
-    const ids = expired.rows.map((row) => row.id);
-    if (ids.length === 0) return { purgedRegistrations: 0, purgedParticipants: 0 };
-    const participants = await tx
-      .select({ id: templeParticipants.id })
-      .from(templeParticipants)
-      .where(inArray(templeParticipants.registrationId, ids));
-    await tx.delete(templeRegistrations).where(inArray(templeRegistrations.id, ids));
-    return { purgedRegistrations: ids.length, purgedParticipants: participants.length };
-  });
+  const today = todayInZone(timeZone, now);
+  // Inscripciones vencidas con su viaje. Vence cuando max(created_at + retención, fecha del viaje)
+  // < hoy, lo que ocurra después (política/Manual 33.9). Se agrupan por viaje para registrar en
+  // cada uno cuántos se purgaron, en una transacción por viaje (#26).
+  const expired = await db.execute<{ id: string; tripId: string }>(sql`
+    select r.id, r.trip_id as "tripId"
+    from temple_registrations r
+    join temple_trips t on t.id = r.trip_id
+    where greatest(
+      ((r.created_at at time zone ${timeZone})::date + (${retentionMonths} * interval '1 month'))::date,
+      t.date
+    ) < ${today}::date
+  `);
+  const byTrip = new Map<string, string[]>();
+  for (const row of expired.rows) {
+    const list = byTrip.get(row.tripId) ?? [];
+    list.push(row.id);
+    byTrip.set(row.tripId, list);
+  }
+
+  let purgedRegistrations = 0;
+  let purgedParticipants = 0;
+  for (const [tripId, ids] of byTrip) {
+    // Secuencial a propósito: una transacción por viaje (#26), para no contender locks.
+    await db.transaction(async (tx) => {
+      const participants = await tx.select({ id: templeParticipants.id }).from(templeParticipants).where(inArray(templeParticipants.registrationId, ids));
+      await tx.delete(templeRegistrations).where(inArray(templeRegistrations.id, ids));
+      await tx
+        .update(templeTrips)
+        .set({ purgedAt: now, purgedParticipants: sql`${templeTrips.purgedParticipants} + ${participants.length}` })
+        .where(eq(templeTrips.id, tripId));
+      purgedRegistrations += ids.length;
+      purgedParticipants += participants.length;
+    });
+  }
+  return { purgedRegistrations, purgedParticipants };
 }
 
 // --- #21: panel de participantes ---

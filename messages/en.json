@@ -633,7 +633,8 @@
     "unconfirmedDate": "Date to be confirmed",
     "badges": {
       "active": "ACTIVE",
-      "unconfirmed": "TO BE CONFIRMED"
+      "unconfirmed": "TO BE CONFIRMED",
+      "purged": "Data deleted by retention ({date})"
     },
     "counts": {
       "registered": "Registered: {n}",
