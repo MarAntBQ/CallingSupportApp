@@ -71,6 +71,23 @@ describe('reglas del repositorio que se verifican solas', () => {
   });
 });
 
+describe('cron de la purga diaria en el VPS (#162)', () => {
+  const cron = read(join(ROOT, 'deploy/app-daily.cron'));
+  const lines = cron.split('\n').filter((line) => line.trim() && !line.startsWith('#'));
+
+  it('no lleva secretos: app-daily.sh lee CRON_SECRET del .env', () => {
+    expect(cron).not.toMatch(/CRON_SECRET=|Bearer|[a-f0-9]{32,}/i);
+  });
+
+  it('cada línea llama app-daily.sh con una URL https y deja el log fuera de /tmp', () => {
+    expect(lines.length).toBeGreaterThan(0);
+    for (const line of lines) {
+      expect(line).toMatch(/ callingsupportapp \/home\/callingsupportapp\/[\w-]+\/deploy\/app-daily\.sh \/home\/callingsupportapp\/[\w-]+ https:\/\/[\w.-]+ >> /);
+      expect(line).not.toMatch(/\/tmp\//);
+    }
+  });
+});
+
 describe('citas del Manual General', () => {
   it('los recursos en línea se citan como 38.8.21.2 (Manual vigente), no con la numeración anterior 38.8.24.2', () => {
     const files = asFiles([
