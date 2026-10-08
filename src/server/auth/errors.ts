@@ -14,7 +14,11 @@ export type AuthErrorCode =
   | 'invalid_input'
   | 'not_found'
   | 'server_misconfigured'
-  | 'registration_closed';
+  | 'registration_closed'
+  | 'mfa_required'
+  | 'mfa_disabled_in_demo'
+  | 'mfa_already_enabled'
+  | 'challenge_expired';
 
 export class AuthError extends Error {
   constructor(

@@ -29,7 +29,11 @@
     "internal_error": "Algo deu errado no servidor. Tente novamente em instantes.",
     "server_misconfigured": "Falta a chave de criptografia do servidor (ENC_KEY). Avise quem instalou o aplicativo.",
     "smtp_failed": "Não foi possível enviar o e-mail de teste.",
-    "registration_closed": "O cadastro de contas está fechado nesta instalação."
+    "registration_closed": "O cadastro de contas está fechado nesta instalação.",
+    "mfa_required": "Ative a verificação em duas etapas para continuar.",
+    "mfa_disabled_in_demo": "Na demonstração não é possível ativar a verificação em duas etapas: as contas são compartilhadas.",
+    "mfa_already_enabled": "A verificação em duas etapas já está ativa.",
+    "challenge_expired": "O código venceu. Entre novamente."
   },
   "roles": {
     "super_admin": "SuperAdmin",
@@ -58,7 +62,20 @@
       "password_reset": "Sua senha mudou. Entre com a nova."
     },
     "forgot": "Esqueceu sua senha?",
-    "register": "Criar conta"
+    "register": "Criar conta",
+    "mfa": {
+      "title": "Verificação em duas etapas",
+      "intro": "Digite o código de 6 dígitos do seu aplicativo autenticador.",
+      "code": "Código",
+      "recoveryIntro": "Digite um dos seus códigos de recuperação. Cada um serve uma única vez.",
+      "recoveryCode": "Código de recuperação",
+      "useRecovery": "Usar um código de recuperação",
+      "useApp": "Usar o código do aplicativo",
+      "submit": "Verificar",
+      "submitting": "Verificando…",
+      "incorrect": "O código não está correto.",
+      "back": "Voltar para entrar"
+    }
   },
   "setup": {
     "title": "Configurar o aplicativo",
@@ -149,7 +166,11 @@
       "title": "Falta o contato da instalação",
       "body": "Escreva um e-mail ou telefone da unidade em Configurações: as orientações sobre recursos on-line pedem que ele apareça em todas as páginas."
     },
-    "noModules": "Você não tem módulos atribuídos. Fale com os líderes da sua unidade."
+    "noModules": "Você não tem módulos atribuídos. Fale com os líderes da sua unidade.",
+    "mfaBanner": {
+      "title": "Proteja os dados dos membros: ative a verificação em duas etapas.",
+      "link": "Ativar agora"
+    }
   },
   "table": {
     "pageSize": "Mostrar <select></select> registros",
@@ -294,6 +315,12 @@
       "testing": "Testando…",
       "testOk": "Conectado com @{bot}.",
       "testFailed": "Não foi possível conectar."
+    },
+    "mfa": {
+      "title": "Verificação em duas etapas",
+      "intro": "O SuperAdmin sempre precisa dela. Quem tem algum módulo a vê como recomendada; com esta opção, ela também é obrigatória para eles.",
+      "toggle": "Exigir verificação em duas etapas de todos os usuários com permissões",
+      "saved": "Salvo."
     }
   },
   "profile": {
@@ -348,6 +375,11 @@
       "link": "Vincular meu Telegram",
       "linkHint": "Abra este link no Telegram e envie Start. Se já fez isso, recarregue a página.",
       "unlink": "Desvincular"
+    },
+    "security": {
+      "title": "Segurança",
+      "body": "Verificação em duas etapas e códigos de recuperação.",
+      "link": "Abrir a segurança da minha conta"
     }
   },
   "sessions": {
@@ -483,7 +515,29 @@
       "invitePreheader": "Sua conta está pronta; falta sua senha.",
       "inviteIntro": "Sua conta no sistema da ala foi criada. Para entrar, defina sua senha com o link a seguir:",
       "inviteCta": "Definir minha senha",
-      "inviteOutro": "Se você não esperava este e-mail, pode ignorá-lo."
+      "inviteOutro": "Se você não esperava este e-mail, pode ignorá-lo.",
+      "mfa": {
+        "enabled": {
+          "subject": "Você ativou a verificação em duas etapas",
+          "preheader": "Sua conta agora pede um código ao entrar.",
+          "body": "Você ativou a verificação em duas etapas: a partir de agora, ao entrar será pedido um código do seu aplicativo autenticador. Suas outras sessões abertas foram encerradas. Se não foi você, avise imediatamente os líderes da sua unidade."
+        },
+        "disabled": {
+          "subject": "Você desativou a verificação em duas etapas",
+          "preheader": "Sua conta não pede mais um código ao entrar.",
+          "body": "Você desativou a verificação em duas etapas da sua conta e suas outras sessões abertas foram encerradas. Se não foi você, troque sua senha e avise imediatamente os líderes da sua unidade."
+        },
+        "recoveryUsed": {
+          "subject": "Você usou um código de recuperação",
+          "preheader": "Alguém entrou com um dos seus códigos de recuperação.",
+          "body": "Alguém entrou na sua conta com um dos seus códigos de recuperação. Esse código não serve mais. Se restarem poucos, gere códigos novos em Meu perfil → Segurança. Se não foi você, troque sua senha e avise imediatamente os líderes da sua unidade."
+        },
+        "reset": {
+          "subject": "Sua verificação em duas etapas foi redefinida",
+          "preheader": "Um administrador removeu a verificação da sua conta.",
+          "body": "Um administrador da sua unidade redefiniu a verificação em duas etapas da sua conta e todas as suas sessões foram encerradas. Ao entrar novamente, ative-a de novo em Meu perfil → Segurança. Se você não pediu isso, avise imediatamente os líderes da sua unidade."
+        }
+      }
     }
   },
   "mailLogs": {
@@ -1032,6 +1086,16 @@
       "es": "Español",
       "pt": "Português",
       "en": "English"
+    },
+    "mfa": {
+      "label": "Verificação em duas etapas",
+      "on": "Ativa",
+      "off": "Inativa",
+      "reset": "Redefinir verificação em duas etapas",
+      "resetting": "Redefinindo…",
+      "confirm": "A verificação em duas etapas será apagada e todas as sessões serão encerradas. Ao entrar novamente, será preciso ativá-la de novo. Continuar?",
+      "done": "Verificação redefinida. As sessões foram encerradas.",
+      "ownNote": "Sua própria verificação é administrada em Meu perfil → Segurança."
     }
   },
   "wardCouncil": {
@@ -1051,6 +1115,53 @@
       "noCode": "Para vincular sua conta, use o link que aparece no seu perfil do sistema.",
       "unknownCode": "Esse código já não é válido — gere um novo a partir do seu perfil.",
       "linked": "Pronto, sua conta foi vinculada. Você receberá avisos aqui."
+    }
+  },
+  "security": {
+    "title": "Segurança",
+    "intro": "A verificação em duas etapas pede, além da sua senha, um código de um aplicativo autenticador no seu celular (Google Authenticator, Microsoft Authenticator, 1Password ou outro). Assim, uma senha vazada não basta para entrar.",
+    "cardTitle": "Verificação em duas etapas",
+    "statusLabel": "Status",
+    "on": "Ativa",
+    "off": "Inativa",
+    "required": "É obrigatória para a sua conta: ative-a para continuar usando o painel.",
+    "recommended": "Recomendamos porque sua conta tem acesso a dados dos membros.",
+    "demo": "Na demonstração não é possível ativá-la: as contas de teste são compartilhadas entre visitantes.",
+    "enable": "Ativar a verificação em duas etapas",
+    "starting": "Preparando…",
+    "step1Title": "1. Escaneie o código QR",
+    "step1Body": "Abra-o com o seu aplicativo autenticador. Se não conseguir escanear, digite esta chave manualmente:",
+    "qrAlt": "Código QR para o seu aplicativo autenticador",
+    "secretLabel": "Chave para digitar manualmente",
+    "step2Title": "2. Digite o código que o aplicativo mostra",
+    "code": "Código de 6 dígitos",
+    "confirm": "Confirmar",
+    "confirming": "Confirmando…",
+    "step3Title": "3. Guarde seus códigos de recuperação",
+    "step3Body": "Se você perder o celular, cada um destes códigos permite entrar uma vez. Guarde-os em um lugar seguro: eles não serão mostrados novamente.",
+    "copy": "Copiar",
+    "copied": "Copiados",
+    "download": "Baixar .txt",
+    "savedCheck": "Guardei meus códigos em um lugar seguro",
+    "finish": "Concluir",
+    "cancel": "Cancelar",
+    "enabledDone": "A verificação em duas etapas está ativa.",
+    "disableTitle": "Desativar",
+    "disableBody": "Para desativá-la, digite sua senha atual e um código do aplicativo (ou um de recuperação).",
+    "requiredNoDisable": "Você não pode desativá-la: ela é obrigatória para a sua conta.",
+    "password": "Senha atual",
+    "codeOrRecovery": "Código do aplicativo ou de recuperação",
+    "disable": "Desativar",
+    "disabling": "Desativando…",
+    "disabledDone": "A verificação em duas etapas está desativada.",
+    "regenerateTitle": "Códigos de recuperação",
+    "regenerateBody": "Gere 10 códigos novos. Os anteriores deixam de funcionar.",
+    "regenerate": "Gerar códigos novos",
+    "regenerating": "Gerando…",
+    "errors": {
+      "incorrect": "O código não está correto.",
+      "passwordIncorrect": "A senha não está correta.",
+      "notStarted": "Comece a ativação novamente."
     }
   }
 }

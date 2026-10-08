@@ -13,6 +13,10 @@ export const ERROR_CODES = [
   'server_misconfigured',
   'smtp_failed',
   'registration_closed',
+  'mfa_required',
+  'mfa_disabled_in_demo',
+  'mfa_already_enabled',
+  'challenge_expired',
   'network',
   'unknown',
 ] as const;

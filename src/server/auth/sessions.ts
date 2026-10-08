@@ -25,7 +25,8 @@ export type SessionUser = {
   role: { key: string; name: string; level: number };
 };
 
-export type Session = { id: string; expiresAt: Date; user: SessionUser };
+// mfaEnabled: si el usuario tiene activa la verificación en dos pasos (#36), leído junto con la sesión.
+export type Session = { id: string; expiresAt: Date; user: SessionUser; mfaEnabled?: boolean };
 
 export type Me = Omit<SessionUser, 'locale'> & { allowedModules: ModuleKey[] };
 
@@ -84,6 +85,7 @@ export async function findSession(db: Database, token: string | null | undefined
       email: users.email,
       phone: users.phone,
       locale: users.locale,
+      mfaEnabled: users.mfaEnabled,
       roleKey: roles.key,
       roleName: roles.name,
       roleLevel: roles.level,
@@ -120,6 +122,7 @@ export async function findSession(db: Database, token: string | null | undefined
       locale: row.locale,
       role: { key: row.roleKey, name: row.roleName, level: row.roleLevel },
     },
+    mfaEnabled: row.mfaEnabled,
   } satisfies Session;
 }
 

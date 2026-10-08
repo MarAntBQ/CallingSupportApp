@@ -48,7 +48,7 @@ describe.skipIf(!url)('organizaciones, llamamientos y permisos por módulo contr
         lastName: 'Prueba',
         email,
         passwordHash: await hashPassword(PASSWORD),
-        roleId: roleRow!.id,
+        roleId: roleRow!.id, mfaEnabled: roleRow!.level >= 100,
         status: 'active',
       })
       .returning();

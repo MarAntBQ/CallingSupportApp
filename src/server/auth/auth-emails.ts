@@ -32,6 +32,21 @@ export function resetCodeEmail(to: string, code: string, locale: string | null):
   };
 }
 
+export type MfaNotice = 'enabled' | 'disabled' | 'recoveryUsed' | 'reset';
+
+// Avisos de la verificación en dos pasos (#36): nunca llevan códigos ni secretos.
+export function mfaNoticeEmail(kind: MfaNotice, to: string, locale: string | null): MailMessage {
+  const t = emailTranslator(locale ?? undefined);
+  return {
+    to,
+    subject: t(`auth.mfa.${kind}.subject`),
+    preheader: t(`auth.mfa.${kind}.preheader`),
+    html: `<p>${escapeHtml(t(`auth.mfa.${kind}.body`))}</p>`,
+    text: t(`auth.mfa.${kind}.body`),
+    locale: locale ?? undefined,
+  };
+}
+
 export function passwordChangedEmail(to: string, locale: string | null): MailMessage {
   const t = emailTranslator(locale ?? undefined);
   return {

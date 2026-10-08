@@ -60,7 +60,7 @@ describe.skipIf(!url)('matriz de permisos y avisos por módulo contra Postgres',
         phone: extra.phone ?? null,
         locale: extra.locale ?? null,
         passwordHash: await hashPassword(PASSWORD),
-        roleId: roleRow!.id,
+        roleId: roleRow!.id, mfaEnabled: roleRow!.level >= 100,
         status: 'active',
       })
       .returning();

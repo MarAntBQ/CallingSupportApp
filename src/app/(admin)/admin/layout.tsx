@@ -7,6 +7,8 @@ import { Logo } from '@/components/logo';
 import { LogoutButton } from '@/components/logout-button';
 import { UnitBrand } from '@/components/unit-brand';
 import { Alert } from '@/components/ui/alert';
+import { mfaStatus } from '@/server/auth/mfa';
+import { MFA_SETUP_PATH } from '@/server/auth/panel';
 import { getSession } from '@/server/auth/session';
 import { countActiveAdmins, isGlobalAdmin } from '@/server/auth/sessions';
 import { currentConfig } from '@/server/config/current';
@@ -27,6 +29,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const missingSecondAdmin = admin && (await countActiveAdmins(getDb())) < 2;
   const missingContact = admin && !(await currentConfig()).contact;
   const modules = await allowedModules(getDb(), session.user);
+  const mfa = await mfaStatus(getDb(), session);
+  const showMfaBanner = mfa.recommended && !mfa.enabled;
   const showOrganizations = modules.includes('callings') || modules.includes('permissions');
   const showTempleTrips = modules.includes('temple-trips');
   const showUsers = modules.includes('users');
@@ -102,6 +106,13 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             <Alert tone="warning" role="status" title={t('missingContact.title')}>
               <Link href="/admin/settings" className="font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">
                 {t('missingContact.body')}
+              </Link>
+            </Alert>
+          )}
+          {showMfaBanner && (
+            <Alert tone="info" role="status" title={t('mfaBanner.title')}>
+              <Link href={MFA_SETUP_PATH} className="font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">
+                {t('mfaBanner.link')}
               </Link>
             </Alert>
           )}

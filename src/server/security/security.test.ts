@@ -3,7 +3,11 @@ import { AuthError } from '@/server/auth/errors';
 
 const requireSessionFromRequest = vi.fn();
 
+const assertMfaSatisfied = vi.fn();
+
 vi.mock('@/server/auth/session', () => ({ requireSessionFromRequest: (...args: unknown[]) => requireSessionFromRequest(...args) }));
+vi.mock('@/server/auth/mfa', () => ({ assertMfaSatisfied: (...args: unknown[]) => assertMfaSatisfied(...args) }));
+vi.mock('@/server/db', () => ({ getDb: () => ({}) }));
 
 const { clientIp, isSameOrigin, privateHash } = await import('./http');
 const { publicRoute, withAuth } = await import('./route');
@@ -75,6 +79,23 @@ describe('clientIp y privateHash', () => {
 describe('withAuth y publicRoute', () => {
   beforeEach(() => {
     requireSessionFromRequest.mockReset();
+    assertMfaSatisfied.mockReset();
+  });
+
+  it('withAuth responde 403 mfa_required sin ejecutar el handler si falta la verificación obligatoria; mfaExempt deja pasar', async () => {
+    requireSessionFromRequest.mockResolvedValue(adminSession);
+    assertMfaSatisfied.mockImplementation(async () => {
+      throw new AuthError(403, 'mfa_required');
+    });
+    const handler = vi.fn(async () => Response.json({ ok: true }));
+    const blocked = await withAuth(handler)(request('GET'));
+    expect(blocked.status).toBe(403);
+    expect(await blocked.json()).toEqual({ error: 'mfa_required' });
+    expect(handler).not.toHaveBeenCalled();
+
+    const exempt = await withAuth(handler, { mfaExempt: true })(request('GET'));
+    expect(exempt.status).toBe(200);
+    expect(handler).toHaveBeenCalledTimes(1);
   });
 
   it('withAuth sin sesión responde 401 y no ejecuta el handler', async () => {

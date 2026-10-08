@@ -45,12 +45,16 @@ export function UsersAdmin({
   orgs,
   canCreate,
   canUpdate,
+  canResetMfa,
+  currentUserId,
 }: {
   initialUsers: UserListItem[];
   roles: Role[];
   orgs: Org[];
   canCreate: boolean;
   canUpdate: boolean;
+  canResetMfa: boolean;
+  currentUserId: string;
 }) {
   const t = useTranslations('users');
   const tRoles = useTranslations('roles');
@@ -141,10 +145,10 @@ export function UsersAdmin({
       )}
 
       {editing && (
-        <UserModal mode="edit" user={editing} roles={roles} orgs={orgs} canUpdate={canUpdate} onClose={() => setEditing(null)} onSaved={async () => { setEditing(null); await refresh(); }} />
+        <UserModal mode="edit" user={editing} roles={roles} orgs={orgs} canUpdate={canUpdate} canResetMfa={canResetMfa} isSelf={editing.id === currentUserId} onClose={() => setEditing(null)} onSaved={async () => { setEditing(null); await refresh(); }} onMfaReset={refresh} />
       )}
       {creating && (
-        <UserModal mode="create" roles={roles} orgs={orgs} canUpdate={canUpdate} onClose={() => setCreating(false)} onSaved={async () => { setCreating(false); await refresh(); }} />
+        <UserModal mode="create" roles={roles} orgs={orgs} canUpdate={canUpdate} canResetMfa={false} isSelf={false} onClose={() => setCreating(false)} onSaved={async () => { setCreating(false); await refresh(); }} />
       )}
     </section>
   );
@@ -158,16 +162,22 @@ function UserModal({
   roles,
   orgs,
   canUpdate,
+  canResetMfa,
+  isSelf,
   onClose,
   onSaved,
+  onMfaReset,
 }: {
   mode: 'create' | 'edit';
   user?: UserListItem;
   roles: Role[];
   orgs: Org[];
   canUpdate: boolean;
+  canResetMfa: boolean;
+  isSelf: boolean;
   onClose: () => void;
   onSaved: () => Promise<unknown>;
+  onMfaReset?: () => Promise<unknown>;
 }) {
   const t = useTranslations('users');
   const tRoles = useTranslations('roles');
@@ -189,6 +199,24 @@ function UserModal({
   const [tempPassword, setTempPassword] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [telegramLinked, setTelegramLinked] = useState(Boolean(user?.telegramLinked));
+  const [mfaEnabled, setMfaEnabled] = useState(Boolean(user?.mfaEnabled));
+  const [mfaResetting, setMfaResetting] = useState(false);
+  const [mfaNotice, setMfaNotice] = useState<string | null>(null);
+
+  async function resetMfa() {
+    if (!user || !window.confirm(t('mfa.confirm'))) return;
+    setError(null);
+    setMfaResetting(true);
+    const result = await postJson(`/api/users/${user.id}/mfa/reset`, {});
+    setMfaResetting(false);
+    if (!result.ok) {
+      setError(tErrors(result.error));
+      return;
+    }
+    setMfaEnabled(false);
+    setMfaNotice(t('mfa.done'));
+    await onMfaReset?.();
+  }
 
   async function unlinkTelegram() {
     if (!user) return;
@@ -362,6 +390,20 @@ function UserModal({
                   {canUpdate && telegramLinked && (
                     <Button type="button" variant="secondary" onClick={() => void unlinkTelegram()}>{t('telegram.unlink')}</Button>
                   )}
+                </div>
+                <div className="flex flex-col gap-2 rounded-md border border-border p-3" data-testid="user-mfa">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="text-sm text-text-muted">
+                      {t('mfa.label')}: <span className="font-medium text-text">{mfaEnabled ? t('mfa.on') : t('mfa.off')}</span>
+                    </span>
+                    {canResetMfa && !isSelf && mfaEnabled && (
+                      <Button type="button" variant="secondary" disabled={mfaResetting} onClick={() => void resetMfa()}>
+                        {mfaResetting ? t('mfa.resetting') : t('mfa.reset')}
+                      </Button>
+                    )}
+                  </div>
+                  {canResetMfa && isSelf && <p className="text-sm text-text-muted">{t('mfa.ownNote')}</p>}
+                  {mfaNotice && <p className="text-sm text-success-strong" role="status">{mfaNotice}</p>}
                 </div>
               </>
             )}

@@ -68,7 +68,7 @@ describe.skipIf(!url)('viajes al templo contra Postgres', () => {
     const [roleRow] = await db.select().from(schema.roles).where(eq(schema.roles.key, role));
     const [user] = await db
       .insert(schema.users)
-      .values({ firstName: 'Ana', lastName: 'Prueba', email, passwordHash: await hashPassword(PASSWORD), roleId: roleRow!.id, status: 'active' })
+      .values({ firstName: 'Ana', lastName: 'Prueba', email, passwordHash: await hashPassword(PASSWORD), roleId: roleRow!.id, mfaEnabled: roleRow!.level >= 100, status: 'active' })
       .returning();
     return user!;
   }

@@ -29,6 +29,8 @@ export const appConfig = pgTable(
     telegramBotTokenEnc: text('telegram_bot_token_enc'),
     telegramBotUsername: text('telegram_bot_username'),
     telegramWebhookSecretEnc: text('telegram_webhook_secret_enc'),
+    // #36: exigir la verificación en dos pasos a todo usuario con algún módulo permitido.
+    requireMfaForLeaders: boolean('require_mfa_for_leaders').notNull().default(false),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

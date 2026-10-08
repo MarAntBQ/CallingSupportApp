@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
-import { getSession } from '@/server/auth/session';
+import { getPanelSession } from '@/server/auth/panel';
 import { isGlobalAdmin } from '@/server/auth/sessions';
 import { currentConfig } from '@/server/config/current';
 import { SessionsTable } from './sessions-table';
@@ -14,8 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SessionsPage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const session = await getPanelSession();
   if (!isGlobalAdmin(session)) redirect('/admin');
   const t = await getTranslations('sessions');
   const config = await currentConfig();

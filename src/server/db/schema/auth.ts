@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { check, date, index, integer, pgEnum, pgTable, smallint, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { bigint, boolean, check, date, index, integer, pgEnum, pgTable, smallint, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 
 export const userStatus = pgEnum('user_status', ['pending', 'active', 'suspended']);
 
@@ -37,6 +37,12 @@ export const users = pgTable(
     // Telegram (#17): chat vinculado y el código de vinculación pendiente de un solo uso.
     telegramChatId: text('telegram_chat_id'),
     telegramLinkCode: text('telegram_link_code'),
+    // Verificación en dos pasos (#36): secreto TOTP cifrado (AES, utilidad de #10) y el último paso
+    // de tiempo aceptado, para rechazar que el mismo código se use dos veces.
+    mfaEnabled: boolean('mfa_enabled').notNull().default(false),
+    mfaSecretEnc: text('mfa_secret_enc'),
+    mfaLastStep: bigint('mfa_last_step', { mode: 'number' }),
+    mfaEnabledAt: timestamp('mfa_enabled_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
@@ -78,4 +84,34 @@ export const installation = pgTable(
     check('installation_single_row', sql`${table.id} = 1`),
     check('installation_unit_type_valid', sql`${table.unitType} in ('ward', 'branch')`),
   ],
+);
+
+// Códigos de recuperación de la verificación en dos pasos (#36): solo el hash SHA-256, de un solo uso.
+export const userRecoveryCodes = pgTable(
+  'user_recovery_codes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    codeHash: text('code_hash').notNull(),
+    usedAt: timestamp('used_at', { withTimezone: true }),
+  },
+  (table) => [index('user_recovery_codes_user_id_idx').on(table.userId)],
+);
+
+// Reto pendiente entre la contraseña correcta y el código (#36). Vence a los 5 minutos.
+export const mfaChallenges = pgTable(
+  'mfa_challenges',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    rememberMe: boolean('remember_me').notNull().default(false),
+    attempts: integer('attempts').notNull().default(0),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('mfa_challenges_user_id_idx').on(table.userId)],
 );

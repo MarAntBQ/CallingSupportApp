@@ -27,6 +27,7 @@ export type UserListItem = {
   callingLabel: string | null;
   role: { id: string; key: string; name: string; level: number };
   telegramLinked: boolean;
+  mfaEnabled: boolean;
   callings: CallingRef[];
   organizations: { id: string; name: string }[];
 };
@@ -45,6 +46,7 @@ export async function listUsers(db: Database): Promise<UserListItem[]> {
       locale: users.locale,
       callingLabel: users.callingLabel,
       telegramChatId: users.telegramChatId,
+      mfaEnabled: users.mfaEnabled,
       roleId: roles.id,
       roleKey: roles.key,
       roleName: roles.name,
@@ -82,6 +84,7 @@ export async function listUsers(db: Database): Promise<UserListItem[]> {
       callingLabel: row.callingLabel,
       role: { id: row.roleId, key: row.roleKey, name: row.roleName, level: row.roleLevel },
       telegramLinked: Boolean(row.telegramChatId),
+      mfaEnabled: row.mfaEnabled,
       callings: userCallingList,
       organizations: [...orgs.values()],
     };

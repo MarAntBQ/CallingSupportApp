@@ -32,6 +32,7 @@ const DEFAULT_ROW: Omit<ConfigRow, 'updatedAt'> = {
   telegramBotTokenEnc: null,
   telegramBotUsername: null,
   telegramWebhookSecretEnc: null,
+  requireMfaForLeaders: false,
 };
 
 export function toPublicConfig(row: Omit<ConfigRow, 'updatedAt'>): PublicConfig {

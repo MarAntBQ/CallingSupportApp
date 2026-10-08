@@ -5,4 +5,4 @@ import { withAuth } from '@/server/security/route';
 
 export const dynamic = 'force-dynamic';
 
-export const GET = withAuth(async (_request, { session }) => NextResponse.json(await meOf(getDb(), session)));
+export const GET = withAuth(async (_request, { session }) => NextResponse.json(await meOf(getDb(), session)), { mfaExempt: true });

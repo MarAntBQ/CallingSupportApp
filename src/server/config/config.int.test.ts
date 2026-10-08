@@ -71,7 +71,7 @@ describe.skipIf(!url)('configuración de la instalación contra Postgres', () =>
     const [role] = await db.select().from(schema.roles).where(eq(schema.roles.key, roleKey));
     const [user] = await db
       .insert(schema.users)
-      .values({ firstName: 'Prueba', lastName: 'Usuario', email, passwordHash: await hashPassword('clave-correcta'), roleId: role!.id, status: 'active' })
+      .values({ firstName: 'Prueba', lastName: 'Usuario', email, passwordHash: await hashPassword('clave-correcta'), roleId: role!.id, mfaEnabled: role!.level >= 100, status: 'active' })
       .returning();
     const { token } = await createSession(db, user!.id);
     return `${sessionCookieName()}=${token}`;
