@@ -889,7 +889,9 @@
         "total": "Total",
         "outbound": "Outbound",
         "return": "Return",
-        "delivered": "Delivered"
+        "delivered": "Delivered",
+        "role": "Role",
+        "gender": "Gender"
       },
       "mark": "X",
       "room": "Room {number}",
@@ -899,7 +901,8 @@
         "leader": "Leader",
         "guest": "Participant"
       },
-      "checkboxFor": "{label}: {name}"
+      "checkboxFor": "{label}: {name}",
+      "totalLine": "Total: {total}"
     }
   }
 }

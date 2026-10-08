@@ -889,7 +889,9 @@
         "total": "Total",
         "outbound": "Ida",
         "return": "Volta",
-        "delivered": "Entregue"
+        "delivered": "Entregue",
+        "role": "Função",
+        "gender": "Sexo"
       },
       "mark": "X",
       "room": "Quarto {number}",
@@ -899,7 +901,8 @@
         "leader": "Líder",
         "guest": "Participante"
       },
-      "checkboxFor": "{label}: {name}"
+      "checkboxFor": "{label}: {name}",
+      "totalLine": "Total: {total}"
     }
   }
 }

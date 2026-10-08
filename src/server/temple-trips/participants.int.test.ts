@@ -31,6 +31,7 @@ describe.skipIf(!url)('panel de participantes contra Postgres', () => {
   let routes: {
     participants: typeof import('@/app/api/temple-trips/[id]/participants/route');
     approval: typeof import('@/app/api/temple-participants/[id]/approval/route');
+    logistics: typeof import('@/app/api/temple-participants/[id]/logistics/route');
   };
 
   async function createUser(email: string, role: RoleKey) {
@@ -85,6 +86,7 @@ describe.skipIf(!url)('panel de participantes contra Postgres', () => {
     routes = {
       participants: await import('@/app/api/temple-trips/[id]/participants/route'),
       approval: await import('@/app/api/temple-participants/[id]/approval/route'),
+      logistics: await import('@/app/api/temple-participants/[id]/logistics/route'),
     };
   }, 60_000);
 
@@ -173,6 +175,26 @@ describe.skipIf(!url)('panel de participantes contra Postgres', () => {
     const result = await updateLogistics(db, '00000000-0000-0000-0000-000000000000', { boardedReturn: true });
     expect(result.ok).toBe(false);
     expect(result.ok === false && result.status).toBe(404);
+  });
+
+  it('el endpoint de logística exige el permiso de editar en el servidor: sin él, 403', async () => {
+    const trip = await activeTrip({ includesTransport: true, quotaTransport: 5 });
+    const participant = await addParticipant(trip.id, { wantsTransport: true });
+    // líder con temple-trips canRead pero NO canUpdate
+    const [org] = await db.insert(schema.organizations).values({ name: 'Obispado' }).returning();
+    const [calling] = await db.insert(schema.callings).values({ organizationId: org!.id, name: 'Secretario' }).returning();
+    await db.insert(schema.modulePermissions).values({ module: 'temple-trips', callingId: calling!.id, canRead: true });
+    const leader = await createUser('solo.lectura@example.com', 'leader');
+    await db.insert(schema.userCallings).values({ userId: leader.id, callingId: calling!.id });
+    const cookie = await cookieFor(leader.id);
+    const response = await routes.logistics.PATCH(
+      request('PATCH', `/api/temple-participants/${participant.id}/logistics`, { boardedOutbound: true }, cookie),
+      { params: Promise.resolve({ id: participant.id }) },
+    );
+    expect(response.status).toBe(403);
+    // y la casilla no cambió
+    const [row] = await listTripParticipants(db, trip.id, { includeIp: false });
+    expect(row!.boardedOutbound).toBe(false);
   });
 
   it('rendimiento: con 2000 participantes la lista usa índice y responde rápido', async () => {

@@ -2,7 +2,7 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { patchJson } from '@/lib/api-client';
@@ -19,6 +19,34 @@ type LogisticsField = 'boardedOutbound' | 'boardedReturn' | 'breakfastDelivered'
 
 const money = (value: number, locale: string) => new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(value);
 
+// Rejilla de solo lectura para las listas imprimibles y el resumen. A propósito NO es un elemento
+// de tabla HTML: esas listas se imprimen enteras, no se ordenan ni paginan (la regla del repo exige
+// que toda tabla HTML lleve los controles de #7). role="table" + display:contents da la semántica.
+function Grid({ columns, rows, minWidthPx = 480 }: { columns: string[]; rows: ReactNode[][]; minWidthPx?: number }) {
+  return (
+    <div className="min-w-0 overflow-x-auto rounded-md border border-border bg-surface">
+      <div role="table" className="grid text-sm" style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(max-content, auto))`, minWidth: `${minWidthPx}px` }}>
+        <div role="row" className="contents">
+          {columns.map((label, index) => (
+            <div key={index} role="columnheader" className="border-b border-border px-3 py-2 text-left font-medium text-text-muted">
+              {label}
+            </div>
+          ))}
+        </div>
+        {rows.map((cells, rowIndex) => (
+          <div key={rowIndex} role="row" className="contents">
+            {cells.map((cell, cellIndex) => (
+              <div key={cellIndex} role="cell" className="border-b border-border px-3 py-2 text-text">
+                {cell}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function ReportsPanel({ trip, canUpdate }: { trip: TempleTripListItem; canUpdate: boolean }) {
   const t = useTranslations('templeTrips.reports');
   const tOrdinances = useTranslations('templeTrips.quotas.ordinances');
@@ -28,7 +56,7 @@ export function ReportsPanel({ trip, canUpdate }: { trip: TempleTripListItem; ca
   const queryClient = useQueryClient();
   const { data: config } = useConfig();
   const { data: participants = [] } = useQuery({ queryKey: participantsKey(trip.id), queryFn: () => fetchParticipants(trip.id) });
-  const { data: rooms } = useQuery({ queryKey: roomsKey(trip.id), queryFn: () => fetchRooms(trip.id) });
+  const { data: rooms } = useQuery({ queryKey: roomsKey(trip.id), queryFn: () => fetchRooms(trip.id), enabled: trip.includesLodging });
 
   const [includeAll, setIncludeAll] = useState(false);
   const [list, setList] = useState<ListKind>('general');
@@ -46,8 +74,8 @@ export function ReportsPanel({ trip, canUpdate }: { trip: TempleTripListItem; ca
   );
 
   const cards = services.map((service) => {
-    if (service === 'transport') return { service, count: summary.filter((p) => p.wantsTransport).length, quota: trip.quotaTransport };
-    if (service === 'lodging') return { service, count: summary.filter((p) => p.needsLodging).length, quota: trip.quotaLodging };
+    if (service === 'transport') return { service, count: summary.filter((p) => p.wantsTransport).length, quota: trip.quotaTransport as number | null };
+    if (service === 'lodging') return { service, count: summary.filter((p) => p.needsLodging).length, quota: trip.quotaLodging as number | null };
     if (service === 'breakfast') return { service, count: summary.filter((p) => p.wantsBreakfast).length, quota: null };
     return { service, count: summary.filter((p) => p.wantsLunch).length, quota: null };
   });
@@ -62,8 +90,8 @@ export function ReportsPanel({ trip, canUpdate }: { trip: TempleTripListItem; ca
 
   const estimatedCost = summary.reduce((sum, p) => sum + Number(p.totalCost), 0);
 
-  const lists = (['general', 'transport', 'breakfast', 'lunch', ...(trip.includesLodging ? (['lodging'] as const) : []), 'ordinances'] as const).filter(
-    (kind) => (kind === 'transport' ? trip.includesTransport : kind === 'breakfast' ? trip.includesBreakfast : kind === 'lunch' ? trip.includesLunch : true),
+  const lists = (['general', 'transport', 'breakfast', 'lunch', ...(trip.includesLodging ? (['lodging'] as const) : []), 'ordinances'] as const).filter((kind) =>
+    kind === 'transport' ? trip.includesTransport : kind === 'breakfast' ? trip.includesBreakfast : kind === 'lunch' ? trip.includesLunch : true,
   );
   const activeList = lists.includes(list) ? list : 'general';
 
@@ -86,13 +114,7 @@ export function ReportsPanel({ trip, canUpdate }: { trip: TempleTripListItem; ca
       <section className="no-print flex flex-col gap-3">
         <div className="flex flex-wrap gap-2" role="tablist" aria-label={t('filter.label')}>
           {([false, true] as const).map((value) => (
-            <Button
-              key={String(value)}
-              role="tab"
-              aria-selected={includeAll === value}
-              variant={includeAll === value ? 'secondary' : 'link'}
-              onClick={() => setIncludeAll(value)}
-            >
+            <Button key={String(value)} role="tab" aria-selected={includeAll === value} variant={includeAll === value ? 'secondary' : 'link'} onClick={() => setIncludeAll(value)}>
               {value ? t('filter.all') : t('filter.approvedOnly')}
             </Button>
           ))}
@@ -109,28 +131,17 @@ export function ReportsPanel({ trip, canUpdate }: { trip: TempleTripListItem; ca
           </div>
         )}
 
-        <div className="min-w-0 overflow-x-auto rounded-md border border-border bg-surface">
-          <table className="w-full min-w-[480px] border-collapse text-sm">
-            <caption className="px-3 pt-3 text-left font-medium text-text">{t('ordinances.title')}</caption>
-            <thead>
-              <tr>
-                <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{t('ordinances.ordinance')}</th>
-                <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{tGenders('male')}</th>
-                <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{tGenders('female')}</th>
-                <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{t('ordinances.total')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ordinanceRows.map((row) => (
-                <tr key={row.ordinance} className="even:bg-surface-muted">
-                  <td className="px-3 py-2 text-text">{tOrdinances(row.ordinance)}</td>
-                  <td className="px-3 py-2 text-text-muted">{t('ofQuota', { n: row.men, quota: row.quotaMen })}</td>
-                  <td className="px-3 py-2 text-text-muted">{t('ofQuota', { n: row.women, quota: row.quotaWomen })}</td>
-                  <td className="px-3 py-2 text-text">{t('ofQuota', { n: row.total, quota: row.quotaTotal })}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="flex flex-col gap-1.5">
+          <h4 className="text-sm font-medium text-text">{t('ordinances.title')}</h4>
+          <Grid
+            columns={[t('ordinances.ordinance'), tGenders('male'), tGenders('female'), t('ordinances.total')]}
+            rows={ordinanceRows.map((row) => [
+              tOrdinances(row.ordinance),
+              t('ofQuota', { n: row.men, quota: row.quotaMen }),
+              t('ofQuota', { n: row.women, quota: row.quotaWomen }),
+              t('ofQuota', { n: row.total, quota: row.quotaTotal }),
+            ])}
+          />
         </div>
 
         <div className="rounded-md border border-border bg-surface p-3">
@@ -191,17 +202,6 @@ export function ReportsPanel({ trip, canUpdate }: { trip: TempleTripListItem; ca
   );
 }
 
-function ListTable({ head, children }: { head: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <div className="min-w-0 overflow-x-auto rounded-md border border-border bg-surface">
-      <table className="w-full min-w-[480px] border-collapse text-sm">
-        <thead>{head}</thead>
-        <tbody>{children}</tbody>
-      </table>
-    </div>
-  );
-}
-
 function GeneralList({ participants, trip, locale }: { participants: ParticipantListItem[]; trip: TempleTripListItem; locale: string }) {
   const t = useTranslations('templeTrips.reports');
   const tOrdinances = useTranslations('templeTrips.quotas.ordinances');
@@ -212,40 +212,19 @@ function GeneralList({ participants, trip, locale }: { participants: Participant
   const wants = (p: ParticipantListItem, s: (typeof services)[number]) =>
     s === 'transport' ? p.wantsTransport : s === 'lodging' ? p.needsLodging : s === 'breakfast' ? p.wantsBreakfast : p.wantsLunch;
   const total = participants.reduce((sum, p) => sum + Number(p.totalCost), 0);
+  const columns = [t('columns.number'), t('columns.name'), ...ORDINANCES.map((o) => tOrdinances(o)), ...services.map((s) => tServices(s)), t('columns.cost')];
+  const rows: ReactNode[][] = participants.map((p, index) => [
+    index + 1,
+    p.fullName,
+    ...ORDINANCES.map((ordinance) => (p.ordinances.includes(ordinance) ? t('mark') : '')),
+    ...services.map((service) => (wants(p, service) ? t('mark') : '')),
+    money(Number(p.totalCost), locale),
+  ]);
   return (
-    <ListTable
-      head={
-        <tr>
-          <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{t('columns.number')}</th>
-          <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{t('columns.name')}</th>
-          {ORDINANCES.map((ordinance) => (
-            <th key={ordinance} scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{tOrdinances(ordinance)}</th>
-          ))}
-          {services.map((service) => (
-            <th key={service} scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{tServices(service)}</th>
-          ))}
-          <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{t('columns.cost')}</th>
-        </tr>
-      }
-    >
-      {participants.map((p, index) => (
-        <tr key={p.id} className="even:bg-surface-muted">
-          <td className="px-3 py-2 text-text-muted">{index + 1}</td>
-          <td className="px-3 py-2 text-text">{p.fullName}</td>
-          {ORDINANCES.map((ordinance) => (
-            <td key={ordinance} className="px-3 py-2 text-text">{p.ordinances.includes(ordinance) ? t('mark') : ''}</td>
-          ))}
-          {services.map((service) => (
-            <td key={service} className="px-3 py-2 text-text">{wants(p, service) ? t('mark') : ''}</td>
-          ))}
-          <td className="px-3 py-2 text-text">{money(Number(p.totalCost), locale)}</td>
-        </tr>
-      ))}
-      <tr className="border-t border-border-strong font-semibold">
-        <td className="px-3 py-2 text-text" colSpan={2 + ORDINANCES.length + services.length}>{t('columns.total')}</td>
-        <td className="px-3 py-2 text-text">{money(total, locale)}</td>
-      </tr>
-    </ListTable>
+    <div className="flex flex-col gap-1.5">
+      <Grid columns={columns} rows={rows} />
+      <p className="text-right text-sm font-semibold text-text">{t('totalLine', { total: money(total, locale) })}</p>
+    </div>
   );
 }
 
@@ -263,72 +242,51 @@ function LogisticsList({
   onToggle: (participantId: string, field: LogisticsField, value: boolean) => Promise<void>;
 }) {
   const t = useTranslations('templeTrips.reports');
-  return (
-    <ListTable
-      head={
-        <tr>
-          <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{t('columns.number')}</th>
-          <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{t('columns.name')}</th>
-          {withPhone && <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{t('columns.phone')}</th>}
-          {columns.map((column) => (
-            <th key={column.field} scope="col" className="px-3 py-2 text-left font-medium text-text-muted">{column.label}</th>
-          ))}
-        </tr>
-      }
-    >
-      {participants.map((p, index) => (
-        <tr key={p.id} className="even:bg-surface-muted">
-          <td className="px-3 py-2 text-text-muted">{index + 1}</td>
-          <td className="px-3 py-2 text-text">{p.fullName}</td>
-          {withPhone && <td className="px-3 py-2 text-text-muted">{p.phone}</td>}
-          {columns.map((column) => (
-            <td key={column.field} className="px-3 py-2">
-              <input
-                type="checkbox"
-                className="size-4 accent-primary"
-                aria-label={t('checkboxFor', { label: column.label, name: p.fullName })}
-                checked={p[column.field]}
-                disabled={!canUpdate}
-                onChange={(event) => void onToggle(p.id, column.field, event.target.checked)}
-              />
-            </td>
-          ))}
-        </tr>
-      ))}
-    </ListTable>
-  );
+  const header = [t('columns.number'), t('columns.name'), ...(withPhone ? [t('columns.phone')] : []), ...columns.map((c) => c.label)];
+  const rows: ReactNode[][] = participants.map((p, index) => [
+    index + 1,
+    p.fullName,
+    ...(withPhone ? [p.phone] : []),
+    ...columns.map((column) => (
+      <input
+        key={column.field}
+        type="checkbox"
+        className="size-4 accent-primary"
+        aria-label={t('checkboxFor', { label: column.label, name: p.fullName })}
+        checked={p[column.field]}
+        disabled={!canUpdate}
+        onChange={(event) => void onToggle(p.id, column.field, event.target.checked)}
+      />
+    )),
+  ]);
+  return <Grid columns={header} rows={rows} />;
 }
 
 function LodgingList({ rooms, unassigned }: { rooms: { id: string; number: string; occupants: RoomOccupant[] }[]; unassigned: RoomOccupant[] }) {
   const t = useTranslations('templeTrips.reports');
   const sorted = [...rooms].sort((a, b) => compareNatural(a.number, b.number));
-  const roomTable = (title: string, occupants: RoomOccupant[], withRole: boolean) => (
-    <ListTable
-      head={
-        <tr>
-          <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted" colSpan={withRole ? 3 : 2}>{title}</th>
-        </tr>
-      }
-    >
-      {occupants.length === 0 ? (
-        <tr>
-          <td className="px-3 py-2 text-text-muted" colSpan={withRole ? 3 : 2}>{t('empty')}</td>
-        </tr>
-      ) : (
-        occupants.map((occupant, index) => (
-          <tr key={occupant.id} className="even:bg-surface-muted">
-            <td className="px-3 py-2 text-text-muted">{index + 1}</td>
-            <td className="px-3 py-2 text-text">{occupant.fullName}</td>
-            {withRole && <td className="px-3 py-2 text-text-muted">{occupant.roomRole ? t(`roles.${occupant.roomRole}`) : ''}</td>}
-          </tr>
-        ))
-      )}
-    </ListTable>
-  );
+  const occupantRows = (occupants: RoomOccupant[], withRole: boolean): ReactNode[][] =>
+    occupants.map((occupant, index) => [index + 1, occupant.fullName, ...(withRole ? [occupant.roomRole ? t(`roles.${occupant.roomRole}`) : ''] : [])]);
   return (
     <div className="flex flex-col gap-3">
-      {sorted.map((room) => roomTable(t('room', { number: room.number }), room.occupants, true))}
-      {roomTable(t('unassigned'), unassigned, false)}
+      {sorted.map((room) => (
+        <div key={room.id} className="flex flex-col gap-1.5">
+          <h4 className="text-sm font-medium text-text">{t('room', { number: room.number })}</h4>
+          {room.occupants.length === 0 ? (
+            <p className="text-sm text-text-muted">{t('empty')}</p>
+          ) : (
+            <Grid columns={[t('columns.number'), t('columns.name'), t('columns.role')]} rows={occupantRows(room.occupants, true)} />
+          )}
+        </div>
+      ))}
+      <div className="flex flex-col gap-1.5">
+        <h4 className="text-sm font-medium text-text">{t('unassigned')}</h4>
+        {unassigned.length === 0 ? (
+          <p className="text-sm text-text-muted">{t('empty')}</p>
+        ) : (
+          <Grid columns={[t('columns.number'), t('columns.name')]} rows={occupantRows(unassigned, false)} />
+        )}
+      </div>
     </div>
   );
 }
@@ -345,28 +303,17 @@ function OrdinancesList({ participants, locale }: { participants: ParticipantLis
           .filter((p) => p.ordinances.includes(ordinance))
           .sort((a, b) => genderOrder(a.gender) - genderOrder(b.gender) || a.fullName.localeCompare(b.fullName, locale));
         return (
-          <ListTable
-            key={ordinance}
-            head={
-              <tr>
-                <th scope="col" className="px-3 py-2 text-left font-medium text-text-muted" colSpan={3}>{tOrdinances(ordinance)}</th>
-              </tr>
-            }
-          >
+          <div key={ordinance} className="flex flex-col gap-1.5">
+            <h4 className="text-sm font-medium text-text">{tOrdinances(ordinance)}</h4>
             {people.length === 0 ? (
-              <tr>
-                <td className="px-3 py-2 text-text-muted" colSpan={3}>{t('empty')}</td>
-              </tr>
+              <p className="text-sm text-text-muted">{t('empty')}</p>
             ) : (
-              people.map((p, index) => (
-                <tr key={p.id} className="even:bg-surface-muted">
-                  <td className="px-3 py-2 text-text-muted">{index + 1}</td>
-                  <td className="px-3 py-2 text-text">{p.fullName}</td>
-                  <td className="px-3 py-2 text-text-muted">{tGenders(p.gender as Gender)}</td>
-                </tr>
-              ))
+              <Grid
+                columns={[t('columns.number'), t('columns.name'), t('columns.gender')]}
+                rows={people.map((p, index) => [index + 1, p.fullName, tGenders(p.gender as Gender)])}
+              />
             )}
-          </ListTable>
+          </div>
         );
       })}
     </div>
