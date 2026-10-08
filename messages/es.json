@@ -450,7 +450,12 @@
       "resetOutro": "Vence a los {minutes} minutos de verificarlo. Si no lo pediste, ignora este correo: tu contraseña no cambia.",
       "changedSubject": "Tu contraseña cambió",
       "changedPreheader": "Se cerraron tus sesiones abiertas.",
-      "changedBody": "La contraseña de tu cuenta se cambió y se cerraron todas tus sesiones abiertas. Si no fuiste tú, avisa enseguida a los líderes de tu unidad."
+      "changedBody": "La contraseña de tu cuenta se cambió y se cerraron todas tus sesiones abiertas. Si no fuiste tú, avisa enseguida a los líderes de tu unidad.",
+      "inviteSubject": "Establece tu contraseña",
+      "invitePreheader": "Tu cuenta está lista; falta tu contraseña.",
+      "inviteIntro": "Se creó tu cuenta para el sistema del barrio. Para entrar, establece tu contraseña con el siguiente enlace:",
+      "inviteCta": "Establecer mi contraseña",
+      "inviteOutro": "Si no esperabas este correo, puedes ignorarlo."
     }
   },
   "mailLogs": {

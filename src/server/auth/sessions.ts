@@ -187,6 +187,16 @@ export async function revokeOtherSessions(db: Database, userId: string, exceptSe
   return revoked.length;
 }
 
+// Revoca TODAS las sesiones vivas de un usuario (al suspenderlo o restablecer su contraseña, #16).
+export async function revokeAllUserSessions(db: Database, userId: string, now = new Date()): Promise<number> {
+  const revoked = await db
+    .update(sessions)
+    .set({ revokedAt: now })
+    .where(and(eq(sessions.userId, userId), isNull(sessions.revokedAt)))
+    .returning({ id: sessions.id });
+  return revoked.length;
+}
+
 export function isGlobalAdmin(session: Session) {
   return session.user.role.level >= GLOBAL_ADMIN_LEVEL;
 }

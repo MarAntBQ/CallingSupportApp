@@ -450,7 +450,12 @@
       "resetOutro": "Ele vence {minutes} minutos depois de verificado. Se você não pediu, ignore este e-mail: sua senha não muda.",
       "changedSubject": "Sua senha mudou",
       "changedPreheader": "Suas sessões abertas foram encerradas.",
-      "changedBody": "A senha da sua conta foi alterada e todas as suas sessões abertas foram encerradas. Se não foi você, avise imediatamente os líderes da sua unidade."
+      "changedBody": "A senha da sua conta foi alterada e todas as suas sessões abertas foram encerradas. Se não foi você, avise imediatamente os líderes da sua unidade.",
+      "inviteSubject": "Defina sua senha",
+      "invitePreheader": "Sua conta está pronta; falta sua senha.",
+      "inviteIntro": "Sua conta no sistema da ala foi criada. Para entrar, defina sua senha com o link a seguir:",
+      "inviteCta": "Definir minha senha",
+      "inviteOutro": "Se você não esperava este e-mail, pode ignorá-lo."
     }
   },
   "mailLogs": {

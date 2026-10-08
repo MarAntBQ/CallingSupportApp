@@ -450,7 +450,12 @@
       "resetOutro": "It expires {minutes} minutes after you verify it. If you didn't ask for it, ignore this email: your password won't change.",
       "changedSubject": "Your password changed",
       "changedPreheader": "Your open sessions were signed out.",
-      "changedBody": "Your account password was changed and all your open sessions were signed out. If it wasn't you, let your unit leaders know right away."
+      "changedBody": "Your account password was changed and all your open sessions were signed out. If it wasn't you, let your unit leaders know right away.",
+      "inviteSubject": "Set your password",
+      "invitePreheader": "Your account is ready; your password is missing.",
+      "inviteIntro": "Your account for the ward system was created. To sign in, set your password with the link below:",
+      "inviteCta": "Set my password",
+      "inviteOutro": "If you weren't expecting this email, you can ignore it."
     }
   },
   "mailLogs": {
