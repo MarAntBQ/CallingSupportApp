@@ -1,7 +1,8 @@
 import 'server-only';
-import { asc, eq, sql } from 'drizzle-orm';
-import { isOfficialUrl, type ResourceCategory, type ResourceLocale } from '@/lib/self-reliance/constants';
-import type { ResourceInput, ResourceItem, ResourceUpdateInput } from '@/lib/validation/self-reliance';
+import { and, asc, eq, inArray, sql } from 'drizzle-orm';
+import type { Locale } from '@/i18n/config';
+import { isOfficialUrl, withChurchLang, type ResourceCategory, type ResourceLocale } from '@/lib/self-reliance/constants';
+import type { PublicResource, ResourceInput, ResourceItem, ResourceUpdateInput } from '@/lib/validation/self-reliance';
 import type { Database } from '@/server/db';
 import { selfRelianceResources } from '@/server/db/schema';
 
@@ -71,4 +72,31 @@ export async function reorderResources(db: Database, ids: string[]): Promise<Reo
     const rows = await tx.select().from(selfRelianceResources).orderBy(asc(selfRelianceResources.position));
     return { ok: true, resources: rows.map(toItem) } as const;
   });
+}
+
+// Portal público: solo lo publicado, los oficiales primero y después el orden del panel. La URL
+// sale con el `lang` del idioma de quien lee. `filterLocale` deja solo los recursos en ese idioma
+// o en todos; sin él vuelven todos los publicados (la página filtra en el navegador).
+export async function listPublicResources(
+  db: Database,
+  options: { locale: Locale; filterLocale?: Locale; category?: ResourceCategory },
+): Promise<PublicResource[]> {
+  const conditions = [eq(selfRelianceResources.published, true)];
+  if (options.filterLocale) conditions.push(inArray(selfRelianceResources.locale, ['all', options.filterLocale]));
+  if (options.category) conditions.push(eq(selfRelianceResources.category, options.category));
+  const rows = await db
+    .select()
+    .from(selfRelianceResources)
+    .where(and(...conditions))
+    .orderBy(asc(selfRelianceResources.position), asc(selfRelianceResources.createdAt));
+  const items = rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    url: withChurchLang(row.url, options.locale),
+    category: row.category as ResourceCategory,
+    locale: row.locale as ResourceLocale,
+    official: isOfficialUrl(row.url),
+  }));
+  return [...items.filter((item) => item.official), ...items.filter((item) => !item.official)];
 }

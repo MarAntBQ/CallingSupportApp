@@ -52,3 +52,10 @@ export type ResourceItem = {
   official: boolean;
   updatedAt: string;
 };
+
+export type PublicResource = Pick<ResourceItem, 'id' | 'title' | 'description' | 'url' | 'category' | 'locale' | 'official'>;
+
+export const publicResourcesQuerySchema = z.strictObject({
+  category: z.enum(RESOURCE_CATEGORIES).optional(),
+  locale: z.enum(['es', 'pt', 'en']).optional(),
+});

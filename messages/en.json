@@ -1226,6 +1226,26 @@
       "url": "The link must start with https:// and point to a valid site.",
       "title": "The title must be 2 to 120 characters long.",
       "stale": "The list changed while you were reordering it. It was reloaded; please try again."
+    },
+    "portal": {
+      "title": "Self-Reliance",
+      "intro": "Free, public resources for your growth: courses, employment, education, finances, and languages. The Church's official resources come first.",
+      "filters": "Filters",
+      "category": "Category",
+      "allCategories": "All categories",
+      "language": "Language",
+      "languages": {
+        "es": "Spanish",
+        "pt": "Portuguese",
+        "en": "English",
+        "any": "All languages"
+      },
+      "search": "Search",
+      "empty": "No resources match the filters.",
+      "officialTitle": "Official Church resources",
+      "newTab": "(opens in a new tab)",
+      "freeOnly": "This portal only links to free, public resources. It has no advertising and doesn't promote businesses.",
+      "viewPortal": "View the public portal"
     }
   }
 }

@@ -343,6 +343,37 @@ test('Autosuficiencia: los 8 recursos oficiales vienen sembrados; un enlace http
   await expectNoHorizontalOverflow(page);
 });
 
+test('Autosuficiencia (público): oficiales primero, enlaces externos seguros, lang por idioma, filtros y búsqueda', async ({ page }) => {
+  const portal = es.selfReliance.portal;
+  await page.goto('/self-reliance');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(portal.title);
+  const cards = page.getByTestId('portal-resource');
+  await expect(cards).toHaveCount(9);
+  await expect(page.getByRole('heading', { level: 2 }).first()).toHaveText(portal.officialTitle);
+  const firstLink = cards.first().getByRole('link');
+  await expect(firstLink).toHaveAttribute('target', '_blank');
+  await expect(firstLink).toHaveAttribute('rel', 'noopener noreferrer');
+  await expect(firstLink).toHaveAttribute('href', /churchofjesuschrist\.org\/.*\?lang=spa$/);
+  await expect(cards.first().getByTestId('external-icon')).toBeVisible();
+  await expect(cards.last()).toContainText('Curso inventado de prueba');
+
+  await page.getByLabel(portal.category).selectOption('employment');
+  await expect(cards).toHaveCount(1);
+  await page.getByLabel(portal.category).selectOption('');
+  await page.getByLabel(portal.search).fill('inventado');
+  await expect(cards).toHaveCount(1);
+  await page.getByLabel(portal.search).fill('');
+
+  await page.evaluate(async () => {
+    await fetch('/api/locale', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ locale: 'pt' }) });
+  });
+  await page.reload();
+  await expect(page.getByTestId('portal-resource').first().getByRole('link')).toHaveAttribute('href', /\?lang=por$/);
+
+  await page.setViewportSize({ width: 360, height: 800 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);
