@@ -58,7 +58,8 @@ npm run build
 
 # El esquema debe existir ANTES de recargar el código nuevo: si no, Postgres responde 42703
 # ("columna inexistente") y la app devuelve 500 (le pasó a staging con las migraciones 0014-0017).
-# drizzle-kit migrate es idempotente y usa DIRECT_DATABASE_URL del .env del clon. Si falla, el
+# drizzle-kit migrate solo aplica las migraciones pendientes (las ya aplicadas quedan en su tabla de
+# registro), todas en una transacción, y usa DIRECT_DATABASE_URL del .env del clon. Si falla, el
 # deploy aborta (set -e) ANTES del reload: mejor no desplegar que servir código contra un esquema viejo.
 npm run db:migrate
 
