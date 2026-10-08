@@ -1,4 +1,4 @@
-export const MODULES = ['temple-trips', 'users', 'callings', 'permissions', 'self-reliance'] as const;
+export const MODULES = ['temple-trips', 'users', 'callings', 'permissions', 'self-reliance', 'camps'] as const;
 
 export type ModuleKey = (typeof MODULES)[number];
 
@@ -16,6 +16,7 @@ export const MODULE_HOME: Record<ModuleKey, string> = {
   callings: '/admin/organizations',
   permissions: '/admin/organizations',
   'self-reliance': '/admin/self-reliance',
+  camps: '/admin/camps',
 };
 
 export function moduleHome(modules: readonly ModuleKey[]) {

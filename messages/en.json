@@ -154,7 +154,8 @@
       "templeTrips": "Temple Trip",
       "users": "Users",
       "wardCouncil": "Ward council",
-      "selfReliance": "Self-Reliance"
+      "selfReliance": "Self-Reliance",
+      "camps": "Camps"
     },
     "logout": "Sign out",
     "welcome": "Hi, {name}",
@@ -695,7 +696,8 @@
         "users": "Users",
         "callings": "Organizations and callings",
         "permissions": "Permissions",
-        "self-reliance": "Self-Reliance"
+        "self-reliance": "Self-Reliance",
+        "camps": "Camps"
       },
       "columns": {
         "organization": "Organization",
@@ -1255,6 +1257,59 @@
       "newTab": "(opens in a new tab)",
       "freeOnly": "This portal only links to free, public resources. It has no advertising and doesn't promote businesses.",
       "viewPortal": "View the public portal"
+    }
+  },
+  "camps": {
+    "title": "Camps",
+    "intro": "The unit's camps: dates, location, spots, and—only if the bishopric authorized it—the suggested contribution. The app doesn't record payments.",
+    "newCamp": "New camp",
+    "editCamp": "Edit",
+    "empty": "There are no camps yet.",
+    "badges": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "publicLink": "Public link: /camps/{slug}",
+    "dates": "{start} to {end}",
+    "deadline": "Registration until {date}",
+    "counts": {
+      "youth": "{n, plural, one {# youth} other {# youth}}",
+      "leaders": "{n, plural, one {# leader} other {# leaders}}",
+      "approved": "{n, plural, one {# approved} other {# approved}}",
+      "pending": "{n, plural, one {# pending} other {# pending}}"
+    },
+    "feeAuthorizedBy": "Contribution authorized by the bishopric. Recorded by {name} on {date}.",
+    "modal": {
+      "createTitle": "New camp",
+      "editTitle": "Edit camp",
+      "name": "Name",
+      "description": "Description (optional)",
+      "location": "Location",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "registrationDeadline": "Registration deadline",
+      "open": "Registration open",
+      "openHelp": "While registration is open, the public form accepts youth until the deadline.",
+      "quotasLegend": "Youth spots (0 = no limit; only approved participants count)",
+      "quotaYouthMale": "Young men",
+      "quotaYouthFemale": "Young women",
+      "feesLegend": "Suggested contribution",
+      "feesHelp": "As a rule, activities are paid for with the ward or stake budget (General Handbook 20.6.1). Leave the contribution at 0 unless the bishopric has authorized it.",
+      "feeYouth": "Suggested contribution per youth",
+      "feeLeader": "Suggested contribution per leader",
+      "feeAuthorized": "The bishopric authorized asking participants for a contribution because the ward or stake budget isn't enough (General Handbook 20.6.2).",
+      "donationCategoryName": "Donation category the bishopric specified (optional)",
+      "donationInstructions": "How to contribute (optional)",
+      "noMoney": "The app doesn't receive money or record payments: the contribution is given as a donation to the bishopric, and taking part doesn't depend on paying (General Handbook 34).",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create"
+    },
+    "errors": {
+      "fee_authorization_required": "To ask for a contribution above 0, check that the bishopric authorized it.",
+      "end_before_start": "The end date can't be before the start date.",
+      "deadline_after_end": "The deadline can't be after the end of the camp.",
+      "fields": "Check the highlighted fields."
     }
   }
 }

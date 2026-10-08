@@ -61,6 +61,6 @@ export const modulePermissions = pgTable(
   (table) => [
     uniqueIndex('module_permissions_module_calling_unique').on(table.module, table.callingId),
     index('module_permissions_calling_id_idx').on(table.callingId),
-    check('module_permissions_module_valid', sql`${table.module} in ('temple-trips', 'users', 'callings', 'permissions', 'self-reliance')`),
+    check('module_permissions_module_valid', sql`${table.module} in ('temple-trips', 'users', 'callings', 'permissions', 'self-reliance', 'camps')`),
   ],
 );
