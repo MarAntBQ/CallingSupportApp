@@ -22,5 +22,9 @@ export const POST = publicRoute(
     if (!reply) return NextResponse.json({ ok: true });
     return NextResponse.json({ method: 'sendMessage', chat_id: reply.chatId, text: reply.text });
   },
-  { reason: 'Telegram llama a este webhook; se valida el secreto del encabezado X-Telegram-Bot-Api-Secret-Token' },
+  {
+    reason: 'Telegram llama a este webhook; se valida el secreto del encabezado X-Telegram-Bot-Api-Secret-Token',
+    // Telegram es servidor-a-servidor y no envía Origin; la autenticación es el secreto, no el CSRF.
+    allowCrossOrigin: true,
+  },
 );

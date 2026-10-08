@@ -55,7 +55,17 @@ export async function notifyModuleEvent(module: ModuleKey, build: NoticeBuilder,
   try {
     const db = options.db ?? getDb();
     const mailer: Mailer = options.mailer ?? ((source, message) => sendMail(source, message, { db }));
-    const telegramSender: TelegramSender | null = options.telegramSender !== undefined ? options.telegramSender : await telegramSenderFor(db);
+    // Un fallo al preparar Telegram (ENC_KEY, token corrupto) NO debe impedir los correos: se aísla.
+    let telegramSender: TelegramSender | null = null;
+    if (options.telegramSender !== undefined) {
+      telegramSender = options.telegramSender;
+    } else {
+      try {
+        telegramSender = await telegramSenderFor(db);
+      } catch (error) {
+        console.error(JSON.stringify({ event: 'telegram_sender_init_failed', module, name: (error as Error | null)?.name }));
+      }
+    }
     const [config] = await db.select({ defaultLocale: appConfig.defaultLocale }).from(appConfig).limit(1);
     const fallback: Locale = isLocale(config?.defaultLocale) ? config.defaultLocale : 'es';
     const recipients = await moduleNotificationRecipients(db, module);

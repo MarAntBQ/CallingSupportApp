@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { check, date, index, integer, pgEnum, pgTable, smallint, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { check, date, index, integer, pgEnum, pgTable, smallint, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 
 export const userStatus = pgEnum('user_status', ['pending', 'active', 'suspended']);
 
@@ -43,6 +43,8 @@ export const users = pgTable(
     check('users_email_lowercase', sql`${table.email} = lower(${table.email})`),
     check('users_locale_valid', sql`${table.locale} is null or ${table.locale} in ('es', 'pt', 'en')`),
     index('users_role_id_idx').on(table.roleId),
+    // Un código de vinculación de Telegram pendiente es único: el /start no puede vincular a dos.
+    uniqueIndex('users_telegram_link_code_unique').on(table.telegramLinkCode).where(sql`${table.telegramLinkCode} is not null`),
   ],
 );
 
