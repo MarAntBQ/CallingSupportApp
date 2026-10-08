@@ -31,12 +31,16 @@ export function slugify(name: string): string {
   return slug || 'camp';
 }
 
+// `me` es la ruta del enlace personal (/camps/me/<token>): ningún campamento puede usarlo.
+const RESERVED_SLUGS = new Set(['me']);
+
 // Siguiente slug libre: "campamento", "campamento-2", "campamento-3"…
 export function nextFreeSlug(base: string, taken: ReadonlySet<string>): string {
-  if (!taken.has(base)) return base;
+  const isTaken = (slug: string) => taken.has(slug) || RESERVED_SLUGS.has(slug);
+  if (!isTaken(base)) return base;
   for (let n = 2; ; n += 1) {
     const suffix = `-${n}`;
     const candidate = `${base.slice(0, CAMP_SLUG_MAX - suffix.length).replace(/-+$/g, '')}${suffix}`;
-    if (!taken.has(candidate)) return candidate;
+    if (!isTaken(candidate)) return candidate;
   }
 }

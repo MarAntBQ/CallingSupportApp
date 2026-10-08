@@ -1310,6 +1310,73 @@
       "end_before_start": "La fecha de fin no puede ser anterior a la de inicio.",
       "deadline_after_end": "La fecha límite no puede ser posterior al fin del campamento.",
       "fields": "Revisa los campos marcados."
+    },
+    "public": {
+      "title": "Inscripción al campamento",
+      "dates": "Del {start} al {end}",
+      "deadline": "Inscripciones hasta el {date}",
+      "closed": "Las inscripciones para este campamento están cerradas.",
+      "medicalForm": {
+        "title": "Formulario oficial de permiso médico",
+        "body": "Para este campamento, cada padre o madre debe firmar el formulario oficial de la Iglesia «Permiso y autorización para dar atención médica» (<form>descargar el formulario oficial</form>; en churchofjesuschrist.org está en otros idiomas) y entregarlo al líder a cargo (Manual General 20.7.4). Esta inscripción no lo reemplaza y no guarda información médica."
+      },
+      "packingTitle": "Qué llevar",
+      "guardianLegend": "Padre, madre o tutor",
+      "youthLegend": "Joven {n}",
+      "fields": {
+        "guardianName": "Nombre completo",
+        "guardianPhone": "Teléfono",
+        "guardianEmail": "Correo",
+        "guardianEmailHint": "Aquí llega el enlace personal de cada joven.",
+        "fullName": "Nombre completo del joven",
+        "birthDate": "Fecha de nacimiento",
+        "gender": "Género",
+        "genderPlaceholder": "Elige",
+        "emergencyContactName": "Contacto de emergencia",
+        "emergencyContactPhone": "Teléfono de emergencia"
+      },
+      "genders": {
+        "male": "Hombre joven",
+        "female": "Mujer joven"
+      },
+      "addYouth": "+ Agregar otro joven",
+      "removeYouth": "Quitar este joven",
+      "contribution": "Aporte sugerido por joven: {amount}",
+      "contributionNote": "Participar no depende de pagar. Si puedes, contribuye con un donativo a la categoría que indique el obispado, en línea o con el formulario de Diezmo y otras ofrendas entregado al obispado. Los líderes no reciben dinero.",
+      "contributionCategory": "Categoría: {category}",
+      "dataNotice": "Responsable: {unit}. Tratamos estos datos solo para organizar este campamento y los conservamos {months} meses después de que termina, según nuestra política de datos:",
+      "consent": "Soy padre, madre o tutor legal de los jóvenes que inscribo y autorizo su participación y el tratamiento de sus datos según la política de datos.",
+      "submit": "Inscribir",
+      "success": "¡Inscripción recibida! Te enviamos por correo el enlace personal de {n, plural, one {tu joven} other {cada joven}}.",
+      "errors": {
+        "registration_closed": "Las inscripciones para este campamento están cerradas.",
+        "recaptcha_failed": "No pudimos verificar que no eres un robot. Vuelve a intentarlo.",
+        "future_date": "La fecha de nacimiento no puede ser futura.",
+        "fields": "Revisa los datos del formulario."
+      }
+    },
+    "me": {
+      "title": "Mi campamento",
+      "dates": "Del {start} al {end}",
+      "approved": "Inscripción aprobada",
+      "approvedBody": "Los organizadores aprobaron tu inscripción.",
+      "pending": "Inscripción pendiente",
+      "pendingBody": "Los organizadores todavía no aprueban tu inscripción. Este enlace mostrará el cambio.",
+      "invalid": "El enlace no es válido o ya no está disponible."
+    },
+    "email": {
+      "subject": "Inscripción al campamento: {camp}",
+      "preheader": "El enlace personal de {name}",
+      "intro": "Recibimos la inscripción de {name} al campamento «{camp}». Con este enlace personal puedes ver su estado y, más adelante, la lista de qué llevar.",
+      "open": "Abrir el enlace personal",
+      "medicalForm": "Recuerda firmar el formulario oficial de la Iglesia «Permiso y autorización para dar atención médica» y entregarlo al líder a cargo.",
+      "keep": "No compartas este enlace: es personal."
+    },
+    "notice": {
+      "subject": "Nueva inscripción al campamento {camp}",
+      "body": "{n, plural, one {Hay # inscripción nueva} other {Hay # inscripciones nuevas}} en el campamento «{camp}».",
+      "openPanel": "Abrir el panel",
+      "telegram": "Campamento «{camp}»: {n, plural, one {# inscripción nueva} other {# inscripciones nuevas}}. Revísalas en el panel."
     }
   }
 }

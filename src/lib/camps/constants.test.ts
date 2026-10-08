@@ -22,6 +22,10 @@ describe('nextFreeSlug', () => {
     expect(nextFreeSlug('campamento', new Set(['campamento', 'campamento-2']))).toBe('campamento-3');
   });
 
+  it('nunca usa "me", reservado para el enlace personal /camps/me/<token>', () => {
+    expect(nextFreeSlug('me', new Set())).toBe('me-2');
+  });
+
   it('recorta el slug largo para que el sufijo quepa en 60', () => {
     const base = 'a'.repeat(60);
     const next = nextFreeSlug(base, new Set([base]));

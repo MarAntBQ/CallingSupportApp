@@ -144,7 +144,9 @@ function CampCard({ camp, canUpdate, onEdit }: { camp: CampItem; canUpdate: bool
           {t('feeAuthorizedBy', { name: camp.feeAuthorizedByName ?? '—', date: new Date(camp.feeAuthorizedAt).toLocaleDateString(locale) })}
         </span>
       )}
-      <span className="text-sm break-all text-text-muted">{t('publicLink', { slug: camp.slug })}</span>
+      <a href={`/camps/${camp.slug}`} target="_blank" rel="noopener noreferrer" className="text-sm font-medium break-all text-primary underline-offset-4 hover:text-primary-strong hover:underline">
+        {t('publicLink', { slug: camp.slug })}
+      </a>
       {canUpdate && (
         <Button variant="link" className="self-start" onClick={onEdit}>
           {t('editCamp')}

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   CAMP_DESCRIPTION_MAX,
+  GENDERS,
   CAMP_LOCATION_MAX,
   CAMP_NAME_MAX,
   DONATION_CATEGORY_MAX,
@@ -74,4 +75,53 @@ export type CampItem = {
   pendingCount: number;
   createdAt: string;
   updatedAt: string;
+};
+
+// Permite hasta mañana por diferencias de zona horaria, pero rechaza fechas claramente futuras.
+const notFuture = (value: string) => value <= new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+
+const phone = z.string().trim().min(6).max(40);
+const personName = z.string().trim().min(3).max(150);
+
+// Solo lo que el campamento necesita (Manual General 33.8). Sin datos médicos: van en el
+// formulario oficial «Permiso y autorización para dar atención médica» (20.7.4).
+const youth = z.strictObject({
+  fullName: z.string().trim().min(3).max(160),
+  birthDate: z.iso.date().refine(notFuture, { message: 'future_date' }),
+  gender: z.enum(GENDERS),
+  emergencyContactName: personName,
+  emergencyContactPhone: phone,
+});
+
+export const campRegistrationSchema = z.strictObject({
+  guardian: z.strictObject({
+    name: personName,
+    phone,
+    email: z.string().trim().toLowerCase().pipe(z.email().max(254)),
+  }),
+  participants: z.array(youth).min(1).max(10),
+  consent: z.literal(true),
+  recaptchaToken: z.string().optional(),
+});
+
+export type CampRegistrationInput = z.infer<typeof campRegistrationSchema>;
+
+export type PublicCampView = {
+  slug: string;
+  name: string;
+  description: string | null;
+  startDate: string;
+  endDate: string;
+  location: string;
+  registrationDeadline: string;
+  registrationOpen: boolean;
+  suggestedContributionYouth: string | null;
+  donationCategoryName: string | null;
+  donationInstructions: string | null;
+  packing: { id: string; name: string; detail: string | null; category: string }[];
+};
+
+export type PersonalLinkView = {
+  camp: { name: string; startDate: string; endDate: string; location: string };
+  participant: { fullName: string; type: 'youth' | 'leader'; approved: boolean };
 };
