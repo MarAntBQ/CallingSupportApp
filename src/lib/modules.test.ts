@@ -7,6 +7,7 @@ describe('moduleHome', () => {
     expect(moduleHome(['users'])).toBe('/admin/users');
     expect(moduleHome(['callings'])).toBe('/admin/organizations');
     expect(moduleHome(['self-reliance'])).toBe('/admin/self-reliance');
+    expect(moduleHome(['camps'])).toBe('/admin/camps');
   });
 
   it('con solo el módulo permissions aterriza en /admin/organizations (la v1 lo dejaba sin destino)', () => {

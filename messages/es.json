@@ -154,7 +154,8 @@
       "templeTrips": "Viaje al Templo",
       "users": "Usuarios",
       "wardCouncil": "Consejo de barrio",
-      "selfReliance": "Autosuficiencia"
+      "selfReliance": "Autosuficiencia",
+      "camps": "Campamentos"
     },
     "logout": "Cerrar sesión",
     "welcome": "Hola, {name}",
@@ -695,7 +696,8 @@
         "users": "Usuarios",
         "callings": "Organizaciones y llamamientos",
         "permissions": "Permisos",
-        "self-reliance": "Autosuficiencia"
+        "self-reliance": "Autosuficiencia",
+        "camps": "Campamentos"
       },
       "columns": {
         "organization": "Organización",
@@ -1255,6 +1257,59 @@
       "newTab": "(se abre en otra pestaña)",
       "freeOnly": "Este portal solo enlaza recursos públicos y gratuitos. No incluye publicidad ni promociona negocios.",
       "viewPortal": "Ver el portal público"
+    }
+  },
+  "camps": {
+    "title": "Campamentos",
+    "intro": "Campamentos de la unidad: fechas, lugar, cupos y, solo si el obispado lo autorizó, el aporte sugerido. La aplicación no registra pagos.",
+    "newCamp": "Nuevo campamento",
+    "editCamp": "Editar",
+    "empty": "Todavía no hay campamentos.",
+    "badges": {
+      "open": "Abierto",
+      "closed": "Cerrado"
+    },
+    "publicLink": "Enlace público: /camps/{slug}",
+    "dates": "{start} al {end}",
+    "deadline": "Inscripciones hasta el {date}",
+    "counts": {
+      "youth": "{n, plural, one {# joven} other {# jóvenes}}",
+      "leaders": "{n, plural, one {# líder} other {# líderes}}",
+      "approved": "{n, plural, one {# aprobado} other {# aprobados}}",
+      "pending": "{n, plural, one {# pendiente} other {# pendientes}}"
+    },
+    "feeAuthorizedBy": "Aporte autorizado por el obispado. Lo registró {name} el {date}.",
+    "modal": {
+      "createTitle": "Nuevo campamento",
+      "editTitle": "Editar campamento",
+      "name": "Nombre",
+      "description": "Descripción (opcional)",
+      "location": "Lugar",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de fin",
+      "registrationDeadline": "Fecha límite de inscripción",
+      "open": "Inscripciones abiertas",
+      "openHelp": "Con las inscripciones abiertas, el formulario público acepta jóvenes hasta la fecha límite.",
+      "quotasLegend": "Cupos de jóvenes (0 = sin límite; solo cuentan los aprobados)",
+      "quotaYouthMale": "Hombres jóvenes",
+      "quotaYouthFemale": "Mujeres jóvenes",
+      "feesLegend": "Aporte sugerido",
+      "feesHelp": "Por norma las actividades se pagan con el presupuesto del barrio o la estaca (Manual General 20.6.1). Deja el aporte en 0 salvo que el obispado lo haya autorizado.",
+      "feeYouth": "Aporte sugerido por joven",
+      "feeLeader": "Aporte sugerido por líder",
+      "feeAuthorized": "El obispado autorizó pedir un aporte a los participantes porque el presupuesto del barrio o la estaca no alcanza (Manual General 20.6.2).",
+      "donationCategoryName": "Categoría de donativo que indicó el obispado (opcional)",
+      "donationInstructions": "Cómo contribuir (opcional)",
+      "noMoney": "La aplicación no recibe dinero ni registra pagos: el aporte se entrega como donativo al obispado, y participar no depende de pagar (Manual General 34).",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "create": "Crear"
+    },
+    "errors": {
+      "fee_authorization_required": "Para pedir un aporte mayor que 0, marca que el obispado lo autorizó.",
+      "end_before_start": "La fecha de fin no puede ser anterior a la de inicio.",
+      "deadline_after_end": "La fecha límite no puede ser posterior al fin del campamento.",
+      "fields": "Revisa los campos marcados."
     }
   }
 }

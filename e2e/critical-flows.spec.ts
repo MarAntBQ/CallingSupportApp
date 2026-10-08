@@ -374,6 +374,38 @@ test('Autosuficiencia (público): oficiales primero, enlaces externos seguros, l
   await expectNoHorizontalOverflow(page);
 });
 
+test('Campamentos: un aporte sin la autorización del obispado no se guarda; con ella, el campamento aparece abierto', async ({ page }) => {
+  const c = es.camps;
+  await login(page, PASSWORD);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
+  await page.getByRole('link', { name: es.admin.nav.camps }).click();
+  await expect(page).toHaveURL(/\/admin\/camps$/);
+  await expect(page.getByText(c.empty)).toBeVisible();
+
+  await page.getByRole('button', { name: c.newCamp }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel(c.modal.name, { exact: true }).fill('Campamento de Mujeres Jóvenes');
+  await dialog.getByLabel(c.modal.location, { exact: true }).fill('Bosque de prueba');
+  await dialog.getByLabel(c.modal.startDate, { exact: true }).fill('2026-12-10');
+  await dialog.getByLabel(c.modal.endDate, { exact: true }).fill('2026-12-12');
+  await dialog.getByLabel(c.modal.registrationDeadline, { exact: true }).fill('2026-12-01');
+  await dialog.getByLabel(c.modal.open, { exact: true }).check();
+  await dialog.getByLabel(c.modal.feeYouth, { exact: true }).fill('30');
+  await dialog.getByRole('button', { name: c.modal.create }).click();
+  await expect(dialog.getByText(c.errors.fee_authorization_required)).toBeVisible();
+
+  await dialog.getByLabel(c.modal.feeAuthorized).check();
+  await dialog.getByRole('button', { name: c.modal.create }).click();
+  await expect(dialog).toHaveCount(0);
+  const card = page.getByTestId('camp-card');
+  await expect(card).toContainText('Campamento de Mujeres Jóvenes');
+  await expect(card).toContainText(c.badges.open);
+  await expect(card).toContainText('/camps/campamento-de-mujeres-jovenes');
+
+  await page.setViewportSize({ width: 390, height: 900 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);

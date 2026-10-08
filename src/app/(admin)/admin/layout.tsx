@@ -35,6 +35,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const showTempleTrips = modules.includes('temple-trips');
   const showUsers = modules.includes('users');
   const showSelfReliance = modules.includes('self-reliance');
+  const showCamps = modules.includes('camps');
   const roleKey = ROLE_KEYS.find((key) => key === session.user.role.key);
   const roleLabel = roleKey ? tRoles(roleKey) : session.user.role.name;
 
@@ -48,6 +49,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           { href: '/admin/ward-council', label: t('nav.wardCouncil'), ready: true },
         ]
       : []),
+    ...(showCamps ? [{ href: '/admin/camps', label: t('nav.camps'), ready: true }] : []),
     ...(showSelfReliance ? [{ href: '/admin/self-reliance', label: t('nav.selfReliance'), ready: true }] : []),
     ...(showOrganizations ? [{ href: '/admin/organizations', label: t('nav.organizations'), ready: true }] : []),
     ...(admin
