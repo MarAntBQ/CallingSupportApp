@@ -38,3 +38,34 @@ despliega a mano.
   motivo de `ABORTADO: …`. El sitio publicado no cambia.
 - **Volver a publicar sin cambios:** *Actions → Publicar el sitio → Run workflow*.
 - **Revertir:** se revierte el commit en `main` con un PR, y el merge lo publica.
+
+## Purga diaria de la app en el VPS (staging y demo)
+
+La app borra cada día lo que ya venció: inscripciones por retención (#20, #26), sesiones vencidas o
+revocadas y registros de correos. Lo hace la ruta `/api/cron/daily`. En Vercel la llama Vercel Cron
+(`vercel.json`); en el VPS la llama el cron de [`app-daily.cron`](app-daily.cron) (#162).
+
+- [`app-daily.sh`](app-daily.sh) lee `CRON_SECRET` del `.env` de cada instalación y llama la
+  ruta con `Authorization: Bearer …`. El secreto no está en el archivo cron ni en los argumentos de
+  `curl`. La respuesta y el log son solo números, sin datos de personas.
+- Si `CRON_SECRET` falta o la llamada falla, deja `ABORTADO: …` en el log y termina con error.
+
+**Instalar** (quien administra el servidor, una vez):
+
+```sh
+# 1. Cada .env (csa-app y csa-demo) necesita CRON_SECRET (openssl rand -hex 32) y pm2 reload.
+# 2. Carpeta del log, del usuario de la app:
+sudo -u callingsupportapp mkdir -p -m 700 /home/callingsupportapp/.mbtmp
+# 3. El archivo cron, de root y sin permisos de escritura para otros:
+sudo install -m 644 -o root -g root /home/callingsupportapp/csa-app/deploy/app-daily.cron /etc/cron.d/callingsupportapp-daily
+```
+
+**Comprobar:** correr la línea a mano como `callingsupportapp` y mirar el log:
+
+```sh
+sudo -u callingsupportapp /home/callingsupportapp/csa-app/deploy/app-daily.sh /home/callingsupportapp/csa-app https://staging.callingsupportapp.org
+tail -n 5 /home/callingsupportapp/.mbtmp/app-daily.log
+```
+
+Debe imprimir algo como `… {"purgedRegistrations":0,"purgedParticipants":0,"deletedSessions":0,"deletedEmailLogs":0}`.
+Sin el encabezado, la ruta responde 401.
