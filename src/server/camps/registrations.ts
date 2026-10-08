@@ -123,6 +123,10 @@ export async function getPersonalLink(db: Database, token: string): Promise<Pers
       fullName: campParticipants.fullName,
       type: campParticipants.type,
       approved: campParticipants.approved,
+      suggestedContribution: campParticipants.suggestedContribution,
+      feeAuthorized: camps.feeAuthorized,
+      donationCategoryName: camps.donationCategoryName,
+      donationInstructions: camps.donationInstructions,
     })
     .from(campParticipants)
     .innerJoin(campRegistrations, eq(campParticipants.registrationId, campRegistrations.id))
@@ -133,5 +137,10 @@ export async function getPersonalLink(db: Database, token: string): Promise<Pers
   return {
     camp: { name: row.campName, startDate: row.startDate, endDate: row.endDate, location: row.location },
     participant: { fullName: row.fullName, type: row.type as ParticipantType, approved: row.approved },
+    // El aporte congelado al inscribirse, y solo si el obispado sigue autorizándolo.
+    contribution:
+      row.feeAuthorized && Number(row.suggestedContribution) > 0
+        ? { suggested: row.suggestedContribution, categoryName: row.donationCategoryName, instructions: row.donationInstructions }
+        : null,
   };
 }

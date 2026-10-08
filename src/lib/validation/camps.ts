@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   CAMP_DESCRIPTION_MAX,
   GENDERS,
+  PARTICIPANT_TYPES,
   CAMP_LOCATION_MAX,
   CAMP_NAME_MAX,
   DONATION_CATEGORY_MAX,
@@ -124,4 +125,93 @@ export type PublicCampView = {
 export type PersonalLinkView = {
   camp: { name: string; startDate: string; endDate: string; location: string };
   participant: { fullName: string; type: 'youth' | 'leader'; approved: boolean };
+  // Solo si el obispado autorizó un aporte mayor que 0 (Manual General 20.6.2). Referencial: nunca deuda.
+  contribution: { suggested: string; categoryName: string | null; instructions: string | null } | null;
+};
+
+const optionalPhone = z
+  .string()
+  .trim()
+  .max(40)
+  .optional()
+  .transform((value) => value || null)
+  .pipe(z.string().min(6).nullable());
+
+const optionalEmail = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .max(254)
+  .optional()
+  .transform((value) => value || null)
+  .pipe(z.email().nullable());
+
+// Inscripción desde el panel (también líderes). Quien inscribe confirma que la persona, o su padre,
+// madre o tutor si es menor, dio su consentimiento por el medio que la unidad haya definido.
+const adminParticipant = z
+  .strictObject({
+    type: z.enum(PARTICIPANT_TYPES),
+    fullName: z.string().trim().min(3).max(160),
+    birthDate: z.iso.date().refine(notFuture, { message: 'future_date' }).optional(),
+    gender: z.enum(GENDERS),
+    phone: optionalPhone,
+    email: optionalEmail,
+    emergencyContactName: z
+      .string()
+      .trim()
+      .max(150)
+      .optional()
+      .transform((value) => value || null),
+    emergencyContactPhone: optionalPhone,
+  })
+  .refine((value) => value.type === 'leader' || Boolean(value.birthDate), { message: 'birth_date_required', path: ['birthDate'] })
+  .refine((value) => value.type === 'leader' || Boolean(value.emergencyContactName && value.emergencyContactPhone), {
+    message: 'emergency_contact_required',
+    path: ['emergencyContactName'],
+  });
+
+export const adminRegistrationSchema = z.strictObject({
+  participants: z.array(adminParticipant).min(1).max(20),
+  consentConfirmed: z.literal(true),
+});
+
+export type AdminRegistrationInput = z.infer<typeof adminRegistrationSchema>;
+
+export const participantPatchSchema = z
+  .strictObject({
+    fullName: z.string().trim().min(3).max(160).optional(),
+    birthDate: z.iso.date().refine(notFuture, { message: 'future_date' }).optional(),
+    gender: z.enum(GENDERS).optional(),
+    phone: optionalPhone,
+    email: optionalEmail,
+    emergencyContactName: z.string().trim().min(3).max(150).optional(),
+    emergencyContactPhone: z.string().trim().min(6).max(40).optional(),
+    permissionFormReceived: z.boolean().optional(),
+  })
+  .refine((value) => Object.keys(value).length > 0, { message: 'empty' });
+
+export type ParticipantPatch = z.infer<typeof participantPatchSchema>;
+
+export const approvalSchema = z.strictObject({ approved: z.boolean() });
+
+export type CampParticipantItem = {
+  id: string;
+  type: 'youth' | 'leader';
+  fullName: string;
+  birthDate: string | null;
+  gender: 'male' | 'female';
+  phone: string | null;
+  email: string | null;
+  emergencyContactName: string | null;
+  emergencyContactPhone: string | null;
+  guardianName: string | null;
+  guardianPhone: string | null;
+  guardianEmail: string | null;
+  permissionFormReceived: boolean;
+  permissionFormReceivedAt: string | null;
+  approved: boolean;
+  suggestedContribution: string;
+  packingDone: number;
+  packingTotal: number;
+  createdAt: string;
 };

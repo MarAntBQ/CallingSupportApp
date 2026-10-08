@@ -445,6 +445,16 @@ test('Campamentos (público): un padre inscribe a 2 hijos con el aviso del formu
   await page.goto('/admin/camps');
   await expect(page.getByTestId('camp-card')).toContainText('2 jóvenes');
   await expect(page.getByTestId('camp-card')).toContainText('2 pendientes');
+
+  // Aprobación masiva desde el panel de participantes.
+  const pp = es.camps.participants;
+  const rows = page.getByTestId('camp-participant-row');
+  await expect(rows).toHaveCount(2);
+  await page.getByLabel(pp.selectOne.replace('{name}', 'Joven Uno')).check();
+  await page.getByLabel(pp.selectOne.replace('{name}', 'Joven Dos')).check();
+  await page.getByRole('button', { name: pp.bulk.approve, exact: true }).click();
+  await expect(page.getByText('2 participantes actualizados.')).toBeVisible();
+  await expect(page.getByTestId('camp-card')).toContainText('2 aprobados');
 });
 
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {

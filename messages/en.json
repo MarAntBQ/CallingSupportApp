@@ -1362,7 +1362,13 @@
       "approvedBody": "The organizers approved your registration.",
       "pending": "Registration pending",
       "pendingBody": "The organizers haven't approved your registration yet. This link will show the change.",
-      "invalid": "This link isn't valid or is no longer available."
+      "invalid": "This link isn't valid or is no longer available.",
+      "contribution": {
+        "title": "How to contribute",
+        "amount": "Suggested contribution: {amount}",
+        "note": "Taking part doesn't depend on paying. If you can, contribute with a donation to the category the bishopric specifies, online or with a Tithing and Other Offerings form given to the bishopric. Leaders don't receive money.",
+        "category": "Category: {category}"
+      }
     },
     "email": {
       "subject": "Camp registration: {camp}",
@@ -1377,6 +1383,84 @@
       "body": "There {n, plural, one {is # new registration} other {are # new registrations}} for the camp “{camp}.”",
       "openPanel": "Open the panel",
       "telegram": "Camp “{camp}”: {n, plural, one {# new registration} other {# new registrations}}. Review them in the panel."
+    },
+    "participantsOf": "Participants in {camp}",
+    "participants": {
+      "title": "Participants",
+      "subtabs": {
+        "youth": "Youth",
+        "leader": "Leaders",
+        "pending": "Pending"
+      },
+      "add": "Register from the panel",
+      "empty": "There are no registrations for this camp yet.",
+      "noRows": "No one matches the search.",
+      "loadFailed": "The participant list couldn't be loaded.",
+      "columns": {
+        "select": "Select",
+        "name": "Name",
+        "type": "Type",
+        "gender": "Gender",
+        "status": "Status",
+        "form": "Medical release",
+        "packing": "What to bring",
+        "contribution": "Suggested contribution"
+      },
+      "types": {
+        "youth": "Youth",
+        "leader": "Leader"
+      },
+      "genders": {
+        "male": "Male",
+        "female": "Female"
+      },
+      "approved": "Approved",
+      "pending": "Pending",
+      "formYes": "Received",
+      "formNo": "Missing",
+      "packing": "{done} of {total}",
+      "none": "—",
+      "selectOne": "Select {name}",
+      "bulk": {
+        "selected": "{n} selected",
+        "approve": "Approve",
+        "unapprove": "Remove approval",
+        "done": "{n, plural, one {# participant updated.} other {# participants updated.}}"
+      },
+      "guardian": "Registered by: {name} · {phone} · {email}",
+      "newLink": "Send a new personal link",
+      "newLinkHelp": "The previous link stops working. It's sent to the participant's email or, if there isn't one, to the person who registered them.",
+      "linkSent": "We emailed the new link.",
+      "fields": {
+        "type": "Type",
+        "fullName": "Full name",
+        "birthDate": "Date of birth",
+        "gender": "Gender",
+        "genderPlaceholder": "Choose",
+        "phone": "Phone (optional)",
+        "email": "Email (optional)",
+        "emailHint": "If you add it, we send them their personal link.",
+        "emergencyContactName": "Emergency contact",
+        "emergencyContactPhone": "Emergency phone",
+        "permissionForm": "The signed official “Parental or Guardian Permission and Medical Release” form was received (General Handbook 20.7.4).",
+        "approved": "Approved for the camp",
+        "consentConfirmed": "The person, or their parent or guardian if they are a minor, consented to the registration and to the processing of their data according to the data policy."
+      },
+      "modal": {
+        "editTitle": "Participant",
+        "addTitle": "Register from the panel",
+        "cancel": "Cancel",
+        "save": "Save",
+        "add": "Register"
+      },
+      "errors": {
+        "quota_full": "The youth spots for that gender are full (only approved participants count).",
+        "no_email": "There's no email to send the link to: add the participant's.",
+        "birth_date_required": "Date of birth is required for youth.",
+        "emergency_contact_required": "An emergency contact is required for youth.",
+        "future_date": "The date of birth can't be in the future.",
+        "fields": "Check the highlighted details."
+      }
     }
   }
 }

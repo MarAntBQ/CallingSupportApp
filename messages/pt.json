@@ -1362,7 +1362,13 @@
       "approvedBody": "Os organizadores aprovaram sua inscrição.",
       "pending": "Inscrição pendente",
       "pendingBody": "Os organizadores ainda não aprovaram sua inscrição. Este link mostrará a mudança.",
-      "invalid": "O link não é válido ou não está mais disponível."
+      "invalid": "O link não é válido ou não está mais disponível.",
+      "contribution": {
+        "title": "Como contribuir",
+        "amount": "Contribuição sugerida: {amount}",
+        "note": "Participar não depende de pagar. Se puder, contribua com uma doação à categoria indicada pelo bispado, on-line ou com o formulário de Dízimo e Outras Ofertas entregue ao bispado. Os líderes não recebem dinheiro.",
+        "category": "Categoria: {category}"
+      }
     },
     "email": {
       "subject": "Inscrição no acampamento: {camp}",
@@ -1377,6 +1383,84 @@
       "body": "{n, plural, one {Há # nova inscrição} other {Há # novas inscrições}} no acampamento «{camp}».",
       "openPanel": "Abrir o painel",
       "telegram": "Acampamento «{camp}»: {n, plural, one {# nova inscrição} other {# novas inscrições}}. Veja no painel."
+    },
+    "participantsOf": "Participantes de {camp}",
+    "participants": {
+      "title": "Participantes",
+      "subtabs": {
+        "youth": "Jovens",
+        "leader": "Líderes",
+        "pending": "Pendentes"
+      },
+      "add": "Inscrever pelo painel",
+      "empty": "Ainda não há inscrições neste acampamento.",
+      "noRows": "Ninguém corresponde à busca.",
+      "loadFailed": "Não foi possível carregar a lista de participantes.",
+      "columns": {
+        "select": "Selecionar",
+        "name": "Nome",
+        "type": "Tipo",
+        "gender": "Gênero",
+        "status": "Situação",
+        "form": "Autorização médica",
+        "packing": "O que levar",
+        "contribution": "Contribuição sugerida"
+      },
+      "types": {
+        "youth": "Jovem",
+        "leader": "Líder"
+      },
+      "genders": {
+        "male": "Masculino",
+        "female": "Feminino"
+      },
+      "approved": "Aprovado",
+      "pending": "Pendente",
+      "formYes": "Recebido",
+      "formNo": "Falta",
+      "packing": "{done} de {total}",
+      "none": "—",
+      "selectOne": "Selecionar {name}",
+      "bulk": {
+        "selected": "{n, plural, one {# selecionado} other {# selecionados}}",
+        "approve": "Aprovar",
+        "unapprove": "Retirar aprovação",
+        "done": "{n, plural, one {# participante atualizado.} other {# participantes atualizados.}}"
+      },
+      "guardian": "Inscrito por: {name} · {phone} · {email}",
+      "newLink": "Enviar um novo link pessoal",
+      "newLinkHelp": "O link anterior deixa de funcionar. É enviado ao e-mail do participante ou, se não tiver, ao de quem o inscreveu.",
+      "linkSent": "Enviamos o novo link por e-mail.",
+      "fields": {
+        "type": "Tipo",
+        "fullName": "Nome completo",
+        "birthDate": "Data de nascimento",
+        "gender": "Gênero",
+        "genderPlaceholder": "Escolha",
+        "phone": "Telefone (opcional)",
+        "email": "E-mail (opcional)",
+        "emailHint": "Se informar, enviamos o link pessoal.",
+        "emergencyContactName": "Contato de emergência",
+        "emergencyContactPhone": "Telefone de emergência",
+        "permissionForm": "Recebemos assinado o formulário oficial de permissão e autorização médica da Igreja (Manual Geral 20.7.4).",
+        "approved": "Aprovado para o acampamento",
+        "consentConfirmed": "A pessoa, ou seu pai, mãe ou responsável se for menor, deu seu consentimento para inscrevê-la e tratar seus dados conforme a política de dados."
+      },
+      "modal": {
+        "editTitle": "Participante",
+        "addTitle": "Inscrever pelo painel",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "add": "Inscrever"
+      },
+      "errors": {
+        "quota_full": "As vagas de jovens desse gênero já estão completas (só contam os aprovados).",
+        "no_email": "Não há e-mail para enviar o link: adicione o do participante.",
+        "birth_date_required": "A data de nascimento é obrigatória para os jovens.",
+        "emergency_contact_required": "O contato de emergência é obrigatório para os jovens.",
+        "future_date": "A data de nascimento não pode ser futura.",
+        "fields": "Revise os dados marcados."
+      }
     }
   }
 }
