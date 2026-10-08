@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { Alert } from '@/components/ui/alert';
+import { isLocale } from '@/i18n/config';
+import { formatMoney } from '@/lib/format';
 import { getPersonalLink } from '@/server/camps/registrations';
 import { getDb } from '@/server/db';
 
@@ -38,6 +40,17 @@ export default async function PersonalLinkPage({ params }: { params: Promise<{ t
           <Alert tone={view.participant.approved ? 'success' : 'info'} role="status" title={view.participant.approved ? t('approved') : t('pending')}>
             {view.participant.approved ? t('approvedBody') : t('pendingBody')}
           </Alert>
+          {view.contribution && (
+            <section className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4" data-testid="me-contribution">
+              <h2 className="text-lg font-semibold text-text">{t('contribution.title')}</h2>
+              <p className="text-base font-medium text-text">
+                {t('contribution.amount', { amount: formatMoney(Number(view.contribution.suggested), isLocale(locale) ? locale : 'es') })}
+              </p>
+              <p className="text-sm text-text-muted">{t('contribution.note')}</p>
+              {view.contribution.categoryName && <p className="text-sm font-medium text-text">{t('contribution.category', { category: view.contribution.categoryName })}</p>}
+              {view.contribution.instructions && <p className="text-sm whitespace-pre-line text-text-muted">{view.contribution.instructions}</p>}
+            </section>
+          )}
         </>
       ) : (
         <Alert tone="warning" role="status" title={t('invalid')} />

@@ -1309,7 +1309,8 @@
       "fee_authorization_required": "Para pedir un aporte mayor que 0, marca que el obispado lo autorizó.",
       "end_before_start": "La fecha de fin no puede ser anterior a la de inicio.",
       "deadline_after_end": "La fecha límite no puede ser posterior al fin del campamento.",
-      "fields": "Revisa los campos marcados."
+      "fields": "Revisa los campos marcados.",
+      "quota_below_approved": "El cupo no puede quedar por debajo de los jóvenes de ese género que ya están aprobados. Quita aprobaciones primero."
     },
     "public": {
       "title": "Inscripción al campamento",
@@ -1362,7 +1363,13 @@
       "approvedBody": "Los organizadores aprobaron tu inscripción.",
       "pending": "Inscripción pendiente",
       "pendingBody": "Los organizadores todavía no aprueban tu inscripción. Este enlace mostrará el cambio.",
-      "invalid": "El enlace no es válido o ya no está disponible."
+      "invalid": "El enlace no es válido o ya no está disponible.",
+      "contribution": {
+        "title": "Cómo contribuir",
+        "amount": "Aporte sugerido: {amount}",
+        "note": "Participar no depende de pagar. Si puedes, contribuye con un donativo a la categoría que indique el obispado, en línea o con el formulario de Diezmo y otras ofrendas entregado al obispado. Los líderes no reciben dinero.",
+        "category": "Categoría: {category}"
+      }
     },
     "email": {
       "subject": "Inscripción al campamento: {camp}",
@@ -1377,6 +1384,84 @@
       "body": "{n, plural, one {Hay # inscripción nueva} other {Hay # inscripciones nuevas}} en el campamento «{camp}».",
       "openPanel": "Abrir el panel",
       "telegram": "Campamento «{camp}»: {n, plural, one {# inscripción nueva} other {# inscripciones nuevas}}. Revísalas en el panel."
+    },
+    "participantsOf": "Participantes de {camp}",
+    "participants": {
+      "title": "Participantes",
+      "subtabs": {
+        "youth": "Jóvenes",
+        "leader": "Líderes",
+        "pending": "Pendientes"
+      },
+      "add": "Inscribir desde el panel",
+      "empty": "Todavía no hay inscripciones en este campamento.",
+      "noRows": "Nadie coincide con la búsqueda.",
+      "loadFailed": "No se pudo cargar la lista de participantes.",
+      "columns": {
+        "select": "Seleccionar",
+        "name": "Nombre",
+        "type": "Tipo",
+        "gender": "Género",
+        "status": "Estado",
+        "form": "Permiso médico",
+        "packing": "Qué llevar",
+        "contribution": "Aporte sugerido"
+      },
+      "types": {
+        "youth": "Joven",
+        "leader": "Líder"
+      },
+      "genders": {
+        "male": "Hombre",
+        "female": "Mujer"
+      },
+      "approved": "Aprobado",
+      "pending": "Pendiente",
+      "formYes": "Recibido",
+      "formNo": "Falta",
+      "packing": "{done} de {total}",
+      "none": "—",
+      "selectOne": "Seleccionar a {name}",
+      "bulk": {
+        "selected": "{n, plural, one {# seleccionado} other {# seleccionados}}",
+        "approve": "Aprobar",
+        "unapprove": "Quitar aprobación",
+        "done": "{n, plural, one {# participante actualizado.} other {# participantes actualizados.}}"
+      },
+      "guardian": "Inscrito por: {name} · {phone} · {email}",
+      "newLink": "Enviar un enlace personal nuevo",
+      "newLinkHelp": "El enlace anterior deja de funcionar. Se envía al correo del participante o, si no tiene, al de quien lo inscribió.",
+      "linkSent": "Enviamos el enlace nuevo por correo.",
+      "fields": {
+        "type": "Tipo",
+        "fullName": "Nombre completo",
+        "birthDate": "Fecha de nacimiento",
+        "gender": "Género",
+        "genderPlaceholder": "Elige",
+        "phone": "Teléfono (opcional)",
+        "email": "Correo (opcional)",
+        "emailHint": "Si lo pones, le enviamos su enlace personal.",
+        "emergencyContactName": "Contacto de emergencia",
+        "emergencyContactPhone": "Teléfono de emergencia",
+        "permissionForm": "Se recibió firmado el formulario oficial «Permiso y autorización para dar atención médica» (Manual General 20.7.4).",
+        "approved": "Aprobado para el campamento",
+        "consentConfirmed": "La persona, o su padre, madre o tutor si es menor, dio su consentimiento para inscribirla y tratar sus datos según la política de datos."
+      },
+      "modal": {
+        "editTitle": "Participante",
+        "addTitle": "Inscribir desde el panel",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "add": "Inscribir"
+      },
+      "errors": {
+        "quota_full": "El cupo de jóvenes de ese género ya está completo (solo cuentan los aprobados).",
+        "no_email": "No hay un correo para enviar el enlace: agrega el del participante.",
+        "birth_date_required": "La fecha de nacimiento es obligatoria para los jóvenes.",
+        "emergency_contact_required": "El contacto de emergencia es obligatorio para los jóvenes.",
+        "future_date": "La fecha de nacimiento no puede ser futura.",
+        "fields": "Revisa los datos marcados."
+      }
     }
   }
 }
