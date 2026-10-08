@@ -223,6 +223,33 @@ test('Viaje al Templo: el SuperAdmin aprueba un participante en el panel', async
   await expectNoHorizontalOverflow(page);
 });
 
+test('Viaje al Templo: Reportes muestra el resumen e imprime solo la lista', async ({ page }) => {
+  const tt = es.templeTrips;
+  const tr = tt.reports;
+  await login(page, PASSWORD);
+  await page.getByRole('link', { name: es.admin.nav.templeTrips }).click();
+  await expect(page).toHaveURL(/\/admin\/temple-trips$/);
+  await page.getByRole('tab', { name: tt.tabs.reports }).click();
+
+  // Resumen y aviso de datos de miembros.
+  await expect(page.getByText(tr.dataNotice)).toBeVisible();
+  await expect(page.getByText(tr.estimatedCost.label)).toBeVisible();
+  await expect(page.getByText(tr.estimatedCost.note)).toBeVisible();
+
+  // La vista general lista al participante aprobado dentro del área imprimible.
+  await expect(page.locator('.print-area')).toContainText('Persona Prueba');
+
+  // Impresión: en media 'print' solo queda el área de la lista; el resumen (.no-print) se oculta.
+  await page.emulateMedia({ media: 'print' });
+  await expect(page.getByRole('tab', { name: tr.filter.approvedOnly })).toBeHidden();
+  await expect(page.locator('.print-area')).toBeVisible();
+  await page.screenshot({ path: 'test-results/reportes-vista-general-print.png' });
+  await page.emulateMedia({ media: 'screen' });
+
+  await page.setViewportSize({ width: 390, height: 900 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);
