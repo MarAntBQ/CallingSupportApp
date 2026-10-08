@@ -56,6 +56,13 @@ echo "[deploy] $APP · $(git log --oneline -1) · node $(node -v)"
 npm ci --no-audit --no-fund
 npm run build
 
+# El esquema debe existir ANTES de recargar el código nuevo: si no, Postgres responde 42703
+# ("columna inexistente") y la app devuelve 500 (le pasó a staging con las migraciones 0014-0017).
+# drizzle-kit migrate solo aplica las migraciones pendientes (las ya aplicadas quedan en su tabla de
+# registro), todas en una transacción, y usa DIRECT_DATABASE_URL del .env del clon. Si falla, el
+# deploy aborta (set -e) ANTES del reload: mejor no desplegar que servir código contra un esquema viejo.
+npm run db:migrate
+
 # Reload sin --update-env: el APP_SOCKET lo fija el wrapper del manager al enlazar; no lo pisamos.
 pm2 reload "$APP"
 # pm2 save asegura que sobreviva un reinicio; si falla, avisamos fuerte (no lo ocultamos).
