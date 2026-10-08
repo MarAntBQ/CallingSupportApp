@@ -153,7 +153,8 @@
       "organizations": "Organizations",
       "templeTrips": "Temple Trip",
       "users": "Users",
-      "wardCouncil": "Ward council"
+      "wardCouncil": "Ward council",
+      "selfReliance": "Self-Reliance"
     },
     "logout": "Sign out",
     "welcome": "Hi, {name}",
@@ -684,7 +685,8 @@
         "temple-trips": "Temple Trip",
         "users": "Users",
         "callings": "Organizations and callings",
-        "permissions": "Permissions"
+        "permissions": "Permissions",
+        "self-reliance": "Self-Reliance"
       },
       "columns": {
         "organization": "Organization",
@@ -1162,6 +1164,68 @@
       "incorrect": "The code is not correct.",
       "passwordIncorrect": "The password is not correct.",
       "notStarted": "Start the setup again."
+    }
+  },
+  "selfReliance": {
+    "title": "Self-Reliance",
+    "intro": "Free, public resources for the unit's portal, starting with the Church's official ones.",
+    "resourcesTitle": "Resources",
+    "newResource": "New resource",
+    "empty": "There are no resources yet.",
+    "noRows": "No resources match the search.",
+    "official": "Official Church resource",
+    "published": "Published",
+    "hidden": "Hidden",
+    "up": "Up",
+    "down": "Down",
+    "moveUp": "Move “{title}” up",
+    "moveDown": "Move “{title}” down",
+    "confirmDelete": "Delete “{title}”? This can't be undone.",
+    "columns": {
+      "position": "Order",
+      "title": "Title",
+      "category": "Category",
+      "locale": "Language",
+      "status": "Status",
+      "order": "Move"
+    },
+    "categories": {
+      "courses": "Courses",
+      "employment": "Employment",
+      "education": "Education",
+      "personal_finances": "Personal finances",
+      "business": "Starting a business",
+      "emotional_resilience": "Emotional resilience",
+      "languages": "Languages",
+      "life_skills": "Life skills",
+      "other": "Other"
+    },
+    "locales": {
+      "all": "All languages",
+      "es": "Spanish",
+      "pt": "Portuguese",
+      "en": "English"
+    },
+    "modal": {
+      "createTitle": "New resource",
+      "editTitle": "Edit resource",
+      "title": "Title",
+      "url": "Link",
+      "urlHint": "Only links that start with https://",
+      "description": "Description (optional)",
+      "category": "Category",
+      "locale": "Resource language",
+      "published": "Published on the portal",
+      "freeOnly": "Free, public resources only: no paid courses or business advertising (General Handbook 38.8.5 and 38.8.21.2).",
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "delete": "Delete"
+    },
+    "errors": {
+      "url": "The link must start with https:// and point to a valid site.",
+      "title": "The title must be 2 to 120 characters long.",
+      "stale": "The list changed while you were reordering it. It was reloaded; please try again."
     }
   }
 }

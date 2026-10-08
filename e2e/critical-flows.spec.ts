@@ -313,6 +313,36 @@ test('Viaje al Templo: Reportes muestra el resumen e imprime solo la lista', asy
   await expectNoHorizontalOverflow(page);
 });
 
+test('Autosuficiencia: los 8 recursos oficiales vienen sembrados; un enlace http:// se rechaza y uno https:// se agrega al final', async ({ page }) => {
+  const sr = es.selfReliance;
+  await login(page, PASSWORD);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
+  await page.getByRole('link', { name: es.admin.nav.selfReliance }).click();
+  await expect(page).toHaveURL(/\/admin\/self-reliance$/);
+  await expect(page.locator('tbody tr')).toHaveCount(8);
+  await expect(page.getByText(sr.official, { exact: true })).toHaveCount(8);
+
+  await page.getByRole('button', { name: sr.newResource }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel(sr.modal.title, { exact: true }).fill('Curso inventado de prueba');
+  await dialog.getByLabel(sr.modal.url, { exact: true }).fill('http://example.com/curso');
+  await dialog.getByRole('button', { name: sr.modal.create }).click();
+  await expect(dialog.getByText(sr.errors.url)).toBeVisible();
+
+  await dialog.getByLabel(sr.modal.url, { exact: true }).fill('https://example.com/curso');
+  await dialog.getByRole('button', { name: sr.modal.create }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(page.locator('tbody tr')).toHaveCount(9);
+  await expect(page.locator('tbody tr').last()).toContainText('Curso inventado de prueba');
+  await expect(page.getByText(sr.official, { exact: true })).toHaveCount(8);
+
+  await page.getByRole('button', { name: sr.moveUp.replace('{title}', 'Curso inventado de prueba') }).click();
+  await expect(page.locator('tbody tr').nth(7)).toContainText('Curso inventado de prueba');
+
+  await page.setViewportSize({ width: 390, height: 900 });
+  await expectNoHorizontalOverflow(page);
+});
+
 test('/privacy: sin responsable lo avisa; al configurarlo en Configuración aparece sin redeploy', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);
