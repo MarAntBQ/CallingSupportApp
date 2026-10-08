@@ -253,8 +253,8 @@ Las pautas piden eliminar los recursos en línea cuando ya no se necesitan. Cuan
 usar la aplicación:
 
 1. Avisa a los usuarios y acuerda con el obispo y el responsable de los datos la fecha de baja.
-2. **No** descargues ni conserves copias de los datos de los miembros, salvo lo que el responsable de
-   los datos autorice expresamente.
+2. **No** descargues ni conserves copias de los datos de los miembros: con la baja se borran todos. Si
+   hiciste respaldos por tu cuenta (sección 8), destrúyelos también.
 3. En Supabase: tu proyecto → **Project Settings → General → Delete project**. Esto borra la base y
    todos sus datos de forma definitiva.
 4. En Vercel: tu proyecto → **Settings → General → Delete Project**.
