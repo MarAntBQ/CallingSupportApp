@@ -1,5 +1,6 @@
 # /etc/cron.d/callingsupportapp-daily — purga diaria de la app en el VPS (#162). Lo instala quien
 # administra el servidor; ver deploy/README.md. Sin secretos: app-daily.sh lee CRON_SECRET del .env.
-# 08:00 UTC = 03:00 en Ecuador. Staging y demo con unos minutos de diferencia.
+# 08:00 UTC = 03:00 en Ecuador. Staging y demo con unos minutos de diferencia. Las dos usan el script
+# del clon de staging (csa-app), que se actualiza en cada merge; la demo solo cambia con cada versión.
 0 8 * * * callingsupportapp /home/callingsupportapp/csa-app/deploy/app-daily.sh /home/callingsupportapp/csa-app https://staging.callingsupportapp.org >> /home/callingsupportapp/.mbtmp/app-daily.log 2>&1
-10 8 * * * callingsupportapp /home/callingsupportapp/csa-demo/deploy/app-daily.sh /home/callingsupportapp/csa-demo https://demo.callingsupportapp.org >> /home/callingsupportapp/.mbtmp/app-daily.log 2>&1
+10 8 * * * callingsupportapp /home/callingsupportapp/csa-app/deploy/app-daily.sh /home/callingsupportapp/csa-demo https://demo.callingsupportapp.org >> /home/callingsupportapp/.mbtmp/app-daily.log 2>&1
