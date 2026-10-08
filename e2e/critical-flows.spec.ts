@@ -416,7 +416,7 @@ test('Campamentos (público): un padre inscribe a 2 hijos con el aviso del formu
   await page.goto('/camps/campamento-de-mujeres-jovenes');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Campamento de Mujeres Jóvenes');
   await expect(page.getByText(p.medicalForm.title)).toBeVisible();
-  await expect(page.getByRole('link', { name: /formulario oficial/ })).toHaveAttribute('href', /churchofjesuschrist\.org/);
+  await expect(page.getByRole('link', { name: /formulario oficial/ })).toHaveAttribute('href', /^https:\/\/www\.churchofjesuschrist\.org\//);
   await expect(page.getByTestId('camp-contribution')).toBeVisible();
 
   await page.getByLabel(p.fields.guardianName, { exact: true }).fill('Mamá Prueba');
