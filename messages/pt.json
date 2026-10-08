@@ -849,6 +849,57 @@
         "empty_id": "O documento não pode ficar vazio."
       },
       "summaryDisapproved": "Foram reprovados {n}."
+    },
+    "reports": {
+      "filter": {
+        "label": "Mostrar",
+        "approvedOnly": "Apenas aprovados",
+        "all": "Todos (inclui pendentes)"
+      },
+      "ofQuota": "{n}/{quota}",
+      "ordinances": {
+        "title": "Ordenanças",
+        "ordinance": "Ordenança",
+        "total": "Total"
+      },
+      "estimatedCost": {
+        "label": "Custo estimado total",
+        "note": "Referencial para planejar com o bispado. O aplicativo não registra doações nem pagamentos (Manual Geral 34.4 e 34.5.2)."
+      },
+      "dataNotice": "Este arquivo tem dados de membros. Não o guarde em um computador compartilhado e apague-o quando não precisar mais.",
+      "lists": {
+        "label": "Lista",
+        "general": "Visão geral",
+        "transport": "Transporte",
+        "breakfast": "Café da manhã",
+        "lunch": "Almoço",
+        "lodging": "Hospedagem",
+        "ordinances": "Ordenanças"
+      },
+      "print": "Imprimir",
+      "printedHeader": "{list} — Viagem ao Templo",
+      "printedMeta": "{date} · {unit}",
+      "noneApproved": "Ainda não há participantes aprovados.",
+      "logisticsError": "Não foi possível salvar. Tente novamente.",
+      "columns": {
+        "number": "#",
+        "name": "Nome",
+        "phone": "Telefone",
+        "cost": "Custo",
+        "total": "Total",
+        "outbound": "Ida",
+        "return": "Volta",
+        "delivered": "Entregue"
+      },
+      "mark": "X",
+      "room": "Quarto {number}",
+      "unassigned": "Sem atribuição",
+      "empty": "Ninguém.",
+      "roles": {
+        "leader": "Líder",
+        "guest": "Participante"
+      },
+      "checkboxFor": "{label}: {name}"
     }
   }
 }
