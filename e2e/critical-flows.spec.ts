@@ -378,7 +378,9 @@ test('/privacy: sin responsable lo avisa; al configurarlo en Configuración apar
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(es.privacyPolicy.title);
   await expect(page.getByText(es.privacyPolicy.missingController)).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(17);
+  // Los 17 puntos generales más "Datos por módulo".
+  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(18);
+  await expect(page.getByTestId('policy-module-selfReliance')).toContainText(es.privacyPolicy.modules.selfReliance.title);
 
   await login(page, PASSWORD);
   await expect(page).toHaveURL(/\/admin\/dashboard$/);

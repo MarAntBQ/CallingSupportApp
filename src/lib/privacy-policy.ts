@@ -2,6 +2,9 @@ import type { Locale } from '@/i18n/config';
 
 export const POLICY_SECTIONS = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12', 's13', 's14', 's15', 's16', 's17'] as const;
 
+// Secciones por módulo, después de los 17 puntos generales: cada módulo dice qué guarda y quién lo administra.
+export const MODULE_POLICY_SECTIONS = ['selfReliance'] as const;
+
 export const CHURCH_URL: Record<Locale, string> = {
   es: 'https://www.churchofjesuschrist.org/?lang=spa',
   pt: 'https://www.churchofjesuschrist.org/?lang=por',
