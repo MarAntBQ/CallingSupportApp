@@ -121,22 +121,23 @@ describe.skipIf(!url)('inscripción pública al campamento contra Postgres', () 
     }
   });
 
-  it('cada joven genera su correo con enlace personal (source camps-access-link), aunque el SMTP no esté configurado', async () => {
+  it('cada joven genera su correo (camps-access-link) aunque no haya SMTP, y el registro guarda al tutor enmascarado', async () => {
     await createCamp();
     // Correo propio de esta prueba: los envíos en segundo plano de otras pruebas pueden llegar tarde.
     const guardian = { name: 'Papá Prueba', phone: '0990000003', email: 'papa.correo@example.com' };
+    expect(await db.select().from(schema.emailLog).where(eq(schema.emailLog.emailTo, 'papa.correo@example.com'))).toHaveLength(0);
     expect((await register('campamento', registration({ guardian, participants: [youth(), youth({ fullName: 'Hermano Prueba' })] }))).status).toBe(201);
     let logs: { source: string; emailTo: string }[] = [];
     for (let i = 0; i < 50 && logs.length < 2; i += 1) {
       logs = await db
         .select({ source: schema.emailLog.source, emailTo: schema.emailLog.emailTo })
         .from(schema.emailLog)
-        .where(eq(schema.emailLog.emailTo, 'papa.correo@example.com'));
+        .where(eq(schema.emailLog.emailTo, 'p***@example.com'));
       if (logs.length < 2) await new Promise((resolve) => setTimeout(resolve, 100));
     }
     expect(logs).toEqual([
-      { source: 'camps-access-link', emailTo: 'papa.correo@example.com' },
-      { source: 'camps-access-link', emailTo: 'papa.correo@example.com' },
+      { source: 'camps-access-link', emailTo: 'p***@example.com' },
+      { source: 'camps-access-link', emailTo: 'p***@example.com' },
     ]);
   });
 
@@ -147,6 +148,26 @@ describe.skipIf(!url)('inscripción pública al campamento contra Postgres', () 
     const future = await register('campamento', registration({ participants: [youth({ birthDate: day(30) })] }));
     expect((await future.json()).issues).toEqual([{ field: 'participants.0.birthDate', code: 'future_date' }]);
     expect(await db.select().from(schema.campRegistrations)).toHaveLength(0);
+  });
+
+  it('en producción sin APP_URL ni APP_ORIGINS no manda correos con el host de la petición; la inscripción queda guardada', async () => {
+    await createCamp();
+    const env = process.env as Record<string, string | undefined>;
+    const previous = { NODE_ENV: env.NODE_ENV, APP_URL: env.APP_URL, APP_ORIGINS: env.APP_ORIGINS };
+    env.NODE_ENV = 'production';
+    delete env.APP_URL;
+    delete env.APP_ORIGINS;
+    try {
+      const guardian = { name: 'Papá Prueba', phone: '0990000003', email: 'sin.url@example.com' };
+      const response = await register('campamento', registration({ guardian }), { host: 'atacante.example.com' });
+      expect(response.status).toBe(201);
+    } finally {
+      Object.assign(env, previous);
+      for (const [key, value] of Object.entries(previous)) if (value === undefined) delete env[key];
+    }
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(await db.select().from(schema.emailLog).where(eq(schema.emailLog.emailTo, 's***@example.com'))).toHaveLength(0);
+    expect(await db.select().from(schema.campParticipants)).toHaveLength(1);
   });
 
   it('un campamento cerrado o con la fecha límite vencida responde 400 registration_closed; uno inexistente, 404', async () => {
