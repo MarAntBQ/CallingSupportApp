@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { expect, test, type Page } from '@playwright/test';
+import { Secret, TOTP } from 'otpauth';
 import en from '../messages/en.json';
 import es from '../messages/es.json';
 import pt from '../messages/pt.json';
@@ -12,14 +13,39 @@ async function expectNoHorizontalOverflow(page: Page) {
   expect(overflow, 'la página se desborda horizontalmente').toBeLessThanOrEqual(0);
 }
 
+// Verificación en dos pasos (#36): el SuperAdmin la activa en /setup y cada login pide el código.
+// El servidor rechaza un paso de tiempo ya usado, así que cada código sale de un paso nuevo.
+const STEP_MS = 30_000;
+let mfaSecret = '';
+let lastStep = -1;
+
+async function nextTotp() {
+  for (;;) {
+    const now = Date.now();
+    const current = Math.floor(now / STEP_MS);
+    const earliest = now % STEP_MS < STEP_MS - 10_000 ? current - 1 : current;
+    const step = Math.max(lastStep + 1, earliest);
+    if (step <= current + 1) {
+      lastStep = step;
+      return new TOTP({ algorithm: 'SHA1', digits: 6, period: 30, secret: Secret.fromBase32(mfaSecret) }).generate({ timestamp: step * STEP_MS });
+    }
+    await new Promise((resolve) => setTimeout(resolve, (current + 1) * STEP_MS - now + 100));
+  }
+}
+
 async function login(page: Page, password: string) {
   await page.goto('/login');
   await page.getByLabel(es.login.email).fill(EMAIL);
   await page.getByLabel(es.login.password, { exact: true }).fill(password);
   await page.getByRole('button', { name: es.login.submit }).click();
+  if (password !== PASSWORD) return;
+  await expect(page.getByTestId('mfa-step')).toBeVisible();
+  await page.getByLabel(es.login.mfa.code).fill(await nextTotp());
+  await page.getByRole('button', { name: es.login.mfa.submit }).click();
 }
 
-test.describe.configure({ mode: 'serial' });
+// 90 s por prueba: un login puede esperar al siguiente paso de 30 s del código (nextTotp).
+test.describe.configure({ mode: 'serial', timeout: 90_000 });
 
 test.beforeAll(async ({ request }) => {
   const response = await request.get('/api/setup');
@@ -48,9 +74,25 @@ test('/setup crea el primer SuperAdmin y entra al panel', async ({ page }) => {
   await page.getByLabel(es.setup.bishopApprovedOn).fill('2026-10-01');
   await page.getByLabel(es.setup.privacy.consent).check();
   await page.getByRole('button', { name: es.setup.submit }).click();
-  await expect(page).toHaveURL(/\/admin\/dashboard$/);
   await expect(page.getByTestId('unit-name')).toHaveText('Barrio de Prueba');
   await expect(page.locator('footer')).toContainText('barrio.prueba@example.com');
+
+  // El SuperAdmin no entra al panel sin la verificación en dos pasos: lo lleva a activarla.
+  await expect(page).toHaveURL(/\/admin\/profile\/security$/);
+  await page.goto('/admin/dashboard');
+  await expect(page).toHaveURL(/\/admin\/profile\/security$/);
+  await page.getByRole('button', { name: es.security.enable }).click();
+  mfaSecret = (await page.getByTestId('mfa-secret').textContent())!.trim();
+  await page.getByLabel(es.security.code).fill(await nextTotp());
+  await page.getByRole('button', { name: es.security.confirm }).click();
+  const codes = page.getByTestId('recovery-codes').getByRole('listitem');
+  await expect(codes).toHaveCount(10);
+  await expect(page.getByRole('button', { name: es.security.finish })).toBeDisabled();
+  await page.getByLabel(es.security.savedCheck).check();
+  await page.getByRole('button', { name: es.security.finish }).click();
+  await expect(page.getByTestId('mfa-status')).toContainText(es.security.on);
+  await page.goto('/admin');
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
 });
 
 test('después del primer administrador, /setup redirige a /login', async ({ page }) => {
@@ -75,6 +117,27 @@ test('login con contraseña mala muestra el error y con la buena entra; cerrar s
   await expect(page).toHaveURL(/\/login/);
   await page.goto('/admin');
   await expect(page).toHaveURL(/\/login$/);
+});
+
+test('Verificación en dos pasos: a 360 px el paso del código cabe, pide teclado numérico y rechaza un código malo', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  await page.goto('/login');
+  await page.getByLabel(es.login.email).fill(EMAIL);
+  await page.getByLabel(es.login.password, { exact: true }).fill(PASSWORD);
+  await page.getByRole('button', { name: es.login.submit }).click();
+  const code = page.getByLabel(es.login.mfa.code);
+  await expect(code).toBeVisible();
+  await expect(code).toHaveAttribute('inputmode', 'numeric');
+  await expect(code).toHaveAttribute('autocomplete', 'one-time-code');
+  await expectNoHorizontalOverflow(page);
+  await code.fill('000000');
+  await page.getByRole('button', { name: es.login.mfa.submit }).click();
+  await expect(page.getByText(es.login.mfa.incorrect)).toBeVisible();
+  await expect(page).toHaveURL(/\/login/);
+  await code.fill(await nextTotp());
+  await page.getByRole('button', { name: es.login.mfa.submit }).click();
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
+  await expectNoHorizontalOverflow(page);
 });
 
 test('Configuración: cambiar el nombre se ve en la barra lateral sin recargar', async ({ page }) => {

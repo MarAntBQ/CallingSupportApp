@@ -2,8 +2,11 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { timeZoneOptions } from '@/lib/validation/config';
-import { getSession } from '@/server/auth/session';
+import { getMfaPolicy } from '@/server/auth/mfa';
+import { getPanelSession } from '@/server/auth/panel';
 import { isGlobalAdmin } from '@/server/auth/sessions';
+import { getDb } from '@/server/db';
+import { MfaPolicyCard } from './mfa-policy-card';
 import { SettingsForm } from './settings-form';
 
 export const dynamic = 'force-dynamic';
@@ -14,10 +17,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SettingsPage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const session = await getPanelSession();
   if (!isGlobalAdmin(session)) redirect('/admin');
   const t = await getTranslations('settings');
+  const { requireMfaForLeaders } = await getMfaPolicy(getDb());
 
   return (
     <section className="flex max-w-3xl flex-col gap-6">
@@ -26,6 +29,7 @@ export default async function SettingsPage() {
         <p className="text-text-muted">{t('intro')}</p>
       </div>
       <SettingsForm timeZones={timeZoneOptions()} currentEmail={session.user.email} />
+      <MfaPolicyCard initial={requireMfaForLeaders} />
     </section>
   );
 }

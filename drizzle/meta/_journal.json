@@ -127,6 +127,13 @@
       "when": 1791438894211,
       "tag": "0017_telegram_link_code_unique",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1791462864826,
+      "tag": "0018_mfa",
+      "breakpoints": true
     }
   ]
 }

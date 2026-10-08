@@ -29,7 +29,11 @@
     "internal_error": "Algo salió mal en el servidor. Inténtalo de nuevo en un momento.",
     "server_misconfigured": "Falta la llave de cifrado del servidor (ENC_KEY). Avísale a quien instaló la aplicación.",
     "smtp_failed": "No se pudo enviar el correo de prueba.",
-    "registration_closed": "El registro de cuentas está cerrado en esta instalación."
+    "registration_closed": "El registro de cuentas está cerrado en esta instalación.",
+    "mfa_required": "Activa la verificación en dos pasos para continuar.",
+    "mfa_disabled_in_demo": "En la demo no se puede activar la verificación en dos pasos: las cuentas son compartidas.",
+    "mfa_already_enabled": "La verificación en dos pasos ya está activa.",
+    "challenge_expired": "El código venció. Vuelve a iniciar sesión."
   },
   "roles": {
     "super_admin": "SuperAdmin",
@@ -58,7 +62,20 @@
       "password_reset": "Tu contraseña cambió. Inicia sesión con la nueva."
     },
     "forgot": "¿Olvidaste tu contraseña?",
-    "register": "Crear cuenta"
+    "register": "Crear cuenta",
+    "mfa": {
+      "title": "Verificación en dos pasos",
+      "intro": "Escribe el código de 6 dígitos de tu aplicación de autenticación.",
+      "code": "Código",
+      "recoveryIntro": "Escribe uno de tus códigos de recuperación. Cada uno sirve una sola vez.",
+      "recoveryCode": "Código de recuperación",
+      "useRecovery": "Usar un código de recuperación",
+      "useApp": "Usar el código de la aplicación",
+      "submit": "Verificar",
+      "submitting": "Verificando…",
+      "incorrect": "El código no es correcto.",
+      "back": "Volver a iniciar sesión"
+    }
   },
   "setup": {
     "title": "Poner en marcha la aplicación",
@@ -149,7 +166,11 @@
       "title": "Falta el contacto de la instalación",
       "body": "Escribe un correo o teléfono de la unidad en Configuración: las pautas de los recursos en línea piden que se vea en todas las páginas."
     },
-    "noModules": "No tienes módulos asignados. Habla con los líderes de tu unidad."
+    "noModules": "No tienes módulos asignados. Habla con los líderes de tu unidad.",
+    "mfaBanner": {
+      "title": "Protege los datos de los miembros: activa la verificación en dos pasos.",
+      "link": "Activarla ahora"
+    }
   },
   "table": {
     "pageSize": "Mostrar <select></select> registros",
@@ -294,6 +315,12 @@
       "testing": "Probando…",
       "testOk": "Conectado con @{bot}.",
       "testFailed": "No se pudo conectar."
+    },
+    "mfa": {
+      "title": "Verificación en dos pasos",
+      "intro": "El SuperAdmin siempre la necesita. Quienes tienen algún módulo la ven recomendada; con esta opción, también es obligatoria para ellos.",
+      "toggle": "Exigir verificación en dos pasos a todos los usuarios con permisos",
+      "saved": "Guardado."
     }
   },
   "profile": {
@@ -348,6 +375,11 @@
       "link": "Vincular mi Telegram",
       "linkHint": "Abre este enlace en Telegram y envía Start. Si ya lo hiciste, recarga la página.",
       "unlink": "Desvincular"
+    },
+    "security": {
+      "title": "Seguridad",
+      "body": "Verificación en dos pasos y códigos de recuperación.",
+      "link": "Abrir la seguridad de mi cuenta"
     }
   },
   "sessions": {
@@ -483,7 +515,29 @@
       "invitePreheader": "Tu cuenta está lista; falta tu contraseña.",
       "inviteIntro": "Se creó tu cuenta para el sistema del barrio. Para entrar, establece tu contraseña con el siguiente enlace:",
       "inviteCta": "Establecer mi contraseña",
-      "inviteOutro": "Si no esperabas este correo, puedes ignorarlo."
+      "inviteOutro": "Si no esperabas este correo, puedes ignorarlo.",
+      "mfa": {
+        "enabled": {
+          "subject": "Activaste la verificación en dos pasos",
+          "preheader": "Tu cuenta ahora pide un código al iniciar sesión.",
+          "body": "Activaste la verificación en dos pasos: desde ahora, al iniciar sesión se te pedirá un código de tu aplicación de autenticación. Se cerraron tus demás sesiones abiertas. Si no fuiste tú, avisa enseguida a los líderes de tu unidad."
+        },
+        "disabled": {
+          "subject": "Desactivaste la verificación en dos pasos",
+          "preheader": "Tu cuenta ya no pide un código al iniciar sesión.",
+          "body": "Desactivaste la verificación en dos pasos de tu cuenta y se cerraron tus demás sesiones abiertas. Si no fuiste tú, cambia tu contraseña y avisa enseguida a los líderes de tu unidad."
+        },
+        "recoveryUsed": {
+          "subject": "Usaste un código de recuperación",
+          "preheader": "Se inició sesión con uno de tus códigos de recuperación.",
+          "body": "Se inició sesión en tu cuenta con uno de tus códigos de recuperación. Ese código ya no sirve. Si te quedan pocos, genera códigos nuevos en Mi perfil → Seguridad. Si no fuiste tú, cambia tu contraseña y avisa enseguida a los líderes de tu unidad."
+        },
+        "reset": {
+          "subject": "Se restableció tu verificación en dos pasos",
+          "preheader": "Un administrador quitó la verificación de tu cuenta.",
+          "body": "Un administrador de tu unidad restableció la verificación en dos pasos de tu cuenta y se cerraron todas tus sesiones. Al volver a entrar, actívala de nuevo desde Mi perfil → Seguridad. Si no lo pediste, avisa enseguida a los líderes de tu unidad."
+        }
+      }
     }
   },
   "mailLogs": {
@@ -1032,6 +1086,16 @@
       "es": "Español",
       "pt": "Português",
       "en": "English"
+    },
+    "mfa": {
+      "label": "Verificación en dos pasos",
+      "on": "Activa",
+      "off": "No activa",
+      "reset": "Restablecer verificación en dos pasos",
+      "resetting": "Restableciendo…",
+      "confirm": "Se borra su verificación en dos pasos y se cierran todas sus sesiones. Al volver a entrar tendrá que activarla de nuevo. ¿Continuar?",
+      "done": "Verificación restablecida. Se cerraron sus sesiones.",
+      "ownNote": "Tu propia verificación se administra en Mi perfil → Seguridad."
     }
   },
   "wardCouncil": {
@@ -1051,6 +1115,53 @@
       "noCode": "Para vincular tu cuenta, usa el enlace que aparece en tu perfil del sistema.",
       "unknownCode": "Ese código ya no es válido — genera uno nuevo desde tu perfil.",
       "linked": "Listo, tu cuenta quedó vinculada. Aquí recibirás avisos."
+    }
+  },
+  "security": {
+    "title": "Seguridad",
+    "intro": "La verificación en dos pasos pide, además de tu contraseña, un código de una aplicación de autenticación en tu teléfono (Google Authenticator, Microsoft Authenticator, 1Password u otra). Así, una contraseña filtrada no basta para entrar.",
+    "cardTitle": "Verificación en dos pasos",
+    "statusLabel": "Estado",
+    "on": "Activa",
+    "off": "No activa",
+    "required": "Es obligatoria para tu cuenta: actívala para seguir usando el panel.",
+    "recommended": "Te la recomendamos porque tu cuenta tiene acceso a datos de los miembros.",
+    "demo": "En la demo no se puede activar: las cuentas de prueba son compartidas entre visitantes.",
+    "enable": "Activar la verificación en dos pasos",
+    "starting": "Preparando…",
+    "step1Title": "1. Escanea el código QR",
+    "step1Body": "Ábrelo con tu aplicación de autenticación. Si no puedes escanearlo, escribe a mano esta clave:",
+    "qrAlt": "Código QR para tu aplicación de autenticación",
+    "secretLabel": "Clave para escribir a mano",
+    "step2Title": "2. Escribe el código que muestra la aplicación",
+    "code": "Código de 6 dígitos",
+    "confirm": "Confirmar",
+    "confirming": "Confirmando…",
+    "step3Title": "3. Guarda tus códigos de recuperación",
+    "step3Body": "Si pierdes el teléfono, cada uno de estos códigos te deja entrar una vez. Guárdalos en un lugar seguro: no se volverán a mostrar.",
+    "copy": "Copiar",
+    "copied": "Copiados",
+    "download": "Descargar .txt",
+    "savedCheck": "Guardé mis códigos en un lugar seguro",
+    "finish": "Terminar",
+    "cancel": "Cancelar",
+    "enabledDone": "La verificación en dos pasos está activa.",
+    "disableTitle": "Desactivar",
+    "disableBody": "Para desactivarla escribe tu contraseña actual y un código de la aplicación (o uno de recuperación).",
+    "requiredNoDisable": "No puedes desactivarla: es obligatoria para tu cuenta.",
+    "password": "Contraseña actual",
+    "codeOrRecovery": "Código de la aplicación o de recuperación",
+    "disable": "Desactivar",
+    "disabling": "Desactivando…",
+    "disabledDone": "La verificación en dos pasos está desactivada.",
+    "regenerateTitle": "Códigos de recuperación",
+    "regenerateBody": "Genera 10 códigos nuevos. Los anteriores dejan de servir.",
+    "regenerate": "Generar códigos nuevos",
+    "regenerating": "Generando…",
+    "errors": {
+      "incorrect": "El código no es correcto.",
+      "passwordIncorrect": "La contraseña no es correcta.",
+      "notStarted": "Vuelve a empezar la activación."
     }
   }
 }

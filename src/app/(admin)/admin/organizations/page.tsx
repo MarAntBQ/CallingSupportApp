@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
-import { getSession } from '@/server/auth/session';
+import { getPanelSession } from '@/server/auth/panel';
 import { getDb } from '@/server/db';
 import { listCallings, listOrganizations } from '@/server/organizations/catalog';
 import { getPermissionMatrix } from '@/server/permissions/matrix';
@@ -19,8 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const hasAny = (actions: Record<string, boolean>) => Object.values(actions).some(Boolean);
 
 export default async function OrganizationsPage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const session = await getPanelSession();
   const db = getDb();
   const [catalog, permissions] = await Promise.all([
     moduleActionsOf(db, session.user, 'callings'),

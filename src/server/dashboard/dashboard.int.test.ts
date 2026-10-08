@@ -28,7 +28,7 @@ describe.skipIf(!url)('dashboard del SuperAdmin contra Postgres', () => {
     const [roleRow] = await db.select().from(schema.roles).where(eq(schema.roles.key, role));
     const [user] = await db
       .insert(schema.users)
-      .values({ firstName: 'Ana', lastName: 'Prueba', email, passwordHash: await hashPassword(PASSWORD), roleId: roleRow!.id, status })
+      .values({ firstName: 'Ana', lastName: 'Prueba', email, passwordHash: await hashPassword(PASSWORD), roleId: roleRow!.id, mfaEnabled: roleRow!.level >= 100, status })
       .returning();
     return user!;
   }

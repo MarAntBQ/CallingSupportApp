@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { Alert } from '@/components/ui/alert';
 import { moduleHome } from '@/lib/modules';
-import { getSession } from '@/server/auth/session';
+import { getPanelSession } from '@/server/auth/panel';
 import { isGlobalAdmin } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
 import { allowedModules } from '@/server/permissions/service';
@@ -10,8 +10,7 @@ import { allowedModules } from '@/server/permissions/service';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminHomePage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const session = await getPanelSession();
   if (isGlobalAdmin(session)) redirect('/admin/dashboard');
   const home = moduleHome(await allowedModules(getDb(), session.user));
   if (home) redirect(home);

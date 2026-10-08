@@ -85,6 +85,8 @@ jobs:
       - run: npm ci
       - name: Navegador de Playwright (Chromium)
         run: npx playwright install --with-deps chromium
+      - name: Llave de cifrado efímera (la verificación en dos pasos cifra su secreto)
+        run: echo "ENC_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
       - name: Migraciones sobre la base vacía
         run: npm run db:migrate
       - run: npm run build

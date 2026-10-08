@@ -1,7 +1,9 @@
 import 'server-only';
 import { AuthError, errorResponse } from '@/server/auth/errors';
 import { requireSessionFromRequest } from '@/server/auth/session';
+import { assertMfaSatisfied } from '@/server/auth/mfa';
 import type { Session } from '@/server/auth/sessions';
+import { getDb } from '@/server/db';
 import { isSameOrigin } from './http';
 import { assertPermission, type Permission } from './permission';
 
@@ -18,12 +20,15 @@ async function readParams<P>(context?: RouteContext<P>) {
 
 export function withAuth<P = Record<string, never>>(
   handler: AuthedHandler<P>,
-  options: { permission?: Permission } = {},
+  // mfaExempt: solo para lo que se necesita ANTES de activar la verificación obligatoria (#36):
+  // quién soy, cerrar sesión y activarla. Todo lo demás exige tenerla activa si es obligatoria.
+  options: { permission?: Permission; mfaExempt?: boolean } = {},
 ) {
   return async (request: Request, context?: RouteContext<P>) => {
     try {
       if (!isSameOrigin(request)) throw new AuthError(403, 'bad_origin');
       const session = await requireSessionFromRequest(request);
+      if (!options.mfaExempt) await assertMfaSatisfied(getDb(), session);
       await assertPermission(session, options.permission);
       return await handler(request, { session, params: await readParams(context) });
     } catch (error) {

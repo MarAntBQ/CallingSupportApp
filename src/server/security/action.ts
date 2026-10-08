@@ -3,7 +3,9 @@ import { randomUUID } from 'node:crypto';
 import type { z } from 'zod';
 import { AuthError } from '@/server/auth/errors';
 import { getSession } from '@/server/auth/session';
+import { assertMfaSatisfied } from '@/server/auth/mfa';
 import type { Session } from '@/server/auth/sessions';
+import { getDb } from '@/server/db';
 import { assertPermission, type Permission } from './permission';
 
 export type ActionResult<T> =
@@ -19,6 +21,7 @@ export function authedAction<S extends z.ZodType, T>(
     try {
       const session = await getSession();
       if (!session) throw new AuthError(401, 'unauthenticated');
+      await assertMfaSatisfied(getDb(), session);
       await assertPermission(session, options.permission);
       const parsed = schema.safeParse(raw);
       if (!parsed.success) {

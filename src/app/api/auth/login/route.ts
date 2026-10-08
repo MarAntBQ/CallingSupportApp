@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { isLocale } from '@/i18n/config';
 import { loginSchema } from '@/lib/validation/auth';
 import { authenticate } from '@/server/auth/login';
+import { createMfaChallenge } from '@/server/auth/mfa';
 import { getSessionFromRequest, setLocaleCookie, setSessionCookie } from '@/server/auth/session';
 import { createLoginSession, findSession } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
@@ -25,6 +26,13 @@ export const POST = publicRoute(
     const user = await authenticate(db, email, password);
     await clear(db, emailKey.key);
     await refund(db, ipKey.key);
+
+    // Con la verificación en dos pasos activa (#36), la contraseña sola no crea la sesión: se abre
+    // un reto de 5 minutos que se completa en /api/auth/mfa/verify con el código.
+    if (user.mfaEnabled) {
+      const challengeId = await createMfaChallenge(db, user.id, rememberMe);
+      return NextResponse.json({ mfaRequired: true, challengeId }, { headers: { 'Cache-Control': 'no-store' } });
+    }
 
     const previous = await getSessionFromRequest(request);
     const { token, expiresAt } = await createLoginSession(db, user.id, user.passwordHash, {

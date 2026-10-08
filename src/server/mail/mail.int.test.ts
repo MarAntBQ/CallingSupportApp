@@ -42,7 +42,7 @@ describe.skipIf(!url)('correo contra Postgres', () => {
     const [role] = await db.select().from(schema.roles).where(eq(schema.roles.key, roleKey));
     const [user] = await db
       .insert(schema.users)
-      .values({ firstName: 'Ana', lastName: 'Prueba', email, passwordHash: await hashPassword('x'.repeat(12)), roleId: role!.id, status: 'active' })
+      .values({ firstName: 'Ana', lastName: 'Prueba', email, passwordHash: await hashPassword('x'.repeat(12)), roleId: role!.id, mfaEnabled: role!.level >= 100, status: 'active' })
       .returning();
     const { token } = await createSession(db, user!.id);
     return `${sessionCookieName()}=${token}`;

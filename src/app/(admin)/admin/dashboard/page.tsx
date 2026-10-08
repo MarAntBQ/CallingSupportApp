@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getSession } from '@/server/auth/session';
+import { getPanelSession } from '@/server/auth/panel';
 import { isGlobalAdmin } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
 import { getDashboard } from '@/server/dashboard/dashboard';
@@ -25,8 +25,7 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
 }
 
 export default async function DashboardPage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const session = await getPanelSession();
   if (!isGlobalAdmin(session)) redirect('/admin');
 
   const t = await getTranslations('dashboard');

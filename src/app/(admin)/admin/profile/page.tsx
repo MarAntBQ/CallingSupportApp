@@ -1,11 +1,13 @@
 import { eq } from 'drizzle-orm';
 import type { Metadata } from 'next';
 import { getLocale, getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getSession } from '@/server/auth/session';
+import { getPanelSession, MFA_SETUP_PATH } from '@/server/auth/panel';
 import { getDb } from '@/server/db';
 import { users } from '@/server/db/schema';
 import { getTelegramConfig } from '@/server/telegram/service';
+import { Card } from '../settings/card';
 import { ProfileForm } from './profile-form';
 import { TelegramProfileCard } from './telegram-profile-card';
 
@@ -19,8 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ProfilePage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const session = await getPanelSession();
   const t = await getTranslations('profile');
   const tRoles = await getTranslations('roles');
   const locale = await getLocale();
@@ -57,6 +58,11 @@ export default async function ProfilePage() {
         initial={{ firstName: user.firstName, lastName: user.lastName, phone: user.phone ?? '' }}
         locale={locale}
       />
+      <Card title={t('security.title')} intro={t('security.body')}>
+        <Link href={MFA_SETUP_PATH} className="font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">
+          {t('security.link')}
+        </Link>
+      </Card>
       <TelegramProfileCard linked={Boolean(user.telegramChatId)} botConfigured={telegram.hasToken} />
     </section>
   );

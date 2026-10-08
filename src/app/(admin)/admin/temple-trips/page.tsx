@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
-import { getSession } from '@/server/auth/session';
+import { getPanelSession } from '@/server/auth/panel';
 import { getDb } from '@/server/db';
 import { moduleActionsOf } from '@/server/permissions/service';
 import { listTempleTrips } from '@/server/temple-trips/trips';
@@ -15,8 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TempleTripsPage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const session = await getPanelSession();
   const db = getDb();
   const actions = await moduleActionsOf(db, session.user, 'temple-trips');
   if (!actions.read) redirect('/admin');

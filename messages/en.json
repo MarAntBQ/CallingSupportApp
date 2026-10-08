@@ -29,7 +29,11 @@
     "internal_error": "Something went wrong on the server. Please try again in a moment.",
     "server_misconfigured": "The server's encryption key (ENC_KEY) is missing. Let whoever installed the app know.",
     "smtp_failed": "The test email couldn't be sent.",
-    "registration_closed": "Account sign-up is closed in this installation."
+    "registration_closed": "Account sign-up is closed in this installation.",
+    "mfa_required": "Turn on two-step verification to continue.",
+    "mfa_disabled_in_demo": "Two-step verification cannot be turned on in the demo: the accounts are shared.",
+    "mfa_already_enabled": "Two-step verification is already on.",
+    "challenge_expired": "The code expired. Sign in again."
   },
   "roles": {
     "super_admin": "SuperAdmin",
@@ -58,7 +62,20 @@
       "password_reset": "Your password changed. Sign in with the new one."
     },
     "forgot": "Forgot your password?",
-    "register": "Create account"
+    "register": "Create account",
+    "mfa": {
+      "title": "Two-step verification",
+      "intro": "Enter the 6-digit code from your authenticator app.",
+      "code": "Code",
+      "recoveryIntro": "Enter one of your recovery codes. Each one works only once.",
+      "recoveryCode": "Recovery code",
+      "useRecovery": "Use a recovery code",
+      "useApp": "Use the code from the app",
+      "submit": "Verify",
+      "submitting": "Verifying…",
+      "incorrect": "The code is not correct.",
+      "back": "Back to sign in"
+    }
   },
   "setup": {
     "title": "Set up the app",
@@ -149,7 +166,11 @@
       "title": "The installation contact is missing",
       "body": "Add a unit email or phone number in Settings: the guidelines for online resources ask for it to appear on every page."
     },
-    "noModules": "You don't have any modules assigned. Talk to the leaders of your unit."
+    "noModules": "You don't have any modules assigned. Talk to the leaders of your unit.",
+    "mfaBanner": {
+      "title": "Protect members' data: turn on two-step verification.",
+      "link": "Turn it on now"
+    }
   },
   "table": {
     "pageSize": "Show <select></select> entries",
@@ -294,6 +315,12 @@
       "testing": "Testing…",
       "testOk": "Connected to @{bot}.",
       "testFailed": "Couldn't connect."
+    },
+    "mfa": {
+      "title": "Two-step verification",
+      "intro": "The SuperAdmin always needs it. Users with any module see it as recommended; with this option, it is required for them too.",
+      "toggle": "Require two-step verification for all users with permissions",
+      "saved": "Saved."
     }
   },
   "profile": {
@@ -348,6 +375,11 @@
       "link": "Link my Telegram",
       "linkHint": "Open this link in Telegram and send Start. If you already did, reload the page.",
       "unlink": "Unlink"
+    },
+    "security": {
+      "title": "Security",
+      "body": "Two-step verification and recovery codes.",
+      "link": "Open my account security"
     }
   },
   "sessions": {
@@ -483,7 +515,29 @@
       "invitePreheader": "Your account is ready; your password is missing.",
       "inviteIntro": "Your account for the ward system was created. To sign in, set your password with the link below:",
       "inviteCta": "Set my password",
-      "inviteOutro": "If you weren't expecting this email, you can ignore it."
+      "inviteOutro": "If you weren't expecting this email, you can ignore it.",
+      "mfa": {
+        "enabled": {
+          "subject": "You turned on two-step verification",
+          "preheader": "Your account now asks for a code when you sign in.",
+          "body": "You turned on two-step verification: from now on, signing in will ask for a code from your authenticator app. Your other open sessions were signed out. If this was not you, tell your unit leaders right away."
+        },
+        "disabled": {
+          "subject": "You turned off two-step verification",
+          "preheader": "Your account no longer asks for a code when you sign in.",
+          "body": "You turned off two-step verification for your account and your other open sessions were signed out. If this was not you, change your password and tell your unit leaders right away."
+        },
+        "recoveryUsed": {
+          "subject": "You used a recovery code",
+          "preheader": "Someone signed in with one of your recovery codes.",
+          "body": "Someone signed in to your account with one of your recovery codes. That code no longer works. If you have few left, generate new ones in My profile → Security. If this was not you, change your password and tell your unit leaders right away."
+        },
+        "reset": {
+          "subject": "Your two-step verification was reset",
+          "preheader": "An administrator removed verification from your account.",
+          "body": "An administrator of your unit reset two-step verification for your account and all your sessions were signed out. When you sign in again, turn it back on in My profile → Security. If you did not ask for this, tell your unit leaders right away."
+        }
+      }
     }
   },
   "mailLogs": {
@@ -1032,6 +1086,16 @@
       "es": "Español",
       "pt": "Português",
       "en": "English"
+    },
+    "mfa": {
+      "label": "Two-step verification",
+      "on": "On",
+      "off": "Off",
+      "reset": "Reset two-step verification",
+      "resetting": "Resetting…",
+      "confirm": "Their two-step verification will be removed and all their sessions signed out. When they sign in again they will have to turn it on again. Continue?",
+      "done": "Verification reset. Their sessions were signed out.",
+      "ownNote": "Your own verification is managed in My profile → Security."
     }
   },
   "wardCouncil": {
@@ -1051,6 +1115,53 @@
       "noCode": "To link your account, use the link shown in your profile in the system.",
       "unknownCode": "That code is no longer valid — generate a new one from your profile.",
       "linked": "Done, your account is linked. You'll receive notices here."
+    }
+  },
+  "security": {
+    "title": "Security",
+    "intro": "Two-step verification asks, besides your password, for a code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, 1Password or another). That way, a leaked password is not enough to get in.",
+    "cardTitle": "Two-step verification",
+    "statusLabel": "Status",
+    "on": "On",
+    "off": "Off",
+    "required": "It is required for your account: turn it on to keep using the panel.",
+    "recommended": "We recommend it because your account has access to members' data.",
+    "demo": "It cannot be turned on in the demo: the test accounts are shared among visitors.",
+    "enable": "Turn on two-step verification",
+    "starting": "Preparing…",
+    "step1Title": "1. Scan the QR code",
+    "step1Body": "Open it with your authenticator app. If you cannot scan it, type this key by hand:",
+    "qrAlt": "QR code for your authenticator app",
+    "secretLabel": "Key to type by hand",
+    "step2Title": "2. Enter the code the app shows",
+    "code": "6-digit code",
+    "confirm": "Confirm",
+    "confirming": "Confirming…",
+    "step3Title": "3. Save your recovery codes",
+    "step3Body": "If you lose your phone, each of these codes lets you sign in once. Keep them somewhere safe: they will not be shown again.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download .txt",
+    "savedCheck": "I saved my codes somewhere safe",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "enabledDone": "Two-step verification is on.",
+    "disableTitle": "Turn off",
+    "disableBody": "To turn it off, enter your current password and a code from the app (or a recovery code).",
+    "requiredNoDisable": "You cannot turn it off: it is required for your account.",
+    "password": "Current password",
+    "codeOrRecovery": "App code or recovery code",
+    "disable": "Turn off",
+    "disabling": "Turning off…",
+    "disabledDone": "Two-step verification is off.",
+    "regenerateTitle": "Recovery codes",
+    "regenerateBody": "Generate 10 new codes. The previous ones stop working.",
+    "regenerate": "Generate new codes",
+    "regenerating": "Generating…",
+    "errors": {
+      "incorrect": "The code is not correct.",
+      "passwordIncorrect": "The password is not correct.",
+      "notStarted": "Start the setup again."
     }
   }
 }

@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { asc, desc, eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
-import { getSession } from '@/server/auth/session';
+import { getPanelSession } from '@/server/auth/panel';
+import { isGlobalAdmin } from '@/server/auth/sessions';
 import { getDb } from '@/server/db';
 import { callings, organizations, roles } from '@/server/db/schema';
 import { moduleActionsOf } from '@/server/permissions/service';
@@ -17,8 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function UsersPage() {
-  const session = await getSession();
-  if (!session) redirect('/login');
+  const session = await getPanelSession();
   const db = getDb();
   const actions = await moduleActionsOf(db, session.user, 'users');
   if (!actions.read) redirect('/admin');
@@ -32,5 +32,15 @@ export default async function UsersPage() {
 
   const orgs = orgRows.map((org) => ({ ...org, callings: callingRows.filter((calling) => calling.organizationId === org.id) }));
 
-  return <UsersAdmin initialUsers={initialUsers} roles={roleRows} orgs={orgs} canCreate={actions.create} canUpdate={actions.update} />;
+  return (
+    <UsersAdmin
+      initialUsers={initialUsers}
+      roles={roleRows}
+      orgs={orgs}
+      canCreate={actions.create}
+      canUpdate={actions.update}
+      canResetMfa={isGlobalAdmin(session)}
+      currentUserId={session.user.id}
+    />
+  );
 }
