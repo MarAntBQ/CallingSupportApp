@@ -904,5 +904,33 @@
       "checkboxFor": "{label}: {name}",
       "totalLine": "Total: {total}"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "users": {
+      "title": "Users",
+      "active": "{n} active"
+    },
+    "pendingVerify": "Pending verification",
+    "trips": {
+      "title": "Trips",
+      "hasActive": "There is an active trip",
+      "none": "No active trip"
+    },
+    "participantsPending": "Participants to approve",
+    "goToApprovals": "Go to approvals",
+    "byRole": {
+      "title": "Users by role"
+    },
+    "estimatedCost": {
+      "title": "Active trip estimated cost (for reference)",
+      "note": "For planning with the bishopric only. The app does not record donations or payments."
+    },
+    "activeTrip": {
+      "title": "Active trip",
+      "date": "Date",
+      "dateUnconfirmed": "{date} (to be confirmed)",
+      "deadline": "Registration deadline"
+    }
   }
 }
