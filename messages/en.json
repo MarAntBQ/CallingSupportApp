@@ -134,7 +134,9 @@
       "sessions": "Active sessions",
       "emails": "Sent emails",
       "organizations": "Organizations",
-      "templeTrips": "Temple Trip"
+      "templeTrips": "Temple Trip",
+      "users": "Users",
+      "wardCouncil": "Ward council"
     },
     "logout": "Sign out",
     "welcome": "Hi, {name}",
@@ -450,7 +452,12 @@
       "resetOutro": "It expires {minutes} minutes after you verify it. If you didn't ask for it, ignore this email: your password won't change.",
       "changedSubject": "Your password changed",
       "changedPreheader": "Your open sessions were signed out.",
-      "changedBody": "Your account password was changed and all your open sessions were signed out. If it wasn't you, let your unit leaders know right away."
+      "changedBody": "Your account password was changed and all your open sessions were signed out. If it wasn't you, let your unit leaders know right away.",
+      "inviteSubject": "Set your password",
+      "invitePreheader": "Your account is ready; your password is missing.",
+      "inviteIntro": "Your account for the ward system was created. To sign in, set your password with the link below:",
+      "inviteCta": "Set my password",
+      "inviteOutro": "If you weren't expecting this email, you can ignore it."
     }
   },
   "mailLogs": {
@@ -931,6 +938,82 @@
       "date": "Date",
       "dateUnconfirmed": "{date} (to be confirmed)",
       "deadline": "Registration deadline"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "newUser": "Create user",
+    "empty": "No users yet.",
+    "noRows": "No results.",
+    "none": "—",
+    "tabs": {
+      "leaders": "Leaders",
+      "all": "All"
+    },
+    "columns": {
+      "name": "Name",
+      "calling": "Calling",
+      "email": "Email",
+      "role": "Role",
+      "organizations": "Organizations",
+      "status": "Status",
+      "telegram": "Telegram"
+    },
+    "status": {
+      "pending": "Pending",
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "telegram": {
+      "linked": "Linked",
+      "no": "—"
+    },
+    "modal": {
+      "createTitle": "Create user",
+      "editTitle": "Edit user",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "rolePlaceholder": "Choose a role",
+      "callingLabel": "Position description",
+      "callings": "Callings",
+      "callingsDisabled": "This role has no callings.",
+      "locale": "Language",
+      "localePlaceholder": "Unit language",
+      "status": "Status",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create"
+    },
+    "resetPassword": {
+      "button": "Reset password",
+      "note": "Hand it over in person. Shown only once.",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "errors": {
+      "email_taken": "A user with that email already exists.",
+      "role_not_found": "The role does not exist.",
+      "invalid_calling": "One of the callings is not valid."
+    },
+    "locales": {
+      "es": "Español",
+      "pt": "Português",
+      "en": "English"
+    }
+  },
+  "wardCouncil": {
+    "title": "Ward council",
+    "empty": "No active organizations.",
+    "noRows": "No results.",
+    "noLeader": "No leader assigned.",
+    "columns": {
+      "organization": "Organization",
+      "calling": "Calling",
+      "name": "Name",
+      "email": "Email"
     }
   }
 }
