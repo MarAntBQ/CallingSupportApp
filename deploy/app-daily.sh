@@ -20,8 +20,9 @@ esac
 [[ "$BASE_URL" =~ ^https://[A-Za-z0-9.-]+$ ]] || fallo "la URL debe ser https://dominio, sin ruta: $BASE_URL"
 [ -f "$APP_DIR/.env" ] || fallo "no existe $APP_DIR/.env"
 
-SECRET="$(grep -E '^CRON_SECRET=' "$APP_DIR/.env" | tail -1 | cut -d= -f2- | tr -d '"'"'"' \r')"
-[ -n "$SECRET" ] || fallo "CRON_SECRET está vacío en $APP_DIR/.env: la ruta respondería 401"
+# `|| true`: si no hay línea CRON_SECRET, grep sale con 1 y set -e cortaría aquí sin dejar el motivo.
+SECRET="$({ grep -E '^CRON_SECRET=' "$APP_DIR/.env" || true; } | tail -1 | cut -d= -f2- | tr -d '"'"'"' \r')"
+[ -n "$SECRET" ] || fallo "falta CRON_SECRET (o está vacío) en $APP_DIR/.env: la ruta respondería 401"
 [ ${#SECRET} -ge 32 ] || fallo "CRON_SECRET es demasiado corto (usa openssl rand -hex 32)"
 
 RESPUESTA="$(printf 'Authorization: Bearer %s\n' "$SECRET" | curl -fsS --max-time 120 -H @- "$BASE_URL/api/cron/daily")" ||
