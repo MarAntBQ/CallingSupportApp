@@ -10,7 +10,7 @@ import { createSession, sessionCookieName } from '@/server/auth/sessions';
 import type { Database } from '@/server/db';
 import * as schema from '@/server/db/schema';
 import type { MailMessage } from '@/server/mail/service';
-import { createUser, listUsers, resetPassword, updateUser } from '@/server/users/users';
+import { createUser, listUsers, listWardCouncil, resetPassword, updateUser } from '@/server/users/users';
 
 const url = process.env.TEST_DATABASE_URL;
 const MIGRATIONS = fileURLToPath(new URL('../../../drizzle', import.meta.url));
@@ -27,7 +27,12 @@ function request(method: string, path: string, body?: unknown, cookie?: string) 
 describe.skipIf(!url)('usuarios y consejo de barrio contra Postgres', () => {
   let pool: Pool;
   let db: Database;
-  let route: typeof import('@/app/api/users/route');
+  let routes: {
+    users: typeof import('@/app/api/users/route');
+    user: typeof import('@/app/api/users/[id]/route');
+    reset: typeof import('@/app/api/users/[id]/reset-password/route');
+    wardCouncil: typeof import('@/app/api/ward-council/route');
+  };
 
   async function roleId(key: string) {
     const [role] = await db.select({ id: schema.roles.id }).from(schema.roles).where(eq(schema.roles.key, key));
@@ -56,7 +61,12 @@ describe.skipIf(!url)('usuarios y consejo de barrio contra Postgres', () => {
     await admin.end();
     pool = new Pool({ connectionString: url, max: 2 });
     db = drizzle(pool, { schema });
-    route = await import('@/app/api/users/route');
+    routes = {
+      users: await import('@/app/api/users/route'),
+      user: await import('@/app/api/users/[id]/route'),
+      reset: await import('@/app/api/users/[id]/reset-password/route'),
+      wardCouncil: await import('@/app/api/ward-council/route'),
+    };
   }, 60_000);
 
   beforeEach(async () => {
@@ -125,10 +135,34 @@ describe.skipIf(!url)('usuarios y consejo de barrio contra Postgres', () => {
     expect(list[0]!.telegramLinked).toBe(false);
   });
 
-  it('GET /api/users: sin permiso del módulo users, 403', async () => {
+  it('bajar un usuario a Miembro limpia también la descripción del cargo (callingLabel)', async () => {
+    const user = await createRawUser('baja@example.com', 'leader');
+    await db.update(schema.users).set({ callingLabel: 'Secretario de barrio' }).where(eq(schema.users.id, user.id));
+    const result = await updateUser(db, user.id, { roleId: await roleId('member') });
+    expect(result.ok).toBe(true);
+    const [row] = await db.select({ label: schema.users.callingLabel }).from(schema.users).where(eq(schema.users.id, user.id));
+    expect(row!.label).toBeNull();
+  });
+
+  it('el consejo de barrio no incluye líderes suspendidos', async () => {
+    const [org] = await db.insert(schema.organizations).values({ name: 'Obispado' }).returning();
+    const [calling] = await db.insert(schema.callings).values({ organizationId: org!.id, name: 'Obispo' }).returning();
+    const leader = await createRawUser('obispo@example.com', 'leader');
+    await db.insert(schema.userCallings).values({ userId: leader.id, callingId: calling!.id });
+    expect((await listWardCouncil(db)).find((group) => group.organization.id === org!.id)!.leaders).toHaveLength(1);
+    await db.update(schema.users).set({ status: 'suspended' }).where(eq(schema.users.id, leader.id));
+    expect((await listWardCouncil(db)).find((group) => group.organization.id === org!.id)!.leaders).toHaveLength(0);
+  });
+
+  it('todos los endpoints exigen el permiso del módulo users: un rol sin él recibe 403', async () => {
     const member = await createRawUser('sinpermiso@example.com', 'member');
-    const { token } = await createSession(db, member.id);
-    const response = await route.GET(request('GET', '/api/users', undefined, `${sessionCookieName()}=${token}`), { params: Promise.resolve({}) });
-    expect(response.status).toBe(403);
+    const target = await createRawUser('objetivo@example.com', 'leader');
+    const cookie = `${sessionCookieName()}=${(await createSession(db, member.id)).token}`;
+    const get = await routes.users.GET(request('GET', '/api/users', undefined, cookie), { params: Promise.resolve({}) });
+    const post = await routes.users.POST(request('POST', '/api/users', { firstName: 'A', lastName: 'B', email: 'x@example.com', roleId: await roleId('member') }, cookie), { params: Promise.resolve({}) });
+    const patch = await routes.user.PATCH(request('PATCH', `/api/users/${target.id}`, { status: 'suspended' }, cookie), { params: Promise.resolve({ id: target.id }) });
+    const reset = await routes.reset.POST(request('POST', `/api/users/${target.id}/reset-password`, {}, cookie), { params: Promise.resolve({ id: target.id }) });
+    const ward = await routes.wardCouncil.GET(request('GET', '/api/ward-council', undefined, cookie), { params: Promise.resolve({}) });
+    expect([get.status, post.status, patch.status, reset.status, ward.status]).toEqual([403, 403, 403, 403, 403]);
   });
 });

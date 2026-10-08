@@ -105,7 +105,8 @@ export async function createUser(db: Database, input: CreateUserInput, options: 
   const [role] = await db.select({ level: roles.level }).from(roles).where(eq(roles.id, input.roleId)).limit(1);
   if (!role) return { ok: false, status: 400, code: 'role_not_found' };
 
-  const desired = role.level >= LEADER_LEVEL ? [...new Set(input.callingIds ?? [])] : [];
+  const isLeader = role.level >= LEADER_LEVEL;
+  const desired = isLeader ? [...new Set(input.callingIds ?? [])] : [];
   if (!(await validActiveCallings(db, desired))) return { ok: false, status: 400, code: 'invalid_calling' };
 
   const passwordHash = await hashPassword(generateTempPassword());
@@ -120,7 +121,7 @@ export async function createUser(db: Database, input: CreateUserInput, options: 
         email: input.email,
         phone: input.phone ?? null,
         roleId: input.roleId,
-        callingLabel: input.callingLabel ?? null,
+        callingLabel: isLeader ? (input.callingLabel ?? null) : null,
         status: 'active',
         locale: input.locale ?? null,
         passwordHash,
@@ -145,8 +146,9 @@ export async function updateUser(db: Database, id: string, input: UpdateUserInpu
     const [role] = await tx.select({ level: roles.level }).from(roles).where(eq(roles.id, effectiveRoleId)).limit(1);
     if (!role) return { ok: false, status: 400, code: 'role_not_found' } as const;
 
-    // Invariante: un rol por debajo de líder nunca conserva llamamientos.
-    if (role.level < LEADER_LEVEL) {
+    // Invariante: un rol por debajo de líder nunca conserva llamamientos ni descripción del cargo.
+    const belowLeader = role.level < LEADER_LEVEL;
+    if (belowLeader) {
       await tx.delete(userCallings).where(eq(userCallings.userId, id));
     } else if (input.callingIds !== undefined) {
       const desired = [...new Set(input.callingIds)];
@@ -160,7 +162,8 @@ export async function updateUser(db: Database, id: string, input: UpdateUserInpu
       .set({
         ...(input.roleId !== undefined ? { roleId: input.roleId } : {}),
         ...(input.status !== undefined ? { status: input.status } : {}),
-        ...(input.callingLabel !== undefined ? { callingLabel: input.callingLabel } : {}),
+        // Rol < líder: la descripción del cargo se vacía siempre; si no, se respeta lo enviado.
+        ...(belowLeader ? { callingLabel: null } : input.callingLabel !== undefined ? { callingLabel: input.callingLabel } : {}),
         ...(input.locale !== undefined ? { locale: input.locale } : {}),
       })
       .where(eq(users.id, id));
@@ -201,7 +204,7 @@ export async function listWardCouncil(db: Database): Promise<WardCouncilGroup[]>
     .from(organizations)
     .innerJoin(callings, and(eq(callings.organizationId, organizations.id), eq(callings.active, true)))
     .innerJoin(userCallings, eq(userCallings.callingId, callings.id))
-    .innerJoin(users, eq(userCallings.userId, users.id))
+    .innerJoin(users, and(eq(userCallings.userId, users.id), eq(users.status, 'active')))
     .where(eq(organizations.active, true))
     .orderBy(asc(users.lastName), asc(users.firstName));
 
