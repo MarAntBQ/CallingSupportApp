@@ -244,6 +244,35 @@ describe.skipIf(!url)('verificación en dos pasos contra Postgres', () => {
     expect(await good.json()).toEqual({ error: 'challenge_expired' });
   });
 
+  it('los fallos se suman por cuenta entre retos: abrir un reto nuevo no reinicia el tope de 10', async () => {
+    const admin = await createUser('admin@example.com', 'super_admin');
+    const { secret } = await enableFor(admin.id);
+    const now = at(900);
+    // 10 fallos repartidos en 4 retos distintos (como si vinieran de varias IP), ninguno llega a 5.
+    for (const failures of [3, 3, 3, 1]) {
+      const challengeId = await mfa.createMfaChallenge(db, admin.id, false, now);
+      for (let attempt = 0; attempt < failures; attempt++) {
+        expect(await mfa.verifyMfaChallenge(db, { challengeId, code: '000000' }, { now })).toEqual({ ok: false, error: 'invalid_code' });
+      }
+    }
+    // Con el tope alcanzado, ni el código correcto en un reto nuevo sirve.
+    const blocked = await mfa.verifyMfaChallenge(
+      db,
+      { challengeId: await mfa.createMfaChallenge(db, admin.id, false, now), code: codeAt(secret, now) },
+      { now },
+    );
+    expect(blocked).toEqual({ ok: false, error: 'too_many_attempts' });
+
+    // Pasada la ventana de 15 minutos, vuelve a poder entrar y el acierto limpia el contador.
+    const later = at(900 + 15 * 60 + 1);
+    const ok = await mfa.verifyMfaChallenge(
+      db,
+      { challengeId: await mfa.createMfaChallenge(db, admin.id, false, later), code: codeAt(secret, later) },
+      { now: later },
+    );
+    expect(ok.ok).toBe(true);
+  });
+
   it('un reto vencido (más de 5 minutos) responde challenge_expired', async () => {
     const admin = await createUser('admin@example.com', 'super_admin');
     const { secret } = await enableFor(admin.id);

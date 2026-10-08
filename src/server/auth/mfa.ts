@@ -1,6 +1,6 @@
 import 'server-only';
 import { createHash, randomInt } from 'node:crypto';
-import { and, eq, isNull, lt } from 'drizzle-orm';
+import { and, eq, gt, isNull, lt } from 'drizzle-orm';
 import { Secret, TOTP } from 'otpauth';
 import QRCode from 'qrcode';
 import { appEnv } from '@/lib/app-env';
@@ -8,8 +8,10 @@ import { GLOBAL_ADMIN_LEVEL } from '@/lib/modules';
 import { RECOVERY_CODE_ALPHABET, RECOVERY_CODE_COUNT, normalizeRecoveryCode } from '@/lib/validation/mfa';
 import { decrypt, encrypt } from '@/server/crypto/aes';
 import type { Database } from '@/server/db';
-import { appConfig, mfaChallenges, userRecoveryCodes, users } from '@/server/db/schema';
+import { appConfig, mfaChallenges, rateLimits, userRecoveryCodes, users } from '@/server/db/schema';
 import { allowedModules } from '@/server/permissions/service';
+import { privateHash } from '@/server/security/http';
+import { clear, hit, LIMITS } from '@/server/security/rate-limit';
 import { mfaNoticeEmail } from './auth-emails';
 import { verifyPassword } from './crypto';
 import { AuthError } from './errors';
@@ -226,6 +228,8 @@ export async function createMfaChallenge(db: Database, userId: string, rememberM
   return row!.id;
 }
 
+const failuresKey = (userId: string) => privateHash('mfa:failures', userId);
+
 export type VerifyChallengeResult =
   | { ok: true; userId: string; rememberMe: boolean; factor: 'totp' | 'recovery'; email: string; locale: string | null }
   | { ok: false; error: 'challenge_expired' | 'invalid_code' }
@@ -237,6 +241,7 @@ export async function verifyMfaChallenge(
   options: Options = {},
 ): Promise<VerifyChallengeResult> {
   const now = options.now ?? new Date();
+  let failedUserId: string | null = null;
   const result = await db.transaction(async (tx): Promise<VerifyChallengeResult> => {
     const [challenge] = await tx
       .select({
@@ -268,17 +273,30 @@ export async function verifyMfaChallenge(
       await tx.delete(mfaChallenges).where(eq(mfaChallenges.id, challenge.id));
       return { ok: false, error: 'challenge_expired' };
     }
+    // Tope por cuenta: abrir retos nuevos con la contraseña no reinicia los fallos acumulados.
+    const [accountFailures] = await tx
+      .select({ count: rateLimits.count })
+      .from(rateLimits)
+      .where(and(eq(rateLimits.key, failuresKey(challenge.userId)), gt(rateLimits.resetAt, now)))
+      .limit(1);
+    if ((accountFailures?.count ?? 0) >= LIMITS.mfaFailuresPerUser.max) {
+      await tx.delete(mfaChallenges).where(eq(mfaChallenges.id, challenge.id));
+      return { ok: false, error: 'too_many_attempts' };
+    }
     const factor = await consumeSecondFactor(tx as unknown as Database, challenge.userId, input, now);
     if (!factor) {
       await tx
         .update(mfaChallenges)
         .set({ attempts: challenge.attempts + 1 })
         .where(eq(mfaChallenges.id, challenge.id));
+      failedUserId = challenge.userId;
       return { ok: false, error: 'invalid_code' };
     }
     await tx.delete(mfaChallenges).where(eq(mfaChallenges.id, challenge.id));
     return { ok: true, userId: challenge.userId, rememberMe: challenge.rememberMe, factor, email: user.email, locale: user.locale };
   });
+  if (failedUserId) await hit(db, { key: failuresKey(failedUserId), windowMs: LIMITS.mfaFailuresPerUser.windowMs }, now);
+  if (result.ok) await clear(db, failuresKey(result.userId));
   if (result.ok && result.factor === 'recovery' && options.mailer) {
     await options.mailer('auth-mfa-recovery-used', mfaNoticeEmail('recoveryUsed', result.email, result.locale));
   }
