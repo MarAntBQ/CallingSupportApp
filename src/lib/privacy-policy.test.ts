@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import en from '../../messages/en.json';
 import es from '../../messages/es.json';
 import pt from '../../messages/pt.json';
-import { controllerConfigured, ONLINE_RESOURCES_HANDBOOK_URL, POLICY_SECTIONS, recaptchaEnabled } from './privacy-policy';
+import { controllerConfigured, MODULE_POLICY_SECTIONS, ONLINE_RESOURCES_HANDBOOK_URL, POLICY_SECTIONS, recaptchaEnabled } from './privacy-policy';
 
 const ALL = { es, pt, en };
 
@@ -49,5 +49,21 @@ describe('política de datos', () => {
   it('dice que los avisos no llevan información confidencial ni nombres', () => {
     expect(es.privacyPolicy.sections.s2.notices).toMatch(/sin nombres ni datos/);
     expect(es.privacyPolicy.sections.s2.notices).toMatch(/nunca llevan información confidencial o delicada/);
+  });
+
+  it('cada módulo con sección dice qué guarda y quién lo administra, en los tres idiomas', () => {
+    expect(MODULE_POLICY_SECTIONS).toContain('selfReliance');
+    for (const [locale, messages] of Object.entries(ALL)) {
+      for (const section of MODULE_POLICY_SECTIONS) {
+        const entry = messages.privacyPolicy.modules[section];
+        for (const key of ['title', 'body', 'admins', 'rateLimit'] as const) expect(entry[key].length, `${locale} ${section} ${key}`).toBeGreaterThan(5);
+      }
+    }
+  });
+
+  it('Autosuficiencia: no pide datos a quien visita el portal y el autor de cada recurso no se publica', () => {
+    expect(es.privacyPolicy.modules.selfReliance.body).toMatch(/No pide datos a quien lo visita/);
+    expect(es.privacyPolicy.modules.selfReliance.body).toMatch(/no se muestra en él/);
+    expect(es.privacyPolicy.modules.selfReliance.rateLimit).toMatch(/no la IP/);
   });
 });

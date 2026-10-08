@@ -486,6 +486,15 @@
         "title": "17. Automated decisions",
         "body": "None. No profiling of people is done."
       }
+    },
+    "modules": {
+      "title": "Data by module",
+      "selfReliance": {
+        "title": "Self-Reliance",
+        "body": "The Self-Reliance portal only links to free, public resources. It asks visitors for no data and doesn't record which resources they open. For each resource, it stores the title, description, link, category, language, and which panel user created it; that last item is only for managing the portal and is never shown on it.",
+        "admins": "Only leaders whose calling has permission in the Self-Reliance module can create, edit, reorder, and delete resources.",
+        "rateLimit": "To prevent abuse, the portal limits requests per IP address. It stores only a code derived from the IP (not the IP itself), which is deleted after the 15-minute limit expires."
+      }
     }
   },
   "emails": {

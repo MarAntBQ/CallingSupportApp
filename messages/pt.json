@@ -486,6 +486,15 @@
         "title": "17. Decisões automatizadas",
         "body": "Nenhuma. Não são feitos perfis das pessoas."
       }
+    },
+    "modules": {
+      "title": "Dados por módulo",
+      "selfReliance": {
+        "title": "Autossuficiência",
+        "body": "O portal de Autossuficiência só inclui links para recursos públicos e gratuitos. Não pede dados a quem o visita nem registra quais recursos abre. De cada recurso são guardados o título, a descrição, o link, a categoria, o idioma e qual usuário do painel o criou; esse dado serve apenas para administrar o portal e não aparece nele.",
+        "admins": "Somente os líderes cujo chamado tem permissão no módulo Autossuficiência criam, editam, ordenam e excluem os recursos.",
+        "rateLimit": "Para evitar abusos, o portal limita as consultas por endereço IP. Só guarda um código derivado do IP (não o IP), que é excluído depois que o limite de 15 minutos vence."
+      }
     }
   },
   "emails": {

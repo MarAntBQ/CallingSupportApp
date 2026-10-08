@@ -8,6 +8,7 @@ import { isLocale } from '@/i18n/config';
 import {
   CHURCH_URL,
   controllerConfigured,
+  MODULE_POLICY_SECTIONS,
   ONLINE_RESOURCES_HANDBOOK_URL,
   POLICY_SECTIONS,
   recaptchaEnabled,
@@ -141,6 +142,22 @@ export default async function PrivacyPolicyPage() {
           </section>
         ))}
       </div>
+
+      <section aria-labelledby="policy-modules" className="flex flex-col gap-4">
+        <h2 id="policy-modules" className="text-lg font-semibold text-text">
+          {t('modules.title')}
+        </h2>
+        {MODULE_POLICY_SECTIONS.map((section) => (
+          <section key={section} aria-labelledby={`policy-module-${section}`} className="flex flex-col gap-2 text-base text-text" data-testid={`policy-module-${section}`}>
+            <h3 id={`policy-module-${section}`} className="text-base font-semibold text-text">
+              {t(`modules.${section}.title`)}
+            </h3>
+            <p>{t(`modules.${section}.body`)}</p>
+            <p>{t(`modules.${section}.admins`)}</p>
+            <p>{t(`modules.${section}.rateLimit`)}</p>
+          </section>
+        ))}
+      </section>
     </div>
   );
 }
