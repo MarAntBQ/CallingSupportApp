@@ -91,6 +91,9 @@ export function ResourcesAdmin({
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl font-semibold text-text">{t('title')}</h1>
           <p className="text-text-muted">{t('intro')}</p>
+          <a href="/self-reliance" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary underline-offset-4 hover:text-primary-strong hover:underline">
+            {t('portal.viewPortal')}
+          </a>
         </div>
         {canCreate && <Button onClick={() => setCreating(true)}>{t('newResource')}</Button>}
       </div>

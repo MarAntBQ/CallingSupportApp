@@ -47,6 +47,7 @@ describe.skipIf(!url)('recursos de Autosuficiencia contra Postgres', () => {
     list: typeof import('@/app/api/self-reliance/resources/route');
     byId: typeof import('@/app/api/self-reliance/resources/[id]/route');
     reorder: typeof import('@/app/api/self-reliance/resources/reorder/route');
+    publicList: typeof import('@/app/api/public/self-reliance/resources/route');
   };
 
   async function createUser(email: string, role: RoleKey) {
@@ -110,12 +111,13 @@ describe.skipIf(!url)('recursos de Autosuficiencia contra Postgres', () => {
       list: await import('@/app/api/self-reliance/resources/route'),
       byId: await import('@/app/api/self-reliance/resources/[id]/route'),
       reorder: await import('@/app/api/self-reliance/resources/reorder/route'),
+      publicList: await import('@/app/api/public/self-reliance/resources/route'),
     };
   }, 60_000);
 
   beforeEach(async () => {
     await db.execute(
-      sql`truncate table self_reliance_resources, module_permissions, user_callings, callings, organizations, sessions, users restart identity cascade`,
+      sql`truncate table self_reliance_resources, rate_limits, module_permissions, user_callings, callings, organizations, sessions, users restart identity cascade`,
     );
   });
 
@@ -210,6 +212,59 @@ describe.skipIf(!url)('recursos de Autosuficiencia contra Postgres', () => {
     const member = await cookieFor((await createUser('miembro@example.com', 'member')).id);
     expect((await list(member)).status).toBe(403);
     expect((await list('')).status).toBe(401);
+  });
+
+  async function publicList(query = '', cookie?: string) {
+    const response = await routes.publicList.GET(request('GET', `/api/public/self-reliance/resources${query}`, undefined, cookie));
+    return { status: response.status, body: await response.json() };
+  }
+
+  async function seedPortal() {
+    const cookie = await adminCookie();
+    for (const input of [
+      resourceInput({ title: 'Curso en español', locale: 'es' }),
+      resourceInput({ title: 'Curso oculto', published: false }),
+      resourceInput({ title: 'Course in English', locale: 'en', url: 'https://example.com/en' }),
+      resourceInput({ title: 'Empleo oficial', category: 'employment', locale: 'all', url: 'https://www.churchofjesuschrist.org/life/self-reliance/find-a-better-job' }),
+    ]) {
+      expect((await create(input, cookie)).status).toBe(201);
+    }
+  }
+
+  it('el portal público muestra solo lo publicado, los oficiales primero, en el idioma pedido o en todos', async () => {
+    await seedPortal();
+    const { status, body } = await publicList('?locale=es');
+    expect(status).toBe(200);
+    expect(body.map((item: { title: string }) => item.title)).toEqual(['Empleo oficial', 'Curso en español']);
+    expect(body[0]).toMatchObject({ official: true });
+    expect(body[0]).not.toHaveProperty('position');
+    expect(body[0]).not.toHaveProperty('createdBy');
+    const english = await publicList('?locale=en');
+    expect(english.body.map((item: { title: string }) => item.title)).toEqual(['Empleo oficial', 'Course in English']);
+  });
+
+  it('filtra por categoría y responde 400 con una categoría que no existe', async () => {
+    await seedPortal();
+    const { body } = await publicList('?locale=es&category=employment');
+    expect(body.map((item: { title: string }) => item.title)).toEqual(['Empleo oficial']);
+    expect((await publicList('?category=casino')).status).toBe(400);
+  });
+
+  it('los enlaces a churchofjesuschrist.org llevan el lang del idioma (pt → lang=por), también desde la cookie', async () => {
+    await seedPortal();
+    const pt = await publicList('?locale=pt');
+    expect(pt.body.find((item: { official: boolean }) => item.official).url).toBe(
+      'https://www.churchofjesuschrist.org/life/self-reliance/find-a-better-job?lang=por',
+    );
+    const fromCookie = await publicList('', 'csa_locale=en');
+    expect(fromCookie.body.find((item: { official: boolean }) => item.official).url).toMatch(/\?lang=eng$/);
+    expect(fromCookie.body.find((item: { official: boolean }) => !item.official).url).toBe('https://example.com/en');
+  });
+
+  it('el portal público tiene límite por IP (#28)', async () => {
+    for (let i = 0; i < 120; i += 1) expect((await publicList()).status).toBe(200);
+    const blocked = await publicList();
+    expect(blocked.status).toBe(429);
   });
 
   it('dos altas a la vez no comparten posición', async () => {

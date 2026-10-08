@@ -1226,6 +1226,26 @@
       "url": "El enlace debe empezar con https:// y apuntar a un sitio válido.",
       "title": "El título debe tener entre 2 y 120 caracteres.",
       "stale": "La lista cambió mientras la ordenabas. Se recargó; vuelve a intentarlo."
+    },
+    "portal": {
+      "title": "Autosuficiencia",
+      "intro": "Recursos públicos y gratuitos para tu desarrollo: cursos, empleo, educación, finanzas e idiomas. Primero, los oficiales de la Iglesia.",
+      "filters": "Filtros",
+      "category": "Categoría",
+      "allCategories": "Todas las categorías",
+      "language": "Idioma",
+      "languages": {
+        "es": "Español",
+        "pt": "Portugués",
+        "en": "Inglés",
+        "any": "Todos los idiomas"
+      },
+      "search": "Buscar",
+      "empty": "Ningún recurso coincide con los filtros.",
+      "officialTitle": "Recursos oficiales de la Iglesia",
+      "newTab": "(se abre en otra pestaña)",
+      "freeOnly": "Este portal solo enlaza recursos públicos y gratuitos. No incluye publicidad ni promociona negocios.",
+      "viewPortal": "Ver el portal público"
     }
   }
 }
