@@ -10,6 +10,7 @@ import { postJson, patchJson, type ApiResult } from '@/lib/api-client';
 import { GENDERS, ORDINANCES, quotaKey, type QuotaKey } from '@/lib/temple-trips/constants';
 import type { TempleTripListItem } from '@/lib/temple-trips/types';
 import { ParticipantsPanel } from './participants-panel';
+import { ReportsPanel } from './reports-panel';
 import { RoomsPanel } from './rooms-panel';
 
 const TRIPS_KEY = ['temple-trips'] as const;
@@ -279,7 +280,7 @@ function TripTabs({
       ) : active === 'rooms' ? (
         <RoomsPanel trip={trip} canCreate={canCreate} canUpdate={canUpdate} canDelete={canDelete} />
       ) : (
-        <p className="text-sm text-text-muted">{t('tabs.soon')}</p>
+        <ReportsPanel trip={trip} canUpdate={canUpdate} />
       )}
     </div>
   );

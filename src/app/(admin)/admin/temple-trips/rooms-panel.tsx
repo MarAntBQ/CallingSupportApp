@@ -15,11 +15,11 @@ import type { RoomOccupant, RoomView, RoomsView } from '@/server/temple-trips/ro
 const ROOM_ERROR_CODES = ['no_lodging', 'not_approved', 'room_other_trip', 'room_full', 'too_many_leaders', 'no_rooms', 'generic'] as const;
 type RoomErrorCode = (typeof ROOM_ERROR_CODES)[number];
 
-function roomsKey(tripId: string) {
+export function roomsKey(tripId: string) {
   return ['temple-rooms', tripId] as const;
 }
 
-async function fetchRooms(tripId: string): Promise<RoomsView> {
+export async function fetchRooms(tripId: string): Promise<RoomsView> {
   const response = await fetch(`/api/temple-trips/${tripId}/rooms`, { cache: 'no-store' });
   if (!response.ok) throw new Error(`rooms ${response.status}`);
   return response.json();

@@ -849,6 +849,60 @@
         "empty_id": "La cédula no puede quedar vacía."
       },
       "summaryDisapproved": "Se desaprobaron {n}."
+    },
+    "reports": {
+      "filter": {
+        "label": "Mostrar",
+        "approvedOnly": "Solo aprobados",
+        "all": "Todos (incluye pendientes)"
+      },
+      "ofQuota": "{n}/{quota}",
+      "ordinances": {
+        "title": "Ordenanzas",
+        "ordinance": "Ordenanza",
+        "total": "Total"
+      },
+      "estimatedCost": {
+        "label": "Costo estimado total",
+        "note": "Referencial para planificar con el obispado. La app no registra donativos ni pagos (Manual General 34.4 y 34.5.2)."
+      },
+      "dataNotice": "Este archivo tiene datos de miembros. No lo guardes en una computadora compartida y bórralo cuando ya no lo necesites.",
+      "lists": {
+        "label": "Lista",
+        "general": "Vista general",
+        "transport": "Transporte",
+        "breakfast": "Desayuno",
+        "lunch": "Almuerzo",
+        "lodging": "Hospedaje",
+        "ordinances": "Ordenanzas"
+      },
+      "print": "Imprimir",
+      "printedHeader": "{list} — Viaje al Templo",
+      "printedMeta": "{date} · {unit}",
+      "noneApproved": "Todavía no hay participantes aprobados.",
+      "logisticsError": "No se pudo guardar. Inténtalo de nuevo.",
+      "columns": {
+        "number": "#",
+        "name": "Nombre",
+        "phone": "Teléfono",
+        "cost": "Costo",
+        "total": "Total",
+        "outbound": "Ida",
+        "return": "Regreso",
+        "delivered": "Entregado",
+        "role": "Rol",
+        "gender": "Sexo"
+      },
+      "mark": "X",
+      "room": "Habitación {number}",
+      "unassigned": "Sin asignar",
+      "empty": "Nadie.",
+      "roles": {
+        "leader": "Líder",
+        "guest": "Participante"
+      },
+      "checkboxFor": "{label}: {name}",
+      "totalLine": "Total: {total}"
     }
   }
 }

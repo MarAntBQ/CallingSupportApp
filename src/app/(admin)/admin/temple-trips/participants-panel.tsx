@@ -20,11 +20,11 @@ import { useTableControls } from '@/lib/table/use-table-controls';
 
 type SubTab = 'pending' | 'approved' | 'all';
 
-function participantsKey(tripId: string) {
+export function participantsKey(tripId: string) {
   return ['temple-participants', tripId] as const;
 }
 
-async function fetchParticipants(tripId: string): Promise<ParticipantListItem[]> {
+export async function fetchParticipants(tripId: string): Promise<ParticipantListItem[]> {
   const response = await fetch(`/api/temple-trips/${tripId}/participants`, { cache: 'no-store' });
   if (!response.ok) throw new Error(`participants ${response.status}`);
   return response.json();

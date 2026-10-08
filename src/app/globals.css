@@ -67,3 +67,23 @@ body {
     cursor: not-allowed;
   }
 }
+
+/* Impresión de las listas del viaje al templo (#24): solo el área de la lista, sin barra
+   lateral, botones ni el resumen. El contenido imprimible va dentro de .print-area. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+  }
+}

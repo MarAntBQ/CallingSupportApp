@@ -43,3 +43,16 @@ export const participantPatchSchema = z.strictObject({
 });
 
 export type ParticipantPatch = z.infer<typeof participantPatchSchema>;
+
+// Logística del día del viaje (#24): el líder marca estas casillas en las listas imprimibles.
+// Todos opcionales; se guardan directo, sin validar cupos.
+export const logisticsPatchSchema = z
+  .strictObject({
+    boardedOutbound: z.boolean().optional(),
+    boardedReturn: z.boolean().optional(),
+    breakfastDelivered: z.boolean().optional(),
+    lunchDelivered: z.boolean().optional(),
+  })
+  .refine((value) => Object.keys(value).length > 0, { message: 'empty_patch' });
+
+export type LogisticsPatch = z.infer<typeof logisticsPatchSchema>;

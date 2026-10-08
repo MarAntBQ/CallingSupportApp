@@ -849,6 +849,60 @@
         "empty_id": "The ID cannot be empty."
       },
       "summaryDisapproved": "{n} disapproved."
+    },
+    "reports": {
+      "filter": {
+        "label": "Show",
+        "approvedOnly": "Approved only",
+        "all": "All (includes pending)"
+      },
+      "ofQuota": "{n}/{quota}",
+      "ordinances": {
+        "title": "Ordinances",
+        "ordinance": "Ordinance",
+        "total": "Total"
+      },
+      "estimatedCost": {
+        "label": "Total estimated cost",
+        "note": "For planning with the bishopric only. The app does not record donations or payments (General Handbook 34.4 and 34.5.2)."
+      },
+      "dataNotice": "This file has member data. Don't save it on a shared computer and delete it when you no longer need it.",
+      "lists": {
+        "label": "List",
+        "general": "Overview",
+        "transport": "Transport",
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "lodging": "Lodging",
+        "ordinances": "Ordinances"
+      },
+      "print": "Print",
+      "printedHeader": "{list} — Temple Trip",
+      "printedMeta": "{date} · {unit}",
+      "noneApproved": "No approved participants yet.",
+      "logisticsError": "Couldn't save. Please try again.",
+      "columns": {
+        "number": "#",
+        "name": "Name",
+        "phone": "Phone",
+        "cost": "Cost",
+        "total": "Total",
+        "outbound": "Outbound",
+        "return": "Return",
+        "delivered": "Delivered",
+        "role": "Role",
+        "gender": "Gender"
+      },
+      "mark": "X",
+      "room": "Room {number}",
+      "unassigned": "Unassigned",
+      "empty": "No one.",
+      "roles": {
+        "leader": "Leader",
+        "guest": "Participant"
+      },
+      "checkboxFor": "{label}: {name}",
+      "totalLine": "Total: {total}"
     }
   }
 }
