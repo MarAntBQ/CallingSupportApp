@@ -904,5 +904,33 @@
       "checkboxFor": "{label}: {name}",
       "totalLine": "Total: {total}"
     }
+  },
+  "dashboard": {
+    "title": "Painel",
+    "users": {
+      "title": "Usuários",
+      "active": "{n} ativos"
+    },
+    "pendingVerify": "Pendentes de verificação",
+    "trips": {
+      "title": "Viagens",
+      "hasActive": "Há uma viagem ativa",
+      "none": "Não há viagem ativa"
+    },
+    "participantsPending": "Participantes a aprovar",
+    "goToApprovals": "Ir para aprovações",
+    "byRole": {
+      "title": "Usuários por função"
+    },
+    "estimatedCost": {
+      "title": "Custo estimado da viagem ativa (referencial)",
+      "note": "Referencial para planejar com o bispado. O aplicativo não registra doações nem pagamentos."
+    },
+    "activeTrip": {
+      "title": "Viagem ativa",
+      "date": "Data",
+      "dateUnconfirmed": "{date} (a confirmar)",
+      "deadline": "Prazo de inscrição"
+    }
   }
 }

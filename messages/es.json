@@ -904,5 +904,33 @@
       "checkboxFor": "{label}: {name}",
       "totalLine": "Total: {total}"
     }
+  },
+  "dashboard": {
+    "title": "Panel",
+    "users": {
+      "title": "Usuarios",
+      "active": "{n} activos"
+    },
+    "pendingVerify": "Pendientes de verificar",
+    "trips": {
+      "title": "Viajes",
+      "hasActive": "Hay un viaje activo",
+      "none": "No hay viaje activo"
+    },
+    "participantsPending": "Participantes por aprobar",
+    "goToApprovals": "Ir a aprobaciones",
+    "byRole": {
+      "title": "Usuarios por rol"
+    },
+    "estimatedCost": {
+      "title": "Costo estimado del viaje activo (referencial)",
+      "note": "Referencial para planificar con el obispado. La app no registra donativos ni pagos."
+    },
+    "activeTrip": {
+      "title": "Viaje activo",
+      "date": "Fecha",
+      "dateUnconfirmed": "{date} (por confirmar)",
+      "deadline": "Fecha límite de inscripción"
+    }
   }
 }

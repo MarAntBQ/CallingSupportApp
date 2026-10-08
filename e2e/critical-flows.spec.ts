@@ -48,7 +48,7 @@ test('/setup crea el primer SuperAdmin y entra al panel', async ({ page }) => {
   await page.getByLabel(es.setup.bishopApprovedOn).fill('2026-10-01');
   await page.getByLabel(es.setup.privacy.consent).check();
   await page.getByRole('button', { name: es.setup.submit }).click();
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
   await expect(page.getByTestId('unit-name')).toHaveText('Barrio de Prueba');
   await expect(page.locator('footer')).toContainText('barrio.prueba@example.com');
 });
@@ -69,7 +69,7 @@ test('login con contraseña mala muestra el error y con la buena entra; cerrar s
   await expect(page).toHaveURL(/\/login/);
 
   await login(page, PASSWORD);
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
 
   await page.getByRole('button', { name: es.admin.logout }).click();
   await expect(page).toHaveURL(/\/login/);
@@ -79,7 +79,7 @@ test('login con contraseña mala muestra el error y con la buena entra; cerrar s
 
 test('Configuración: cambiar el nombre se ve en la barra lateral sin recargar', async ({ page }) => {
   await login(page, PASSWORD);
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
   await page.getByRole('link', { name: es.admin.nav.settings }).click();
   await expect(page).toHaveURL(/\/admin\/settings$/);
   await page.getByLabel(es.settings.general.unitName).fill('Barrio Los Pinos');
@@ -91,7 +91,7 @@ test('Configuración: cambiar el nombre se ve en la barra lateral sin recargar',
 test('Organizaciones: el catálogo arranca vacío y el SuperAdmin agrega la primera organización y su llamamiento', async ({ page }) => {
   const t = es.organizations;
   await login(page, PASSWORD);
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
   await page.getByRole('link', { name: es.admin.nav.organizations }).click();
   await expect(page).toHaveURL(/\/admin\/organizations$/);
   await expect(page.getByText(t.empty)).toBeVisible();
@@ -125,7 +125,7 @@ test('Permisos: el SuperAdmin marca "Editar" en un módulo y queda guardado tras
     .replace('{calling}', 'Secretario')
     .replace('{organization}', 'Presidencia de rama');
   await login(page, PASSWORD);
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
   await page.getByRole('link', { name: es.admin.nav.organizations }).click();
   await expect(page).toHaveURL(/\/admin\/organizations$/);
 
@@ -154,7 +154,7 @@ test('Permisos: el SuperAdmin marca "Editar" en un módulo y queda guardado tras
 test('Viaje al Templo: el SuperAdmin crea un viaje y aparece en el panel', async ({ page }) => {
   const tt = es.templeTrips;
   await login(page, PASSWORD);
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
   await page.getByRole('link', { name: es.admin.nav.templeTrips }).click();
   await expect(page).toHaveURL(/\/admin\/temple-trips$/);
   await expect(page.getByText(tt.empty)).toBeVisible();
@@ -257,7 +257,7 @@ test('/privacy: sin responsable lo avisa; al configurarlo en Configuración apar
   await expect(page.getByRole('heading', { level: 2 })).toHaveCount(17);
 
   await login(page, PASSWORD);
-  await expect(page).toHaveURL(/\/admin$/);
+  await expect(page).toHaveURL(/\/admin\/dashboard$/);
   await page.goto('/admin/settings');
   await page.getByLabel(es.settings.controller.name, { exact: true }).fill('Obispado de prueba');
   await page.getByLabel(es.settings.controller.email, { exact: true }).fill('obispado.prueba@example.com');
@@ -303,7 +303,7 @@ test.describe('teléfono (390 px)', () => {
 
   test('/admin/emails: un envío fallido queda registrado y la tabla no desborda la página', async ({ page }) => {
     await login(page, PASSWORD);
-    await expect(page).toHaveURL(/\/admin$/);
+    await expect(page).toHaveURL(/\/admin\/dashboard$/);
     const status = await page.evaluate(async (to) => {
       const response = await fetch('/api/config/smtp/test', {
         method: 'POST',
@@ -321,7 +321,7 @@ test.describe('teléfono (390 px)', () => {
 
   test('/admin/settings no se desborda', async ({ page }) => {
     await login(page, PASSWORD);
-    await expect(page).toHaveURL(/\/admin$/);
+    await expect(page).toHaveURL(/\/admin\/dashboard$/);
     await page.goto('/admin/settings');
     await expectNoHorizontalOverflow(page);
   });
