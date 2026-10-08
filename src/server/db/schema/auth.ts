@@ -34,6 +34,9 @@ export const users = pgTable(
     resetOtpTries: integer('reset_otp_tries').notNull().default(0),
     resetVerifiedAt: timestamp('reset_verified_at', { withTimezone: true }),
     resetTokenHash: text('reset_token_hash'),
+    // Telegram (#17): chat vinculado y el código de vinculación pendiente de un solo uso.
+    telegramChatId: text('telegram_chat_id'),
+    telegramLinkCode: text('telegram_link_code'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [

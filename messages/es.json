@@ -278,6 +278,22 @@
         "smtp_host_not_allowed": "El servidor SMTP apunta a una dirección interna o privada, que no se permite en producción.",
         "invalid_message": "El destinatario o el asunto del correo no son válidos."
       }
+    },
+    "telegram": {
+      "title": "Bot de Telegram",
+      "intro": "Configura el bot para enviar avisos por Telegram a quienes lo vinculen.",
+      "botUsername": "Usuario del bot",
+      "botToken": "Token del bot",
+      "tokenSaved": "Ya hay un token guardado; escríbelo de nuevo para cambiarlo.",
+      "saved": "Bot guardado.",
+      "saveFailed": "No se pudo guardar el bot.",
+      "saving": "Guardando…",
+      "save": "Guardar",
+      "testTitle": "Probar conexión",
+      "test": "Probar conexión",
+      "testing": "Probando…",
+      "testOk": "Conectado con @{bot}.",
+      "testFailed": "No se pudo conectar."
     }
   },
   "profile": {
@@ -322,6 +338,16 @@
       "currentPassword": "La contraseña actual es incorrecta.",
       "passwordTooShort": "La nueva contraseña debe tener al menos {min} caracteres.",
       "passwordMismatch": "Las contraseñas no coinciden."
+    },
+    "telegram": {
+      "title": "Telegram",
+      "intro": "Vincula tu Telegram para recibir ahí los avisos de tus módulos.",
+      "noBot": "El bot de Telegram aún no está configurado por el administrador.",
+      "linked": "Tu Telegram está vinculado.",
+      "notLinked": "Tu Telegram no está vinculado.",
+      "link": "Vincular mi Telegram",
+      "linkHint": "Abre este enlace en Telegram y envía Start. Si ya lo hiciste, recarga la página.",
+      "unlink": "Desvincular"
     }
   },
   "sessions": {
@@ -967,7 +993,10 @@
     },
     "telegram": {
       "linked": "Vinculado",
-      "no": "—"
+      "no": "—",
+      "linkedStatus": "Telegram: vinculado",
+      "notLinked": "Telegram: no vinculado",
+      "unlink": "Desvincular Telegram"
     },
     "modal": {
       "createTitle": "Crear usuario",
@@ -1015,6 +1044,13 @@
       "calling": "Llamamiento",
       "name": "Nombre",
       "email": "Correo"
+    }
+  },
+  "telegram": {
+    "start": {
+      "noCode": "Para vincular tu cuenta, usa el enlace que aparece en tu perfil del sistema.",
+      "unknownCode": "Ese código ya no es válido — genera uno nuevo desde tu perfil.",
+      "linked": "Listo, tu cuenta quedó vinculada. Aquí recibirás avisos."
     }
   }
 }

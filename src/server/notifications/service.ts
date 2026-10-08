@@ -5,6 +5,7 @@ import { LEADER_LEVEL, type ModuleKey } from '@/lib/modules';
 import { getDb, type Database } from '@/server/db';
 import { appConfig, callings, modulePermissions, organizations, roles, userCallings, users } from '@/server/db/schema';
 import { sendMail, type MailMessage } from '@/server/mail/service';
+import { telegramSenderFor, type TelegramSender } from '@/server/telegram/service';
 
 /**
  * Contenido de un aviso de módulo en un idioma. Por las pautas de recursos en línea
@@ -17,13 +18,13 @@ export type NoticeBuilder = (locale: Locale) => ModuleNotice;
 
 type Mailer = (source: string, message: MailMessage) => Promise<unknown>;
 
-export type NotifyOptions = { db?: Database; mailer?: Mailer };
+export type NotifyOptions = { db?: Database; mailer?: Mailer; telegramSender?: TelegramSender | null };
 
 export type NotifyResult = { recipients: number; sent: number };
 
 export async function moduleNotificationRecipients(db: Database, module: ModuleKey) {
   const rows = await db
-    .selectDistinct({ id: users.id, email: users.email, locale: users.locale })
+    .selectDistinct({ id: users.id, email: users.email, locale: users.locale, telegramChatId: users.telegramChatId })
     .from(users)
     .innerJoin(roles, eq(users.roleId, roles.id))
     .innerJoin(userCallings, eq(userCallings.userId, users.id))
@@ -54,6 +55,7 @@ export async function notifyModuleEvent(module: ModuleKey, build: NoticeBuilder,
   try {
     const db = options.db ?? getDb();
     const mailer: Mailer = options.mailer ?? ((source, message) => sendMail(source, message, { db }));
+    const telegramSender: TelegramSender | null = options.telegramSender !== undefined ? options.telegramSender : await telegramSenderFor(db);
     const [config] = await db.select({ defaultLocale: appConfig.defaultLocale }).from(appConfig).limit(1);
     const fallback: Locale = isLocale(config?.defaultLocale) ? config.defaultLocale : 'es';
     const recipients = await moduleNotificationRecipients(db, module);
@@ -77,6 +79,14 @@ export async function notifyModuleEvent(module: ModuleKey, build: NoticeBuilder,
         if ((result as { sent?: boolean } | null)?.sent !== false) sent += 1;
       } catch (error) {
         console.error(JSON.stringify({ event: 'module_notice_failed', module, name: (error as Error | null)?.name }));
+      }
+      // Aviso por Telegram a quien lo tenga vinculado (solo resumen + enlace; nunca PII). No lanza.
+      if (telegramSender && recipient.telegramChatId) {
+        try {
+          await telegramSender(recipient.telegramChatId, notice.telegramText);
+        } catch (error) {
+          console.error(JSON.stringify({ event: 'module_notice_telegram_failed', module, name: (error as Error | null)?.name }));
+        }
       }
     }
     return { recipients: recipients.length, sent };

@@ -5,7 +5,9 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/server/auth/session';
 import { getDb } from '@/server/db';
 import { users } from '@/server/db/schema';
+import { getTelegramConfig } from '@/server/telegram/service';
 import { ProfileForm } from './profile-form';
+import { TelegramProfileCard } from './telegram-profile-card';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,12 +24,14 @@ export default async function ProfilePage() {
   const t = await getTranslations('profile');
   const tRoles = await getTranslations('roles');
   const locale = await getLocale();
-  const [user] = await getDb()
-    .select({ firstName: users.firstName, lastName: users.lastName, phone: users.phone, callingLabel: users.callingLabel })
+  const db = getDb();
+  const [user] = await db
+    .select({ firstName: users.firstName, lastName: users.lastName, phone: users.phone, callingLabel: users.callingLabel, telegramChatId: users.telegramChatId })
     .from(users)
     .where(eq(users.id, session.user.id))
     .limit(1);
   if (!user) redirect('/login');
+  const telegram = await getTelegramConfig(db);
   const roleKey = ROLE_KEYS.find((key) => key === session.user.role.key);
   const role = user.callingLabel || (roleKey ? tRoles(roleKey) : session.user.role.name);
 
@@ -53,6 +57,7 @@ export default async function ProfilePage() {
         initial={{ firstName: user.firstName, lastName: user.lastName, phone: user.phone ?? '' }}
         locale={locale}
       />
+      <TelegramProfileCard linked={Boolean(user.telegramChatId)} botConfigured={telegram.hasToken} />
     </section>
   );
 }

@@ -278,6 +278,22 @@
         "smtp_host_not_allowed": "The SMTP server points to an internal or private address, which is not allowed in production.",
         "invalid_message": "The email's recipient or subject is not valid."
       }
+    },
+    "telegram": {
+      "title": "Telegram bot",
+      "intro": "Configure the bot to send notices over Telegram to whoever links it.",
+      "botUsername": "Bot username",
+      "botToken": "Bot token",
+      "tokenSaved": "A token is already saved; type it again to change it.",
+      "saved": "Bot saved.",
+      "saveFailed": "Couldn't save the bot.",
+      "saving": "Saving…",
+      "save": "Save",
+      "testTitle": "Test connection",
+      "test": "Test connection",
+      "testing": "Testing…",
+      "testOk": "Connected to @{bot}.",
+      "testFailed": "Couldn't connect."
     }
   },
   "profile": {
@@ -322,6 +338,16 @@
       "currentPassword": "The current password is incorrect.",
       "passwordTooShort": "The new password must be at least {min} characters.",
       "passwordMismatch": "The passwords don't match."
+    },
+    "telegram": {
+      "title": "Telegram",
+      "intro": "Link your Telegram to receive your modules' notices there.",
+      "noBot": "The Telegram bot hasn't been configured by the administrator yet.",
+      "linked": "Your Telegram is linked.",
+      "notLinked": "Your Telegram is not linked.",
+      "link": "Link my Telegram",
+      "linkHint": "Open this link in Telegram and send Start. If you already did, reload the page.",
+      "unlink": "Unlink"
     }
   },
   "sessions": {
@@ -967,7 +993,10 @@
     },
     "telegram": {
       "linked": "Linked",
-      "no": "—"
+      "no": "—",
+      "linkedStatus": "Telegram: linked",
+      "notLinked": "Telegram: not linked",
+      "unlink": "Unlink Telegram"
     },
     "modal": {
       "createTitle": "Create user",
@@ -1015,6 +1044,13 @@
       "calling": "Calling",
       "name": "Name",
       "email": "Email"
+    }
+  },
+  "telegram": {
+    "start": {
+      "noCode": "To link your account, use the link shown in your profile in the system.",
+      "unknownCode": "That code is no longer valid — generate a new one from your profile.",
+      "linked": "Done, your account is linked. You'll receive notices here."
     }
   }
 }

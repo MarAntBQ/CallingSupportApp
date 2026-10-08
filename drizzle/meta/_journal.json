@@ -113,6 +113,13 @@
       "when": 1791436277391,
       "tag": "0015_temple_trip_purge",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1791437885893,
+      "tag": "0016_telegram",
+      "breakpoints": true
     }
   ]
 }
