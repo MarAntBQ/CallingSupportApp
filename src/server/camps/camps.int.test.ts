@@ -175,6 +175,22 @@ describe.skipIf(!url)('campamentos contra Postgres', () => {
     expect((await update('00000000-0000-4000-8000-000000000000', campInput(), cookie)).status).toBe(404);
   });
 
+  it('no se puede bajar el cupo de un género por debajo de los jóvenes ya aprobados (409); a 0 (sin límite) sí', async () => {
+    const cookie = await adminCookie();
+    const created = await (await create(campInput({ quotaYouthFemale: 3 }), cookie)).json();
+    const [registration] = await db.insert(schema.campRegistrations).values({ campId: created.id, consent: true, policyVersion: '2026-10' }).returning();
+    const youth = { registrationId: registration!.id, type: 'youth', gender: 'female', birthDate: '2011-05-01', emergencyContactName: 'Mamá Prueba', emergencyContactPhone: '0990000000', approved: true };
+    await db.insert(schema.campParticipants).values([
+      { ...youth, fullName: 'Joven Uno', accessTokenHash: 'a'.repeat(64) },
+      { ...youth, fullName: 'Joven Dos', accessTokenHash: 'b'.repeat(64) },
+    ]);
+    const lowered = await update(created.id, campInput({ quotaYouthFemale: 1 }), cookie);
+    expect(lowered.status).toBe(409);
+    expect((await lowered.json()).issues).toEqual([{ field: 'quotaYouthFemale', code: 'quota_below_approved' }]);
+    expect((await update(created.id, campInput({ quotaYouthFemale: 2 }), cookie)).status).toBe(200);
+    expect((await update(created.id, campInput({ quotaYouthFemale: 0 }), cookie)).status).toBe(200);
+  });
+
   it('cada acción exige su permiso del módulo', async () => {
     const admin = await adminCookie();
     const created = await (await create(campInput(), admin)).json();

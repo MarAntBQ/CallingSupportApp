@@ -190,6 +190,7 @@ describe.skipIf(!url)('inscripción pública al campamento contra Postgres', () 
     expect(view).toEqual({
       camp: { name: 'Campamento de prueba', startDate: camp.startDate, endDate: camp.endDate, location: 'Bosque de prueba' },
       participant: { fullName: 'Joven Prueba', type: 'youth', approved: false },
+      contribution: null,
     });
     expect(JSON.stringify(view)).not.toMatch(/Tía|0990000002|mama\.prueba|Mamá/);
     expect((await me('A'.repeat(43))).status).toBe(404);

@@ -1,10 +1,10 @@
 import { waitUntil } from '@vercel/functions';
 import { NextResponse } from 'next/server';
 import { isLocale, type Locale } from '@/i18n/config';
-import { canonicalBaseUrl } from '@/lib/public-url';
 import { campRegistrationSchema } from '@/lib/validation/camps';
 import { invalidInputResponse } from '@/server/auth/errors';
 import { accessLinkEmail, campRegistrationNotice } from '@/server/camps/emails';
+import { linkBaseUrl } from '@/server/camps/http';
 import { createPublicRegistration } from '@/server/camps/registrations';
 import { getConfig } from '@/server/config/service';
 import { getDb } from '@/server/db';
@@ -21,12 +21,6 @@ export const runtime = 'nodejs';
 function localeFromRequest(request: Request, fallback: Locale): Locale {
   const match = (request.headers.get('cookie') ?? '').match(/(?:^|;\s*)csa_locale=([^;]+)/);
   return isLocale(match?.[1]) ? (match![1] as Locale) : fallback;
-}
-
-// Base de los enlaces del correo: la URL configurada (APP_URL o APP_ORIGINS). Solo fuera de
-// producción (desarrollo y pruebas) se acepta el origin de la petición.
-function linkBaseUrl(request: Request) {
-  return canonicalBaseUrl() ?? (process.env.NODE_ENV === 'production' ? null : new URL(request.url).origin);
 }
 
 export const POST = publicRoute<{ slug: string }>(
