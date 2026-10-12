@@ -260,3 +260,12 @@ pásale el `SKILL.md` correspondiente.
 | [`portar-desde-legacy`](.claude/skills/portar-desde-legacy/SKILL.md) | Al llevar una función de la v1 (rama `legacy`) a la versión nueva |
 
 Las tres skills base (`trabajar-un-issue`, `escribir-un-issue`, `revisar-codigo`) se **sincronizan automáticamente** desde el directorio oficial `MarbustTechnologyCompany/ClaudeSkills` mediante el workflow [`sync-skills`](.github/workflows/sync-skills.yml) (programado y manual). **No se editan a mano:** una mejora nace en el directorio oficial y se propaga a este repo por un PR `chore: sincronizar skills oficiales`. Las skills de dominio de este repo (`datos-de-miembros`, `portar-desde-legacy`) son propias y **no** se sincronizan.
+
+## Revisión de código y costo de herramientas (Greptile u otras) — REGLA DURA
+
+**No gastar créditos ni tokens a lo loco.** Una herramienta de revisión de pago (Greptile u otra) **nunca** debe ver un PR con errores que pudimos encontrar solos.
+
+- **Si este repo tiene herramienta de revisión (Greptile u otra):** corre PRIMERO las revisiones **en local y sin publicarlas** — tu pase con la skill `revisar-codigo` + el de otra IA distinta (p. ej. Codex) — y deja el PR limpio (pruebas en verde por código de salida + pase de impacto) **antes** de hacer push, actualizar la rama o pedir la revisión. Una etiqueta/pedido por vuelta, con todo lo de esa vuelta ya corregido: así la herramienta solo gasta créditos en lo que no vimos.
+- **Si NO tiene herramienta:** la revisión entre IAs se hace **en GitHub** (ahí queda visible y no cuesta): otra IA distinta publica su revisión con `revisar-codigo` como revisión de GitHub (Request changes, hallazgos en sus líneas); el autor responde `CORREGIDO` en cada hilo; se aprueba en GitHub.
+
+Autor y revisor son **cuentas distintas**; el autor no se auto-aprueba; nunca la misma sesión que escribió el código lo revisa. **Cada hallazgo** que la skill no habría atrapado se agrega como categoría nueva a `revisar-codigo` (y a `pre-review-bridger` si aplica a swyftfin/platform), por PR al repo fuente `MarbustTechnologyCompany/ClaudeSkills`; cada entorno (devbox, local) hace `pull` de los skills antes de trabajar. Detalle completo en la skill `revisar-codigo` §5.
