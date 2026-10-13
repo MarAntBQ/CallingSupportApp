@@ -67,6 +67,12 @@ export async function deletePackingItem(db: Database, campId: string, itemId: st
 
 export type TogglePackingResult = { ok: true } | { ok: false; status: 404 };
 
+function isForeignKeyViolation(error: unknown) {
+  const own = (error as { code?: unknown } | null)?.code;
+  const cause = (error as { cause?: { code?: unknown } } | null)?.cause?.code;
+  return own === '23503' || cause === '23503';
+}
+
 // Enlace personal: el participante marca/desmarca un ítem SUYO. El ítem debe ser de su campamento
 // y aplicarle (all o su tipo); si no, 404 (no se filtra que el ítem exista en otro campamento).
 export async function togglePackingByToken(
@@ -98,7 +104,14 @@ export async function togglePackingByToken(
   if (!item) return { ok: false, status: 404 };
 
   if (checked) {
-    await db.insert(campPackingChecks).values({ participantId: participant.id, itemId }).onConflictDoNothing();
+    try {
+      await db.insert(campPackingChecks).values({ participantId: participant.id, itemId }).onConflictDoNothing();
+    } catch (error) {
+      // Carrera: borran el ítem entre la verificación de arriba y este insert. El FK falla
+      // (23503), que onConflictDoNothing no cubre; se trata como no encontrado, no como 500.
+      if (isForeignKeyViolation(error)) return { ok: false, status: 404 };
+      throw error;
+    }
   } else {
     await db
       .delete(campPackingChecks)

@@ -14,6 +14,21 @@ export function PackingChecklist({ token, items }: { token: string; items: Item[
   const [busy, setBusy] = useState<ReadonlySet<string>>(() => new Set());
   const [failed, setFailed] = useState(false);
 
+  // El padre es un server component: en router.refresh() (p. ej. al cambiar de idioma) llega un
+  // `items` nuevo con la lista y los checks reales del servidor. useState solo tomó el inicial, así
+  // que reconciliamos en render (patrón oficial de React, no useEffect) conservando el estado
+  // optimista de los ítems que todavía están guardando.
+  const [synced, setSynced] = useState(items);
+  if (synced !== items) {
+    setSynced(items);
+    setState((current) =>
+      items.map((incoming) => {
+        const pending = busy.has(incoming.id) ? current.find((item) => item.id === incoming.id) : undefined;
+        return pending ? { ...incoming, checked: pending.checked } : incoming;
+      }),
+    );
+  }
+
   if (state.length === 0) return null;
   const done = state.filter((item) => item.checked).length;
 

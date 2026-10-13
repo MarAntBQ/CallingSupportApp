@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { deleteJson, postJson } from '@/lib/api-client';
 import { PACKING_APPLIES_TO } from '@/lib/validation/camps';
+import { participantsKey } from './participants-panel';
 
 type Item = { id: string; name: string; detail: string | null; category: string; appliesTo: string; position: number };
 
@@ -31,7 +32,13 @@ export function PackingPanel({ campId, canUpdate }: { campId: string; canUpdate:
   const appliesLabel = (value: string) =>
     value === 'youth' ? t('appliesTo.youth') : value === 'leader' ? t('appliesTo.leader') : t('appliesTo.all');
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: packingKey(campId) });
+  // Agregar o borrar un ítem cambia también los conteos packingDone/packingTotal que muestra
+  // ParticipantsPanel (query aparte): hay que invalidar ambas, no solo la de packing.
+  const invalidate = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: packingKey(campId) }),
+      queryClient.invalidateQueries({ queryKey: participantsKey(campId) }),
+    ]);
 
   const addMutation = useMutation({
     mutationFn: () =>
@@ -105,9 +112,9 @@ export function PackingPanel({ campId, canUpdate }: { campId: string; canUpdate:
       )}
       {canUpdate && (
         <form onSubmit={submit} className="grid gap-3 sm:grid-cols-2">
-          <Field label={t('name')} value={form.name} maxLength={120} required onChange={(event) => setForm((f) => ({ ...f, name: event.target.value }))} />
-          <Field label={t('category')} value={form.category} maxLength={40} required onChange={(event) => setForm((f) => ({ ...f, category: event.target.value }))} />
-          <Field label={t('detail')} value={form.detail} maxLength={200} onChange={(event) => setForm((f) => ({ ...f, detail: event.target.value }))} />
+          <Field label={t('name')} value={form.name} maxLength={120} required disabled={addMutation.isPending} onChange={(event) => setForm((f) => ({ ...f, name: event.target.value }))} />
+          <Field label={t('category')} value={form.category} maxLength={40} required disabled={addMutation.isPending} onChange={(event) => setForm((f) => ({ ...f, category: event.target.value }))} />
+          <Field label={t('detail')} value={form.detail} maxLength={200} disabled={addMutation.isPending} onChange={(event) => setForm((f) => ({ ...f, detail: event.target.value }))} />
           <div className="flex flex-col gap-1.5">
             <label htmlFor="packing-applies-to" className="text-sm font-medium text-text-muted">
               {t('appliesToLabel')}
@@ -115,8 +122,9 @@ export function PackingPanel({ campId, canUpdate }: { campId: string; canUpdate:
             <select
               id="packing-applies-to"
               value={form.appliesTo}
+              disabled={addMutation.isPending}
               onChange={(event) => setForm((f) => ({ ...f, appliesTo: event.target.value }))}
-              className="w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-base text-text focus:outline-2 focus:outline-offset-1 focus:outline-primary"
+              className="w-full rounded-sm border border-border-strong bg-surface px-3 py-2 text-base text-text focus:outline-2 focus:outline-offset-1 focus:outline-primary disabled:bg-surface-muted disabled:text-text-muted"
             >
               {PACKING_APPLIES_TO.map((value) => (
                 <option key={value} value={value}>
