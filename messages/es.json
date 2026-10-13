@@ -1369,6 +1369,11 @@
         "amount": "Aporte sugerido: {amount}",
         "note": "Participar no depende de pagar. Si puedes, contribuye con un donativo a la categoría que indique el obispado, en línea o con el formulario de Diezmo y otras ofrendas entregado al obispado. Los líderes no reciben dinero.",
         "category": "Categoría: {category}"
+      },
+      "packing": {
+        "title": "Qué llevar",
+        "progress": "{done} de {total}",
+        "error": "No se pudo guardar. Intenta de nuevo."
       }
     },
     "email": {
@@ -1462,6 +1467,29 @@
         "future_date": "La fecha de nacimiento no puede ser futura.",
         "fields": "Revisa los datos marcados."
       }
+    },
+    "packingOf": "Lista de qué llevar de {camp}",
+    "packing": {
+      "title": "Lista de qué llevar",
+      "name": "Nombre",
+      "category": "Categoría",
+      "detail": "Detalle",
+      "appliesToLabel": "Para quién",
+      "appliesTo": {
+        "all": "Todos",
+        "youth": "Jóvenes",
+        "leader": "Líderes"
+      },
+      "itemMeta": "{applies} · {category}",
+      "delete": "Quitar",
+      "deleteItem": "Quitar {name}",
+      "add": "Agregar",
+      "adding": "Agregando…",
+      "empty": "Todavía no hay ítems en la lista.",
+      "loading": "Cargando…",
+      "loadError": "No se pudo cargar la lista.",
+      "saveError": "No se pudo guardar el ítem.",
+      "deleteError": "No se pudo quitar el ítem."
     }
   }
 }

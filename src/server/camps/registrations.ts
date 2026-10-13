@@ -1,12 +1,12 @@
 import 'server-only';
 import { createHash, randomBytes } from 'node:crypto';
-import { and, asc, eq, inArray } from 'drizzle-orm';
+import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import type { Locale } from '@/i18n/config';
 import type { ParticipantType } from '@/lib/camps/constants';
 import type { CampRegistrationInput, PersonalLinkView, PublicCampView } from '@/lib/validation/camps';
 import { todayInZone } from '@/lib/time';
 import type { Database } from '@/server/db';
-import { campPackingItems, campParticipants, campRegistrations, camps } from '@/server/db/schema';
+import { campPackingChecks, campPackingItems, campParticipants, campRegistrations, camps } from '@/server/db/schema';
 
 // Enlace personal (#30): 32 bytes aleatorios. En la base solo queda su SHA-256; el token solo
 // viaja en el correo al padre, madre o tutor, nunca en una respuesta de la API.
@@ -19,7 +19,7 @@ export function hashAccessToken(token: string) {
   return createHash('sha256').update(token).digest('hex');
 }
 
-const TOKEN_FORMAT = /^[A-Za-z0-9_-]{43}$/;
+export const TOKEN_FORMAT = /^[A-Za-z0-9_-]{43}$/;
 
 function contributionOf(camp: typeof camps.$inferSelect, type: ParticipantType) {
   if (!camp.feeAuthorized) return '0.00';
@@ -116,6 +116,8 @@ export async function getPersonalLink(db: Database, token: string): Promise<Pers
   if (!TOKEN_FORMAT.test(token)) return null;
   const [row] = await db
     .select({
+      participantId: campParticipants.id,
+      campId: camps.id,
       campName: camps.name,
       startDate: camps.startDate,
       endDate: camps.endDate,
@@ -134,6 +136,22 @@ export async function getPersonalLink(db: Database, token: string): Promise<Pers
     .where(eq(campParticipants.accessTokenHash, hashAccessToken(token)))
     .limit(1);
   if (!row) return null;
+  // Lista de qué llevar que aplica a este participante (por tipo), con si ya la marcó.
+  const packing = await db
+    .select({
+      id: campPackingItems.id,
+      name: campPackingItems.name,
+      detail: campPackingItems.detail,
+      category: campPackingItems.category,
+      checked: sql<boolean>`${campPackingChecks.participantId} is not null`,
+    })
+    .from(campPackingItems)
+    .leftJoin(
+      campPackingChecks,
+      and(eq(campPackingChecks.itemId, campPackingItems.id), eq(campPackingChecks.participantId, row.participantId)),
+    )
+    .where(and(eq(campPackingItems.campId, row.campId), inArray(campPackingItems.appliesTo, ['all', row.type])))
+    .orderBy(asc(campPackingItems.position), asc(campPackingItems.name));
   return {
     camp: { name: row.campName, startDate: row.startDate, endDate: row.endDate, location: row.location },
     participant: { fullName: row.fullName, type: row.type as ParticipantType, approved: row.approved },
@@ -142,5 +160,6 @@ export async function getPersonalLink(db: Database, token: string): Promise<Pers
       row.feeAuthorized && Number(row.suggestedContribution) > 0
         ? { suggested: row.suggestedContribution, categoryName: row.donationCategoryName, instructions: row.donationInstructions }
         : null,
+    packing,
   };
 }
