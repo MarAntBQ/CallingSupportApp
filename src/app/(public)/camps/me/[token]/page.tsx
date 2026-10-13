@@ -6,6 +6,7 @@ import { isLocale } from '@/i18n/config';
 import { formatMoney } from '@/lib/format';
 import { getPersonalLink } from '@/server/camps/registrations';
 import { getDb } from '@/server/db';
+import { PackingChecklist } from './packing-checklist';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,6 +52,7 @@ export default async function PersonalLinkPage({ params }: { params: Promise<{ t
               {view.contribution.instructions && <p className="text-sm whitespace-pre-line text-text-muted">{view.contribution.instructions}</p>}
             </section>
           )}
+          <PackingChecklist token={token} items={view.packing} />
         </>
       ) : (
         <Alert tone="warning" role="status" title={t('invalid')} />

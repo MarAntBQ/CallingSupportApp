@@ -1369,6 +1369,11 @@
         "amount": "Suggested contribution: {amount}",
         "note": "Taking part doesn't depend on paying. If you can, contribute with a donation to the category the bishopric specifies, online or with a Tithing and Other Offerings form given to the bishopric. Leaders don't receive money.",
         "category": "Category: {category}"
+      },
+      "packing": {
+        "title": "What to bring",
+        "progress": "{done} of {total}",
+        "error": "Could not save. Please try again."
       }
     },
     "email": {
@@ -1462,6 +1467,29 @@
         "future_date": "The date of birth can't be in the future.",
         "fields": "Check the highlighted details."
       }
+    },
+    "packingOf": "Packing list for {camp}",
+    "packing": {
+      "title": "Packing list",
+      "name": "Name",
+      "category": "Category",
+      "detail": "Detail",
+      "appliesToLabel": "Who it is for",
+      "appliesTo": {
+        "all": "Everyone",
+        "youth": "Youth",
+        "leader": "Leaders"
+      },
+      "itemMeta": "{applies} · {category}",
+      "delete": "Remove",
+      "deleteItem": "Remove {name}",
+      "add": "Add",
+      "adding": "Adding…",
+      "empty": "No items in the list yet.",
+      "loading": "Loading…",
+      "loadError": "Could not load the list.",
+      "saveError": "Could not save the item.",
+      "deleteError": "Could not remove the item."
     }
   }
 }

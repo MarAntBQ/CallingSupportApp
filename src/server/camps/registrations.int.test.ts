@@ -174,7 +174,7 @@ describe.skipIf(!url)('inscripción pública al campamento contra Postgres', () 
     await createCamp({ open: false });
     const closed = await register('campamento', registration());
     expect((await closed.json()).issues).toEqual([{ field: 'camp', code: 'registration_closed' }]);
-    await db.update(schema.camps).set({ open: true, registrationDeadline: day(-1), startDate: day(-1) });
+    await db.update(schema.camps).set({ open: true, registrationDeadline: day(-2), startDate: day(-2) });
     expect((await register('campamento', registration())).status).toBe(400);
     expect((await register('no-existe', registration())).status).toBe(404);
     expect(await db.select().from(schema.campRegistrations)).toHaveLength(0);
@@ -191,6 +191,7 @@ describe.skipIf(!url)('inscripción pública al campamento contra Postgres', () 
       camp: { name: 'Campamento de prueba', startDate: camp.startDate, endDate: camp.endDate, location: 'Bosque de prueba' },
       participant: { fullName: 'Joven Prueba', type: 'youth', approved: false },
       contribution: null,
+      packing: [],
     });
     expect(JSON.stringify(view)).not.toMatch(/Tía|0990000002|mama\.prueba|Mamá/);
     expect((await me('A'.repeat(43))).status).toBe(404);

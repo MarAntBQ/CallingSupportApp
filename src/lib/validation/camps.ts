@@ -127,6 +127,8 @@ export type PersonalLinkView = {
   participant: { fullName: string; type: 'youth' | 'leader'; approved: boolean };
   // Solo si el obispado autorizó un aporte mayor que 0 (Manual General 20.6.2). Referencial: nunca deuda.
   contribution: { suggested: string; categoryName: string | null; instructions: string | null } | null;
+  // Lista de qué llevar que aplica a este participante (por tipo), con si ya la marcó.
+  packing: { id: string; name: string; detail: string | null; category: string; checked: boolean }[];
 };
 
 // Vacío → null (se borra). Envueltos en .optional() por fuera: si el campo no llega, queda
@@ -196,6 +198,25 @@ export const participantPatchSchema = z
 export type ParticipantPatch = z.infer<typeof participantPatchSchema>;
 
 export const approvalSchema = z.strictObject({ approved: z.boolean() });
+
+export const PACKING_APPLIES_TO = ['all', 'youth', 'leader'] as const;
+
+// Un ítem de la lista de qué llevar. `appliesTo` decide a quién se le muestra.
+export const packingItemSchema = z.strictObject({
+  name: z.string().trim().min(1).max(120),
+  detail: optionalText(200),
+  category: z.string().trim().min(1).max(40),
+  appliesTo: z.enum(PACKING_APPLIES_TO),
+  position: z.number().int().min(0).max(10000).optional(),
+});
+export type PackingItemInput = z.infer<typeof packingItemSchema>;
+
+// El participante marca/desmarca un ítem desde su enlace personal.
+export const packingToggleSchema = z.strictObject({
+  itemId: z.uuid(),
+  checked: z.boolean(),
+});
+export type PackingToggleInput = z.infer<typeof packingToggleSchema>;
 
 export type CampParticipantItem = {
   id: string;

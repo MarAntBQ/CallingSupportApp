@@ -21,6 +21,7 @@ import {
   DONATION_INSTRUCTIONS_MAX,
 } from "@/lib/camps/constants";
 import type { CampItem } from "@/lib/validation/camps";
+import { PackingPanel } from "./packing-panel";
 import { ParticipantsPanel } from "./participants-panel";
 
 const CAMPS_KEY = ["camps"] as const;
@@ -173,6 +174,21 @@ export function CampsAdmin({
             canCreate={canCreate}
             canUpdate={canUpdate}
           />
+        </section>
+      )}
+
+      {selected && (
+        <section
+          className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4"
+          aria-labelledby="camp-packing-title"
+        >
+          <h2
+            id="camp-packing-title"
+            className="text-xl font-semibold text-text"
+          >
+            {t("packingOf", { camp: selected.name })}
+          </h2>
+          <PackingPanel key={selected.id} campId={selected.id} canUpdate={canUpdate} />
         </section>
       )}
 
