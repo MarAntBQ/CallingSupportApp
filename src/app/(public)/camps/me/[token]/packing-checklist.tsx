@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Alert } from '@/components/ui/alert';
@@ -8,22 +9,24 @@ type Item = { id: string; name: string; detail: string | null; category: string;
 
 export function PackingChecklist({ token, items }: { token: string; items: Item[] }) {
   const t = useTranslations('camps.me.packing');
+  const router = useRouter();
   const [state, setState] = useState(items);
   // Un ítem en vuelo por su id (no un solo slot): cada casilla se bloquea solo a sí misma mientras
   // guarda, para que marcar otro ítem no reactive el que todavía está guardando.
   const [busy, setBusy] = useState<ReadonlySet<string>>(() => new Set());
-  // La última elección del usuario por ítem que el servidor TODAVÍA no confirma. Sobrevive a `busy`
-  // (que solo dura la petición): si un router.refresh trae una foto tomada antes de que el guardado
-  // se comprometiera pero que llega después de que `busy` se limpió, no pisamos el check ya guardado.
-  // Se limpia en cuanto el servidor ya refleja ese valor, o si la petición falla.
+  // La elección del usuario que el servidor TODAVÍA no confirmó, solo mientras la petición está en
+  // vuelo. Sobrevive a `busy` lo justo para que un router.refresh que llegue durante el guardado no
+  // snapee la casilla al valor viejo. En cuanto el servidor confirma (respuesta ok) se limpia y se
+  // trae el estado autoritativo (abajo): así un cambio hecho en OTRA pestaña sí se ve, en vez de
+  // quedar tapado por una intención local que ya se guardó.
   const [pending, setPending] = useState<ReadonlyMap<string, boolean>>(() => new Map());
   const [failed, setFailed] = useState(false);
 
   // El padre es un server component: en router.refresh() (p. ej. al cambiar de idioma) llega un
   // `items` nuevo con la lista y los checks del servidor. Reconciliamos en render (patrón oficial de
   // React, no useEffect): tomamos la lista del servidor, pero para el `checked` preferimos la
-  // intención del usuario aún no confirmada (`pending`); y limpiamos de `pending` lo que el servidor
-  // ya refleja, para que después un cambio externo real sí se vea.
+  // intención en vuelo (`pending`); y limpiamos de `pending` lo que el servidor ya refleja, para que
+  // después un cambio externo real sí se vea.
   const [synced, setSynced] = useState(items);
   if (synced !== items) {
     setSynced(items);
@@ -62,6 +65,15 @@ export function PackingChecklist({ token, items }: { token: string; items: Item[
         body: JSON.stringify({ itemId: id, checked }),
       });
       if (!response.ok) throw new Error('request_failed');
+      // Confirmado por el servidor: soltamos el override y traemos el estado autoritativo (post-commit).
+      // Desde acá cualquier refresh refleja al menos nuestra escritura; si otra pestaña cambió el ítem,
+      // este refresh lo muestra en vez de quedar tapado por la intención local ya guardada.
+      setPending((current) => {
+        const next = new Map(current);
+        next.delete(id);
+        return next;
+      });
+      router.refresh();
     } catch {
       setState((current) => current.map((item) => (item.id === id ? { ...item, checked: !checked } : item)));
       setPending((current) => {
