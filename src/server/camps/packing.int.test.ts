@@ -100,7 +100,7 @@ describe.skipIf(!url)('lista de qué llevar del campamento contra Postgres', () 
   }, 60_000);
 
   beforeEach(async () => {
-    await db.execute(sql`truncate table camps, email_log, module_permissions, user_callings, callings, organizations, sessions, users restart identity cascade`);
+    await db.execute(sql`truncate table camps, email_log, module_permissions, user_callings, callings, organizations, sessions, users, rate_limits restart identity cascade`);
   });
 
   afterAll(async () => {
@@ -161,10 +161,35 @@ describe.skipIf(!url)('lista de qué llevar del campamento contra Postgres', () 
     expect((await getPersonalLink(db, link!.token))!.packing).toHaveLength(0);
   });
 
-  it('gestionar la lista exige el permiso de camps: un miembro sin permiso recibe 403', async () => {
+  it('gestionar la lista exige el permiso de camps: un miembro sin permiso recibe 403 en list, add y delete', async () => {
     const camp = await createCamp();
+    const adminCookie = await cookieFor((await createUser('admin@example.com', 'super_admin')).id);
+    const item = await (await addPacking(camp.id, { name: 'Saco de dormir', category: 'Dormir', appliesTo: 'all' }, adminCookie)).json();
     const memberCookie = await cookieFor((await createUser('miembro@example.com', 'member')).id);
-    expect((await addPacking(camp.id, { name: 'Saco de dormir', category: 'Dormir', appliesTo: 'all' }, memberCookie)).status).toBe(403);
     expect((await listPacking(camp.id, memberCookie)).status).toBe(403);
+    expect((await addPacking(camp.id, { name: 'Linterna', category: 'Otros', appliesTo: 'all' }, memberCookie)).status).toBe(403);
+    expect((await delPacking(camp.id, item.id, memberCookie)).status).toBe(403);
+  });
+
+  it('404 al listar/agregar en un campamento inexistente, y al borrar un ítem inexistente o de otro campamento', async () => {
+    const camp = await createCamp();
+    const other = await createCamp({ slug: 'otro' });
+    const cookie = await cookieFor((await createUser('admin@example.com', 'super_admin')).id);
+    const missing = '00000000-0000-4000-8000-000000000000';
+    expect((await listPacking(missing, cookie)).status).toBe(404);
+    expect((await addPacking(missing, { name: 'X', category: 'Y', appliesTo: 'all' }, cookie)).status).toBe(404);
+    expect((await delPacking(camp.id, missing, cookie)).status).toBe(404); // ítem inexistente
+    const otherItem = await (await addPacking(other.id, { name: 'Carpa', category: 'Otros', appliesTo: 'all' }, cookie)).json();
+    expect((await delPacking(camp.id, otherItem.id, cookie)).status).toBe(404); // el ítem es de otro campamento
+  });
+
+  it('rechaza entradas inválidas con 400 (name vacío, appliesTo inválido, itemId no-uuid, checked no booleano)', async () => {
+    const camp = await createCamp();
+    const cookie = await cookieFor((await createUser('admin@example.com', 'super_admin')).id);
+    expect((await addPacking(camp.id, { name: '', category: 'Y', appliesTo: 'all' }, cookie)).status).toBe(400);
+    expect((await addPacking(camp.id, { name: 'X', category: 'Y', appliesTo: 'otro' }, cookie)).status).toBe(400);
+    const [link] = await registerYouth('campamento', ['Joven Uno']);
+    expect((await togglePacking(link!.token, { itemId: 'no-es-uuid', checked: true })).status).toBe(400);
+    expect((await togglePacking(link!.token, { itemId: '00000000-0000-4000-8000-000000000000', checked: 'no' })).status).toBe(400);
   });
 });
