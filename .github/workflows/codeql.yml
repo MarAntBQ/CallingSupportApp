@@ -32,10 +32,11 @@ jobs:
           # git diff LOCAL entre los commits DEL EVENTO (base.sha / head.sha), fijos en el payload
           # aun al re-ejecutar. Sin el tope de 300 archivos del compare API, así un PR grande no se
           # cuela con cambios de código fuera de las skills.
+          # `base...head` (tres puntos) = solo los cambios PROPIOS del PR, no lo que main avanzó.
           base='${{ github.event.pull_request.base.sha }}'
           head='${{ github.event.pull_request.head.sha }}'
           git fetch --no-tags --quiet origin "$base" "$head" 2>/dev/null || true
-          files="$(git diff --name-only "$base" "$head")"
+          files="$(git diff --name-only "$base...$head")"
           echo "Archivos cambiados:"
           printf '%s\n' "$files"
           # code=true si hay CUALQUIER archivo fuera de .claude/skills/. Solo cuando el PR toca

@@ -37,7 +37,7 @@ jobs:
           base='${{ github.event.pull_request.base.sha }}'
           head='${{ github.event.pull_request.head.sha }}'
           git fetch --no-tags --quiet origin "$base" "$head" 2>/dev/null || true
-          files="$(git diff --name-only "$base" "$head")"
+          files="$(git diff --name-only "$base...$head")"
           echo "Archivos cambiados:"
           printf '%s\n' "$files"
           # code=true si hay CUALQUIER archivo fuera de .claude/skills/ (es decir, hay cambios de
