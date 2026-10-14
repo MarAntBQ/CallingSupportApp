@@ -79,8 +79,9 @@ Con una terminal (macOS, Linux o Git Bash en Windows), corre esto **dos veces**,
 openssl rand -hex 32
 ```
 
-**Sin terminal:** abre cualquier página en el navegador, presiona `F12` → pestaña **Consola**, pega
-esto y presiona Enter (dos veces, una por clave):
+**Sin terminal:** abre una **pestaña nueva en blanco** (escribe `about:blank` en la barra de
+direcciones; en un contexto limpio ninguna página puede alterar el generador de números aleatorios),
+presiona `F12` → pestaña **Consola**, pega esto y presiona Enter (dos veces, una por clave):
 
 ```js
 Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) => b.toString(16).padStart(2, '0')).join('')
@@ -207,16 +208,14 @@ git pull upstream main --no-rebase
 git push origin main
 ```
 
-Vercel **no** vuelve a desplegar solo con cada push: el repositorio trae esa opción desactivada en
-`vercel.json` (`"git": { "deploymentEnabled": false }`), porque el proyecto original se publica en su
-propio servidor. Tras subir los cambios, para publicar la versión nueva en tu copia tienes dos
-opciones:
+El repositorio trae el despliegue automático de Git **desactivado** en `vercel.json`
+(`"git": { "deploymentEnabled": false }`), porque el proyecto original se publica en su propio
+servidor. Para que **tus** actualizaciones se publiquen solas, quita esa línea de tu `vercel.json`
+una sola vez y súbela: desde entonces, cada vez que subas cambios a `main`, Vercel desplegará el
+**commit nuevo**. Si la versión trae tablas nuevas, ese despliegue las crea antes de compilar.
 
-- En tu proyecto de Vercel, **Deployments → ⋯ → Redeploy** (sin tocar el código), o
-- quita la línea `"git": { "deploymentEnabled": false }` de tu `vercel.json` para que, de ahí en
-  adelante, cada push despliegue solo.
-
-Si la versión nueva trae tablas nuevas, ese despliegue las crea antes de compilar.
+(El botón **Redeploy** de Vercel **no** sirve para actualizar: vuelve a desplegar el código del
+despliegue que elijas, no el que acabas de subir.)
 
 Lee las [Novedades](https://callingsupportapp.org/updates/) antes de actualizar: avisan si alguna
 versión pide un paso extra.
