@@ -207,8 +207,16 @@ git pull upstream main --no-rebase
 git push origin main
 ```
 
-Cada vez que subes cambios a `main`, Vercel vuelve a desplegar solo. Si la versión nueva trae tablas
-nuevas, ese despliegue las crea antes de compilar.
+Vercel **no** vuelve a desplegar solo con cada push: el repositorio trae esa opción desactivada en
+`vercel.json` (`"git": { "deploymentEnabled": false }`), porque el proyecto original se publica en su
+propio servidor. Tras subir los cambios, para publicar la versión nueva en tu copia tienes dos
+opciones:
+
+- En tu proyecto de Vercel, **Deployments → ⋯ → Redeploy** (sin tocar el código), o
+- quita la línea `"git": { "deploymentEnabled": false }` de tu `vercel.json` para que, de ahí en
+  adelante, cada push despliegue solo.
+
+Si la versión nueva trae tablas nuevas, ese despliegue las crea antes de compilar.
 
 Lee las [Novedades](https://callingsupportapp.org/updates/) antes de actualizar: avisan si alguna
 versión pide un paso extra.
