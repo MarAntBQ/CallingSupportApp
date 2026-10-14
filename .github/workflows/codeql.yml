@@ -29,7 +29,12 @@ jobs:
             echo "code=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          files="$(gh pr view "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --json files --jq '.files[].path')"
+          # Se comparan los commits DEL EVENTO (base.sha...head.sha), fijos en el payload aun al
+          # re-ejecutar un run viejo — NO `gh pr view` (devuelve los archivos actuales del PR y
+          # marcaría mal un re-run de un commit que sí tenía código).
+          base='${{ github.event.pull_request.base.sha }}'
+          head='${{ github.event.pull_request.head.sha }}'
+          files="$(gh api "repos/${{ github.repository }}/compare/${base}...${head}" --paginate --jq '.files[].filename')"
           echo "Archivos cambiados:"
           printf '%s\n' "$files"
           # code=true si hay CUALQUIER archivo fuera de .claude/skills/. Solo cuando el PR toca
