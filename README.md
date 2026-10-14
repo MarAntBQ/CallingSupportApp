@@ -23,6 +23,15 @@ organizaciones, llamamientos con permisos por módulo, y módulos de actividades
 
 Las dos usan **datos inventados** y cada una tiene su propia base. **No escribas datos reales en ellas.**
 
+## Instalar en mi barrio
+
+Cada barrio o rama tiene **su propia instalación**, con los planes gratuitos de Vercel y Supabase y
+sin servidor propio. Antes de instalar, hace falta la **aprobación del obispo** (o del presidente de
+rama) y **al menos dos administradores**. La guía paso a paso, con la lista de comprobación y las
+variables, está en **[docs/deploy.md](docs/deploy.md)**.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FMarAntBQ%2FCallingSupportApp&env=DATABASE_URL,DIRECT_DATABASE_URL,ENC_KEY,CRON_SECRET,APP_URL&envDescription=Las%20cinco%20variables%20se%20explican%20en%20la%20gu%C3%ADa%20de%20instalaci%C3%B3n.&envLink=https%3A%2F%2Fgithub.com%2FMarAntBQ%2FCallingSupportApp%2Fblob%2Fmain%2Fdocs%2Fdeploy.md%23variables&project-name=callingsupportapp&repository-name=callingsupportapp)
+
 ## Qué es y qué no es
 
 **No reemplaza a Herramientas para Miembros**
@@ -141,6 +150,7 @@ se puede seguir; con 14 días sin actividad se libera solo.
 ## Documentación
 
 - [Wiki técnica](../../wiki): arquitectura, ambientes, ramas y versiones, decisiones y seguridad.
+- [Instalar en mi barrio](docs/deploy.md): guía de despliegue en Vercel + Supabase.
 - [Sitio de documentación](https://callingsupportapp.org): manuales, normas, privacidad y el Manual del desarrollador.
 - [DESIGN.md](DESIGN.md): colores, tipografía y patrones de pantalla.
 - [CONTRIBUTING](CONTRIBUTING.md) · [Código de conducta](CODE_OF_CONDUCT.md) · [Ayuda](SUPPORT.md) · [Seguridad](SECURITY.md) · [AGENTS.md](AGENTS.md)
